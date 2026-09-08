@@ -460,7 +460,7 @@ Khi thực hiện kiểm tra độ sạch của dữ liệu (null check, duplica
 Đây là lỗi phổ biến và gây mất thẩm mỹ giao diện nghiêm trọng nhất trong hệ thống: **Mặc dù giao diện chọn Tiếng Việt, người dùng vẫn liên tục gặp các câu tiếng Anh xen kẽ**.
 
 #### 1. Màn hình Danh sách Báo cáo (`StatusIcon.tsx`):
-- **Vị trí:** [`apps/web/src/features/data-marts/reports/list/components/StatusIcon/StatusIcon.tsx` ](apps/web/src/features/data-marts/reports/list/components/StatusIcon/StatusIcon.tsx)
+- **Vị trí:** `apps/web/src/features/data-marts/reports/list/components/StatusIcon/StatusIcon.tsx` 
 - **Dòng code:** L83, L89–L91
   ```tsx
   <TooltipContent id={tooltipId} side='bottom' role='tooltip'>
@@ -483,7 +483,7 @@ Khi thực hiện kiểm tra độ sạch của dữ liệu (null check, duplica
 - **Hệ quả:** Trong bảng hover card hiển thị chi tiết báo cáo, mục lỗi hiển thị nguyên văn tiếng Anh của server.
 
 #### 3. Thông báo Xuất bản Kho Dữ liệu Thất bại (`buildPublishFailureMessage.ts`):
-- **Vị trí:** [`apps/web/src/features/data-storage/shared/utils/buildPublishFailureMessage.ts` ](apps/web/src/features/data-storage/shared/utils/buildPublishFailureMessage.ts)
+- **Vị trí:** `apps/web/src/features/data-storage/shared/utils/buildPublishFailureMessage.ts` 
 - **Dòng code:** L22:
   ```typescript
   i18n.t('uiFeedback.publishFailure.sharedReason', { reason: reasons[0] })
@@ -491,7 +491,7 @@ Khi thực hiện kiểm tra độ sạch của dữ liệu (null check, duplica
 - **Hệ quả:** Khóa `uiFeedback.publishFailure.sharedReason` trong `vi.json` có nội dung: `"vì: {{reason}}"`. Nhưng `reasons[0]` lại là một câu tiếng Anh từ backend. Kết quả tạo thành câu lai tạp: *"Không thể xuất bản bản nháp vì: The target dataset already exists and contains incompatible tables."*
 
 #### 4. Trạng thái Sức khỏe Kho Dữ liệu (`DataStorageHealthStatusView.tsx`):
-- **Vị trí:** [`apps/web/src/features/data-storage/shared/components/DataStorageHealthIndicator/DataStorageHealthStatusView.tsx` ](apps/web/src/features/data-storage/shared/components/DataStorageHealthIndicator/DataStorageHealthStatusView.tsx)
+- **Vị trí:** `apps/web/src/features/data-storage/shared/components/DataStorageHealthIndicator/DataStorageHealthStatusView.tsx` 
 - **Dòng code:** L44, L52:
   ```tsx
   <span>{errorMessage ?? t('storageHealth.reauthRequired')}</span>
@@ -502,7 +502,7 @@ Khi thực hiện kiểm tra độ sạch của dữ liệu (null check, duplica
 ---
 
 ### 3.2. Cơ chế `humanizeValidationCode` Tự động Tạo Câu Tiếng Anh trong Toast
-**File mã nguồn:** [`apps/web/src/shared/utils/showApiErrorToast.ts` ](apps/web/src/shared/utils/showApiErrorToast.ts)
+**File mã nguồn:** `apps/web/src/shared/utils/showApiErrorToast.ts` 
 
 Tất cả các thông báo lỗi dạng Toast trên toàn bộ ứng dụng web đều đi qua file này:
 - **Dòng code 15–18:**
@@ -528,7 +528,7 @@ Tất cả các thông báo lỗi dạng Toast trên toàn bộ ứng dụng web
 ---
 
 ### 3.3. Các chuỗi Hardcoded Tiếng Anh Tĩnh trong UI Kit (`packages/ui`)
-**File mã nguồn:** [`packages/ui/src/components/file-drop-textarea.tsx` ](packages/ui/src/components/file-drop-textarea.tsx)
+**File mã nguồn:** `packages/ui/src/components/file-drop-textarea.tsx` 
 
 Component kéo thả file JSON Service Account của Google Sheets chứa nhiều câu tiếng Anh viết cứng:
 - **Dòng 43:** `onFileReject('Only one file can be dropped at a time.')` ➔ *"Chỉ có thể kéo thả 1 file mỗi lần."*
@@ -543,28 +543,28 @@ Component kéo thả file JSON Service Account của Google Sheets chứa nhiề
 ### 3.4. Các chuỗi Hardcoded Tiếng Anh Tĩnh trong Service & Component Frontend
 
 #### 1. Định nghĩa Hằng số Trạng thái Kho Lưu trữ:
-**File:** [`apps/web/src/features/data-storage/shared/services/data-storage-health-status.service.ts` ](apps/web/src/features/data-storage/shared/services/data-storage-health-status.service.ts)
+**File:** `apps/web/src/features/data-storage/shared/services/data-storage-health-status.service.ts` 
 - **Dòng 25:** `export const UNCONFIGURED_STATUS_LABEL = 'Complete setup to activate Storage';`
 - **Dòng 26–27:**  
   `export const OAUTH_REAUTH_REQUIRED_STATUS_LABEL = 'Google authorization could not be refreshed. Reconnect this Storage to restore access.';`
 
 #### 2. Cấu hình Hiển thị Sức khỏe Kho Dữ liệu:
-**File:** [`apps/web/src/features/data-storage/shared/components/DataStorageHealthIndicator/DataStorageHealthIndicator.tsx` ](apps/web/src/features/data-storage/shared/components/DataStorageHealthIndicator/DataStorageHealthIndicator.tsx)
+**File:** `apps/web/src/features/data-storage/shared/components/DataStorageHealthIndicator/DataStorageHealthIndicator.tsx` 
 - **Dòng 44:** `text: 'Storage access is valid'`
 - **Dòng 49:** `text: 'Storage access validation failed'`
 - **Dòng 59:** `text: 'Reconnect Storage'`
 - **Dòng 65:** `text: 'Storage status not fetched yet'`
 
 #### 3. Tiêu đề Lần chạy Looker Studio trong Lịch sử:
-**File:** [`apps/web/src/features/data-marts/edit/components/DataMartRunHistoryView/utils.ts` ](apps/web/src/features/data-marts/edit/components/DataMartRunHistoryView/utils.ts)
+**File:** `apps/web/src/features/data-marts/edit/components/DataMartRunHistoryView/utils.ts` 
 - **Dòng 173:** `title = 'Data Studio data fetching';` (Khi xem lịch sử chạy kiểu Looker Studio, tiêu đề luôn là tiếng Anh).
 
 ---
 
 ### 3.5. Cơ chế Đối chiếu Chuỗi Tĩnh trong Connector Metadata (`connectorMetadataVi`)
 **File mã nguồn:**  
-- [`apps/web/src/features/connectors/shared/utils/connector-metadata.ts` ](apps/web/src/features/connectors/shared/utils/connector-metadata.ts)  
-- [`apps/web/src/features/connectors/shared/utils/connector-metadata-vi.ts` ](apps/web/src/features/connectors/shared/utils/connector-metadata-vi.ts)
+- `apps/web/src/features/connectors/shared/utils/connector-metadata.ts`   
+- `apps/web/src/features/connectors/shared/utils/connector-metadata-vi.ts` 
 
 Hệ thống dịch các trường cấu hình của Connector (Facebook Ads, Google Ads, Shopee, v.v.) bằng một từ điển tĩnh:
 - **Dòng code 18–27:**
@@ -592,7 +592,7 @@ Hệ thống dịch các trường cấu hình của Connector (Facebook Ads, Go
    - Dòng 267: `"...tell the user to open the report in OWOX and clear that source..."`  
    - Dòng 353: `"It was created in the OWOX UI and cannot be expressed over MCP."`
 3. **Frontend Structured Logs View:**  
-   [`apps/web/src/features/data-marts/edit/components/DataMartRunHistoryView/StructuredLogsView.tsx` ](apps/web/src/features/data-marts/edit/components/DataMartRunHistoryView/StructuredLogsView.tsx), Dòng 11–12:  
+   `apps/web/src/features/data-marts/edit/components/DataMartRunHistoryView/StructuredLogsView.tsx` , Dòng 11–12:  
    `const OWOX_APP_URL = 'https://digitalreport.p2pdigital.io.vn';`  
    `const OWOX_APP_URL_PATTERN = /(https:\/\/digitalreport\.p2pdigital\.io\.vn)/g;`
 
@@ -617,13 +617,13 @@ Bảng tổng hợp chi tiết dưới đây liệt kê đầy đủ từng vị
 | **11** | google-oauth.exceptions.ts  | 38–194 | Vận hành (OAuth Lifecycle) | 12 lớp ngoại lệ OAuth đều trả về thông điệp tiếng Anh kỹ thuật | Người dùng gặp lỗi OAuth không hiểu cách cấp lại quyền | Xây dựng bộ Error Code Handler tại Frontend để chuyển 12 mã thành hướng dẫn tiếng Việt kèm nút Re-authenticate. |
 | **12** | connector-executor.service.ts  | 512, 862 | Vận hành (Connector Run) | Tiến trình con văng lỗi không rõ nguyên nhân, gán FAILED | Người dùng không biết nguồn dữ liệu (Meta/Google) bị từ chối ở điểm nào | Bắt và ghi nhận 20 dòng `stderr` cuối cùng của tiến trình con vào bảng log để hiển thị trực tiếp. |
 | **13** | output-controls-error.mapper.ts  | 194, 267, 353 | Tàn dư Thương hiệu Cũ | 3 câu hướng dẫn chứa từ khóa `"in OWOX"`, `"OWOX UI"` | Người dùng và AI Agent bị nhầm lẫn tài liệu/giao diện OWOX | Thay thế `"OWOX"` bằng `"P2PDigital Data Marts"`. |
-| **14** | [StatusIcon.tsx ](apps/web/src/features/data-marts/reports/list/components/StatusIcon/StatusIcon.tsx) | 83, 89–91 | Dịch thuật (Mixed UI) | Đổ trực tiếp chuỗi tiếng Anh `errorMessage` vào Tooltip và aria-label | Giao diện tiếng Việt nhưng tooltip báo lỗi hiển thị 100% tiếng Anh | Bổ sung hàm mapper dịch các mã lỗi phổ biến của Report sang tiếng Việt trước khi render vào Tooltip. |
-| **15** | [showApiErrorToast.ts ](apps/web/src/shared/utils/showApiErrorToast.ts) | 15–18, 50, 60 | Dịch thuật & Hardcoded | `humanizeValidationCode` tự tạo câu tiếng Anh, hardcoded `(+N more)`, `Something went wrong` | Toast thông báo lỗi hệ thống hiển thị tiếng Anh lai tạp | Tích hợp từ điển đa ngôn ngữ i18n cho mã kiểm tra hợp lệ và thay thế các chuỗi tĩnh bằng `t(...)`. |
-| **16** | [file-drop-textarea.tsx ](packages/ui/src/components/file-drop-textarea.tsx) | 43, 53, 81, 87, 99 | Hardcoded UI | 6 câu cảnh báo khi kéo thả file Service Account viết cứng tiếng Anh | Khi kéo file JSON sai, toast thông báo hoàn toàn bằng tiếng Anh | Chuyển các thông báo lỗi vào prop callback hoặc sử dụng bản dịch tiếng Việt chuẩn. |
-| **17** | [data-storage-health-status.service.ts ](apps/web/src/features/data-storage/shared/services/data-storage-health-status.service.ts) | 25–27 | Hardcoded UI | Khai báo hằng số tiếng Anh `UNCONFIGURED_STATUS_LABEL`, `OAUTH_REAUTH_REQUIRED_STATUS_LABEL` | Trạng thái kho dữ liệu hiển thị tiếng Anh trên màn hình danh sách | Thay hằng số tĩnh bằng hàm gọi `i18n.t('storageHealth....')`. |
-| **18** | [DataStorageHealthStatusView.tsx ](apps/web/src/features/data-storage/shared/components/DataStorageHealthIndicator/DataStorageHealthStatusView.tsx) | 44, 52 | Dịch thuật (Override Defect) | `errorMessage ?? t('storageHealth.invalid')` ưu tiên chuỗi tiếng Anh của server | Chuỗi tiếng Việt chuẩn bị đè mất khi có lỗi | Sử dụng chuỗi dịch tiếng Việt làm nhãn chính, hiển thị chi tiết kỹ thuật trong tooltip phụ. |
-| **19** | [utils.ts (DataMartRunHistoryView) ](apps/web/src/features/data-marts/edit/components/DataMartRunHistoryView/utils.ts) | 173 | Hardcoded UI | `title = 'Data Studio data fetching'` viết cứng tiếng Anh | Lịch sử chạy báo cáo Looker Studio hiển thị tiêu đề tiếng Anh | Sửa thành `title = i18n.t('runHistory.lookerStudioFetching', 'Truy xuất dữ liệu Looker Studio')`. |
-| **20** | [connector-metadata.ts ](apps/web/src/features/connectors/shared/utils/connector-metadata.ts) | 27 | Dịch thuật (Fallback Gap) | Trường mới không có trong `connectorMetadataVi` sẽ trả về nguyên văn tiếng Anh | Các connector mới hoặc trường API mới hiển thị tiếng Anh | Bổ sung cơ chế fallback tra cứu tự động qua từ điển chung hoặc cập nhật định kỳ từ điển metadata. |
+| **14** | StatusIcon.tsx  | 83, 89–91 | Dịch thuật (Mixed UI) | Đổ trực tiếp chuỗi tiếng Anh `errorMessage` vào Tooltip và aria-label | Giao diện tiếng Việt nhưng tooltip báo lỗi hiển thị 100% tiếng Anh | Bổ sung hàm mapper dịch các mã lỗi phổ biến của Report sang tiếng Việt trước khi render vào Tooltip. |
+| **15** | showApiErrorToast.ts  | 15–18, 50, 60 | Dịch thuật & Hardcoded | `humanizeValidationCode` tự tạo câu tiếng Anh, hardcoded `(+N more)`, `Something went wrong` | Toast thông báo lỗi hệ thống hiển thị tiếng Anh lai tạp | Tích hợp từ điển đa ngôn ngữ i18n cho mã kiểm tra hợp lệ và thay thế các chuỗi tĩnh bằng `t(...)`. |
+| **16** | file-drop-textarea.tsx  | 43, 53, 81, 87, 99 | Hardcoded UI | 6 câu cảnh báo khi kéo thả file Service Account viết cứng tiếng Anh | Khi kéo file JSON sai, toast thông báo hoàn toàn bằng tiếng Anh | Chuyển các thông báo lỗi vào prop callback hoặc sử dụng bản dịch tiếng Việt chuẩn. |
+| **17** | data-storage-health-status.service.ts  | 25–27 | Hardcoded UI | Khai báo hằng số tiếng Anh `UNCONFIGURED_STATUS_LABEL`, `OAUTH_REAUTH_REQUIRED_STATUS_LABEL` | Trạng thái kho dữ liệu hiển thị tiếng Anh trên màn hình danh sách | Thay hằng số tĩnh bằng hàm gọi `i18n.t('storageHealth....')`. |
+| **18** | DataStorageHealthStatusView.tsx  | 44, 52 | Dịch thuật (Override Defect) | `errorMessage ?? t('storageHealth.invalid')` ưu tiên chuỗi tiếng Anh của server | Chuỗi tiếng Việt chuẩn bị đè mất khi có lỗi | Sử dụng chuỗi dịch tiếng Việt làm nhãn chính, hiển thị chi tiết kỹ thuật trong tooltip phụ. |
+| **19** | utils.ts (DataMartRunHistoryView)  | 173 | Hardcoded UI | `title = 'Data Studio data fetching'` viết cứng tiếng Anh | Lịch sử chạy báo cáo Looker Studio hiển thị tiêu đề tiếng Anh | Sửa thành `title = i18n.t('runHistory.lookerStudioFetching', 'Truy xuất dữ liệu Looker Studio')`. |
+| **20** | connector-metadata.ts  | 27 | Dịch thuật (Fallback Gap) | Trường mới không có trong `connectorMetadataVi` sẽ trả về nguyên văn tiếng Anh | Các connector mới hoặc trường API mới hiển thị tiếng Anh | Bổ sung cơ chế fallback tra cứu tự động qua từ điển chung hoặc cập nhật định kỳ từ điển metadata. |
 
 ---
 
@@ -730,6 +730,7 @@ Thêm namespace `operationalErrors` vào `apps/web/src/i18n/locales/vi.json`:
 Báo cáo này đã phân tích toàn diện và sâu sát tới từng dòng code của các phân hệ cốt lõi trong codebase `owox-data-marts`. Danh mục lỗi và ma trận khắc phục ở trên cung cấp đầy đủ luận cứ kỹ thuật, vị trí chính xác và mã nguồn đề xuất để đội ngũ phát triển tiến hành cải tổ triệt để chất lượng dịch thuật cũng như độ ổn định vận hành của hệ thống webapp.
 
 <!-- GOAL_COMPLETE -->
+
 
 
 
