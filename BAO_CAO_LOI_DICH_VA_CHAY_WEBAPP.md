@@ -114,7 +114,7 @@ flowchart TD
 ## 2. ĐIỀU TRA CHUYÊN SÂU: CÁC ĐIỂM GÃY VẬN HÀNH BACKEND (OPERATIONAL FAILURE MODES)
 
 ### 2.1. Phân hệ Kích hoạt & Điều phối Job (Run Trigger & Concurrency Queue)
-**File mã nguồn:** [`apps/backend/src/data-marts/services/base-run-trigger-handler.service.ts` ](apps/backend/src/data-marts/services/base-run-trigger-handler.service.ts)
+**File mã nguồn:** `apps/backend/src/data-marts/services/base-run-trigger-handler.service.ts` 
 
 Lớp trừu tượng này kiểm soát toàn bộ cơ chế kích hoạt các tiến trình chạy ngầm. Đây là chốt chặn đầu tiên và chứa các điểm gãy nghiêm trọng:
 
@@ -160,8 +160,8 @@ Lớp trừu tượng này kiểm soát toàn bộ cơ chế kích hoạt các t
 
 ### 2.2. Phân hệ Thực thi Báo cáo (Report Run Execution & Lifecycle)
 **File mã nguồn:**  
-- [`apps/backend/src/data-marts/use-cases/run-report.service.ts` ](apps/backend/src/data-marts/use-cases/run-report.service.ts)  
-- [`apps/backend/src/data-marts/models/base-report-run.model.ts` ](apps/backend/src/data-marts/models/base-report-run.model.ts)
+- `apps/backend/src/data-marts/use-cases/run-report.service.ts`   
+- `apps/backend/src/data-marts/models/base-report-run.model.ts` 
 
 #### 1. Khóa Xung đột Chạy Trùng (Already Running Optimistic Lock)
 - **Vị trí:** `run-report.service.ts`, L158–L163
@@ -215,7 +215,7 @@ Lớp trừu tượng này kiểm soát toàn bộ cơ chế kích hoạt các t
 ---
 
 ### 2.3. Phân hệ Biên dịch & Xuất Dữ liệu Google Sheets (Google Sheets Report Writer)
-**File mã nguồn:** [`apps/backend/src/data-marts/data-destination-types/google-sheets/services/google-sheets-report-writer.ts` ](apps/backend/src/data-marts/data-destination-types/google-sheets/services/google-sheets-report-writer.ts)
+**File mã nguồn:** `apps/backend/src/data-marts/data-destination-types/google-sheets/services/google-sheets-report-writer.ts` 
 
 Đây là phân hệ phức tạp nhất và có tần suất xảy ra lỗi vận hành cao nhất do tương tác trực tiếp với API bên ngoài (Google Sheets API v4):
 
@@ -304,8 +304,8 @@ Lớp trừu tượng này kiểm soát toàn bộ cơ chế kích hoạt các t
 
 ### 2.4. Phân hệ Xác thực Google Drive Folder & 12 Mã Ngoại lệ OAuth (OAuth Lifecycle)
 **File mã nguồn:**  
-- [`apps/backend/src/data-marts/data-destination-types/google-sheets/services/google-sheets-folder-validator.service.ts` ](apps/backend/src/data-marts/data-destination-types/google-sheets/services/google-sheets-folder-validator.service.ts)  
-- [`apps/backend/src/data-marts/exceptions/google-oauth.exceptions.ts` ](apps/backend/src/data-marts/exceptions/google-oauth.exceptions.ts)
+- `apps/backend/src/data-marts/data-destination-types/google-sheets/services/google-sheets-folder-validator.service.ts`   
+- `apps/backend/src/data-marts/exceptions/google-oauth.exceptions.ts` 
 
 #### 1. Ràng buộc Kỹ thuật Nghiêm ngặt về Thư mục Google Drive:
 Khi xuất dữ liệu tự động bằng Service Account, hệ thống bắt buộc kiểm tra các điều kiện tiên quyết tại thời điểm Lưu cấu hình (Save time) để tránh fail ngầm khi chạy:
@@ -340,7 +340,7 @@ Hệ thống định nghĩa cây phân cấp ngoại lệ bắt nguồn từ `Go
 ---
 
 ### 2.5. Phân hệ Trích xuất Dữ liệu Connector (Connector Executor Subsystem)
-**File mã nguồn:** [`apps/backend/src/data-marts/services/connector/connector-executor.service.ts` ](apps/backend/src/data-marts/services/connector/connector-executor.service.ts)
+**File mã nguồn:** `apps/backend/src/data-marts/services/connector/connector-executor.service.ts` 
 
 Connector chịu trách nhiệm chạy các container hoặc sub-process để kéo dữ liệu từ Meta Ads, Google Ads, TikTok Ads, Shopee, v.v.
 
@@ -369,7 +369,7 @@ Connector chịu trách nhiệm chạy các container hoặc sub-process để k
 ---
 
 ### 2.6. Phân hệ Quản trị Điều khiển Đầu ra & Truy vấn MCP (Output Controls - 30 Mã lỗi)
-**File mã nguồn:** [`apps/backend/src/ee/mcp/tools/output-controls-error.mapper.ts` ](apps/backend/src/ee/mcp/tools/output-controls-error.mapper.ts)
+**File mã nguồn:** `apps/backend/src/ee/mcp/tools/output-controls-error.mapper.ts` 
 
 Module này biên dịch toàn bộ các lỗi vi phạm cấu trúc truy vấn Data Mart (Bộ lọc, Lát cắt, Phép tổng hợp, Cột tính toán, Khoảng ngày) khi người dùng thao tác trên web hoặc qua MCP AI Agent.
 
@@ -411,7 +411,7 @@ Dưới đây là bảng phân tích toàn diện 30 mã lỗi được định 
 ---
 
 ### 2.7. Phân hệ Khóa Dự án do Bản quyền & Tài chính (Project Blocked Exceptions)
-**File mã nguồn:** [`apps/backend/src/common/exceptions/project-operation-blocked.exception.ts` ](apps/backend/src/common/exceptions/project-operation-blocked.exception.ts)
+**File mã nguồn:** `apps/backend/src/common/exceptions/project-operation-blocked.exception.ts` 
 
 Khi người dùng thực hiện bất kỳ thao tác nào, hệ thống kiểm tra trạng thái thuê bao và hạn mức dự án:
 1. `BI_PROJECT_NOT_ACTIVE` (L15–L18):  
@@ -425,8 +425,8 @@ Khi người dùng thực hiện bất kỳ thao tác nào, hệ thống kiểm 
 
 ### 2.8. Phân hệ Nền tảng Mở rộng Plugin Host & Dynamic Collections
 **File mã nguồn:**  
-- [`apps/backend/src/plugin-host/errors/plugin-host.errors.ts` ](apps/backend/src/plugin-host/errors/plugin-host.errors.ts)  
-- [`apps/backend/src/plugin-host/collections/errors/plugin-collection.errors.ts` ](apps/backend/src/plugin-host/collections/errors/plugin-collection.errors.ts)
+- `apps/backend/src/plugin-host/errors/plugin-host.errors.ts`   
+- `apps/backend/src/plugin-host/collections/errors/plugin-collection.errors.ts` 
 
 Quản lý việc tải và vận hành các plugin mở rộng từ GitHub:
 1. `INVALID_REPO_LOCATOR`: Định dạng repository không đúng (`owner/repo`).
@@ -584,10 +584,10 @@ Hệ thống dịch các trường cấu hình của Connector (Facebook Ads, Go
 ### 3.6. Tàn dư Nhãn hiệu Cũ "OWOX" trong Codebase
 
 1. **Backend Google Drive Folder Validator:**  
-   [`apps/backend/src/data-marts/data-destination-types/google-sheets/services/google-sheets-folder-validator.service.ts` ](apps/backend/src/data-marts/data-destination-types/google-sheets/services/google-sheets-folder-validator.service.ts), Dòng 95:  
+   `apps/backend/src/data-marts/data-destination-types/google-sheets/services/google-sheets-folder-validator.service.ts` , Dòng 95:  
    `"...so OWOX cannot place documents in a Drive folder..."`
 2. **Backend Output Controls Error Mapper:**  
-   [`apps/backend/src/ee/mcp/tools/output-controls-error.mapper.ts` ](apps/backend/src/ee/mcp/tools/output-controls-error.mapper.ts):  
+   `apps/backend/src/ee/mcp/tools/output-controls-error.mapper.ts` :  
    - Dòng 194: `"...tell the user to open the Data Mart's Output Schema in OWOX and fix the formula."`  
    - Dòng 267: `"...tell the user to open the report in OWOX and clear that source..."`  
    - Dòng 353: `"It was created in the OWOX UI and cannot be expressed over MCP."`
@@ -604,19 +604,19 @@ Bảng tổng hợp chi tiết dưới đây liệt kê đầy đủ từng vị
 
 | STT | Phân Hệ & Đường Dẫn File | Dòng Code | Phân Loại | Thực Trạng Kỹ Thuật Hiện Tại | Hậu Quả Vận Hành & Trải Nghiệm | Phương Án Kỹ Thuật Khắc Phục (Remediation) |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| **1** | [base-run-trigger-handler.service.ts ](apps/backend/src/data-marts/services/base-run-trigger-handler.service.ts) | 80 | Vận hành (Concurrency) | Ghi chuỗi lỗi tiếng Anh cố định 147 ký tự vào `run.errors` khi vượt quota job đồng thời | Job bị FAILED ngay, người dùng thấy câu thông báo tiếng Anh dài dòng không dịch được | Lưu mã lỗi có cấu trúc `{ code: 'CONCURRENCY_LIMIT_REACHED', max: limit }`, frontend dùng i18n để render tiếng Việt kèm gợi ý chờ lượt chạy trước. |
-| **2** | [base-run-trigger-handler.service.ts ](apps/backend/src/data-marts/services/base-run-trigger-handler.service.ts) | 71 | Vận hành (Archive Lock) | Ghi chuỗi tiếng Anh cố định: `'Project is archived and read-only...'` | Cron job thất bại trong im lặng, log hiển thị tiếng Anh thô | Trả về `{ code: 'PROJECT_ARCHIVED_READ_ONLY' }` và cập nhật trigger trạng thái INACTIVE để dừng bắn lịch trình thừa. |
-| **3** | [run-report.service.ts ](apps/backend/src/data-marts/use-cases/run-report.service.ts) | 160 | Vận hành (Lock Conflict) | Báo cáo đang chạy thì yêu cầu mới bị bỏ qua hoặc ném `AlreadyRunning` | Người dùng tưởng hệ thống đơ do bấm không thấy phản hồi | Hiển thị toast thông báo tiếng Việt: "Báo cáo này hiện đang trong tiến trình xử lý, vui lòng không kích hoạt lại". |
-| **4** | [base-report-run.model.ts ](apps/backend/src/data-marts/models/base-report-run.model.ts) | 112–119 | Kiến trúc Lưu trữ Lỗi | Serialize lỗi thành chuỗi JSON `{ type, at, error }` lưu vào cột text DB | Lỗi bị đóng băng dạng tiếng Anh cố định, không thể đa ngôn ngữ hóa ở client | Bổ sung trường `errorCode` và `errorParams` vào schema của `DataMartRun` và `Report.lastRunError`. |
-| **5** | [google-sheets-report-writer.ts ](apps/backend/src/data-marts/data-destination-types/google-sheets/services/google-sheets-report-writer.ts) | 156 | Vận hành (Report Pre-flight) | Ném ngoại lệ khi Data Mart không có trường kết nối (`length === 0`) | Chạy báo cáo bị văng lỗi ngay bước đầu | Thêm validation cảnh báo ngay trên form chỉnh sửa Report: "Data Mart chưa có cột dữ liệu nào được kích hoạt". |
-| **6** | [google-sheets-report-writer.ts ](apps/backend/src/data-marts/data-destination-types/google-sheets/services/google-sheets-report-writer.ts) | 168 | Vận hành (SQL Collision) | Ném ngoại lệ khi 2 bảng JOIN trùng tên cột SQL | Tiến trình xuất dữ liệu sập, báo lỗi `Duplicate column names in SQL output` | Thêm tính năng tự động gán tiền tố alias (Auto-aliasing) khi phát hiện trùng tên cột giữa các bảng joined. |
-| **7** | [google-sheets-report-writer.ts ](apps/backend/src/data-marts/data-destination-types/google-sheets/services/google-sheets-report-writer.ts) | 184 | Vận hành (Header Collision) | Ném ngoại lệ khi 2 cột có cùng Display Label khi ghi lên Sheet | Lỗi `Duplicate column headers in report output`, layout Sheet bị hỏng | Kiểm tra trùng lặp Display Label ngay khi người dùng chỉnh sửa cột trên UI, tự động thêm hậu tố `(1)`, `(2)`. |
-| **8** | [google-sheets-report-writer.ts ](apps/backend/src/data-marts/data-destination-types/google-sheets/services/google-sheets-report-writer.ts) | 660 | Vận hành (Auth Missing) | Không có OAuth hoặc Service Account hợp lệ | Báo cáo thất bại do không kết nối được Google API | Kiểm tra trạng thái Credential trước khi kích hoạt; nếu hết hạn, hiển thị nút "Kết nối lại Google". |
-| **9** | [google-sheets-folder-validator.service.ts ](apps/backend/src/data-marts/data-destination-types/google-sheets/services/google-sheets-folder-validator.service.ts) | 66, 72 | Vận hành (Google Drive) | Service Account không hỗ trợ My Drive; thiếu quyền Content Manager | Lưu điểm đích thất bại hoặc không tạo được file Sheet | Thêm hướng dẫn trực quan ngay dưới ô nhập Folder ID: yêu cầu dùng Shared Drive và cấp quyền Content Manager cho SA email. |
-| **10** | [google-sheets-folder-validator.service.ts ](apps/backend/src/data-marts/data-destination-types/google-sheets/services/google-sheets-folder-validator.service.ts) | 95 | Tàn dư Thương hiệu Cũ | Chứa chuỗi `"...so OWOX cannot place documents..."` | Nhầm lẫn thương hiệu cũ trên thông báo hệ thống | Sửa chuỗi thành: `"...so P2PDigital cannot place documents in a Drive folder..."`. |
-| **11** | [google-oauth.exceptions.ts ](apps/backend/src/data-marts/exceptions/google-oauth.exceptions.ts) | 38–194 | Vận hành (OAuth Lifecycle) | 12 lớp ngoại lệ OAuth đều trả về thông điệp tiếng Anh kỹ thuật | Người dùng gặp lỗi OAuth không hiểu cách cấp lại quyền | Xây dựng bộ Error Code Handler tại Frontend để chuyển 12 mã thành hướng dẫn tiếng Việt kèm nút Re-authenticate. |
-| **12** | [connector-executor.service.ts ](apps/backend/src/data-marts/services/connector/connector-executor.service.ts) | 512, 862 | Vận hành (Connector Run) | Tiến trình con văng lỗi không rõ nguyên nhân, gán FAILED | Người dùng không biết nguồn dữ liệu (Meta/Google) bị từ chối ở điểm nào | Bắt và ghi nhận 20 dòng `stderr` cuối cùng của tiến trình con vào bảng log để hiển thị trực tiếp. |
-| **13** | [output-controls-error.mapper.ts ](apps/backend/src/ee/mcp/tools/output-controls-error.mapper.ts) | 194, 267, 353 | Tàn dư Thương hiệu Cũ | 3 câu hướng dẫn chứa từ khóa `"in OWOX"`, `"OWOX UI"` | Người dùng và AI Agent bị nhầm lẫn tài liệu/giao diện OWOX | Thay thế `"OWOX"` bằng `"P2PDigital Data Marts"`. |
+| **1** | base-run-trigger-handler.service.ts  | 80 | Vận hành (Concurrency) | Ghi chuỗi lỗi tiếng Anh cố định 147 ký tự vào `run.errors` khi vượt quota job đồng thời | Job bị FAILED ngay, người dùng thấy câu thông báo tiếng Anh dài dòng không dịch được | Lưu mã lỗi có cấu trúc `{ code: 'CONCURRENCY_LIMIT_REACHED', max: limit }`, frontend dùng i18n để render tiếng Việt kèm gợi ý chờ lượt chạy trước. |
+| **2** | base-run-trigger-handler.service.ts  | 71 | Vận hành (Archive Lock) | Ghi chuỗi tiếng Anh cố định: `'Project is archived and read-only...'` | Cron job thất bại trong im lặng, log hiển thị tiếng Anh thô | Trả về `{ code: 'PROJECT_ARCHIVED_READ_ONLY' }` và cập nhật trigger trạng thái INACTIVE để dừng bắn lịch trình thừa. |
+| **3** | run-report.service.ts  | 160 | Vận hành (Lock Conflict) | Báo cáo đang chạy thì yêu cầu mới bị bỏ qua hoặc ném `AlreadyRunning` | Người dùng tưởng hệ thống đơ do bấm không thấy phản hồi | Hiển thị toast thông báo tiếng Việt: "Báo cáo này hiện đang trong tiến trình xử lý, vui lòng không kích hoạt lại". |
+| **4** | base-report-run.model.ts  | 112–119 | Kiến trúc Lưu trữ Lỗi | Serialize lỗi thành chuỗi JSON `{ type, at, error }` lưu vào cột text DB | Lỗi bị đóng băng dạng tiếng Anh cố định, không thể đa ngôn ngữ hóa ở client | Bổ sung trường `errorCode` và `errorParams` vào schema của `DataMartRun` và `Report.lastRunError`. |
+| **5** | google-sheets-report-writer.ts  | 156 | Vận hành (Report Pre-flight) | Ném ngoại lệ khi Data Mart không có trường kết nối (`length === 0`) | Chạy báo cáo bị văng lỗi ngay bước đầu | Thêm validation cảnh báo ngay trên form chỉnh sửa Report: "Data Mart chưa có cột dữ liệu nào được kích hoạt". |
+| **6** | google-sheets-report-writer.ts  | 168 | Vận hành (SQL Collision) | Ném ngoại lệ khi 2 bảng JOIN trùng tên cột SQL | Tiến trình xuất dữ liệu sập, báo lỗi `Duplicate column names in SQL output` | Thêm tính năng tự động gán tiền tố alias (Auto-aliasing) khi phát hiện trùng tên cột giữa các bảng joined. |
+| **7** | google-sheets-report-writer.ts  | 184 | Vận hành (Header Collision) | Ném ngoại lệ khi 2 cột có cùng Display Label khi ghi lên Sheet | Lỗi `Duplicate column headers in report output`, layout Sheet bị hỏng | Kiểm tra trùng lặp Display Label ngay khi người dùng chỉnh sửa cột trên UI, tự động thêm hậu tố `(1)`, `(2)`. |
+| **8** | google-sheets-report-writer.ts  | 660 | Vận hành (Auth Missing) | Không có OAuth hoặc Service Account hợp lệ | Báo cáo thất bại do không kết nối được Google API | Kiểm tra trạng thái Credential trước khi kích hoạt; nếu hết hạn, hiển thị nút "Kết nối lại Google". |
+| **9** | google-sheets-folder-validator.service.ts  | 66, 72 | Vận hành (Google Drive) | Service Account không hỗ trợ My Drive; thiếu quyền Content Manager | Lưu điểm đích thất bại hoặc không tạo được file Sheet | Thêm hướng dẫn trực quan ngay dưới ô nhập Folder ID: yêu cầu dùng Shared Drive và cấp quyền Content Manager cho SA email. |
+| **10** | google-sheets-folder-validator.service.ts  | 95 | Tàn dư Thương hiệu Cũ | Chứa chuỗi `"...so OWOX cannot place documents..."` | Nhầm lẫn thương hiệu cũ trên thông báo hệ thống | Sửa chuỗi thành: `"...so P2PDigital cannot place documents in a Drive folder..."`. |
+| **11** | google-oauth.exceptions.ts  | 38–194 | Vận hành (OAuth Lifecycle) | 12 lớp ngoại lệ OAuth đều trả về thông điệp tiếng Anh kỹ thuật | Người dùng gặp lỗi OAuth không hiểu cách cấp lại quyền | Xây dựng bộ Error Code Handler tại Frontend để chuyển 12 mã thành hướng dẫn tiếng Việt kèm nút Re-authenticate. |
+| **12** | connector-executor.service.ts  | 512, 862 | Vận hành (Connector Run) | Tiến trình con văng lỗi không rõ nguyên nhân, gán FAILED | Người dùng không biết nguồn dữ liệu (Meta/Google) bị từ chối ở điểm nào | Bắt và ghi nhận 20 dòng `stderr` cuối cùng của tiến trình con vào bảng log để hiển thị trực tiếp. |
+| **13** | output-controls-error.mapper.ts  | 194, 267, 353 | Tàn dư Thương hiệu Cũ | 3 câu hướng dẫn chứa từ khóa `"in OWOX"`, `"OWOX UI"` | Người dùng và AI Agent bị nhầm lẫn tài liệu/giao diện OWOX | Thay thế `"OWOX"` bằng `"P2PDigital Data Marts"`. |
 | **14** | [StatusIcon.tsx ](apps/web/src/features/data-marts/reports/list/components/StatusIcon/StatusIcon.tsx) | 83, 89–91 | Dịch thuật (Mixed UI) | Đổ trực tiếp chuỗi tiếng Anh `errorMessage` vào Tooltip và aria-label | Giao diện tiếng Việt nhưng tooltip báo lỗi hiển thị 100% tiếng Anh | Bổ sung hàm mapper dịch các mã lỗi phổ biến của Report sang tiếng Việt trước khi render vào Tooltip. |
 | **15** | [showApiErrorToast.ts ](apps/web/src/shared/utils/showApiErrorToast.ts) | 15–18, 50, 60 | Dịch thuật & Hardcoded | `humanizeValidationCode` tự tạo câu tiếng Anh, hardcoded `(+N more)`, `Something went wrong` | Toast thông báo lỗi hệ thống hiển thị tiếng Anh lai tạp | Tích hợp từ điển đa ngôn ngữ i18n cho mã kiểm tra hợp lệ và thay thế các chuỗi tĩnh bằng `t(...)`. |
 | **16** | [file-drop-textarea.tsx ](packages/ui/src/components/file-drop-textarea.tsx) | 43, 53, 81, 87, 99 | Hardcoded UI | 6 câu cảnh báo khi kéo thả file Service Account viết cứng tiếng Anh | Khi kéo file JSON sai, toast thông báo hoàn toàn bằng tiếng Anh | Chuyển các thông báo lỗi vào prop callback hoặc sử dụng bản dịch tiếng Việt chuẩn. |
@@ -644,7 +644,7 @@ export interface StandardErrorPayload {
 }
 ```
 
-Khi ghi nhận lỗi trong [`BaseReportRun.markAsUnsuccessful` ](apps/backend/src/data-marts/models/base-report-run.model.ts), lưu trữ có cấu trúc:
+Khi ghi nhận lỗi trong `BaseReportRun.markAsUnsuccessful` , lưu trữ có cấu trúc:
 ```typescript
 const errorPayload: StandardErrorPayload = {
   code: error instanceof BusinessViolationException ? error.code : 'UNKNOWN_EXECUTION_ERROR',
@@ -730,5 +730,6 @@ Thêm namespace `operationalErrors` vào `apps/web/src/i18n/locales/vi.json`:
 Báo cáo này đã phân tích toàn diện và sâu sát tới từng dòng code của các phân hệ cốt lõi trong codebase `owox-data-marts`. Danh mục lỗi và ma trận khắc phục ở trên cung cấp đầy đủ luận cứ kỹ thuật, vị trí chính xác và mã nguồn đề xuất để đội ngũ phát triển tiến hành cải tổ triệt để chất lượng dịch thuật cũng như độ ổn định vận hành của hệ thống webapp.
 
 <!-- GOAL_COMPLETE -->
+
 
 
