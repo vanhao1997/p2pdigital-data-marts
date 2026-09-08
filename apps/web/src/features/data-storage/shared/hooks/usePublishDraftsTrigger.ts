@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { toast } from 'sonner';
+import i18n from '../../../../i18n';
 import { TaskStatus } from '../../../../shared/types/task-status.enum.ts';
 import { buildPublishFailureMessage } from '../utils/buildPublishFailureMessage.ts';
 import { dataStorageApiService } from '../api';
@@ -23,6 +24,16 @@ const POLLING_INTERVAL = 1000;
 function extractServerReportedError(e: unknown): string | null {
   const data = (e as { response?: { data?: { error?: unknown } } } | null)?.response?.data;
   return typeof data?.error === 'string' && data.error.length > 0 ? data.error : null;
+}
+
+function isCancellationError(error: unknown): boolean {
+  if (!error || typeof error !== 'object') return false;
+  const candidate = error as { code?: unknown; name?: unknown };
+  return (
+    candidate.code === 'ERR_CANCELED' ||
+    candidate.name === 'AbortError' ||
+    candidate.name === 'CanceledError'
+  );
 }
 
 export function usePublishDraftsTrigger(onSuccess?: () => void): UsePublishDraftsTriggerReturn {
@@ -49,7 +60,7 @@ export function usePublishDraftsTrigger(onSuccess?: () => void): UsePublishDraft
     (e: unknown, triggerId: string) => {
       const errorMessage =
         extractServerReportedError(e) ??
-        (e instanceof Error ? e.message : 'Failed to publish Data Mart drafts');
+        (e instanceof Error ? e.message : i18n.t('uiFeedback.draftsPublishFailed'));
       toast.dismiss(triggerId);
       setSafeError(errorMessage);
       setSafeLoading(false);
@@ -93,14 +104,16 @@ export function usePublishDraftsTrigger(onSuccess?: () => void): UsePublishDraft
         try {
           const status = await dataStorageApiService.getPublishDraftsTriggerStatus(
             dataStorageId,
-            triggerId
+            triggerId,
+            { signal }
           );
 
           if (isFinal(status)) {
             try {
               const response = await dataStorageApiService.getPublishDraftsTriggerResponse(
                 dataStorageId,
-                triggerId
+                triggerId,
+                { signal }
               );
 
               toast.dismiss(triggerId);
@@ -111,7 +124,7 @@ export function usePublishDraftsTrigger(onSuccess?: () => void): UsePublishDraft
               } else {
                 if (response.successCount > 0) {
                   toast.success(
-                    `Published ${String(response.successCount)} Data Mart draft${response.successCount !== 1 ? 's' : ''}`,
+                    i18n.t('uiFeedback.draftsPublished', { count: response.successCount }),
                     { duration: 10000, id: `${triggerId}-success` }
                   );
                 }
@@ -124,7 +137,7 @@ export function usePublishDraftsTrigger(onSuccess?: () => void): UsePublishDraft
                 }
 
                 if (response.successCount === 0 && response.failedCount === 0) {
-                  toast.success('No Data Mart drafts to publish', {
+                  toast.success(i18n.t('uiFeedback.noDraftsToPublish'), {
                     duration: 5000,
                     id: triggerId,
                   });
@@ -133,7 +146,9 @@ export function usePublishDraftsTrigger(onSuccess?: () => void): UsePublishDraft
                 onSuccessRef.current?.();
               }
             } catch (e) {
-              handleError(e, triggerId);
+              if (!isCancellationError(e)) {
+                handleError(e, triggerId);
+              }
             }
 
             setSafeLoading(false);
@@ -143,9 +158,26 @@ export function usePublishDraftsTrigger(onSuccess?: () => void): UsePublishDraft
             return;
           }
 
-          await new Promise(resolve => setTimeout(resolve, POLLING_INTERVAL));
+          await new Promise<void>(resolve => {
+            if (signal.aborted) {
+              resolve();
+              return;
+            }
+
+            const finish = () => {
+              clearTimeout(timeoutId);
+              signal.removeEventListener('abort', finish);
+              resolve();
+            };
+            const timeoutId = setTimeout(finish, POLLING_INTERVAL);
+            signal.addEventListener('abort', finish, { once: true });
+          });
         } catch (e) {
+          if (isCancellationError(e)) {
+            return;
+          }
           handleError(e, triggerId);
+          return;
         }
       }
     },
@@ -162,7 +194,7 @@ export function usePublishDraftsTrigger(onSuccess?: () => void): UsePublishDraft
       try {
         const { triggerId } = await dataStorageApiService.createPublishDraftsTrigger(dataStorageId);
 
-        toast.loading('Publishing Data Mart drafts. This may take a while.', {
+        toast.loading(i18n.t('uiFeedback.draftsPublishStarted'), {
           duration: Infinity,
           id: triggerId,
         });
@@ -175,12 +207,14 @@ export function usePublishDraftsTrigger(onSuccess?: () => void): UsePublishDraft
         try {
           await pollTriggerStatus(dataStorageId, triggerId, abortController.signal);
         } catch (e) {
-          handleError(e, triggerId);
+          if (!isCancellationError(e)) {
+            handleError(e, triggerId);
+          }
         }
       } catch (e) {
         setSafeLoading(false);
         setSafeError(
-          e instanceof Error ? e.message : 'Failed to start publishing Data Mart drafts'
+          e instanceof Error ? e.message : i18n.t('uiFeedback.draftsPublishStartFailed')
         );
       }
     },

@@ -117,8 +117,16 @@ export function FillFromStorageButton({
         onClick={() => {
           setOpen(true);
         }}
-        title={hasValue ? t('storageResourcePicker.changeSelection') : t('storageResourcePicker.selectFromStorage')}
-        aria-label={hasValue ? t('storageResourcePicker.changeSelection') : t('storageResourcePicker.selectFromStorage')}
+        title={
+          hasValue
+            ? t('storageResourcePicker.changeSelection')
+            : t('storageResourcePicker.selectFromStorage')
+        }
+        aria-label={
+          hasValue
+            ? t('storageResourcePicker.changeSelection')
+            : t('storageResourcePicker.selectFromStorage')
+        }
       >
         <Database />
         {!hasValue && <span className='text-xs'>{t('common.select')}</span>}
@@ -126,7 +134,9 @@ export function FillFromStorageButton({
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent className='flex max-h-[90vh] flex-col gap-0 p-0 sm:max-w-4xl'>
           <DialogHeader className='px-6 pt-6 pb-6'>
-            <DialogTitle>{t('storageResourcePicker.title', { resource: resourceLabel })}</DialogTitle>
+            <DialogTitle>
+              {t('storageResourcePicker.title', { resource: resourceLabel })}
+            </DialogTitle>
             <DialogDescription>
               {t('storageResourcePicker.description', { resources: resourceLabelPlural })}
             </DialogDescription>

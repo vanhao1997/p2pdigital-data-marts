@@ -9,7 +9,12 @@ export function TimeTriggerAnnouncement() {
         <CalendarClock className='h-5 w-5 shrink-0' aria-hidden='true' />
         <div>
           <p className='font-medium'>{t('timeTriggerAnnouncement.title', 'Time Triggers')}</p>
-          <p className='text-muted-foreground'>{t('timeTriggerAnnouncement.description', 'Set up automatic runs in the Triggers tab once you’ve saved and published this Data Mart.')}</p>
+          <p className='text-muted-foreground'>
+            {t(
+              'timeTriggerAnnouncement.description',
+              'Set up automatic runs in the Triggers tab once you’ve saved and published this Data Mart.'
+            )}
+          </p>
         </div>
       </div>
     </div>

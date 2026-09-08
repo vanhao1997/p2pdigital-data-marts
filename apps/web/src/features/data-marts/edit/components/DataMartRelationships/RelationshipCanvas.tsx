@@ -28,6 +28,7 @@ import {
   type Viewport,
 } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
+import { useTranslation } from 'react-i18next';
 import { Button } from '../../../../../shared/components/Button';
 import { useProjectRoute } from '../../../../../shared/hooks';
 import {
@@ -186,13 +187,23 @@ type RelationshipFlowEdgeType = Edge<
  * floating element (not inside the card) so both card variants share it and the
  * accessible warning text stays independent of the card layout.
  */
-function IndicatorLabel({ data }: { data: RelationshipNodeData }) {
-  const indicator = getRelationshipIndicator(data);
+function IndicatorLabel({
+  data,
+  translate,
+}: {
+  data: RelationshipNodeData;
+  translate: (key: string, fallback: string) => string;
+}) {
+  const indicator = getRelationshipIndicator(data, translate);
   if (!indicator) return null;
   const isAttention = indicator.kind === 'attention';
   return (
     <span
-      title={isAttention ? MISSING_PRIMARY_KEY_TOOLTIP : undefined}
+      title={
+        isAttention
+          ? translate(MISSING_PRIMARY_KEY_TOOLTIP, MISSING_PRIMARY_KEY_TOOLTIP)
+          : undefined
+      }
       style={{
         position: 'absolute',
         top: -18,
@@ -244,6 +255,7 @@ function cardStateStyle(data: RelationshipNodeData, selected: boolean): React.CS
 }
 
 export function RelationshipFlowNode({ id, data, selected }: NodeProps<RelationshipFlowNodeType>) {
+  const { t } = useTranslation();
   // Owned here (not in the section) so expansion survives Compact↔Detailed
   // round-trips — the node stays mounted while the section unmounts.
   const [expanded, setExpanded] = useState(false);
@@ -279,7 +291,7 @@ export function RelationshipFlowNode({ id, data, selected }: NodeProps<Relations
         className='bg-primary/5 relative flex items-center gap-2 rounded-xl border shadow-sm'
         style={{ ...cardStateStyle(data, selected), height: SRC_H, padding: '0 14px' }}
       >
-        <IndicatorLabel data={data} />
+        <IndicatorLabel data={data} translate={t} />
         {withSource && (
           <span
             className='h-4 w-1 shrink-0 rounded-sm'
@@ -306,7 +318,9 @@ export function RelationshipFlowNode({ id, data, selected }: NodeProps<Relations
     );
   }
 
-  const openExternalLabel = `Open ${data.label} in new tab`;
+  const openExternalLabel = t('dataMartRelationships.openDataMartInNewTab', {
+    label: data.label,
+  });
   const showFieldRows = data.viewMode === 'erd' && data.fields.length > 0;
 
   return (
@@ -315,7 +329,7 @@ export function RelationshipFlowNode({ id, data, selected }: NodeProps<Relations
       className='bg-background relative flex flex-col rounded-xl border shadow-sm'
       style={cardStateStyle(data, selected)}
     >
-      <IndicatorLabel data={data} />
+      <IndicatorLabel data={data} translate={t} />
       <Handle type='target' position={targetPosition} isConnectable={false} style={SOCKET_STYLE} />
 
       {/* Header: accent stripe + title + status + actions — mirrors the Models canvas ERD card */}
@@ -341,7 +355,7 @@ export function RelationshipFlowNode({ id, data, selected }: NodeProps<Relations
               <button
                 type='button'
                 className='text-muted-foreground hover:text-foreground inline-flex cursor-default rounded p-0.5 transition-colors'
-                aria-label={`Description for ${data.label}`}
+                aria-label={t('dataMartRelationships.descriptionFor', { label: data.label })}
                 onPointerDown={event => {
                   event.stopPropagation();
                 }}
@@ -382,7 +396,10 @@ export function RelationshipFlowNode({ id, data, selected }: NodeProps<Relations
         )}
         {withFieldCount && (
           <span className='text-muted-foreground ml-auto shrink-0 text-[11px]'>
-            {data.fieldCount ?? 0} field{data.fieldCount !== 1 ? 's' : ''}
+            {data.fieldCount ?? 0}{' '}
+            {t(
+              data.fieldCount === 1 ? 'dataMartRelationships.field' : 'dataMartRelationships.fields'
+            )}
           </span>
         )}
       </div>
@@ -831,6 +848,7 @@ function RelationshipCanvasInner({
   onObjectLabelsChange,
   fieldsByAliasPath,
 }: RelationshipCanvasInnerProps) {
+  const { t } = useTranslation();
   const reactFlow = useReactFlow<RelationshipFlowNodeType, RelationshipFlowEdgeType>();
   const paneWidth = useStore(s => s.width);
   const paneHeight = useStore(s => s.height);
@@ -1068,7 +1086,7 @@ function RelationshipCanvasInner({
               markUserInteracted();
               void fitFull();
             }}
-            aria-label='Fit to view'
+            aria-label={t('canvasSettings.fitToView')}
           >
             <Locate className='h-6 w-6' />
           </Button>
@@ -1079,7 +1097,7 @@ function RelationshipCanvasInner({
             onClick={() => {
               handleZoom(0.25);
             }}
-            aria-label='Zoom in'
+            aria-label={t('canvasSettings.zoomIn')}
           >
             <ZoomIn className='h-6 w-6' />
           </Button>
@@ -1090,7 +1108,7 @@ function RelationshipCanvasInner({
             onClick={() => {
               handleZoom(-0.25);
             }}
-            aria-label='Zoom out'
+            aria-label={t('canvasSettings.zoomOut')}
           >
             <ZoomOut className='h-6 w-6' />
           </Button>
@@ -1100,7 +1118,7 @@ function RelationshipCanvasInner({
               size='icon'
               className='h-12 w-12'
               onClick={onRequestFullscreen}
-              aria-label='Expand diagram'
+              aria-label={t('canvasSettings.expandDiagram')}
             >
               <Maximize2 className='h-6 w-6' />
             </Button>
@@ -1161,7 +1179,7 @@ function RelationshipCanvasInner({
         {graphResult.nodes.length === 1 && graphResult.filteredOutCount > 0 && (
           <div className='pointer-events-none absolute inset-x-0 bottom-6 flex justify-center'>
             <span className='bg-background text-muted-foreground rounded-md border px-3 py-1.5 text-sm shadow-sm'>
-              No related data marts match the current filters
+              {t('dataMartRelationships.noRelatedDataMartsForFilters')}
             </span>
           </div>
         )}

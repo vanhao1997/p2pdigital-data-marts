@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react';
 import { FormLabel, FormSection } from '@owox/ui/components/form';
 import { ExternalLink } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 const API_KEYS_DOCS_URL = 'https://docs.p2pdigital.io.vn/docs/api/api-keys/';
 const OWOX_CTL_DOCS_URL = 'https://docs.p2pdigital.io.vn/docs/api/owox-ctl/';
@@ -53,17 +54,24 @@ function DocumentationLink({ href, title, description, code = false }: Documenta
 }
 
 export function ApiKeyDocumentationSection({ name }: { name: string }) {
+  const { t } = useTranslation();
+
   return (
-    <FormSection title='Documentation' name={name} defaultOpen={false}>
-      <DocumentationLink href={API_KEYS_DOCS_URL} title='API Keys' />
-      <DocumentationLink href={OWOX_CTL_DOCS_URL} title='owox-ctl' description='CLI tool' code />
+    <FormSection title={t('apiKeysPage.documentation.title')} name={name} defaultOpen={false}>
+      <DocumentationLink href={API_KEYS_DOCS_URL} title={t('apiKeysPage.documentation.apiKeys')} />
+      <DocumentationLink
+        href={OWOX_CTL_DOCS_URL}
+        title='owox-ctl'
+        description={t('apiKeysPage.documentation.cliTool')}
+        code
+      />
       <DocumentationLink
         href={API_CLIENT_DOCS_URL}
         title='@owox/api-client'
-        description='TypeScript/JavaScript API Client'
+        description={t('apiKeysPage.documentation.apiClient')}
         code
       />
-      <DocumentationLink href={OPENAPI_DOCS_URL} title='OpenAPI and Swagger UI' />
+      <DocumentationLink href={OPENAPI_DOCS_URL} title={t('apiKeysPage.documentation.openapi')} />
     </FormSection>
   );
 }

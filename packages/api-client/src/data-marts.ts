@@ -326,9 +326,12 @@ export class DataMartsApi {
     while (true) {
       const offsetKey = String(offset ?? 0);
       if (requestedOffsets.has(offsetKey)) {
-        throw new OWOXApiError(`P2PDigital Data Marts API returned repeated nextOffset ${offsetKey}`, {
-          details: { offset },
-        });
+        throw new OWOXApiError(
+          `P2PDigital Data Marts API returned repeated nextOffset ${offsetKey}`,
+          {
+            details: { offset },
+          }
+        );
       }
 
       requestedOffsets.add(offsetKey);

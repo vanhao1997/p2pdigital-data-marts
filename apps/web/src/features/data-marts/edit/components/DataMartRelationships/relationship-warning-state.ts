@@ -1,8 +1,8 @@
-export const CYCLE_STUB_TOOLTIP =
-  'This data mart is already joined earlier in this branch — stopping here to avoid a loop.';
+export const CYCLE_STUB_TOOLTIP = 'dataMartRelationships.cycleStubTooltip';
 
-export const MISSING_PRIMARY_KEY_TOOLTIP =
-  'This data mart has no primary key, so the join cannot deduplicate rows reliably — metrics from it can be double-counted (fan-out).';
+export const MISSING_PRIMARY_KEY_TOOLTIP = 'dataMartRelationships.missingPrimaryKeyTooltip';
+
+type RelationshipTranslator = (key: string, fallback: string) => string;
 
 interface RelationshipWarningFlags {
   isCycleStub?: boolean;
@@ -25,13 +25,26 @@ export interface RelationshipIndicator {
 }
 
 export function getRelationshipIndicator(
-  flags: RelationshipWarningFlags
+  flags: RelationshipWarningFlags,
+  translate?: RelationshipTranslator
 ): RelationshipIndicator | null {
-  if (flags.isCycleStub) return { label: 'Loop', kind: 'warning' };
-  if (flags.isDraft) return { label: 'Draft', kind: 'warning' };
-  if (flags.isJoinNotConfigured) return { label: 'Join not configured', kind: 'warning' };
-  if (flags.isBlocked) return { label: 'Blocked', kind: 'warning' };
-  if (flags.isMissingPrimaryKey) return { label: 'No primary key', kind: 'attention' };
+  const label = (key: string, fallback: string) => translate?.(key, fallback) ?? fallback;
+  if (flags.isCycleStub)
+    return { label: label('dataMartRelationships.loop', 'Loop'), kind: 'warning' };
+  if (flags.isDraft)
+    return { label: label('dataMartRelationships.draft', 'Draft'), kind: 'warning' };
+  if (flags.isJoinNotConfigured)
+    return {
+      label: label('dataMartRelationships.joinNotConfigured', 'Join not configured'),
+      kind: 'warning',
+    };
+  if (flags.isBlocked)
+    return { label: label('dataMartRelationships.blocked', 'Blocked'), kind: 'warning' };
+  if (flags.isMissingPrimaryKey)
+    return {
+      label: label('dataMartRelationships.noPrimaryKey', 'No primary key'),
+      kind: 'attention',
+    };
   return null;
 }
 

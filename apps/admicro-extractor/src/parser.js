@@ -107,12 +107,22 @@ export function parseDataview(dataview, reportType) {
     const width = Math.max(...normalized.map(row => row.length));
     const headers = Array.from({ length: width }, (_, index) => `Column ${index + 1}`);
     const rows = normalized.map(row => headers.map((_, index) => printable(row[index])));
-    return { headers, rows: removeTotalRows(headers, rows) };
+    return { headers, rows: uniqueRows(removeTotalRows(headers, rows)) };
   }
   const objectRows = normalized.map(row => (isObject(row) ? row : { value: row }));
   const headers = [...new Set(objectRows.flatMap(row => Object.keys(row)))];
   const rows = objectRows.map(row => headers.map(header => printable(row[header])));
-  return { headers, rows: removeTotalRows(headers, rows) };
+  return { headers, rows: uniqueRows(removeTotalRows(headers, rows)) };
+}
+
+function uniqueRows(rows) {
+  const seen = new Set();
+  return rows.filter(row => {
+    const key = JSON.stringify(row);
+    if (seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
 }
 
 export function normalizeCell(value, { identifier = false, decimal = false } = {}) {

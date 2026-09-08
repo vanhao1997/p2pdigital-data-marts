@@ -1,5 +1,6 @@
 import { Button } from '@owox/ui/components/button';
 import { useOAuthPopup } from '../../hooks/useOAuthPopup';
+import { useTranslation } from 'react-i18next';
 
 interface GoogleAdsLoginButtonProps {
   clientId: string;
@@ -66,6 +67,7 @@ export function GoogleAdsLoginButton({
   disabled = false,
   children,
 }: GoogleAdsLoginButtonProps) {
+  const { t } = useTranslation();
   const { openPopup, isLoading, error } = useOAuthPopup<
     GoogleAdsLoginResponse,
     GoogleAdsAuthMessage
@@ -111,15 +113,15 @@ export function GoogleAdsLoginButton({
 
   const getButtonContent = () => {
     if (isLoading) {
-      return 'Connecting...';
+      return t('connectorWizard.oauth.connecting');
     }
     if (children) {
       return children;
     }
     if (!clientId || !redirectUri) {
-      return 'OAuth not configured';
+      return t('connectorWizard.oauth.notConfigured');
     }
-    return 'Sign in with Google';
+    return t('connectorWizard.oauth.signInWithGoogle');
   };
 
   return (

@@ -151,7 +151,9 @@ export function InsightSourcesPanel({
       {(sources.length > 0 || isLoading) && (
         <div className='flex items-center justify-between px-3 pt-3 pb-2'>
           <h3 className='text-sm font-medium'>
-            {t('insightsUi.artifactsCount', 'Data Artifacts ({{count}}/5)', { count: sources.length })}
+            {t('insightsUi.artifactsCount', 'Data Artifacts ({{count}}/5)', {
+              count: sources.length,
+            })}
           </h3>
           <Tooltip>
             <TooltipTrigger asChild>
@@ -169,7 +171,7 @@ export function InsightSourcesPanel({
             </TooltipTrigger>
             {isLimitReached && (
               <TooltipContent>
-                Maximum limit of {MAX_ARTIFACTS} data artifacts reached
+                {t('insightsUi.maxArtifactsReached', { count: MAX_ARTIFACTS })}
               </TooltipContent>
             )}
           </Tooltip>
@@ -187,9 +189,14 @@ export function InsightSourcesPanel({
               <CodeIcon className='text-muted-foreground h-5 w-5' />
             </div>
             <div className='space-y-1'>
-              <p className='text-sm font-medium'>{t('insightsUi.noArtifacts', 'No data artifacts yet')}</p>
+              <p className='text-sm font-medium'>
+                {t('insightsUi.noArtifacts', 'No data artifacts yet')}
+              </p>
               <p className='text-muted-foreground text-xs'>
-                {t('insightsUi.artifactDescription', 'Data Artifacts are SQL queries that fetch data from your Data Mart')}
+                {t(
+                  'insightsUi.artifactDescription',
+                  'Data Artifacts are SQL queries that fetch data from your Data Mart'
+                )}
               </p>
             </div>
             <Button
@@ -210,19 +217,20 @@ export function InsightSourcesPanel({
                   <TableRow className='bg-muted/60 hover:bg-muted/60'>
                     <TableHead className='text-xs font-semibold'>
                       <div className='flex items-center gap-1.5'>
-                        Id
+                        {t('insightsUi.id', 'Id')}
                         <Tooltip delayDuration={700}>
                           <TooltipTrigger asChild>
                             <Info className='text-muted-foreground/60 h-3.5 w-3.5' />
                           </TooltipTrigger>
                           <TooltipContent side='bottom' align='start' className='max-w-xs'>
-                            The id of the data artifact, which is used as a unique identifier in the
-                            template. This field cannot be changed after creation.
+                            {t('insightsUi.artifactIdHelp')}
                           </TooltipContent>
                         </Tooltip>
                       </div>
                     </TableHead>
-                    <TableHead className='text-xs font-semibold'>{t('insightsUi.title', 'Title')}</TableHead>
+                    <TableHead className='text-xs font-semibold'>
+                      {t('insightsUi.title', 'Title')}
+                    </TableHead>
                     <TableHead className='w-[80px]' />
                   </TableRow>
                 </TableHeader>
@@ -247,14 +255,22 @@ export function InsightSourcesPanel({
                                 onClick={e => {
                                   e.stopPropagation();
                                   void navigator.clipboard.writeText(source.key);
-                                  toast.success(t('insightsUi.copiedArtifactId', 'Copied Data Artifact id to clipboard'));
+                                  toast.success(
+                                    t(
+                                      'insightsUi.copiedArtifactId',
+                                      'Copied Data Artifact id to clipboard'
+                                    )
+                                  );
                                 }}
                               >
                                 <Copy className='h-3 w-3' />
                               </Button>
                             </TooltipTrigger>
                             <TooltipContent className='max-w-xs'>
-                              {t('insightsUi.copyArtifactId', 'Copy the data artifact id to your clipboard')}
+                              {t(
+                                'insightsUi.copyArtifactId',
+                                'Copy the data artifact id to your clipboard'
+                              )}
                             </TooltipContent>
                           </Tooltip>
                         </div>
@@ -278,7 +294,9 @@ export function InsightSourcesPanel({
                                   <Grid2x2Plus className='h-3.5 w-3.5' />
                                 </Button>
                               </TooltipTrigger>
-                              <TooltipContent>{t('insightsUi.insertTemplate', 'Insert into template')}</TooltipContent>
+                              <TooltipContent>
+                                {t('insightsUi.insertTemplate', 'Insert into template')}
+                              </TooltipContent>
                             </Tooltip>
                           )}
                           <Tooltip delayDuration={700}>
@@ -394,7 +412,11 @@ export function InsightSourcesPanel({
           }
         }}
         title={t('insightsUi.deleteArtifactTitle', 'Delete Data Artifact')}
-        description={t('insightsUi.deleteArtifactDescription', 'Are you sure you want to delete data artifact "{{title}}"? This action cannot be undone.', { title: sourceToDelete?.title ?? '' })}
+        description={t(
+          'insightsUi.deleteArtifactDescription',
+          'Are you sure you want to delete data artifact "{{title}}"? This action cannot be undone.',
+          { title: sourceToDelete?.title ?? '' }
+        )}
         confirmLabel={t('common.delete', 'Delete')}
         variant='destructive'
       />
@@ -411,7 +433,11 @@ interface SqlValidationStatusProps {
 function SqlValidationStatus({ sqlTrimmed, isLoading, result }: SqlValidationStatusProps) {
   const { t } = useTranslation();
   if (!sqlTrimmed) {
-    return <p className='text-destructive text-xs'>{t('insightsUi.sqlRequired', 'SQL query is required')}</p>;
+    return (
+      <p className='text-destructive text-xs'>
+        {t('insightsUi.sqlRequired', 'SQL query is required')}
+      </p>
+    );
   }
   if (isLoading) {
     return (
@@ -438,7 +464,10 @@ function SqlValidationStatus({ sqlTrimmed, isLoading, result }: SqlValidationSta
               </TooltipTrigger>
               <TooltipContent>
                 <p className='text-xs'>
-                  {t('insightsUi.estimatedVolume', 'This is an estimated volume and may differ from the actual value')}
+                  {t(
+                    'insightsUi.estimatedVolume',
+                    'This is an estimated volume and may differ from the actual value'
+                  )}
                 </p>
               </TooltipContent>
             </Tooltip>
@@ -451,7 +480,9 @@ function SqlValidationStatus({ sqlTrimmed, isLoading, result }: SqlValidationSta
     return (
       <div className='flex items-start gap-1.5 text-xs text-red-600'>
         <XCircle className='mt-px h-3 w-3 shrink-0' />
-        <span className='break-all'>{result.error ?? t('insightsUi.invalidSql', 'Invalid SQL')}</span>
+        <span className='break-all'>
+          {result.error ?? t('insightsUi.invalidSql', 'Invalid SQL')}
+        </span>
       </div>
     );
   }
@@ -483,7 +514,11 @@ function SqlPreviewTable({ result }: { result: InsightArtifactSqlPreviewTriggerR
       <div className='flex items-center justify-between border-b px-3 py-1.5'>
         <div className='flex items-center gap-2 text-xs font-medium'>
           <TableIcon className='h-3.5 w-3.5' />
-          <span>{t('insightsUi.previewResults', 'Preview Results ({{count}} rows)', { count: result.rowCount })}</span>
+          <span>
+            {t('insightsUi.previewResults', 'Preview Results ({{count}} rows)', {
+              count: result.rowCount,
+            })}
+          </span>
         </div>
       </div>
       <div className='flex-1 overflow-auto'>
@@ -751,7 +786,12 @@ function SourceEditSheet({
                 rules={{ required: t('insightsUi.titleRequired', 'Title is required') }}
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel tooltip={t('insightsUi.titleTooltip', 'Enter a human-readable title for this data source.')}>
+                    <FormLabel
+                      tooltip={t(
+                        'insightsUi.titleTooltip',
+                        'Enter a human-readable title for this data source.'
+                      )}
+                    >
                       {t('common.title', 'Title')}
                     </FormLabel>
                     <FormControl>
@@ -821,7 +861,9 @@ function SourceEditSheet({
                 >
                   {isFullScreen && (
                     <div className='mb-4 flex items-center justify-between'>
-                      <h3 className='text-lg font-medium'>{t('insightsUi.sqlEditor', 'SQL Editor')}</h3>
+                      <h3 className='text-lg font-medium'>
+                        {t('insightsUi.sqlEditor', 'SQL Editor')}
+                      </h3>
                       <div className='flex gap-2'>
                         <Button
                           type='button'

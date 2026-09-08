@@ -90,10 +90,16 @@ export function AuthenticationSectionHeader({
           <div className='text-muted-foreground text-sm'>
             <Accordion variant='common' type='single' collapsible>
               <AccordionItem value='copied-credentials-details'>
-                <AccordionTrigger>{t('authentication.whatAreCopied', 'What are copied credentials?')}</AccordionTrigger>
+                <AccordionTrigger>
+                  {t('authentication.whatAreCopied', 'What are copied credentials?')}
+                </AccordionTrigger>
                 <AccordionContent>
                   <p>
-                    {t('authentication.copiedDescription', 'When you copy credentials, the authentication details (such as API keys, service accounts, or access tokens) from an existing {{itemType}} are reused for this one. This means you do not need to enter them again manually. The credentials are copied at save time — future changes to the original {{itemType}} do not affect this copy.', { itemType })}
+                    {t(
+                      'authentication.copiedDescription',
+                      'When you copy credentials, the authentication details (such as API keys, service accounts, or access tokens) from an existing {{itemType}} are reused for this one. This means you do not need to enter them again manually. The credentials are copied at save time — future changes to the original {{itemType}} do not affect this copy.',
+                      { itemType }
+                    )}
                   </p>
                 </AccordionContent>
               </AccordionItem>

@@ -7,14 +7,28 @@ interface FileDropTextareaProps extends React.ComponentProps<'textarea'> {
   onFileRead?: (content: string) => void;
   onFileReject?: (message: string) => void;
   allowedExtensions?: string[];
+  messages: {
+    multipleFiles: string;
+    fileTooLarge: string;
+    invalidServiceAccountJson: string;
+    invalidJson: string;
+    readFailed: string;
+    invalidFileType: (allowedExtensions: string[]) => string;
+    dropFile: React.ReactNode;
+  };
 }
 
 const FileDropTextarea = React.forwardRef<HTMLTextAreaElement, FileDropTextareaProps>(
-  ({ className, onFileRead, onFileReject, allowedExtensions = ['.json'], ...props }, ref) => {
+  (
+    { className, onFileRead, onFileReject, allowedExtensions = ['.json'], messages, ...props },
+    ref
+  ) => {
     const [isDragging, setIsDragging] = React.useState(false);
 
     React.useEffect(() => {
-      const preventDefault = (e: DragEvent) => e.preventDefault();
+      const preventDefault = (e: DragEvent): void => {
+        e.preventDefault();
+      };
       window.addEventListener('dragover', preventDefault);
       window.addEventListener('drop', preventDefault);
       return () => {
@@ -23,24 +37,24 @@ const FileDropTextarea = React.forwardRef<HTMLTextAreaElement, FileDropTextareaP
       };
     }, []);
 
-    const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
+    const handleDragOver = (e: React.DragEvent<HTMLDivElement>): void => {
       e.preventDefault();
       setIsDragging(true);
     };
 
-    const handleDragLeave = (e: React.DragEvent<HTMLDivElement>) => {
+    const handleDragLeave = (e: React.DragEvent<HTMLDivElement>): void => {
       e.preventDefault();
       if (e.currentTarget.contains(e.relatedTarget as Node)) return;
       setIsDragging(false);
     };
 
-    const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
+    const handleDrop = (e: React.DragEvent<HTMLDivElement>): void => {
       e.preventDefault();
       setIsDragging(false);
 
       if (e.dataTransfer.files.length > 1) {
         if (onFileReject) {
-          onFileReject('Only one file can be dropped at a time.');
+          onFileReject(messages.multipleFiles);
         }
         return;
       }
@@ -50,7 +64,7 @@ const FileDropTextarea = React.forwardRef<HTMLTextAreaElement, FileDropTextareaP
         const maxFileSize = 1 * 1024 * 1024; // 1MB
         if (file.size > maxFileSize) {
           if (onFileReject) {
-            onFileReject('File is too large. Max allowed size is 1MB.');
+            onFileReject(messages.fileTooLarge);
           }
           return;
         }
@@ -68,23 +82,28 @@ const FileDropTextarea = React.forwardRef<HTMLTextAreaElement, FileDropTextareaP
                 fileName.endsWith('.json');
               if (checkJson) {
                 try {
-                  const parsed = JSON.parse(text);
+                  const parsed: unknown = JSON.parse(text);
                   const isServiceAccount =
-                    parsed &&
+                    typeof parsed === 'object' &&
+                    parsed !== null &&
+                    'type' in parsed &&
+                    'project_id' in parsed &&
+                    'private_key' in parsed &&
+                    'client_email' in parsed &&
                     parsed.type === 'service_account' &&
-                    parsed.project_id &&
-                    parsed.private_key &&
-                    parsed.client_email;
+                    typeof parsed.project_id === 'string' &&
+                    typeof parsed.private_key === 'string' &&
+                    typeof parsed.client_email === 'string';
 
                   if (!isServiceAccount) {
                     if (onFileReject) {
-                      onFileReject('File is not a valid Google Service Account JSON');
+                      onFileReject(messages.invalidServiceAccountJson);
                     }
                     return;
                   }
                 } catch {
                   if (onFileReject) {
-                    onFileReject('File is not a valid JSON');
+                    onFileReject(messages.invalidJson);
                   }
                   return;
                 }
@@ -96,15 +115,13 @@ const FileDropTextarea = React.forwardRef<HTMLTextAreaElement, FileDropTextareaP
           };
           reader.onerror = () => {
             if (onFileReject) {
-              onFileReject('Failed to read file');
+              onFileReject(messages.readFailed);
             }
           };
           reader.readAsText(file);
         } else {
           if (onFileReject) {
-            onFileReject(
-              `Invalid file type. Only ${allowedExtensions.join(', ')} files are allowed.`
-            );
+            onFileReject(messages.invalidFileType(allowedExtensions));
           }
         }
       }
@@ -116,7 +133,9 @@ const FileDropTextarea = React.forwardRef<HTMLTextAreaElement, FileDropTextareaP
         onDragOver={handleDragOver}
         onDragLeave={handleDragLeave}
         onDrop={handleDrop}
-        onDragEnd={() => setIsDragging(false)}
+        onDragEnd={() => {
+          setIsDragging(false);
+        }}
       >
         <Textarea
           ref={ref}
@@ -126,7 +145,7 @@ const FileDropTextarea = React.forwardRef<HTMLTextAreaElement, FileDropTextareaP
         {isDragging && (
           <div className='bg-background/80 border-primary animate-in fade-in pointer-events-none absolute inset-0 flex flex-col items-center justify-center rounded-md border-2 border-dashed backdrop-blur-[2px] duration-100'>
             <FileDown className='text-primary mb-2 h-8 w-8 animate-bounce' />
-            <span className='text-foreground text-sm font-medium'>Drop JSON file here</span>
+            <span className='text-foreground text-sm font-medium'>{messages.dropFile}</span>
           </div>
         )}
       </div>

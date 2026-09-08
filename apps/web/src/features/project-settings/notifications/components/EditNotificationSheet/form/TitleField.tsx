@@ -10,7 +10,12 @@ export function TitleField({ title }: TitleFieldProps) {
   const { t } = useTranslation();
   return (
     <FieldItem>
-      <FieldLabel tooltip={t('notificationsPage.titleTooltip', 'The name of this notification. Disabled for service predefined notifications')}>
+      <FieldLabel
+        tooltip={t(
+          'notificationsPage.titleTooltip',
+          'The name of this notification. Disabled for service predefined notifications'
+        )}
+      >
         {t('notificationsPage.notificationTitle', 'Notification title')}
       </FieldLabel>
       <Input value={title} disabled />

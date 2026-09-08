@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
+import { useTranslation } from 'react-i18next';
 
 interface RunUndoToastProps {
   toastId: string;
@@ -17,6 +18,7 @@ export function RunUndoToast({
   onConfirm,
   onCancel,
 }: RunUndoToastProps) {
+  const { t } = useTranslation();
   const [remaining, setRemaining] = useState(gracePeriodMs);
   const activeRef = useRef(true);
   const onConfirmRef = useRef(onConfirm);
@@ -57,9 +59,11 @@ export function RunUndoToast({
     <div className='bg-popover text-popover-foreground border-border flex min-w-[300px] items-center gap-3 rounded-lg border px-4 py-3 shadow-lg'>
       <Loader2 className='text-primary h-4 w-4 flex-shrink-0 animate-spin' aria-hidden='true' />
       <div className='flex-1'>
-        <p className='text-sm font-medium'>Starting &ldquo;{reportName}&rdquo;&hellip;</p>
+        <p className='text-sm font-medium'>
+          {t('reportsUi.startingReport', { title: reportName })}
+        </p>
         <p className='text-muted-foreground text-xs'>
-          Undo within {Math.ceil(gracePeriodMs / 1000)} seconds
+          {t('reportsUi.undoWithinSeconds', { seconds: Math.ceil(gracePeriodMs / 1000) })}
         </p>
       </div>
       <div className='relative flex-shrink-0' style={{ width: 32, height: 32 }}>
@@ -90,9 +94,9 @@ export function RunUndoToast({
       <button
         onClick={handleCancel}
         className='bg-secondary text-secondary-foreground hover:bg-accent rounded px-3 py-1.5 text-xs font-medium transition-colors'
-        aria-label='Cancel run'
+        aria-label={t('runHistory.cancelRun')}
       >
-        Cancel
+        {t('common.cancel')}
       </button>
     </div>
   );

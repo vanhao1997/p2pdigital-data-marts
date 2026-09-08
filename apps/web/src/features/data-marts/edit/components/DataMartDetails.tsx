@@ -493,7 +493,12 @@ export function DataMartDetails({ id }: DataMartDetailsProps) {
                 <TooltipContent side='bottom' className='max-w-sm'>
                   {!canPublish ? (
                     <>
-                      <p>{t('dataMartDetails.completeFollowingSteps', 'Vui lòng hoàn tất các bước sau:')}</p>
+                      <p>
+                        {t(
+                          'dataMartDetails.completeFollowingSteps',
+                          'Vui lòng hoàn tất các bước sau:'
+                        )}
+                      </p>
                       <ul className='mt-1 list-disc space-y-0.5 pl-4 font-medium'>
                         {getRequiredSetupActions(dataMartValidationErrors).map(action => (
                           <li key={action}>{action}</li>
@@ -568,7 +573,7 @@ export function DataMartDetails({ id }: DataMartDetailsProps) {
       <div className='relative'>
         <nav
           className='no-scrollbar -mb-px flex gap-2 overflow-x-auto border-b whitespace-nowrap'
-          aria-label='Tabs'
+          aria-label={t('dataMartDetails.tabsLabel')}
           role='tablist'
           data-testid='datamartTabNav'
         >
@@ -634,9 +639,13 @@ export function DataMartDetails({ id }: DataMartDetailsProps) {
         description={
           <div className='mt-2 space-y-3'>
             <p className='break-words'>
-              {t('common.deleteDataMartDescription', 'Bạn có chắc chắn muốn xóa "{{title}}"? Thao tác này không thể hoàn tác.', {
-                title: dataMartTitle,
-              })}
+              {t(
+                'common.deleteDataMartDescription',
+                'Bạn có chắc chắn muốn xóa "{{title}}"? Thao tác này không thể hoàn tác.',
+                {
+                  title: dataMartTitle,
+                }
+              )}
             </p>
 
             {dataMart.storage.type === DataStorageType.LEGACY_GOOGLE_BIGQUERY && (

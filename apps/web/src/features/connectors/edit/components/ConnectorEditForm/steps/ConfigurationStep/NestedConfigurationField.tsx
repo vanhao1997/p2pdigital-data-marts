@@ -5,6 +5,8 @@ import { Button } from '@owox/ui/components/button';
 import { configurationFieldRender } from './ConfigurationFieldRender';
 import { SECRET_MASK } from '../../../../../../../shared/constants/secrets';
 import { VariablePicker } from './VariablePicker';
+import { localizeConnectorSpecification } from '../../../../../shared/utils/connector-metadata';
+import { useTranslation } from 'react-i18next';
 
 interface NestedConfigurationFieldProps {
   itemName: string;
@@ -34,9 +36,11 @@ export function NestedConfigurationField({
   onValueChange,
   connectorName,
 }: NestedConfigurationFieldProps) {
+  const { t } = useTranslation();
+  const localizedItemSpec = localizeConnectorSpecification({ ...itemSpec, oneOf: undefined });
   // Spec-derived only: keying this off the value made it flip on the first keystroke,
   // swapping the rendered field component and remounting the input, which dropped focus.
-  const isSecret = itemSpec.attributes?.includes('SECRET') ?? false;
+  const isSecret = localizedItemSpec.attributes?.includes('SECRET') ?? false;
   // A secret is masked and readonly only once stored; the backend sends those back
   // as SECRET_MASK.
   const hasStoredSecret =
@@ -47,11 +51,11 @@ export function NestedConfigurationField({
       <div className='flex items-center justify-between'>
         <AppWizardStepLabel
           htmlFor={itemName}
-          required={itemSpec.required}
-          tooltip={itemSpec.description}
+          required={localizedItemSpec.required}
+          tooltip={localizedItemSpec.description}
           className='mb-2 justify-start'
         >
-          {itemSpec.title ?? itemName}
+          {localizedItemSpec.title ?? itemName}
         </AppWizardStepLabel>
         {/* Editing clears the mask, so `hasStoredSecret` alone would drop the button
             and leave no way to cancel. */}
@@ -64,7 +68,7 @@ export function NestedConfigurationField({
               onSecretEditToggle(itemName, !isSecretEditing);
             }}
           >
-            {isSecretEditing ? 'Cancel' : 'Edit'}
+            {isSecretEditing ? t('common.cancel') : t('common.edit')}
           </Button>
         )}
         {itemSpec.requiredType !== RequiredType.OBJECT && !isSecret && (
@@ -79,7 +83,7 @@ export function NestedConfigurationField({
         )}
       </div>
       {configurationFieldRender({
-        specification: { ...itemSpec, name: itemName },
+        specification: { ...localizedItemSpec, name: itemName },
         configuration: nestedConfiguration,
         onValueChange,
         flags: {

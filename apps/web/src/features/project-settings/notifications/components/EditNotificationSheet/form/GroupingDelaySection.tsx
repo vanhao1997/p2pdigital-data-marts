@@ -27,7 +27,12 @@ export function GroupingDelaySection({ value, onChange, disabled }: GroupingDela
   return (
     <FormSection title={t('notificationsPage.delay', 'Delay')}>
       <FieldItem>
-        <FieldLabel tooltip={t('notificationsPage.groupingTooltip', 'Select how long to wait before sending a grouped email')}>
+        <FieldLabel
+          tooltip={t(
+            'notificationsPage.groupingTooltip',
+            'Select how long to wait before sending a grouped email'
+          )}
+        >
           {t('notificationsPage.groupingMultiple', 'Grouping multiple notifications')}
         </FieldLabel>
         <Select value={value} onValueChange={onChange} disabled={disabled}>
@@ -45,9 +50,14 @@ export function GroupingDelaySection({ value, onChange, disabled }: GroupingDela
         <FieldDescription>
           <Accordion variant='common' type='single' collapsible>
             <AccordionItem value='grouping-delay-info'>
-              <AccordionTrigger>{t('notificationsPage.howGroupingWorks', 'How grouping works?')}</AccordionTrigger>
+              <AccordionTrigger>
+                {t('notificationsPage.howGroupingWorks', 'How grouping works?')}
+              </AccordionTrigger>
               <AccordionContent>
-                {t('notificationsPage.groupingDescription', 'If multiple notifications are triggered within this time window, they are sent as a single email to keep your inbox tidy. Only email notifications are grouped.')}
+                {t(
+                  'notificationsPage.groupingDescription',
+                  'If multiple notifications are triggered within this time window, they are sent as a single email to keep your inbox tidy. Only email notifications are grouped.'
+                )}
               </AccordionContent>
             </AccordionItem>
           </Accordion>

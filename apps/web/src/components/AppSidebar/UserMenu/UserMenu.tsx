@@ -1,13 +1,13 @@
-import { useState } from "react";
-import { DropdownMenu } from "@owox/ui/components/dropdown-menu";
-import { useTheme } from "next-themes";
-import { useTranslation } from "react-i18next";
-import { useAuth } from "../../../features/idp/hooks";
-import { generateInitials } from "../../../shared/utils";
-import { UserMenuItems } from "./items";
-import { UserMenuTrigger } from "./UserMenuTrigger";
-import { UserMenuContent } from "./UserMenuContent";
-import { LANGUAGE_STORAGE_KEY } from "../../../i18n";
+import { useState } from 'react';
+import { DropdownMenu } from '@owox/ui/components/dropdown-menu';
+import { useTheme } from 'next-themes';
+import { useTranslation } from 'react-i18next';
+import { useAuth } from '../../../features/idp/hooks';
+import { generateInitials } from '../../../shared/utils';
+import { UserMenuItems } from './items';
+import { UserMenuTrigger } from './UserMenuTrigger';
+import { UserMenuContent } from './UserMenuContent';
+import { LANGUAGE_STORAGE_KEY } from '../../../i18n';
 
 export function UserMenu() {
   const { user, signOut } = useAuth();
@@ -18,7 +18,7 @@ export function UserMenu() {
   if (!user) return null;
 
   const { fullName, email, avatar } = user;
-  const displayName = fullName ?? email ?? "Unknown User";
+  const displayName = fullName ?? email ?? 'Unknown User';
   const initials = generateInitials(fullName, email);
 
   const activeLanguage = String(i18n.resolvedLanguage).startsWith('vi') ? 'vi' : 'en';
@@ -34,9 +34,9 @@ export function UserMenu() {
 
   return (
     <div
-      data-slot="sidebar-menu-item"
-      data-sidebar="menu-item"
-      className="group/menu-item relative"
+      data-slot='sidebar-menu-item'
+      data-sidebar='menu-item'
+      className='group/menu-item relative'
     >
       <DropdownMenu open={isOpen} onOpenChange={setIsOpen}>
         <UserMenuTrigger
@@ -60,4 +60,3 @@ export function UserMenu() {
     </div>
   );
 }
-

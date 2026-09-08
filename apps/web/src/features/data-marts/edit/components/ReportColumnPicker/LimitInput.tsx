@@ -18,7 +18,7 @@ export function LimitInput({ value, onChange }: LimitInputProps) {
           min={1}
           max={10_000_000}
           value={value ?? ''}
-          placeholder='All'
+          placeholder={t('reportColumnPicker.all')}
           onChange={e => {
             const raw = e.target.value;
             if (raw === '') {
@@ -29,7 +29,7 @@ export function LimitInput({ value, onChange }: LimitInputProps) {
             onChange(Number.isFinite(n) && n > 0 ? Math.floor(n) : null);
           }}
           className='[appearance:textfield] pr-7 font-mono [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none'
-          aria-label='Row limit'
+          aria-label={t('reportColumnPicker.rowLimit')}
         />
         {value != null && (
           <Button
@@ -40,7 +40,7 @@ export function LimitInput({ value, onChange }: LimitInputProps) {
             onClick={() => {
               onChange(null);
             }}
-            aria-label='Clear limit'
+            aria-label={t('reportColumnPicker.clearLimit')}
           >
             <X className='h-4 w-4' />
           </Button>

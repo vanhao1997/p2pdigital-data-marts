@@ -16,6 +16,7 @@ import {
 import type { CredentialIdentity } from '../../types/credential-identity';
 import { getIdentityDisplayString, getAuthTypeLabel } from '../../utils/credential-identity-utils';
 import type { CopyCredentialsItem } from './types';
+import { useTranslation } from 'react-i18next';
 
 interface CopyCredentialsButtonProps {
   entityLabel: string;
@@ -30,6 +31,7 @@ export function CopyCredentialsButton({
   fetchItems,
   onSelect,
 }: CopyCredentialsButtonProps) {
+  const { t } = useTranslation();
   const [hasAvailableItems, setHasAvailableItems] = useState<boolean | null>(null);
   const [items, setItems] = useState<CopyCredentialsItem[]>([]);
   const [loading, setLoading] = useState(false);
@@ -97,7 +99,7 @@ export function CopyCredentialsButton({
         <DropdownMenuTrigger asChild>
           <button type='button' className='flex cursor-pointer items-center gap-1'>
             <span className='text-muted-foreground/75 text-xs font-semibold tracking-wide uppercase'>
-              Copy from&hellip;
+              {t('copyCredentials.copyFrom')}
             </span>
             <ChevronRight
               className={cn(
@@ -109,23 +111,23 @@ export function CopyCredentialsButton({
         </DropdownMenuTrigger>
         <DropdownMenuContent side='bottom' align='end' className='w-72'>
           {loading ? (
-            <DropdownMenuItem disabled>Loading&hellip;</DropdownMenuItem>
+            <DropdownMenuItem disabled>{t('copyCredentials.loading')}</DropdownMenuItem>
           ) : items.length === 0 ? (
             <div className='flex flex-col items-center justify-center gap-2 p-4 text-center'>
               <div className='bg-muted/70 rounded-full p-3'>
                 <PackageSearch className='text-muted-foreground h-6 w-6' strokeWidth={1.5} />
               </div>
               <span className='text-foreground text-sm font-medium'>
-                No matching {entityLabel}s
+                {t('copyCredentials.noMatching', { entityLabel })}
               </span>
               <span className='text-muted-foreground text-sm'>
-                No other {entityLabel}s of this type exist in the project.
+                {t('copyCredentials.noOther', { entityLabel })}
               </span>
             </div>
           ) : (
             <div className='flex flex-col gap-2'>
               <div className='text-muted-foreground border-b p-2 text-sm'>
-                Select a {entityLabel} to copy its credentials.
+                {t('copyCredentials.selectToCopy', { entityLabel })}
               </div>
               <div>
                 {items.map(item => (

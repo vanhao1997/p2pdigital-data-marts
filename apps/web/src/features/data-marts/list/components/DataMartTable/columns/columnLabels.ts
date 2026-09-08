@@ -31,10 +31,22 @@ export function getDataMartColumnLabels(t: TFunction): Record<DataMartColumnKey,
     [DataMartColumnKey.CREATED_BY_USER]: t('common.createdBy'),
     [DataMartColumnKey.HEALTH_STATUS]: t('dataMartTableColumns.healthStatus', 'Health status'),
     [DataMartColumnKey.BUSINESS_OWNERS]: t('dataMartTableColumns.businessOwner', 'Business owner'),
-    [DataMartColumnKey.TECHNICAL_OWNERS]: t('dataMartTableColumns.technicalOwner', 'Technical owner'),
+    [DataMartColumnKey.TECHNICAL_OWNERS]: t(
+      'dataMartTableColumns.technicalOwner',
+      'Technical owner'
+    ),
     [DataMartColumnKey.CONTEXTS]: t('dataMartTableColumns.contexts', 'Contexts'),
-    [DataMartColumnKey.AVAILABLE_FOR_REPORTING]: t('dataMartTableColumns.sharedForReporting', 'Shared for reporting'),
-    [DataMartColumnKey.AVAILABLE_FOR_MAINTENANCE]: t('dataMartTableColumns.sharedForMaintenance', 'Shared for maintenance'),
-    [DataMartColumnKey.DATA_LAST_UPDATED]: t('dataMartTableColumns.dataLastUpdated', 'Data last updated'),
+    [DataMartColumnKey.AVAILABLE_FOR_REPORTING]: t(
+      'dataMartTableColumns.sharedForReporting',
+      'Shared for reporting'
+    ),
+    [DataMartColumnKey.AVAILABLE_FOR_MAINTENANCE]: t(
+      'dataMartTableColumns.sharedForMaintenance',
+      'Shared for maintenance'
+    ),
+    [DataMartColumnKey.DATA_LAST_UPDATED]: t(
+      'dataMartTableColumns.dataLastUpdated',
+      'Data last updated'
+    ),
   };
 }

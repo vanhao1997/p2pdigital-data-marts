@@ -1,4 +1,5 @@
 import type { HTMLAttributes } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Button } from '@owox/ui/components/button';
 import { AlertTriangle, ArrowDown, ArrowUp, GripVertical, X } from 'lucide-react';
 import { cn } from '@owox/ui/lib/utils';
@@ -27,6 +28,7 @@ export function SortRow({
   displayLabel,
   dataMartName,
 }: SortRowProps) {
+  const { t } = useTranslation();
   const toggleDirection = () => {
     if (isOrphaned) return;
     onChange({ ...rule, direction: rule.direction === 'asc' ? 'desc' : 'asc' });
@@ -43,7 +45,7 @@ export function SortRow({
       <span
         {...dragHandleProps}
         className='text-muted-foreground cursor-grab'
-        aria-label='Drag to reorder'
+        aria-label={t('reportColumnPicker.dragToReorder')}
       >
         <GripVertical className='h-4 w-4' />
       </span>
@@ -53,8 +55,8 @@ export function SortRow({
           {isOrphaned && (
             <span
               className='inline-flex items-center text-red-600'
-              title='This column is no longer available for sorting. Remove this rule or restore the column.'
-              aria-label='Column not found in schema'
+              title={t('reportColumnPicker.orphanSortHelp')}
+              aria-label={t('reportColumnPicker.columnNotFound')}
             >
               <AlertTriangle className='h-3 w-3' />
             </span>
@@ -76,7 +78,7 @@ export function SortRow({
         className='text-muted-foreground hover:text-foreground h-6 gap-1 px-1.5 text-[11px]'
         onClick={toggleDirection}
         disabled={isOrphaned}
-        aria-label={`Toggle direction (currently ${rule.direction})`}
+        aria-label={t('reportColumnPicker.toggleDirection', { direction: rule.direction })}
       >
         <ArrowIcon className='h-4 w-4' />
         <span className='inline-block w-7 text-left'>{rule.direction}</span>
@@ -86,7 +88,7 @@ export function SortRow({
         size='sm'
         className='text-muted-foreground hover:text-foreground h-6 w-6 p-0'
         onClick={onRemove}
-        aria-label='Remove sort'
+        aria-label={t('reportColumnPicker.removeSort')}
       >
         <X className='h-4 w-4' />
       </Button>

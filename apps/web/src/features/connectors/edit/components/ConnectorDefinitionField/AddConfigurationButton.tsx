@@ -3,6 +3,7 @@ import { Plus } from 'lucide-react';
 import { DataMartConnectorView } from '../../DataMartConnectorView';
 import { DataStorageType } from '../../../../data-storage';
 import type { ConnectorConfig } from '../../../../data-marts/edit';
+import { useTranslation } from 'react-i18next';
 
 interface AddConfigurationButtonProps {
   storageType: DataStorageType;
@@ -15,6 +16,7 @@ export function AddConfigurationButton({
   onAddConfiguration,
   existingConnector,
 }: AddConfigurationButtonProps) {
+  const { t } = useTranslation();
   return (
     <div>
       <DataMartConnectorView
@@ -39,7 +41,7 @@ export function AddConfigurationButton({
       >
         <Button type='button' variant='outline'>
           <Plus className='h-4 w-4' />
-          <span>Configuration</span>
+          <span>{t('common.configuration')}</span>
         </Button>
       </DataMartConnectorView>
     </div>

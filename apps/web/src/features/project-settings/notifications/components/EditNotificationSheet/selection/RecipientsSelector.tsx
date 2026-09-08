@@ -6,6 +6,7 @@ import { AlertTriangle, User } from 'lucide-react';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@owox/ui/components/tooltip';
 import type { ProjectMember } from '../../../types';
 import { getRoleDisplayName } from '../../../../../idp/utils/role-display-name';
+import { useTranslation } from 'react-i18next';
 
 interface RecipientsSelectorProps {
   members: ProjectMember[];
@@ -22,6 +23,7 @@ export function RecipientsSelector({
   isLoading = false,
   disabled = false,
 }: RecipientsSelectorProps) {
+  const { t } = useTranslation();
   const selectedSet = useMemo(() => new Set(selectedUserIds), [selectedUserIds]);
 
   const handleToggle = (userId: string, checked: boolean) => {
@@ -52,7 +54,7 @@ export function RecipientsSelector({
   if (members.length === 0) {
     return (
       <div className='border-input text-muted-foreground rounded-md border py-4 text-center text-sm'>
-        No project members found
+        {t('notificationsPage.noProjectMembers', 'No project members found')}
       </div>
     );
   }
@@ -101,7 +103,10 @@ export function RecipientsSelector({
                       <AlertTriangle className='h-4 w-4 text-yellow-500' />
                     </TooltipTrigger>
                     <TooltipContent>
-                      This user has disabled notifications in their preferences
+                      {t(
+                        'notificationsPage.notificationsDisabledTooltip',
+                        'This user has disabled notifications in their preferences'
+                      )}
                     </TooltipContent>
                   </Tooltip>
                 )}

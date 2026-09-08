@@ -13,6 +13,7 @@ import type { ConnectorListItem } from '../../../../shared/model/types/connector
 import { ChevronRight, Unplug } from 'lucide-react';
 import { Link } from 'react-router';
 import { useTranslation } from 'react-i18next';
+import { localizeConnectorNode } from '../../../../shared/utils/connector-metadata';
 
 interface NodesSelectionStepProps {
   connector: ConnectorListItem;
@@ -63,49 +64,52 @@ export function NodesSelectionStep({
       <StepperHeroBlock connector={connector} />
       <AppWizardStepSection title={title}>
         <AppWizardStepCards>
-          {connectorFields.map(field => (
-            <AppWizardStepCardItem
-              key={field.name}
-              type='radio'
-              id={field.name}
-              name='selectedField'
-              value={field.name}
-              label={field.overview ?? field.name}
-              subtitle={field.description}
-              checked={selectedField === field.name}
-              onChange={value => {
-                onFieldSelect(value as string);
-              }}
-              tooltip={
-                field.name && (
-                  <div className='flex flex-col gap-2 py-1'>
-                    <p>
-                      <span className='font-semibold'>{t('connectorWizard.tableName')}:</span>{' '}
-                      {field.destinationName ?? field.name}
-                    </p>
-                    {field.description && (
+          {connectorFields.map(rawField => {
+            const field = localizeConnectorNode(rawField);
+            return (
+              <AppWizardStepCardItem
+                key={field.name}
+                type='radio'
+                id={field.name}
+                name='selectedField'
+                value={field.name}
+                label={field.overview ?? field.name}
+                subtitle={field.description}
+                checked={selectedField === field.name}
+                onChange={value => {
+                  onFieldSelect(value as string);
+                }}
+                tooltip={
+                  field.name && (
+                    <div className='flex flex-col gap-2 py-1'>
                       <p>
-                        <span className='font-semibold'>{t('connectorWizard.description')}:</span>{' '}
-                        {field.description}
+                        <span className='font-semibold'>{t('connectorWizard.tableName')}:</span>{' '}
+                        {field.destinationName ?? field.name}
                       </p>
-                    )}
-                    {field.documentation && (
-                      <Link
-                        to={field.documentation}
-                        target='_blank'
-                        rel='noopener noreferrer'
-                        className='bg-muted/16 hover:bg-muted/20 dark:bg-muted/8 dark:hover:bg-muted/16 flex items-center justify-center gap-1 rounded-sm px-2 py-1 font-semibold'
-                      >
-                        {t('connectorWizard.readMore')}
-                        <ChevronRight className='h-3 w-3' />
-                      </Link>
-                    )}
-                  </div>
-                )
-              }
-              selected={selectedField === field.name}
-            />
-          ))}
+                      {field.description && (
+                        <p>
+                          <span className='font-semibold'>{t('connectorWizard.description')}:</span>{' '}
+                          {field.description}
+                        </p>
+                      )}
+                      {field.documentation && (
+                        <Link
+                          to={field.documentation}
+                          target='_blank'
+                          rel='noopener noreferrer'
+                          className='bg-muted/16 hover:bg-muted/20 dark:bg-muted/8 dark:hover:bg-muted/16 flex items-center justify-center gap-1 rounded-sm px-2 py-1 font-semibold'
+                        >
+                          {t('connectorWizard.readMore')}
+                          <ChevronRight className='h-3 w-3' />
+                        </Link>
+                      )}
+                    </div>
+                  )
+                }
+                selected={selectedField === field.name}
+              />
+            );
+          })}
         </AppWizardStepCards>
 
         <OpenIssueLink label={t('connectorWizard.missingData')} />

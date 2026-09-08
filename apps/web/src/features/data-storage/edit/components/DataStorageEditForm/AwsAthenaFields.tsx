@@ -16,6 +16,7 @@ import AthenaOutputBucketDescription from './FormDescriptions/AthenaOutputBucket
 import AthenaAccessKeyIdDescription from './FormDescriptions/AthenaAccessKeyIdDescription.tsx';
 import AthenaSecretAccessKeyDescription from './FormDescriptions/AthenaSecretAccessKeyDescription.tsx';
 import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { AuthenticationSectionHeader } from '../../../../../shared/components/AuthenticationSectionHeader';
 import { CopyStorageCredentialsButton } from '../CopyStorageCredentialsButton';
 import { useCopyCredentialContext } from '../../model/context/useCopyCredentialContext';
@@ -25,6 +26,7 @@ interface AwsAthenaFieldsProps {
 }
 
 export const AwsAthenaFields = ({ form }: AwsAthenaFieldsProps) => {
+  const { t } = useTranslation();
   const {
     entityId: storageId,
     onSourceSelect: onSourceStorageSelect,
@@ -49,17 +51,17 @@ export const AwsAthenaFields = ({ form }: AwsAthenaFieldsProps) => {
   return (
     <>
       {/* Connection Settings */}
-      <FormSection title='Cài đặt kết nối'>
+      <FormSection title={t('formCommon.connectionSettings')}>
         <FormField
           control={form.control}
           name='config.region'
           render={({ field }) => (
             <FormItem>
-              <FormLabel tooltip='Nhập khu vực AWS nơi dịch vụ Athena của bạn đang hoạt động'>
-                Khu vực
+              <FormLabel tooltip={t('storageForm.awsRegionTooltip')}>
+                {t('storageForm.awsRegion')}
               </FormLabel>
               <FormControl>
-                <Input {...field} placeholder='Nhập khu vực' />
+                <Input {...field} placeholder={t('storageForm.awsRegionPlaceholder')} />
               </FormControl>
               <FormDescription>
                 <AthenaRegionDescription />
@@ -73,11 +75,11 @@ export const AwsAthenaFields = ({ form }: AwsAthenaFieldsProps) => {
           name='config.outputBucket'
           render={({ field }) => (
             <FormItem>
-              <FormLabel tooltip='Chỉ định bucket S3 nơi kết quả truy vấn Athena sẽ được lưu'>
-                Bucket đầu ra
+              <FormLabel tooltip={t('storageForm.outputBucketTooltip')}>
+                {t('storageForm.outputBucket')}
               </FormLabel>
               <FormControl>
-                <Input {...field} placeholder='Nhập bucket đầu ra' />
+                <Input {...field} placeholder={t('storageForm.outputBucketPlaceholder')} />
               </FormControl>
               <FormDescription>
                 <AthenaOutputBucketDescription />
@@ -109,11 +111,11 @@ export const AwsAthenaFields = ({ form }: AwsAthenaFieldsProps) => {
               name='credentials.accessKeyId'
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel tooltip='Mã AWS Access Key ID dùng để xác thực'>
-                    Mã Access Key ID
+                  <FormLabel tooltip={t('storageForm.accessKeyIdTooltip')}>
+                    {t('storageForm.accessKeyId')}
                   </FormLabel>
                   <FormControl>
-                    <Input {...field} placeholder='Nhập mã access key id' />
+                    <Input {...field} placeholder={t('storageForm.accessKeyIdPlaceholder')} />
                   </FormControl>
                   <FormDescription>
                     <AthenaAccessKeyIdDescription />
@@ -127,14 +129,14 @@ export const AwsAthenaFields = ({ form }: AwsAthenaFieldsProps) => {
               name='credentials.secretAccessKey'
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel tooltip='AWS Secret Access Key dùng để xác thực'>
-                    Mã Secret Access Key
+                  <FormLabel tooltip={t('storageForm.secretAccessKeyTooltip')}>
+                    {t('storageForm.secretAccessKey')}
                   </FormLabel>
                   <FormControl>
                     <Input
                       {...field}
                       type='password'
-                      placeholder={maskedSecretValue || 'Nhập secret access key'}
+                      placeholder={maskedSecretValue || t('storageForm.secretAccessKeyPlaceholder')}
                     />
                   </FormControl>
                   <FormDescription>

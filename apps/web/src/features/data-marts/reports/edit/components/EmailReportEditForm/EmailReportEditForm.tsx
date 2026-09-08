@@ -413,11 +413,22 @@ export const EmailReportEditForm = forwardRef<HTMLFormElement, EmailReportEditFo
                   name='title'
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel tooltip={t('reportsUi.titleTooltip', "Add a title that reflects the report's purpose")}>
+                      <FormLabel
+                        tooltip={t(
+                          'reportsUi.titleTooltip',
+                          "Add a title that reflects the report's purpose"
+                        )}
+                      >
                         {t('reportsUi.title', 'Title')}
                       </FormLabel>
                       <FormControl>
-                        <Input placeholder={t('reportsUi.reportTitlePlaceholder', 'Enter a report title')} {...field} />
+                        <Input
+                          placeholder={t(
+                            'reportsUi.reportTitlePlaceholder',
+                            'Enter a report title'
+                          )}
+                          {...field}
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -430,7 +441,12 @@ export const EmailReportEditForm = forwardRef<HTMLFormElement, EmailReportEditFo
                   render={({ field }) => (
                     <FormItem>
                       <div className='flex items-center justify-between gap-2'>
-                        <FormLabel tooltip={t('reportsUi.selectDestinationTooltip', 'Select one of your existing destinations')}>
+                        <FormLabel
+                          tooltip={t(
+                            'reportsUi.selectDestinationTooltip',
+                            'Select one of your existing destinations'
+                          )}
+                        >
                           {t('reportsUi.destination', 'Destination')}
                         </FormLabel>
                       </div>
@@ -467,7 +483,9 @@ export const EmailReportEditForm = forwardRef<HTMLFormElement, EmailReportEditFo
                           ))}
                           {filteredDestinations.length > 0 && <SelectSeparator />}
                           {!preSelectedDestination && (
-                            <SelectItem value='__create_new__'>{t('reportsUi.createNew', '+ Create new')}</SelectItem>
+                            <SelectItem value='__create_new__'>
+                              {t('reportsUi.createNew', '+ Create new')}
+                            </SelectItem>
                           )}
                         </SelectContent>
                       </Select>
@@ -484,11 +502,19 @@ export const EmailReportEditForm = forwardRef<HTMLFormElement, EmailReportEditFo
                   name='subject'
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel tooltip={t('reportsUi.subjectTooltip', 'Add a short, clear subject line for your report')}>
+                      <FormLabel
+                        tooltip={t(
+                          'reportsUi.subjectTooltip',
+                          'Add a short, clear subject line for your report'
+                        )}
+                      >
                         {t('reportsUi.subject', 'Subject')}
                       </FormLabel>
                       <FormControl>
-                        <Input placeholder={t('reportsUi.subjectPlaceholder', 'Enter a message title')} {...field} />
+                        <Input
+                          placeholder={t('reportsUi.subjectPlaceholder', 'Enter a message title')}
+                          {...field}
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -526,7 +552,9 @@ export const EmailReportEditForm = forwardRef<HTMLFormElement, EmailReportEditFo
                           }}
                         >
                           <div className='flex items-center justify-between gap-4'>
-                            <FormLabel className='mt-0!'>{t('reportsUi.message', 'Message')}</FormLabel>
+                            <FormLabel className='mt-0!'>
+                              {t('reportsUi.message', 'Message')}
+                            </FormLabel>
                             <TabsList className='grid grid-cols-2'>
                               <TabsTrigger
                                 value={TemplateSourceTypeEnum.CUSTOM_MESSAGE}
@@ -607,7 +635,9 @@ export const EmailReportEditForm = forwardRef<HTMLFormElement, EmailReportEditFo
                                                 <Edit2 className='size-4' />
                                               </Button>
                                             </TooltipTrigger>
-                                            <TooltipContent side='left'>{t('reportsUi.edit', 'Edit')}</TooltipContent>
+                                            <TooltipContent side='left'>
+                                              {t('reportsUi.edit', 'Edit')}
+                                            </TooltipContent>
                                           </Tooltip>
                                         </TooltipProvider>
                                         <div className='border-t' />
@@ -631,7 +661,9 @@ export const EmailReportEditForm = forwardRef<HTMLFormElement, EmailReportEditFo
                                                 <Eye className='size-4' />
                                               </Button>
                                             </TooltipTrigger>
-                                            <TooltipContent side='left'>{t('reportsUi.preview', 'Preview')}</TooltipContent>
+                                            <TooltipContent side='left'>
+                                              {t('reportsUi.preview', 'Preview')}
+                                            </TooltipContent>
                                           </Tooltip>
                                         </TooltipProvider>
                                       </div>
@@ -667,7 +699,9 @@ export const EmailReportEditForm = forwardRef<HTMLFormElement, EmailReportEditFo
                                       <div className='bg-muted mb-3 flex h-12 w-12 items-center justify-center rounded-full'>
                                         <Sparkles className='text-muted-foreground h-6 w-6' />
                                       </div>
-                                      <h3 className='text-sm font-semibold'>{t('reportsUi.noInsights', 'No Insights')}</h3>
+                                      <h3 className='text-sm font-semibold'>
+                                        {t('reportsUi.noInsights', 'No Insights')}
+                                      </h3>
                                       <p className='text-muted-foreground mt-1 mb-4 max-w-[240px] text-xs'>
                                         {t(
                                           'reportsUi.insightSourceDescription',
@@ -697,13 +731,21 @@ export const EmailReportEditForm = forwardRef<HTMLFormElement, EmailReportEditFo
                                       >
                                         <FormControl>
                                           <SelectTrigger className='w-full max-w-full overflow-hidden'>
-                                            <SelectValue placeholder={t('reportsUi.selectInsight', 'Select an insight')}>
+                                            <SelectValue
+                                              placeholder={t(
+                                                'reportsUi.selectInsight',
+                                                'Select an insight'
+                                              )}
+                                            >
                                               <span className='block truncate'>
                                                 {insightField.value
                                                   ? insightTemplates.find(
                                                       t => t.id === insightField.value
                                                     )?.title
-                                                  : t('reportsUi.selectInsight', 'Select an insight')}
+                                                  : t(
+                                                      'reportsUi.selectInsight',
+                                                      'Select an insight'
+                                                    )}
                                               </span>
                                             </SelectValue>
                                           </SelectTrigger>
@@ -719,7 +761,10 @@ export const EmailReportEditForm = forwardRef<HTMLFormElement, EmailReportEditFo
                                           {insightTemplates.length === 0 &&
                                             !loadingInsightTemplates && (
                                               <div className='text-muted-foreground p-2 text-sm'>
-                                                {t('reportsUi.noInsightAvailable', 'No insight available')}
+                                                {t(
+                                                  'reportsUi.noInsightAvailable',
+                                                  'No insight available'
+                                                )}
                                               </div>
                                             )}
                                         </SelectContent>
@@ -759,7 +804,9 @@ export const EmailReportEditForm = forwardRef<HTMLFormElement, EmailReportEditFo
                           }
                         >
                           <div className='mb-0! flex items-center justify-between gap-4'>
-                            <FormLabel className='mt-0!'>{t('reportsUi.message', 'Message')}</FormLabel>
+                            <FormLabel className='mt-0!'>
+                              {t('reportsUi.message', 'Message')}
+                            </FormLabel>
                             <TabsList className='grid grid-cols-1'>
                               <TabsTrigger value={TemplateSourceTypeEnum.INSIGHT_TEMPLATE} disabled>
                                 {t('reportsUi.insight', 'Insight')}
@@ -777,8 +824,12 @@ export const EmailReportEditForm = forwardRef<HTMLFormElement, EmailReportEditFo
                                           {form.watch('insightTemplateId')
                                             ? (insightTemplates.find(
                                                 t => t.id === form.watch('insightTemplateId')
-                                              )?.title ?? t('reportsUi.selectedInsight', 'Selected Insight'))
-                                            : t('reportsUi.noInsightSelected', 'No Insight selected')}
+                                              )?.title ??
+                                              t('reportsUi.selectedInsight', 'Selected Insight'))
+                                            : t(
+                                                'reportsUi.noInsightSelected',
+                                                'No Insight selected'
+                                              )}
                                         </p>
                                         {!isInsightContext &&
                                           dataMart &&
@@ -848,7 +899,9 @@ export const EmailReportEditForm = forwardRef<HTMLFormElement, EmailReportEditFo
                                         <FileCode className='size-4' />
                                       </Button>
                                     </TooltipTrigger>
-                                    <TooltipContent side='left'>{t('reportsUi.viewSource', 'View Source')}</TooltipContent>
+                                    <TooltipContent side='left'>
+                                      {t('reportsUi.viewSource', 'View Source')}
+                                    </TooltipContent>
                                   </Tooltip>
                                 </TooltipProvider>
                                 <div className='border-t' />
@@ -872,7 +925,9 @@ export const EmailReportEditForm = forwardRef<HTMLFormElement, EmailReportEditFo
                                         <Eye className='size-4' />
                                       </Button>
                                     </TooltipTrigger>
-                                    <TooltipContent side='left'>{t('reportsUi.preview', 'Preview')}</TooltipContent>
+                                    <TooltipContent side='left'>
+                                      {t('reportsUi.preview', 'Preview')}
+                                    </TooltipContent>
                                   </Tooltip>
                                 </TooltipProvider>
                               </div>
@@ -934,7 +989,10 @@ export const EmailReportEditForm = forwardRef<HTMLFormElement, EmailReportEditFo
 
               <FormSection
                 title={t('reportsUi.reportColumns', 'Report Columns')}
-                tooltip={t('reportsUi.reportColumnsTooltip', 'Select which columns to include in the report')}
+                tooltip={t(
+                  'reportsUi.reportColumnsTooltip',
+                  'Select which columns to include in the report'
+                )}
                 titleAdornment={<ReportColumnsCountBadge count={columnsCount} />}
                 fields={[
                   'columnConfig',
@@ -984,7 +1042,7 @@ export const EmailReportEditForm = forwardRef<HTMLFormElement, EmailReportEditFo
                 />
               </FormSection>
 
-                <FormSection title={t('reportsUi.automateRuns', 'Automate Report Runs')}>
+              <FormSection title={t('reportsUi.automateRuns', 'Automate Report Runs')}>
                 {dataMart?.id ? (
                   <ReportSchedulesInlineList
                     ref={scheduleRef}
@@ -1000,7 +1058,14 @@ export const EmailReportEditForm = forwardRef<HTMLFormElement, EmailReportEditFo
               {!isReadOnly && (
                 <FormSection title={t('reportsUi.ownership', 'Ownership')}>
                   <FormItem>
-                    <FormLabel tooltip={t('reportsUi.ownersTooltip', 'Team members responsible for this report')}>{t('reportsUi.owners', 'Owners')}</FormLabel>
+                    <FormLabel
+                      tooltip={t(
+                        'reportsUi.ownersTooltip',
+                        'Team members responsible for this report'
+                      )}
+                    >
+                      {t('reportsUi.owners', 'Owners')}
+                    </FormLabel>
                     <OwnersSection ownerUsers={ownerUsers} onSave={handleOwnersChange} />
                   </FormItem>
                 </FormSection>
@@ -1017,7 +1082,9 @@ export const EmailReportEditForm = forwardRef<HTMLFormElement, EmailReportEditFo
                           variant='full'
                         />
                       ) : (
-                        <span className='text-muted-foreground'>{t('reportsUi.unknown', 'Unknown')}</span>
+                        <span className='text-muted-foreground'>
+                          {t('reportsUi.unknown', 'Unknown')}
+                        </span>
                       )}
                     </div>
                   </FormItem>

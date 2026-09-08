@@ -301,7 +301,7 @@ describe('BaseSchemaTable — Aggregations column', () => {
     );
 
     // Open the aggregations dropdown for the field
-    const trigger = screen.getByRole('button', { name: 'Aggregations for my_string' });
+    const trigger = screen.getByRole('button', { name: 'Available aggregations for my_string' });
     fireEvent.pointerDown(trigger, { button: 0, ctrlKey: false });
 
     // COUNT_DISTINCT is checked — uncheck it
@@ -329,7 +329,7 @@ describe('BaseSchemaTable — Aggregations column', () => {
       />
     );
 
-    const trigger = screen.getByRole('button', { name: 'Aggregations for field_a' });
+    const trigger = screen.getByRole('button', { name: 'Available aggregations for field_a' });
     fireEvent.pointerDown(trigger, { button: 0, ctrlKey: false });
 
     // COUNT is the only checked item — uncheck it to clear all
@@ -357,7 +357,7 @@ describe('BaseSchemaTable — Aggregations column', () => {
       />
     );
 
-    const trigger = screen.getByRole('button', { name: 'Aggregations for field_a' });
+    const trigger = screen.getByRole('button', { name: 'Available aggregations for field_a' });
     fireEvent.pointerDown(trigger, { button: 0, ctrlKey: false });
 
     // MIN is unchecked — click it to add it
@@ -847,7 +847,7 @@ describe('BaseSchemaTable — calculated field row', () => {
     );
 
     // Two buttons trigger the same action — the toolbar's and the bottom row's; either does.
-    fireEvent.click(screen.getAllByRole('button', { name: 'Add calculated field' })[0]);
+    fireEvent.click(screen.getAllByRole('button', { name: 'Add Calculated Field' })[0]);
 
     expect(onFieldsChange).toHaveBeenCalledTimes(1);
     const [updatedFields] = onFieldsChange.mock.calls[0] as [AthenaSchemaField[]];
@@ -875,15 +875,15 @@ describe('BaseSchemaTable — calculated field row', () => {
       />
     );
 
-    // Last of each: the toolbar carries the same two actions above the table.
-    const addField = screen.getAllByRole('button', { name: 'Add new field' }).at(-1);
-    const addMetric = screen.getAllByRole('button', { name: 'Add calculated field' }).at(-1);
+    const footer = screen.getByTestId('schema-footer-actions');
+    const addField = within(footer).getByRole('button', { name: 'Add Field' });
+    const addMetric = within(footer).getByRole('button', { name: 'Add Calculated Field' });
     expect(addField).toBeDefined();
     expect(addMetric).toBeDefined();
-    expect(addField?.parentElement).toBe(addMetric?.parentElement);
+    expect(addField.parentElement).toBe(addMetric.parentElement);
     for (const button of [addField, addMetric]) {
-      expect(button?.className).toMatch(/(^|\s)flex-1(\s|$)/);
-      expect(button?.className).not.toMatch(/(^|\s)w-full(\s|$)/);
+      expect(button.className).toMatch(/(^|\s)flex-1(\s|$)/);
+      expect(button.className).not.toMatch(/(^|\s)w-full(\s|$)/);
     }
   });
 
@@ -898,14 +898,15 @@ describe('BaseSchemaTable — calculated field row', () => {
       />
     );
 
-    const addField = screen.getAllByRole('button', { name: 'Add new field' }).at(-1);
-    const addCalculated = screen.getAllByRole('button', { name: 'Add calculated field' }).at(-1);
+    const footer = screen.getByTestId('schema-footer-actions');
+    const addField = within(footer).getByRole('button', { name: 'Add Field' });
+    const addCalculated = within(footer).getByRole('button', { name: 'Add Calculated Field' });
 
-    expect(addField?.className).toMatch(/(^|\s)rounded-br-none(\s|$)/);
-    expect(addCalculated?.className).toMatch(/(^|\s)rounded-bl-none(\s|$)/);
+    expect(addField.className).toMatch(/(^|\s)rounded-br-none(\s|$)/);
+    expect(addCalculated.className).toMatch(/(^|\s)rounded-bl-none(\s|$)/);
     // The OUTER corners of the footer row are untouched — only the junction was the complaint.
-    expect(addField?.className).not.toMatch(/(^|\s)rounded-bl-none(\s|$)/);
-    expect(addCalculated?.className).not.toMatch(/(^|\s)rounded-br-none(\s|$)/);
+    expect(addField.className).not.toMatch(/(^|\s)rounded-bl-none(\s|$)/);
+    expect(addCalculated.className).not.toMatch(/(^|\s)rounded-br-none(\s|$)/);
   });
 
   it('offers the joined fields published on the page, storing the reference with its path', () => {
@@ -953,7 +954,7 @@ describe('BaseSchemaTable — calculated field row', () => {
     render(<AthenaSchemaTable fields={fields} schemaToolbar={mockSchemaToolbar} />);
 
     // No "Add Calculated Field" action either — mirrors "Add Field", both gated on onFieldsChange.
-    expect(screen.queryByRole('button', { name: 'Add calculated field' })).not.toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: 'Add Calculated Field' })).not.toBeInTheDocument();
 
     const formula = formulaTrigger('SUM(clicks)');
     expect(formula.tagName).not.toBe('BUTTON');
@@ -1005,7 +1006,9 @@ describe('BaseSchemaTable — calculated field row', () => {
     // from, and the backend now honours it for this level.
     it('owns the "Σ available" control, exactly like an ordinary column', () => {
       const row = renderRowLevel();
-      expect(within(row).getByLabelText('Aggregations for doubled_clicks')).toBeInTheDocument();
+      expect(
+        within(row).getByLabelText('Available aggregations for doubled_clicks')
+      ).toBeInTheDocument();
       expect(
         within(screen.getAllByRole('row')[1]).getByLabelText(/aggregation/i)
       ).toBeInTheDocument();
@@ -1028,7 +1031,9 @@ describe('BaseSchemaTable — calculated field row', () => {
         />
       );
 
-      const trigger = screen.getByRole('button', { name: 'Aggregations for doubled_clicks' });
+      const trigger = screen.getByRole('button', {
+        name: 'Available aggregations for doubled_clicks',
+      });
       fireEvent.pointerDown(trigger, { button: 0, ctrlKey: false });
 
       // DOUBLE resolves to the number menu, whose default is [SUM, AVG, MIN, MAX]; ANY_VALUE is
@@ -1081,7 +1086,9 @@ describe('BaseSchemaTable — calculated field row', () => {
       // …and the row-level row's own Σ cell is the real one, not the formula drawn a second time.
       const row = screen.getByRole('row', { name: /doubled_clicks/ });
       expect(within(row).getAllByTitle(ROW_LEVEL_TEXT)).toHaveLength(1);
-      expect(within(row).getByLabelText('Aggregations for doubled_clicks')).toBeInTheDocument();
+      expect(
+        within(row).getByLabelText('Available aggregations for doubled_clicks')
+      ).toBeInTheDocument();
     });
 
     it('leaves an aggregate-level field’s band untouched — it is already an aggregate', () => {

@@ -74,6 +74,7 @@ import {
 import { buildColumnSearchResult, matchesColumnSearch } from './report-column-search';
 import { SearchButton } from './SearchButton';
 import { PathTree } from './FieldSearchPicker';
+import { useTranslation } from 'react-i18next';
 
 // Must stay in sync with the backend collectSchemaFieldPaths walker: hidden and
 // DISCONNECTED nodes (with their subtrees) are unavailable for reporting, so they
@@ -645,13 +646,16 @@ function JoinPathTooltip({
   dataMartName: string;
   path: readonly string[];
 }) {
+  const { t } = useTranslation();
   if (path.length < 2) return null;
   return (
     <Tooltip delayDuration={600}>
       <TooltipTrigger asChild>
         <button
           type='button'
-          aria-label={`Show join path for ${dataMartName}`}
+          aria-label={t('reportColumnPicker.showJoinPathFor', 'Show join path for {{name}}', {
+            name: dataMartName,
+          })}
           className='text-muted-foreground hover:text-foreground inline-flex h-6 w-6 shrink-0 items-center justify-center rounded opacity-0 transition-opacity group-hover/data-mart:opacity-100 focus-visible:opacity-100'
         >
           <Link2 className='size-4 shrink-0' aria-hidden='true' />
@@ -695,6 +699,7 @@ function BlendedGroupItem({
   hasSearchQuery = false,
   uniqueCount,
 }: BlendedGroupItemProps) {
+  const { t } = useTranslation();
   // Also open when the source's Unique Count is on: an excluded source contributes no selected
   // field, so a collapsed group would hide the only control that can clear it.
   const [isOpen, setIsOpen] = useState(
@@ -729,7 +734,12 @@ function BlendedGroupItem({
         <button
           type='button'
           aria-expanded={isOpen}
-          aria-label={`${isOpen ? 'Collapse' : 'Expand'} ${group.alias}`}
+          aria-label={t(
+            isOpen ? 'reportColumnPicker.collapseGroup' : 'reportColumnPicker.expandGroup',
+            {
+              name: group.alias,
+            }
+          )}
           className='flex min-w-0 flex-1 cursor-pointer items-start gap-1.5 text-left'
           onClick={() => {
             setIsOpen(v => !v);
@@ -795,6 +805,7 @@ export function ReportColumnPicker({
   onOutputConfigChange,
   onCountChange,
 }: ReportColumnPickerProps) {
+  const { t } = useTranslation();
   const outputControlsSupported = storageType ? supportsOutputControls(storageType) : false;
   const outputControlsAvailable: boolean = outputControlsSupported && !!onOutputConfigChange;
   const effectiveOutputConfig: OutputConfig = outputConfig ?? EMPTY_OUTPUT_CONFIG;
@@ -1810,9 +1821,13 @@ export function ReportColumnPicker({
                 if (checked === true) selectAll();
                 else deselectAll();
               }}
-              aria-label={allSelected ? 'Deselect all fields' : 'Select all fields'}
+              aria-label={
+                allSelected
+                  ? t('reportColumnPicker.deselectAllFields', 'Deselect all fields')
+                  : t('reportColumnPicker.selectAllFields', 'Select all fields')
+              }
             />
-            Select all
+            {t('reportColumnPicker.selectAll', 'Select all')}
           </label>
           <label className='text-muted-foreground hover:text-foreground flex cursor-pointer items-center gap-1 text-xs transition-colors'>
             <Switch
@@ -1820,7 +1835,7 @@ export function ReportColumnPicker({
               checked={showSelectedOnly}
               onCheckedChange={setShowSelectedOnly}
             />
-            Show selected only
+            {t('reportColumnPicker.showSelectedOnly', 'Show selected only')}
           </label>
         </div>
 
@@ -1861,8 +1876,8 @@ export function ReportColumnPicker({
           <Input
             autoFocus
             value={searchQuery}
-            placeholder='Search columns...'
-            aria-label='Search columns'
+            placeholder={t('reportColumnPicker.searchColumnsPlaceholder', 'Search columns...')}
+            aria-label={t('reportColumnPicker.searchColumns', 'Search columns')}
             className='pl-8'
             onChange={event => {
               setSearchQuery(event.target.value);
@@ -1897,7 +1912,10 @@ export function ReportColumnPicker({
         <div className='m-2 flex items-center gap-2 rounded bg-amber-50 px-2 py-1.5 text-xs text-amber-700 dark:bg-amber-900/30 dark:text-amber-300'>
           <AlertTriangle className='h-3 w-3 shrink-0' />
           <span className='flex-1'>
-            Output controls are not yet supported for this storage type.
+            {t(
+              'reportColumnPicker.outputControlsUnsupported',
+              'Output controls are not yet supported for this storage type.'
+            )}
           </span>
           <Button
             variant='outline'
@@ -1907,7 +1925,7 @@ export function ReportColumnPicker({
               onOutputConfigChange(EMPTY_OUTPUT_CONFIG);
             }}
           >
-            Clear
+            {t('reportColumnPicker.clear', 'Clear')}
           </Button>
         </div>
       )}
@@ -1925,21 +1943,26 @@ export function ReportColumnPicker({
             <div className='flex items-start gap-1.5 px-1 py-1'>
               <div className='min-w-0 flex-1'>
                 <span className='text-destructive truncate text-xs font-semibold'>
-                  Disconnected columns
+                  {t('reportColumnPicker.disconnectedColumns', 'Disconnected columns')}
                 </span>
               </div>
               <Tooltip>
                 <TooltipTrigger asChild>
                   <TriangleAlert
                     className='text-destructive mt-0.5 size-4 shrink-0'
-                    aria-label='About disconnected columns'
+                    aria-label={t(
+                      'reportColumnPicker.aboutDisconnectedColumns',
+                      'About disconnected columns'
+                    )}
                   />
                 </TooltipTrigger>
                 <TooltipContent side='top' className='max-w-xs'>
                   <div className='space-y-1'>
                     <p>
-                      They are missing from the current Data Mart output schema. Uncheck them to
-                      remove them from the report, or contact your analyst to restore the schema.
+                      {t(
+                        'reportColumnPicker.disconnectedColumnsHelp',
+                        'They are missing from the current Data Mart output schema. Uncheck them to remove them from the report, or contact your analyst to restore the schema.'
+                      )}
                     </p>
                   </div>
                 </TooltipContent>
@@ -2007,7 +2030,9 @@ export function ReportColumnPicker({
         )}
         {!hasVisibleColumns && (
           <p className='text-muted-foreground px-2 py-6 text-center text-sm'>
-            {hasSearchQuery ? 'No matching columns found.' : 'No fields available.'}
+            {hasSearchQuery
+              ? t('reportColumnPicker.noMatchingColumns', 'No matching columns found.')
+              : t('reportColumnPicker.noFieldsAvailable', 'No fields available.')}
           </p>
         )}
         {searchedNativeFields.map(field => (
@@ -2076,7 +2101,7 @@ export function ReportColumnPicker({
 
       {selectedNativeCount === 0 && selectedBlendedCount > 0 && (
         <p className='text-destructive text-sm'>
-          At least one column from the current Data Mart must be selected
+          {t('reportColumnPicker.currentDataMartColumnRequired')}
         </p>
       )}
     </div>

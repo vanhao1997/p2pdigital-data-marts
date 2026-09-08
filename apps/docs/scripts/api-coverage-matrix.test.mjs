@@ -76,7 +76,8 @@ test('accepts the exact Markdown parser coverage targets', () => {
     {
       status: 'Covered',
       coveredSince: '2026-07-22',
-      target: 'https://digitalreport.p2pdigital.io.vn/api/swagger-ui#/Utils/MarkdownParserController_parseToHtml',
+      target:
+        'https://digitalreport.p2pdigital.io.vn/api/swagger-ui#/Utils/MarkdownParserController_parseToHtml',
     }
   );
   assert.deepEqual(
@@ -103,7 +104,8 @@ test('accepts the exact Search coverage targets', () => {
     {
       status: 'Covered',
       coveredSince: '2026-07-23',
-      target: 'https://digitalreport.p2pdigital.io.vn/api/swagger-ui#/Search/SearchController_search',
+      target:
+        'https://digitalreport.p2pdigital.io.vn/api/swagger-ui#/Search/SearchController_search',
     }
   );
   assert.deepEqual(
@@ -130,7 +132,8 @@ test('accepts the exact Data Mart list coverage targets', () => {
     {
       status: 'Covered',
       coveredSince: '2026-07-23',
-      target: 'https://digitalreport.p2pdigital.io.vn/api/swagger-ui#/DataMarts/DataMartController_list',
+      target:
+        'https://digitalreport.p2pdigital.io.vn/api/swagger-ui#/DataMarts/DataMartController_list',
     }
   );
   assert.deepEqual(
@@ -161,7 +164,8 @@ test('accepts the exact HTTP Data coverage targets', () => {
     {
       status: 'Covered',
       coveredSince: '2026-07-23',
-      target: 'https://digitalreport.p2pdigital.io.vn/api/swagger-ui#/HTTP%20Data/HttpDataController_stream',
+      target:
+        'https://digitalreport.p2pdigital.io.vn/api/swagger-ui#/HTTP%20Data/HttpDataController_stream',
     }
   );
   assert.deepEqual(

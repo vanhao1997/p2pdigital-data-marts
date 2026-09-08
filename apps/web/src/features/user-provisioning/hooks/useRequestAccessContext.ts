@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
+import i18n from '../../../i18n';
 import {
   type RequestAccessContext,
   userProvisioningService,
@@ -15,7 +16,9 @@ export function useRequestAccessContext() {
     try {
       setContext(await userProvisioningService.getRequestAccessContext());
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to load request access context');
+      setError(
+        err instanceof Error ? err.message : i18n.t('userProvisioning.loadRequestAccessFailed')
+      );
     } finally {
       setLoading(false);
     }

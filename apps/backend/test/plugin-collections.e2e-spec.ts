@@ -36,11 +36,15 @@ describe('Plugin collections (e2e)', () => {
   });
 
   beforeAll(async () => {
+    const provider = {
+      parseToken: async (token: string) =>
+        token.includes('member') ? payload('user-1', 'app_owox') : payload(token, 'plugin'),
+      // PUT/DELETE requests also pass through the project lifecycle guard.
+      getProjectForUser: async () => ({ archived: false }),
+    };
     const idpProvider = {
-      getProvider: () => ({
-        parseToken: async (token: string) =>
-          token.includes('member') ? payload('user-1', 'app_owox') : payload(token, 'plugin'),
-      }),
+      getProvider: () => provider,
+      getProviderFromApp: () => provider,
     };
     const entityAuthorization = {
       canAccess: async (request: PluginEntityAuthorizationRequest) =>

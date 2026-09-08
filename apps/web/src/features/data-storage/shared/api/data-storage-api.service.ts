@@ -119,23 +119,36 @@ export class DataStorageApiService extends ApiService {
     } as AxiosRequestConfig);
   }
 
-  async getPublishDraftsTriggerStatus(id: string, triggerId: string): Promise<TaskStatus> {
+  async getPublishDraftsTriggerStatus(
+    id: string,
+    triggerId: string,
+    config?: AxiosRequestConfig
+  ): Promise<TaskStatus> {
     const response = await this.get<TaskStatusResponseDto>(
       `/${id}/publish-drafts-triggers/${triggerId}/status`,
       undefined,
-      { skipLoadingIndicator: true, skipErrorToast: true } as AxiosRequestConfig
+      {
+        skipLoadingIndicator: true,
+        skipErrorToast: true,
+        ...config,
+      } as AxiosRequestConfig
     );
     return response.status;
   }
 
   async getPublishDraftsTriggerResponse(
     id: string,
-    triggerId: string
+    triggerId: string,
+    config?: AxiosRequestConfig
   ): Promise<PublishDataStorageDraftsResponseDto> {
     return this.get<PublishDataStorageDraftsResponseDto>(
       `/${id}/publish-drafts-triggers/${triggerId}`,
       undefined,
-      { skipLoadingIndicator: true, skipErrorToast: true } as AxiosRequestConfig
+      {
+        skipLoadingIndicator: true,
+        skipErrorToast: true,
+        ...config,
+      } as AxiosRequestConfig
     );
   }
 

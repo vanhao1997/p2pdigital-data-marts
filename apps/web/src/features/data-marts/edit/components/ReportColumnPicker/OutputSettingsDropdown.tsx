@@ -25,13 +25,18 @@ import { useTranslation } from 'react-i18next';
 export type { JoinedSource };
 
 function SectionHeader({ title, info }: { title: string; info: string }) {
+  const { t } = useTranslation();
+
   return (
     <div className='text-muted-foreground mb-2 flex items-center gap-1.5 text-xs font-semibold tracking-wide uppercase'>
       <span>{title}</span>
       <Tooltip>
         <TooltipTrigger asChild>
           <span className='text-muted-foreground/60 hover:text-muted-foreground inline-flex'>
-            <Info className='size-3.5' aria-label={`About ${title}`} />
+            <Info
+              className='size-3.5'
+              aria-label={t('reportColumnPicker.aboutColumn', { title })}
+            />
           </span>
         </TooltipTrigger>
         <TooltipContent
@@ -132,7 +137,7 @@ export function OutputSettingsDropdown({
 
   return (
     <div className='space-y-4 p-3'>
-        <FiltersSection
+      <FiltersSection
         indexedRules={postJoinIndexed}
         allColumns={allColumns}
         onAdd={onAddRule}
@@ -206,7 +211,10 @@ function FiltersSection({
 
   return (
     <div>
-      <SectionHeader title={t('reportColumnPicker.filters', 'Filters')} info={t('reportColumnPicker.filtersHelp', SECTION_INFO.filters)} />
+      <SectionHeader
+        title={t('reportColumnPicker.filters', 'Filters')}
+        info={t('reportColumnPicker.filtersHelp', SECTION_INFO.filters)}
+      />
       <div className='space-y-1'>
         {indexedRules.map(({ rule, index }) => (
           <FilterRow
@@ -309,7 +317,10 @@ function SlicesSection({
 
   return (
     <div>
-      <SectionHeader title={t('reportColumnPicker.slices', 'Slices')} info={t('reportColumnPicker.slicesHelp', SECTION_INFO.slices)} />
+      <SectionHeader
+        title={t('reportColumnPicker.slices', 'Slices')}
+        info={t('reportColumnPicker.slicesHelp', SECTION_INFO.slices)}
+      />
       <div className='space-y-1'>
         {indexedRules.map(({ rule, index }) => (
           <FilterRow
@@ -389,7 +400,11 @@ function AddSlicePicker({
   }
 
   if (items.length === 0) {
-    return <span className='text-muted-foreground text-xs'>{t('reportColumnPicker.noJoinedFilterableColumns', 'No filterable joined columns.')}</span>;
+    return (
+      <span className='text-muted-foreground text-xs'>
+        {t('reportColumnPicker.noJoinedFilterableColumns', 'No filterable joined columns.')}
+      </span>
+    );
   }
 
   return (
@@ -413,7 +428,11 @@ function AddFilterPicker({
 }) {
   const { t } = useTranslation();
   if (columns.length === 0) {
-    return <span className='text-muted-foreground text-xs'>{t('reportColumnPicker.noMoreFilterableColumns', 'No more filterable columns.')}</span>;
+    return (
+      <span className='text-muted-foreground text-xs'>
+        {t('reportColumnPicker.noMoreFilterableColumns', 'No more filterable columns.')}
+      </span>
+    );
   }
   return (
     <FieldSearchPicker
@@ -480,7 +499,10 @@ function SortSection({ sort, selectedColumns, onChange }: SortSectionProps) {
 
   return (
     <div>
-      <SectionHeader title={t('reportColumnPicker.sort', 'Sort')} info={t('reportColumnPicker.sortHelp', SECTION_INFO.sort)} />
+      <SectionHeader
+        title={t('reportColumnPicker.sort', 'Sort')}
+        info={t('reportColumnPicker.sortHelp', SECTION_INFO.sort)}
+      />
       <div className='space-y-1'>
         {sort.map((rule, index) => (
           <div
@@ -547,7 +569,10 @@ function LimitSection({ value, onChange }: LimitSectionProps) {
   const { t } = useTranslation();
   return (
     <div>
-      <SectionHeader title={t('reportColumnPicker.limit', 'Limit')} info={t('reportColumnPicker.limitHelp', SECTION_INFO.limit)} />
+      <SectionHeader
+        title={t('reportColumnPicker.limit', 'Limit')}
+        info={t('reportColumnPicker.limitHelp', SECTION_INFO.limit)}
+      />
       <LimitInput value={value} onChange={onChange} />
     </div>
   );

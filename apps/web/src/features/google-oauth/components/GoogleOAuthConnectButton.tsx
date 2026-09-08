@@ -165,11 +165,17 @@ export function GoogleOAuthConnectButton({
           try {
             if (data.error || !data.code) {
               throw new Error(
-                data.error ?? t('googleOAuth.errors.noAuthorizationCode', 'No authorization code received from Google')
+                data.error ??
+                  t(
+                    'googleOAuth.errors.noAuthorizationCode',
+                    'No authorization code received from Google'
+                  )
               );
             }
             if (data.state !== state) {
-              throw new Error(t('googleOAuth.errors.invalidState', 'Invalid state token. Please try again.'));
+              throw new Error(
+                t('googleOAuth.errors.invalidState', 'Invalid state token. Please try again.')
+              );
             }
 
             const result =
@@ -185,9 +191,12 @@ export function GoogleOAuthConnectButton({
             console.error('Google OAuth connection failed', error);
             setConnecting(false);
             setConnectError(
-                error instanceof Error && error.message
-                  ? error.message
-                : t('googleOAuth.errors.connectFailed', 'Failed to connect your Google account. Please try again.')
+              error instanceof Error && error.message
+                ? error.message
+                : t(
+                    'googleOAuth.errors.connectFailed',
+                    'Failed to connect your Google account. Please try again.'
+                  )
             );
           }
         })();
@@ -205,7 +214,10 @@ export function GoogleOAuthConnectButton({
       if (!popup) {
         cleanup();
         throw new Error(
-          t('googleOAuth.errors.popupBlocked', 'Popup was blocked. Please allow popups for this site and try again.')
+          t(
+            'googleOAuth.errors.popupBlocked',
+            'Popup was blocked. Please allow popups for this site and try again.'
+          )
         );
       }
       popupRef.current = popup;
@@ -226,7 +238,10 @@ export function GoogleOAuthConnectButton({
       setConnectError(
         error instanceof Error
           ? error.message
-          : t('googleOAuth.errors.startFailed', 'Failed to start OAuth connection. Please try again.')
+          : t(
+              'googleOAuth.errors.startFailed',
+              'Failed to start OAuth connection. Please try again.'
+            )
       );
     }
   };

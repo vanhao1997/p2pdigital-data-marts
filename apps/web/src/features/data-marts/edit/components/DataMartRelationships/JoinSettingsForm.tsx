@@ -15,6 +15,7 @@ import { ExternalAnchor } from '@owox/ui/components/common/external-anchor';
 import { ExternalLink, Info, Plus, Trash2 } from 'lucide-react';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useFieldArray, useForm } from 'react-hook-form';
+import type { TFunction } from 'i18next';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
 import { z } from 'zod';
@@ -29,23 +30,40 @@ import { dataMartService } from '../../../shared';
 import { dataMartRelationshipService } from '../../../shared/services/data-mart-relationship.service';
 import type { DataMartRelationship } from '../../../shared/types/relationship.types';
 
-const joinConditionSchema = z.object({
-  sourceFieldName: z.string().min(1, 'Source field is required'),
-  targetFieldName: z.string().min(1, 'Related field is required'),
-});
+type Translate = TFunction;
 
-function buildJoinSettingsFormSchema(siblingAliasesRef: { current: Set<string> }) {
+function buildJoinSettingsFormSchema(siblingAliasesRef: { current: Set<string> }, t: Translate) {
+  const joinConditionSchema = z.object({
+    sourceFieldName: z
+      .string()
+      .min(1, t('dataMartRelationships.sourceFieldRequired', 'Source field is required')),
+    targetFieldName: z
+      .string()
+      .min(1, t('dataMartRelationships.relatedFieldRequired', 'Related field is required')),
+  });
+
   return z.object({
     targetAlias: z
       .string()
-      .min(1, 'Field prefix is required')
+      .min(1, t('dataMartRelationships.fieldPrefixRequired', 'Field prefix is required'))
       .regex(/^[a-z0-9_]+$/, {
-        message: 'Field prefix must contain only lowercase letters, numbers, and underscores',
+        message: t(
+          'dataMartRelationships.fieldPrefixFormat',
+          'Field prefix must contain only lowercase letters, numbers, and underscores'
+        ),
       })
       .refine(val => !siblingAliasesRef.current.has(val), {
-        message: 'This alias is already used by another joined data mart',
+        message: t(
+          'dataMartRelationships.aliasAlreadyUsed',
+          'This alias is already used by another joined data mart'
+        ),
       }),
-    joinConditions: z.array(joinConditionSchema).min(1, 'At least one join condition is required'),
+    joinConditions: z
+      .array(joinConditionSchema)
+      .min(
+        1,
+        t('dataMartRelationships.joinConditionRequired', 'At least one join condition is required')
+      ),
   });
 }
 
@@ -138,7 +156,7 @@ export function JoinSettingsForm({
   // set of taken aliases changes. Paired with `form.trigger` below to re-validate
   // when siblings are added or renamed.
   const siblingAliasesRef = useRef<Set<string>>(new Set(siblingAliases));
-  const formSchema = useMemo(() => buildJoinSettingsFormSchema(siblingAliasesRef), []);
+  const formSchema = useMemo(() => buildJoinSettingsFormSchema(siblingAliasesRef, t), [t]);
 
   const form = useForm<JoinSettingsFormValues>({
     resolver: zodResolver(formSchema),
@@ -272,9 +290,12 @@ export function JoinSettingsForm({
         onSaved(updated);
       })
       .catch(() => {
-        toast.error('Failed to save join settings', {
-          id: `join-save-error-${relationship.id}`,
-        });
+        toast.error(
+          t('dataMartRelationships.failedSaveJoinSettings', 'Failed to save join settings'),
+          {
+            id: `join-save-error-${relationship.id}`,
+          }
+        );
       })
       .finally(() => {
         setIsSaving(false);
@@ -289,6 +310,7 @@ export function JoinSettingsForm({
     relationship.id,
     onSaved,
     form,
+    t,
   ]);
 
   return (
@@ -297,8 +319,9 @@ export function JoinSettingsForm({
         <div className='flex min-w-0 items-center gap-2 rounded-md border border-amber-300 bg-amber-50 px-3 py-2 text-sm text-amber-900 dark:border-amber-500/40 dark:bg-amber-500/10 dark:text-amber-200'>
           <Info className='size-4 shrink-0' />
           <p className='min-w-0 flex-1 truncate leading-snug'>
-            Inherited from <span className='font-semibold'>{inheritedFrom.title}</span> — edit join
-            there.
+            {t('dataMartRelationships.inheritedJoin', 'Inherited from')}{' '}
+            <span className='font-semibold'>{inheritedFrom.title}</span> —{' '}
+            {t('dataMartRelationships.editJoinThere', 'edit the join there')}.
           </p>
           <Button
             type='button'
@@ -310,7 +333,9 @@ export function JoinSettingsForm({
             }}
           >
             <ExternalLink className='size-3.5' />
-            <span className='max-w-[200px] truncate'>{t('common.open')} {inheritedFrom.title}</span>
+            <span className='max-w-[200px] truncate'>
+              {t('common.open')} {inheritedFrom.title}
+            </span>
           </Button>
         </div>
       )}
@@ -318,7 +343,7 @@ export function JoinSettingsForm({
         <div className='grid grid-cols-2 gap-3'>
           <div className='bg-muted/50 flex flex-col gap-1.5 rounded-md p-3 dark:bg-white/5'>
             <label className='flex items-center gap-1.5 text-sm font-medium'>
-              Joined Data Mart
+              {t('dataMartRelationships.joinedDataMart', 'Joined Data Mart')}
               <Tooltip>
                 <TooltipTrigger asChild>
                   <span className='text-muted-foreground/50 hover:text-muted-foreground shrink-0 transition-colors'>
@@ -326,7 +351,10 @@ export function JoinSettingsForm({
                   </span>
                 </TooltipTrigger>
                 <TooltipContent side='top' className='max-w-xs'>
-                  The data mart linked here, plus who configured the join and when.
+                  {t(
+                    'dataMartRelationships.joinedDataMartTooltip',
+                    'The data mart linked here, plus who configured the join and when.'
+                  )}
                 </TooltipContent>
               </Tooltip>
             </label>
@@ -521,7 +549,10 @@ export function JoinSettingsForm({
                         'text-destructive hover:text-destructive',
                         index === 0 ? 'mt-7' : 'mt-2'
                       )}
-                      aria-label={t('dataMartRelationships.removeJoinCondition', 'Remove join condition')}
+                      aria-label={t(
+                        'dataMartRelationships.removeJoinCondition',
+                        'Remove join condition'
+                      )}
                     >
                       <Trash2 className='h-3.5 w-3.5' />
                     </Button>
@@ -530,7 +561,10 @@ export function JoinSettingsForm({
 
                 {mismatch != null && (
                   <p className='text-destructive text-xs'>
-                    Type mismatch: source is {mismatch.sourceType}, target is {mismatch.targetType}
+                    {t('dataMartRelationships.typeMismatch', {
+                      source: mismatch.sourceType,
+                      target: mismatch.targetType,
+                    })}
                   </p>
                 )}
               </div>

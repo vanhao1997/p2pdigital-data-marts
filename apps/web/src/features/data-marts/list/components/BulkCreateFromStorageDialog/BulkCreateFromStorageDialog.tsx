@@ -223,15 +223,24 @@ function BulkCreateFromStorageDialogInner({
     onCreated();
 
     if (result.successCount > 0) {
-      toast.success(t('bulkCreateFromStorage.created', 'Created {{count}} Data Mart(s)', { count: result.successCount }), {
-        duration: 6000,
-      });
+      toast.success(
+        t('bulkCreateFromStorage.created', 'Created {{count}} Data Mart(s)', {
+          count: result.successCount,
+        }),
+        {
+          duration: 6000,
+        }
+      );
     }
     if (result.failures.length > 0) {
       toast.error(
-        t('bulkCreateFromStorage.failed', 'Could not create {{count}} Data Mart(s). Check and try again.', {
-          count: result.failures.length,
-        }),
+        t(
+          'bulkCreateFromStorage.failed',
+          'Could not create {{count}} Data Mart(s). Check and try again.',
+          {
+            count: result.failures.length,
+          }
+        ),
         { duration: 8000 }
       );
       // Keep the failed selections so the user can retry without rebuilding the list.
@@ -255,7 +264,9 @@ function BulkCreateFromStorageDialogInner({
       ? t('bulkCreateFromStorage.creating', 'Creating {{done}} / {{total}}…', progress)
       : t('bulkCreateFromStorage.creatingSingle', 'Creating…')
     : selected.size > 0
-      ? t('bulkCreateFromStorage.createSelected', 'Create {{count}} Data Mart(s)', { count: selected.size })
+      ? t('bulkCreateFromStorage.createSelected', 'Create {{count}} Data Mart(s)', {
+          count: selected.size,
+        })
       : t('bulkCreateFromStorage.create', 'Create Data Mart');
 
   const handleFinishStorageSetup = () => {
@@ -274,11 +285,17 @@ function BulkCreateFromStorageDialogInner({
     >
       <DialogContent className='flex max-h-[90vh] flex-col gap-0 p-0 sm:max-w-4xl'>
         <DialogHeader className='px-6 pt-6 pb-6'>
-          <DialogTitle>{t('bulkCreateFromStorage.title', 'Import Data Marts from storage')}</DialogTitle>
+          <DialogTitle>
+            {t('bulkCreateFromStorage.title', 'Import Data Marts from storage')}
+          </DialogTitle>
           <DialogDescription>
-            {t('bulkCreateFromStorage.description', 'Select up to {{count}} tables or views — each becomes a new Data Mart.', {
-              count: MAX_BULK_DATA_MART_COUNT,
-            })}
+            {t(
+              'bulkCreateFromStorage.description',
+              'Select up to {{count}} tables or views — each becomes a new Data Mart.',
+              {
+                count: MAX_BULK_DATA_MART_COUNT,
+              }
+            )}
           </DialogDescription>
         </DialogHeader>
 
@@ -296,10 +313,16 @@ function BulkCreateFromStorageDialogInner({
                 loadingStorages
                   ? t('bulkCreateFromStorage.loading', 'Loading…')
                   : storageOptions.length === 0
-                    ? t('bulkCreateFromStorage.noBigQueryStorages', 'No Google BigQuery storages available')
+                    ? t(
+                        'bulkCreateFromStorage.noBigQueryStorages',
+                        'No Google BigQuery storages available'
+                      )
                     : t('bulkCreateFromStorage.selectStorage', 'Select a storage')
               }
-              emptyMessage={t('bulkCreateFromStorage.noBigQueryStorages', 'No Google BigQuery storages available')}
+              emptyMessage={t(
+                'bulkCreateFromStorage.noBigQueryStorages',
+                'No Google BigQuery storages available'
+              )}
               disabled={loadingStorages || storageOptions.length === 0 || inFlight}
               className='w-full'
               renderLabel={option => (
@@ -327,7 +350,9 @@ function BulkCreateFromStorageDialogInner({
             <>
               {/* ── Block 2 ────────────────────────────────────────────── */}
               <section className='dm-card-block !gap-2'>
-                <BlockHeading step={2}>{t('bulkCreateFromStorage.browseResources', 'Browse resources')}</BlockHeading>
+                <BlockHeading step={2}>
+                  {t('bulkCreateFromStorage.browseResources', 'Browse resources')}
+                </BlockHeading>
                 {storageId ? (
                   <StorageResourceTree
                     namespaces={namespaces}
@@ -345,7 +370,10 @@ function BulkCreateFromStorageDialogInner({
                   />
                 ) : (
                   <BlockPlaceholder>
-                    {t('bulkCreateFromStorage.pickStorage', 'Select a data storage above to browse tables and views.')}
+                    {t(
+                      'bulkCreateFromStorage.pickStorage',
+                      'Select a data storage above to browse tables and views.'
+                    )}
                   </BlockPlaceholder>
                 )}
               </section>
@@ -359,7 +387,11 @@ function BulkCreateFromStorageDialogInner({
                       {selected.size} / {MAX_BULK_DATA_MART_COUNT}
                       {isSelectionFull && (
                         <span className='ml-2'>
-                          · {t('bulkCreateFromStorage.limitReached', 'Limit reached; remove an item to select another')}
+                          ·{' '}
+                          {t(
+                            'bulkCreateFromStorage.limitReached',
+                            'Limit reached; remove an item to select another'
+                          )}
                         </span>
                       )}
                     </span>
@@ -370,8 +402,14 @@ function BulkCreateFromStorageDialogInner({
                 {selected.size === 0 ? (
                   <BlockPlaceholder>
                     {storageId
-                      ? t('bulkCreateFromStorage.tickResources', 'Check resources in the tree above to add them here.')
-                      : t('bulkCreateFromStorage.selectionsAppear', 'Your selections will appear here after you start checking resources.')}
+                      ? t(
+                          'bulkCreateFromStorage.tickResources',
+                          'Check resources in the tree above to add them here.'
+                        )
+                      : t(
+                          'bulkCreateFromStorage.selectionsAppear',
+                          'Your selections will appear here after you start checking resources.'
+                        )}
                   </BlockPlaceholder>
                 ) : (
                   <ul className='flex flex-wrap gap-1.5'>
@@ -382,9 +420,13 @@ function BulkCreateFromStorageDialogInner({
                           {leaf.id}
                           <button
                             type='button'
-                            aria-label={t('bulkCreateFromStorage.removeResource', 'Remove {{name}}', {
-                              name: leaf.fullyQualifiedName,
-                            })}
+                            aria-label={t(
+                              'bulkCreateFromStorage.removeResource',
+                              'Remove {{name}}',
+                              {
+                                name: leaf.fullyQualifiedName,
+                              }
+                            )}
                             title={leaf.fullyQualifiedName}
                             onClick={() => {
                               handleRemove(leaf.fullyQualifiedName);
@@ -409,7 +451,10 @@ function BulkCreateFromStorageDialogInner({
             <Button
               type='button'
               onClick={handleFinishStorageSetup}
-              title={t('bulkCreateFromStorage.finishStorageSetupTitle', 'Open storage configuration to fix credentials or permissions')}
+              title={t(
+                'bulkCreateFromStorage.finishStorageSetupTitle',
+                'Open storage configuration to fix credentials or permissions'
+              )}
             >
               {t('bulkCreateFromStorage.finishStorageSetup', 'Finish storage setup')}
             </Button>

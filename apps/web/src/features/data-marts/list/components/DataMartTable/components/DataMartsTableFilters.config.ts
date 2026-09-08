@@ -78,9 +78,7 @@ export function buildDataMartsTableFilters(
   t?: TFunction
 ): FilterConfigItem<DataMartFilterKey>[] {
   const translate = t ?? ((key: string, defaultValue?: string) => defaultValue ?? key);
-  const dataMartColumnLabels = t
-    ? getDataMartColumnLabels(t)
-    : defaultDataMartColumnLabels;
+  const dataMartColumnLabels = t ? getDataMartColumnLabels(t) : defaultDataMartColumnLabels;
   /* -----------------------------
    * Status options
    * --------------------------- */
@@ -155,10 +153,7 @@ export function buildDataMartsTableFilters(
     if (option.value === 'OTHER') {
       return {
         value: 'OTHER',
-        label: translate(
-          'dataMartTableColumns.otherNotConnector',
-          'Other (not connector)'
-        ),
+        label: translate('dataMartTableColumns.otherNotConnector', 'Other (not connector)'),
       };
     }
 

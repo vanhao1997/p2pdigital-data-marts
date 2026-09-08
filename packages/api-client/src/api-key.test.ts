@@ -48,7 +48,10 @@ describe('parseOWOXApiKey', () => {
       'apiOrigin',
       { apiOrigin: '', apiKeyId: 'pmk_AbCdEfGhIjKlMnOpQrStUv', apiKeySecret: 'secret' },
     ],
-    ['apiKeyId', { apiOrigin: 'https://digitalreport.p2pdigital.io.vn', apiKeyId: '', apiKeySecret: 'secret' }],
+    [
+      'apiKeyId',
+      { apiOrigin: 'https://digitalreport.p2pdigital.io.vn', apiKeyId: '', apiKeySecret: 'secret' },
+    ],
     [
       'apiKeySecret',
       {

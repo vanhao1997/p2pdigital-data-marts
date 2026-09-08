@@ -6,29 +6,28 @@ export default function GoogleChatDescription() {
   const { t } = useTranslation();
   return (
     <AccordionItem value='googlechat-details'>
-      <AccordionTrigger>{t('destinationHelp.googleChat.title', 'How do I start sending to Google Chat?')}</AccordionTrigger>
+      <AccordionTrigger>{t('destinationHelp.googleChat.title')}</AccordionTrigger>
       <AccordionContent>
         <p className='mb-2'>
-          {t('destinationHelp.googleChat.choose', 'Choose')}{' '}
-          <strong>{t('googleChat.incomingWebhook', 'Incoming Webhook')}</strong>{' '}
-          {t('destinationHelp.googleChat.webhookText', 'to send the report directly to the space as formatted Google Chat messages, or')}{' '}
-          <strong>{t('googleChat.channelEmail', 'Channel Email')}</strong>{' '}
-          {t('destinationHelp.googleChat.emailText', 'to send it by email to the Chat space address. For webhook delivery, open')}{' '}
-          <strong>Apps &amp; integrations</strong>{' '}
-          {t('destinationHelp.googleChat.appsText', 'in the target space, add an incoming webhook, and paste its URL here. Treat the URL as a secret.')}
+          {t('destinationHelp.googleChat.choose')}{' '}
+          <strong>{t('googleChat.incomingWebhook')}</strong>{' '}
+          {t('destinationHelp.googleChat.webhookText')}{' '}
+          <strong>{t('googleChat.channelEmail')}</strong>{' '}
+          {t('destinationHelp.googleChat.emailText')} <strong>Apps &amp; integrations</strong>{' '}
+          {t('destinationHelp.googleChat.appsText')}
         </p>
         <p className='mb-2'>
-          {t('destinationHelp.googleChat.reportSetup', "Then create a report from your Data Mart's")}{' '}
-          <strong>{t('destinationHelp.common.destinations', 'Destinations')}</strong>{' '}
-          {t('destinationHelp.googleChat.reportSetupEnd', 'tab and configure its subject, message, and delivery conditions.')}
+          {t('destinationHelp.googleChat.reportSetup')}{' '}
+          <strong>{t('destinationHelp.common.destinations')}</strong>{' '}
+          {t('destinationHelp.googleChat.reportSetupEnd')}
         </p>
         <p className='mb-2'>
-          {t('destinationHelp.common.moreDetails', 'For more details, read the')}{' '}
+          {t('destinationHelp.common.moreDetails')}{' '}
           <ExternalAnchor
             className='underline'
             href='https://docs.p2pdigital.io.vn/docs/destinations/supported-destinations/google-chat/?utm_source=owox_data_marts&utm_medium=destination_entity&utm_campaign=tooltip-google-chat'
           >
-            {t('destinationHelp.common.documentation', 'P2PDigital documentation')}
+            {t('destinationHelp.common.documentation')}
           </ExternalAnchor>
           .
         </p>

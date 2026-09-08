@@ -132,11 +132,11 @@ export default function DataMartOverviewContent() {
         });
         toast.success(t('dataMartOverview.toasts.sharingUpdated', 'Sharing updated'));
       } catch (error) {
-      toast.error(
-        error instanceof Error
-          ? error.message
-          : t('dataMartOverview.errors.updateSharing', 'Failed to update sharing')
-      );
+        toast.error(
+          error instanceof Error
+            ? error.message
+            : t('dataMartOverview.errors.updateSharing', 'Failed to update sharing')
+        );
       } finally {
         void getDataMart(dataMart.id);
       }
@@ -226,7 +226,10 @@ export default function DataMartOverviewContent() {
                     </button>
                   </TooltipTrigger>
                   <TooltipContent side='top' align='center' role='tooltip'>
-                    {t('dataMartOverview.technicalOwnerHelp', 'Responsible for data sources and schema')}
+                    {t(
+                      'dataMartOverview.technicalOwnerHelp',
+                      'Responsible for data sources and schema'
+                    )}
                   </TooltipContent>
                 </Tooltip>
               </div>
@@ -287,7 +290,10 @@ export default function DataMartOverviewContent() {
                     </button>
                   </TooltipTrigger>
                   <TooltipContent side='top' align='center' role='tooltip'>
-                    {t('dataMartOverview.businessOwnerHelp', 'Responsible for business requirements')}
+                    {t(
+                      'dataMartOverview.businessOwnerHelp',
+                      'Responsible for business requirements'
+                    )}
                   </TooltipContent>
                 </Tooltip>
               </div>
@@ -375,7 +381,10 @@ export default function DataMartOverviewContent() {
               <Accordion variant='common' type='single' collapsible>
                 <AccordionItem value='maintenance-help'>
                   <AccordionTrigger>
-                    {t('dataMartOverview.maintenanceQuestion', 'What does "Shared for maintenance" mean?')}
+                    {t(
+                      'dataMartOverview.maintenanceQuestion',
+                      'What does "Shared for maintenance" mean?'
+                    )}
                   </AccordionTrigger>
                   <AccordionContent>
                     <p>
@@ -420,7 +429,10 @@ export default function DataMartOverviewContent() {
               <Accordion variant='common' type='single' collapsible>
                 <AccordionItem value='reporting-help'>
                   <AccordionTrigger>
-                    {t('dataMartOverview.reportingQuestion', 'What does "Shared for reporting" mean?')}
+                    {t(
+                      'dataMartOverview.reportingQuestion',
+                      'What does "Shared for reporting" mean?'
+                    )}
                   </AccordionTrigger>
                   <AccordionContent>
                     <p>
@@ -590,10 +602,7 @@ export default function DataMartOverviewContent() {
                   type='button'
                   onClick={() => void handleRefreshDataLastUpdated()}
                   disabled={isRefreshingDataLastUpdated}
-                  aria-label={t(
-                    'dataMartOverview.checkLastUpdated',
-                    'Check Data Last Updated now'
-                  )}
+                  aria-label={t('dataMartOverview.checkLastUpdated', 'Check Data Last Updated now')}
                   title={t('dataMartOverview.checkNow', 'Check now')}
                   className='text-muted-foreground hover:text-foreground flex aspect-square h-7 w-7 items-center justify-center rounded-full border bg-white transition-colors disabled:opacity-50 dark:bg-white/10'
                 >

@@ -88,7 +88,7 @@ export function JoinDescriptionForm({
         onSaved(updated);
       })
       .catch(() => {
-        toast.error('Failed to save relationship description', {
+        toast.error(t('uiFeedback.relationshipSaveFailed'), {
           id: `join-description-save-error-${relationship.id}`,
         });
       })
@@ -143,8 +143,9 @@ export function JoinDescriptionForm({
         <div className='flex min-w-0 items-center gap-2 rounded-md border border-amber-300 bg-amber-50 px-3 py-2 text-sm text-amber-900 dark:border-amber-500/40 dark:bg-amber-500/10 dark:text-amber-200'>
           <Info className='size-4 shrink-0' />
           <p className='min-w-0 flex-1 truncate leading-snug'>
-            Inherited from <span className='font-semibold'>{inheritedFrom.title}</span> — edit the
-            description there.
+            {t('dataMartRelationships.inheritedDescription', 'Inherited from')}{' '}
+            <span className='font-semibold'>{inheritedFrom.title}</span> —{' '}
+            {t('dataMartRelationships.editDescriptionThere', 'edit the description there')}.
           </p>
           <Button
             type='button'
@@ -156,13 +157,15 @@ export function JoinDescriptionForm({
             }}
           >
             <ExternalLink className='size-3.5' />
-            <span className='max-w-[200px] truncate'>{t('common.open')} {inheritedFrom.title}</span>
+            <span className='max-w-[200px] truncate'>
+              {t('common.open')} {inheritedFrom.title}
+            </span>
           </Button>
         </div>
       )}
 
       <label className='flex items-center gap-1.5 text-sm font-medium'>
-        Relationship Description
+        {t('dataMartRelationships.relationshipDescription', 'Relationship description')}
         <Tooltip>
           <TooltipTrigger asChild>
             <span className='text-muted-foreground/50 hover:text-muted-foreground shrink-0 transition-colors'>
@@ -170,8 +173,10 @@ export function JoinDescriptionForm({
             </span>
           </TooltipTrigger>
           <TooltipContent side='top' className='max-w-xs'>
-            Optional business meaning of this relationship. AI assistants read it through MCP to
-            understand how the joined data relates — not just how the rows are matched.
+            {t(
+              'dataMartRelationships.relationshipDescriptionTooltip',
+              'Optional business meaning of this relationship. AI assistants read it through MCP to understand how the joined data relates — not just how the rows are matched.'
+            )}
           </TooltipContent>
         </Tooltip>
       </label>
@@ -188,7 +193,10 @@ export function JoinDescriptionForm({
             saveRef.current(latestValueRef.current);
           }
         }}
-        placeholder='e.g. Visitors from the website sign up for the product and convert into users'
+        placeholder={t(
+          'dataMartRelationships.descriptionPlaceholder',
+          'e.g. Visitors from the website sign up for the product and convert into users'
+        )}
         disabled={readOnly}
         rows={4}
         className='bg-background text-sm dark:bg-white/5'

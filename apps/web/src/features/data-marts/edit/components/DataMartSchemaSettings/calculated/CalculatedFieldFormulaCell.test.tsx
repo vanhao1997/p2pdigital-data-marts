@@ -281,7 +281,7 @@ describe('CalculatedFieldFormulaCell', () => {
     apply();
 
     expect(onSave).not.toHaveBeenCalled();
-    expect(screen.getByRole('alert')).toHaveTextContent(/needs a formula/i);
+    expect(screen.getByRole('alert')).toHaveTextContent(/formula is required/i);
   });
 
   it('shows an error and does not save when a resolved reference cannot be stored (field name carries a double quote)', () => {

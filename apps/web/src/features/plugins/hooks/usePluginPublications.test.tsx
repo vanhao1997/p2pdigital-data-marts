@@ -7,7 +7,10 @@ const isAdmin = vi.fn();
 
 vi.mock('../../idp/hooks/useRole', () => ({ useIsAdmin: () => isAdmin() }));
 vi.mock('../../../shared/hooks', () => ({ useProjectId: () => 'project-1' }));
-vi.mock('sonner', () => ({ default: { error: vi.fn(), success: vi.fn() }, toast: { error: vi.fn(), success: vi.fn() } }));
+vi.mock('sonner', () => ({
+  default: { error: vi.fn(), success: vi.fn() },
+  toast: { error: vi.fn(), success: vi.fn() },
+}));
 vi.mock('../services/plugins.service', () => ({
   pluginsService: {
     listPublications: vi.fn(),

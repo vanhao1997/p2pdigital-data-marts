@@ -18,16 +18,16 @@ export default function StorageTypeRedshiftDescription() {
       <AccordionItem value='redshift-storage-details'>
         <AccordionTrigger>{t('storageHelp.redshift.title')}</AccordionTrigger>
         <AccordionContent>
-          <p className='mb-2'>
-            {t('storageHelp.redshift.intro')}
-          </p>
+          <p className='mb-2'>{t('storageHelp.redshift.intro')}</p>
           <p className='mb-2'>{t('storageHelp.redshift.options')}</p>
           <ul className='mb-2 list-inside list-disc space-y-1 text-sm'>
             <li>
-              <strong>{t('storageHelp.redshift.serverlessLabel')}:</strong> {t('storageHelp.redshift.serverlessText')}
+              <strong>{t('storageHelp.redshift.serverlessLabel')}:</strong>{' '}
+              {t('storageHelp.redshift.serverlessText')}
             </li>
             <li>
-              <strong>{t('storageHelp.redshift.provisionedLabel')}:</strong> {t('storageHelp.redshift.provisionedText')}
+              <strong>{t('storageHelp.redshift.provisionedLabel')}:</strong>{' '}
+              {t('storageHelp.redshift.provisionedText')}
             </li>
           </ul>
           <p className='text-sm'>

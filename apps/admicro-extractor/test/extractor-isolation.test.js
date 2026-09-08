@@ -1,5 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { readFileSync } from 'node:fs';
+import { chromium } from 'playwright';
 
 const campaignFixture = JSON.parse(
   readFileSync(new URL('./fixtures/campaign-dataview.json', import.meta.url), 'utf8')
@@ -203,6 +204,31 @@ describe('Admicro campaign scope isolation', () => {
     await expect(extraction).rejects.toThrow('Browser closed after cancellation');
     expect(playwrightMocks.pageClose).toHaveBeenCalledOnce();
     expect(playwrightMocks.contextClose).toHaveBeenCalledOnce();
-    expect(playwrightMocks.browserClose).toHaveBeenCalled();
+    expect(playwrightMocks.browserClose).toHaveBeenCalledOnce();
+  });
+
+  it('does not launch Chromium when cancellation is already requested', async () => {
+    const controller = new AbortController();
+    controller.abort(new Error('already cancelled'));
+
+    await expect(
+      extract(
+        {
+          reportType: 'campaign',
+          platform: 'desktop',
+          baseUrl: 'https://adx.admicro.vn',
+          reportPath: '/vn/report/result',
+          startDate: '2026-09-01',
+          endDate: '2026-09-01',
+          columnIds: ['1', '8', '2', '4', '5'],
+          campaignIds: [],
+          username: 'user',
+          password: 'password',
+        },
+        { signal: controller.signal }
+      )
+    ).rejects.toThrow('already cancelled');
+
+    expect(chromium.launch).not.toHaveBeenCalled();
   });
 });

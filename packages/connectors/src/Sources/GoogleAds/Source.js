@@ -293,13 +293,13 @@ var GoogleAdsSource = class GoogleAdsSource extends AbstractSource {
     let accessToken;
 
     try {
-      if (authType === "oauth2") {
-        accessToken = await OAuthUtils.getAccessToken({
-          config: this.config,
-          tokenUrl: "https://oauth2.googleapis.com/token",
-          formData: {
-            grant_type: 'refresh_token',
-            client_id: authConfig.ClientId.value,
+        if (authType === "oauth2") {
+          accessToken = await OAuthUtils.getAccessToken({
+            config: this.config,
+            tokenUrl: "https://oauth2.googleapis.com/token",
+            formData: {
+              grant_type: 'refresh_token',
+              client_id: authConfig.ClientId.value,
             client_secret: authConfig.ClientSecret.value,
             refresh_token: authConfig.RefreshToken.value
           }

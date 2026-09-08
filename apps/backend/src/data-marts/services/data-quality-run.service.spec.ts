@@ -448,7 +448,12 @@ describe('DataQualityRunService.enqueue', () => {
       status: DataMartRunStatus.CANCELLED,
       dataQualitySummary: expect.objectContaining({ state: DataQualitySummaryState.CANCELLED }),
       finishedAt: new Date('2026-07-16T10:00:00.000Z'),
-      errors: ['Data Quality run failed during execution'],
+      errors: [expect.stringContaining('"code":"DATA_QUALITY_EXECUTION_FAILED"')],
+    });
+    expect(JSON.parse(run.errors![0])).toMatchObject({
+      type: 'error',
+      code: 'DATA_QUALITY_EXECUTION_FAILED',
+      params: { errorChecks: 1 },
     });
     expect(JSON.stringify(run.errors)).not.toContain('private_table');
     expect(triggerService.requestCancellation).toHaveBeenCalledWith(null, manager);
@@ -472,12 +477,18 @@ describe('DataQualityRunService.enqueue', () => {
 
     expect(run).toMatchObject({
       status: DataMartRunStatus.FAILED,
-      errors: ['Data Quality run failed during execution'],
+      errors: [expect.stringContaining('"code":"DATA_QUALITY_EXECUTION_FAILED"')],
       finishedAt,
       dataQualitySummary: expect.objectContaining({
         state: DataQualitySummaryState.EXECUTION_FAILED,
       }),
       dataQualityResults: [{ ruleKey: 'persisted-result' }],
+    });
+    expect(JSON.parse(run.errors![0])).toMatchObject({
+      type: 'error',
+      at: finishedAt.toISOString(),
+      code: 'DATA_QUALITY_EXECUTION_FAILED',
+      message: 'Data Quality run failed during execution',
     });
     expect(repositories.get(DataMartRun)!.save).toHaveBeenCalledWith(run);
     expect(JSON.stringify(run.errors)).not.toContain('private_schema');

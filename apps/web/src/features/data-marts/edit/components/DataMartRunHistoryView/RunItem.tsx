@@ -128,9 +128,17 @@ export function RunItem({
       </TooltipTrigger>
       <TooltipContent>
         <div className='space-y-1'>
-          <div>{t('runHistory.startedAt', 'Started at')}: {tooltipContent.startedAt}</div>
-          <div>{t('runHistory.finishedAt', 'Finished at')}: {tooltipContent.finishedAt}</div>
-          {tooltipContent.duration && <div>{t('runHistory.duration', 'Duration')}: {tooltipContent.duration}</div>}
+          <div>
+            {t('runHistory.startedAt', 'Started at')}: {tooltipContent.startedAt}
+          </div>
+          <div>
+            {t('runHistory.finishedAt', 'Finished at')}: {tooltipContent.finishedAt}
+          </div>
+          {tooltipContent.duration && (
+            <div>
+              {t('runHistory.duration', 'Duration')}: {tooltipContent.duration}
+            </div>
+          )}
         </div>
       </TooltipContent>
     </Tooltip>
@@ -216,7 +224,9 @@ export function RunItem({
           data-testid='runLogView'
         >
           <div className='flex items-center'>
-            <h3 className='text-foreground mr-2 font-medium'>{t('runHistory.runId', 'Run ID')}: {run.id}</h3>
+            <h3 className='text-foreground mr-2 font-medium'>
+              {t('runHistory.runId', 'Run ID')}: {run.id}
+            </h3>
             <CopyButton
               text={run.id}
               section='run-id'

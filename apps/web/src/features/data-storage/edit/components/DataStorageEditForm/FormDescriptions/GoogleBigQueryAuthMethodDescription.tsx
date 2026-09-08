@@ -4,39 +4,37 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from '@owox/ui/components/accordion';
+import { useTranslation } from 'react-i18next';
 
 /**
  * Accordion with a brief explanation of the available BigQuery authentication methods.
  */
 export default function GoogleBigQueryAuthMethodDescription() {
+  const { t } = useTranslation();
+
   return (
     <Accordion variant='common' type='single' collapsible>
       <AccordionItem value='bigquery-auth-method-details'>
-        <AccordionTrigger>Which authentication method should I choose?</AccordionTrigger>
+        <AccordionTrigger>{t('storageHelp.bigQueryAuth.title')}</AccordionTrigger>
         <AccordionContent>
-          <p className='mb-2'>BigQuery supports two authentication methods:</p>
+          <p className='mb-2'>{t('storageHelp.bigQueryAuth.intro')}</p>
           <div className='space-y-3 text-sm'>
             <div>
-              <strong className='font-medium'>Connect with Google (OAuth):</strong>
-              <p className='mt-1'>
-                The quickest way to get started. Sign in with your Google account and grant access
-                to BigQuery in a few clicks. Best for most users.
-              </p>
+              <strong className='font-medium'>{t('storageHelp.bigQueryAuth.oauthLabel')}</strong>
+              <p className='mt-1'>{t('storageHelp.bigQueryAuth.oauthText')}</p>
             </div>
             <div>
-              <strong className='font-medium'>Service Account JSON:</strong>
-              <p className='mt-1'>
-                Uses a Google Cloud service account key for server-to-server authentication.
-                Recommended when you need unattended access without a personal Google account, or
-                when your organization requires service accounts for compliance.
-              </p>
+              <strong className='font-medium'>
+                {t('storageHelp.bigQueryAuth.serviceAccountLabel')}
+              </strong>
+              <p className='mt-1'>{t('storageHelp.bigQueryAuth.serviceAccountText')}</p>
             </div>
           </div>
           <p className='mt-3 text-sm'>
-            Whichever method you choose, the account (personal or service account) needs the{' '}
-            <strong>BigQuery Data Editor</strong> (<code>roles/bigquery.dataEditor</code>) and{' '}
-            <strong>BigQuery Job User</strong> (<code>roles/bigquery.jobUser</code>) roles on the
-            target Google Cloud project.
+            {t('storageHelp.bigQueryAuth.permissionsPrefix')} <strong>BigQuery Data Editor</strong>{' '}
+            (<code>roles/bigquery.dataEditor</code>) {t('storageHelp.bigQueryAuth.permissionsAnd')}{' '}
+            <strong>BigQuery Job User</strong> (<code>roles/bigquery.jobUser</code>){' '}
+            {t('storageHelp.bigQueryAuth.permissionsSuffix')}
           </p>
         </AccordionContent>
       </AccordionItem>

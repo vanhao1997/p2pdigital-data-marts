@@ -9,7 +9,8 @@ vi.mock('sonner', () => ({
     success: vi.fn(),
     error: vi.fn(),
     dismiss: vi.fn(),
-  }, toast: {
+  },
+  toast: {
     loading: vi.fn(),
     success: vi.fn(),
     error: vi.fn(),

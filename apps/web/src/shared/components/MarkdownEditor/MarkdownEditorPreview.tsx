@@ -31,7 +31,9 @@ export function MarkdownEditorPreview({
   const { t } = useTranslation();
   const { resolvedTheme } = useTheme();
   const resolvedEmptyState = emptyState ?? (
-    <div className='text-muted-foreground text-sm'>{t('markdownEditor.nothingToPreview', 'Nothing to preview')}</div>
+    <div className='text-muted-foreground text-sm'>
+      {t('markdownEditor.nothingToPreview', 'Nothing to preview')}
+    </div>
   );
   const [colors, setColors] = useState(() => readThemeColors());
 
@@ -50,7 +52,11 @@ export function MarkdownEditorPreview({
       style={{ height }}
     >
       {loading && <SkeletonText />}
-      {!loading && error && <div className='text-destructive text-sm'>{t('common.error', 'Error')}: {error}</div>}
+      {!loading && error && (
+        <div className='text-destructive text-sm'>
+          {t('common.error', 'Error')}: {error}
+        </div>
+      )}
       {!loading && !error && !html && resolvedEmptyState}
       {!loading && !error && !!html && (
         <iframe

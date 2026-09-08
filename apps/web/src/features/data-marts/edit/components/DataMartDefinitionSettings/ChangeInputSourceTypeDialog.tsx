@@ -25,7 +25,10 @@ interface ChangeInputSourceTypeDialogProps {
   onCancel: () => void;
 }
 
-function describeImpact(impact: InputSourceChangeImpact, t: ReturnType<typeof useTranslation>['t']): string | null {
+function describeImpact(
+  impact: InputSourceChangeImpact,
+  t: ReturnType<typeof useTranslation>['t']
+): string | null {
   const relationships = impact.inboundRelationships + impact.outboundRelationships;
   const parts: string[] = [];
 
@@ -78,9 +81,7 @@ export function ChangeInputSourceTypeDialog({
           <AlertDialogTitle>
             {t('inputSourceChange.title', { from: typeLabels[fromType], to: typeLabels[toType] })}
           </AlertDialogTitle>
-          <AlertDialogDescription>
-            {t('inputSourceChange.description')}
-          </AlertDialogDescription>
+          <AlertDialogDescription>{t('inputSourceChange.description')}</AlertDialogDescription>
         </AlertDialogHeader>
 
         {/* A failed read is "unknown", never "zero": the reassuring copy is reserved for a
@@ -89,7 +90,7 @@ export function ChangeInputSourceTypeDialog({
           <p className='text-muted-foreground text-sm'>{t('inputSourceChange.checking')}</p>
         ) : impactFailed ? (
           <p className='text-muted-foreground text-sm'>
-            {t('inputSourceChange.failed')} {' '}
+            {t('inputSourceChange.failed')}{' '}
             <button type='button' className='underline underline-offset-2' onClick={onRetryImpact}>
               {t('inputSourceChange.retry')}
             </button>

@@ -140,7 +140,12 @@ export function ReportQuickRunCell({ report, onRunSuccess }: ReportQuickRunCellP
                 variant='ghost'
                 className='dm-card-table-body-row-actionbtn cursor-pointer transition-all disabled:opacity-30'
                 disabled={!canRun || isActive}
-                aria-label={isActive ? tooltipText : (localizedPullRunHint ?? `${t('reportActions.run', 'Run report')}: ${report.title}`)}
+                aria-label={
+                  isActive
+                    ? tooltipText
+                    : (localizedPullRunHint ??
+                      `${t('reportActions.run', 'Run report')}: ${report.title}`)
+                }
               >
                 {isPending ? (
                   <Loader2 className='h-4 w-4 animate-spin' aria-hidden='true' />

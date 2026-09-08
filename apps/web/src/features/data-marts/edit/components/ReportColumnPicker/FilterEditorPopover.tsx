@@ -120,7 +120,7 @@ export function FilterEditorPopover(props: FilterEditorPopoverProps) {
                       onClick={() => {
                         props.onRemoveExistingAt?.(idx);
                       }}
-                        aria-label={t('reportColumnPicker.removeFilter')}
+                      aria-label={t('reportColumnPicker.removeFilter')}
                     >
                       <X className='h-3 w-3' />
                     </Button>

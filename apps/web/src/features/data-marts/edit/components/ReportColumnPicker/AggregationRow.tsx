@@ -57,7 +57,10 @@ export function AggregationRow({
           {isOrphaned && (
             <span
               className='inline-flex items-center text-red-600'
-              title={t('reportColumnPicker.aggregationColumnUnavailable', 'This column can no longer be aggregated. Remove this rule or restore the column.')}
+              title={t(
+                'reportColumnPicker.aggregationColumnUnavailable',
+                'This column can no longer be aggregated. Remove this rule or restore the column.'
+              )}
               aria-label={t('reportColumnPicker.columnNotFound', 'Column not found in schema')}
             >
               <AlertTriangle className='h-3 w-3' />
@@ -71,7 +74,9 @@ export function AggregationRow({
           <div className='text-muted-foreground truncate text-[11px]'>{dataMartName}</div>
         )}
         <div className='truncate font-mono text-[11px]'>
-          <span className='text-muted-foreground'>{t('reportColumnPicker.aggregatedBy', 'aggregated by')} </span>
+          <span className='text-muted-foreground'>
+            {t('reportColumnPicker.aggregatedBy', 'aggregated by')}{' '}
+          </span>
           <span className='text-foreground/70 font-medium'>
             {aggregateFunctionLabel(rule.function)}
           </span>
@@ -83,8 +88,14 @@ export function AggregationRow({
           size='sm'
           disabled
           className='text-muted-foreground h-6 w-6 p-0 opacity-40'
-          aria-label={t('reportColumnPicker.editDisabledColumnMissing', 'Edit disabled — column missing from schema')}
-          title={t('reportColumnPicker.editDisabledColumnMissing', 'Edit disabled — column missing from schema')}
+          aria-label={t(
+            'reportColumnPicker.editDisabledColumnMissing',
+            'Edit disabled — column missing from schema'
+          )}
+          title={t(
+            'reportColumnPicker.editDisabledColumnMissing',
+            'Edit disabled — column missing from schema'
+          )}
         >
           <Pencil className='h-4 w-4' />
         </Button>
@@ -121,7 +132,7 @@ export function AggregationRow({
         size='sm'
         className='text-muted-foreground hover:text-foreground h-6 w-6 p-0'
         onClick={onRemove}
-        aria-label='Remove aggregation'
+        aria-label={t('reportColumnPicker.removeAggregation')}
       >
         <X className='h-4 w-4' />
       </Button>

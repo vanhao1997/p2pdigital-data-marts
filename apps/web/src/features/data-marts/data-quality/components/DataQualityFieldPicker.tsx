@@ -110,7 +110,9 @@ function FieldStep({
               <span className='min-w-0 flex-1 truncate'>{field.label}</span>
               {field.checks.filter(check => check.isAdded).length > 0 && (
                 <span className='text-muted-foreground text-xs'>
-                  {t('dataQualityUi.addedCount', { count: field.checks.filter(check => check.isAdded).length })}
+                  {t('dataQualityUi.addedCount', {
+                    count: field.checks.filter(check => check.isAdded).length,
+                  })}
                 </span>
               )}
             </CommandItem>

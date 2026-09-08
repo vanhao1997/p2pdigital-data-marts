@@ -51,7 +51,8 @@ describe('GetDataMartReportsTool', () => {
       reports: reports.map(report => ({
         ...report,
         report_url: 'https://digitalreport.p2pdigital.io.vn/ui/project-1/data-marts/dm-1/reports',
-        destination_url: 'https://digitalreport.p2pdigital.io.vn/ui/project-1/data-destinations?id=dest-1',
+        destination_url:
+          'https://digitalreport.p2pdigital.io.vn/ui/project-1/data-destinations?id=dest-1',
       })),
     };
 

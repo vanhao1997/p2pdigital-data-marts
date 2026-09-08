@@ -30,7 +30,12 @@ export function RecipientsSection({
   return (
     <FormSection title={t('notificationsPage.recipients', 'Recipients')}>
       <FieldItem>
-        <FieldLabel tooltip={t('notificationsPage.recipientsTooltip', 'Select team members who should receive notifications')}>
+        <FieldLabel
+          tooltip={t(
+            'notificationsPage.recipientsTooltip',
+            'Select team members who should receive notifications'
+          )}
+        >
           {t('notificationsPage.teamMembers', 'Team members')}
         </FieldLabel>
         <RecipientsSelector
@@ -43,10 +48,18 @@ export function RecipientsSection({
         <FieldDescription>
           <Accordion variant='common' type='single' collapsible>
             <AccordionItem value='recipients-info'>
-              <AccordionTrigger>{t('notificationsPage.addRecipientsQuestion', 'How to add new recipients to this notification?')}</AccordionTrigger>
+              <AccordionTrigger>
+                {t(
+                  'notificationsPage.addRecipientsQuestion',
+                  'How to add new recipients to this notification?'
+                )}
+              </AccordionTrigger>
               <AccordionContent>
                 <p className='mb-2'>
-                  {t('notificationsPage.addRecipientsDescription', 'Only project members can receive notifications. To add new recipients, first invite them to the project through')}{' '}
+                  {t(
+                    'notificationsPage.addRecipientsDescription',
+                    'Only project members can receive notifications. To add new recipients, first invite them to the project through'
+                  )}{' '}
                   <ExternalAnchor href='https://platform.p2pdigital.vn/ui/p/none/settings/members'>
                     {t('notificationsPage.projectSettingsMembers', 'Project Settings → Members')}
                   </ExternalAnchor>{' '}

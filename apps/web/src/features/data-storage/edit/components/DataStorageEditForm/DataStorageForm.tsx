@@ -246,7 +246,14 @@ export function DataStorageForm({
               name='title'
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel tooltip={t('formCommon.titleTooltipStorage', 'Name the storage to clarify its purpose')}>{t('common.title', 'Title')}</FormLabel>
+                  <FormLabel
+                    tooltip={t(
+                      'formCommon.titleTooltipStorage',
+                      'Name the storage to clarify its purpose'
+                    )}
+                  >
+                    {t('common.title', 'Title')}
+                  </FormLabel>
                   <FormControl>
                     <Input
                       {...field}
@@ -268,7 +275,7 @@ export function DataStorageForm({
               name='type'
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel tooltip='Nguồn đã chọn sẽ được dùng để xử lý dữ liệu trong các Data Mart của bạn'>
+                  <FormLabel tooltip={t('storageForm.storageTypeTooltip')}>
                     {t('formCommon.storageType', 'Storage Type')}
                   </FormLabel>
                   <FormControl>
@@ -278,7 +285,9 @@ export function DataStorageForm({
                       disabled={!!initialData}
                     >
                       <SelectTrigger className='w-full'>
-                        <SelectValue placeholder={t('formCommon.selectStorageType', 'Select a storage type')} />
+                        <SelectValue
+                          placeholder={t('formCommon.selectStorageType', 'Select a storage type')}
+                        />
                       </SelectTrigger>
                       <SelectContent>
                         <SelectGroup>
@@ -340,22 +349,22 @@ export function DataStorageForm({
             {selectedType === DataStorageType.DATABRICKS && <DatabricksFields form={form} />}
           </CopyCredentialContext.Provider>
 
-          <FormSection title={t('formCommon.ownership', 'Ownership')} defaultOpen={false} name='storage-ownership'>
+          <FormSection
+            title={t('formCommon.ownership', 'Ownership')}
+            defaultOpen={false}
+            name='storage-ownership'
+          >
             <FormItem>
-              <FormLabel tooltip='Các thành viên phụ trách kho lưu trữ này'>{t('formCommon.owners', 'Owners')}</FormLabel>
+              <FormLabel tooltip={t('storageForm.ownersTooltip')}>
+                {t('formCommon.owners', 'Owners')}
+              </FormLabel>
               <OwnersSection ownerUsers={ownerUsers} onSave={handleOwnersChange} />
               <FormDescription>
                 <Accordion variant='common' type='single' collapsible>
                   <AccordionItem value='storage-owners-help'>
-                    <AccordionTrigger>Chủ sở hữu kho lưu trữ là gì?</AccordionTrigger>
+                    <AccordionTrigger>{t('storageForm.ownersQuestion')}</AccordionTrigger>
                     <AccordionContent>
-                      <p>
-                        Chủ sở hữu kho lưu trữ là quyền sở hữu kỹ thuật trực tiếp của kho lưu trữ
-                        này. Khi vai trò của chủ sở hữu là Technical User hoặc Project Admin, họ có
-                        thể xem, sửa, xóa, cấu hình Sharing và sao chép thông tin xác thực từ kho
-                        lưu trữ này — bất kể cài đặt Sharing. Gán Owner cho Business User vẫn lưu
-                        lại phân công, nhưng chưa cấp quyền bảo trì cho đến khi vai trò thay đổi.
-                      </p>
+                      <p>{t('storageForm.ownersDescription')}</p>
                     </AccordionContent>
                   </AccordionItem>
                 </Accordion>
@@ -364,9 +373,13 @@ export function DataStorageForm({
           </FormSection>
 
           {storageId && (
-            <FormSection title={t('formCommon.contexts', 'Contexts')} defaultOpen={false} name='storage-contexts'>
+            <FormSection
+              title={t('formCommon.contexts', 'Contexts')}
+              defaultOpen={false}
+              name='storage-contexts'
+            >
               <FormItem>
-                <FormLabel tooltip='Các ngữ cảnh miền nghiệp vụ được gán cho kho lưu trữ này'>
+                <FormLabel tooltip={t('storageForm.storageContextsTooltip')}>
                   {t('formCommon.assigned', 'Assigned')}
                 </FormLabel>
                 <ContextPicker
@@ -378,15 +391,11 @@ export function DataStorageForm({
                 <FormDescription>
                   <Accordion variant='common' type='single' collapsible>
                     <AccordionItem value='storage-contexts-help'>
-                      <AccordionTrigger>Ngữ cảnh là gì?</AccordionTrigger>
+                      <AccordionTrigger>
+                        {t('storageForm.storageContextsQuestion')}
+                      </AccordionTrigger>
                       <AccordionContent>
-                        <p>
-                          Ngữ cảnh là các miền nghiệp vụ (ví dụ: Marketing, Finance, Sales) dùng để
-                          nhóm Storages, Destinations và Data Mart. Chúng cũng kiểm soát quyền truy
-                          cập: thành viên chỉ được giới hạn trong một số ngữ cảnh sẽ chỉ thấy các tài
-                          nguyên được gán cho những ngữ cảnh đó. Hãy gán một hoặc nhiều ngữ cảnh để
-                          kho lưu trữ này dễ được đúng người tìm thấy.
-                        </p>
+                        <p>{t('storageForm.storageContextsDescription')}</p>
                       </AccordionContent>
                     </AccordionItem>
                   </Accordion>
@@ -396,7 +405,11 @@ export function DataStorageForm({
           )}
 
           {initialData?.id && (
-            <FormSection title={t('formCommon.sharing', 'Sharing')} defaultOpen={false} name='storage-availability'>
+            <FormSection
+              title={t('formCommon.sharing', 'Sharing')}
+              defaultOpen={false}
+              name='storage-availability'
+            >
               <FormItem>
                 <div className='flex items-center justify-between gap-4'>
                   <FormLabel>{t('formCommon.sharedForUse', 'Shared for use')}</FormLabel>
@@ -408,18 +421,14 @@ export function DataStorageForm({
                   />
                 </div>
                 <p className='text-muted-foreground text-sm'>
-                  Người dùng kỹ thuật có thể dùng kho lưu trữ này khi tạo Data Mart
+                  {t('storageForm.sharedForUseDescription')}
                 </p>
                 <FormDescription>
                   <Accordion variant='common' type='single' collapsible>
                     <AccordionItem value='sharing-use-help'>
-                      <AccordionTrigger>“Chia sẻ để sử dụng” nghĩa là gì?</AccordionTrigger>
+                      <AccordionTrigger>{t('storageForm.sharedForUseQuestion')}</AccordionTrigger>
                       <AccordionContent>
-                        <p>
-                          Khi bật, Technical User không phải chủ sở hữu vẫn có thể chọn kho lưu trữ
-                          này khi tạo Data Mart mới. Nếu tắt, chỉ chủ sở hữu kho lưu trữ và quản trị
-                          viên mới dùng được.
-                        </p>
+                        <p>{t('storageForm.sharedForUseHelp')}</p>
                       </AccordionContent>
                     </AccordionItem>
                   </Accordion>
@@ -427,7 +436,9 @@ export function DataStorageForm({
               </FormItem>
               <FormItem>
                 <div className='flex items-center justify-between gap-4'>
-                  <FormLabel>{t('formCommon.sharedForMaintenance', 'Shared for maintenance')}</FormLabel>
+                  <FormLabel>
+                    {t('formCommon.sharedForMaintenance', 'Shared for maintenance')}
+                  </FormLabel>
                   <Switch
                     checked={sharingState.availableForMaintenance}
                     onCheckedChange={v => {
@@ -436,19 +447,16 @@ export function DataStorageForm({
                   />
                 </div>
                 <p className='text-muted-foreground text-sm'>
-                  Thành viên dự án có quyền truy cập có thể sao chép thông tin xác thực, sửa và xóa
-                  kho lưu trữ này
+                  {t('storageForm.sharedForMaintenanceDescription')}
                 </p>
                 <FormDescription>
                   <Accordion variant='common' type='single' collapsible>
                     <AccordionItem value='sharing-maintenance-help'>
-                      <AccordionTrigger>“Chia sẻ để bảo trì” nghĩa là gì?</AccordionTrigger>
+                      <AccordionTrigger>
+                        {t('storageForm.sharedForMaintenanceQuestion')}
+                      </AccordionTrigger>
                       <AccordionContent>
-                        <p>
-                          Khi bật, thành viên dự án có thể sao chép thông tin xác thực từ kho lưu
-                          trữ này, sửa cấu hình và xóa nó. Nếu tắt, chỉ chủ sở hữu và quản trị viên mới
-                          thực hiện được các thao tác này.
-                        </p>
+                        <p>{t('storageForm.sharedForMaintenanceHelp')}</p>
                       </AccordionContent>
                     </AccordionItem>
                   </Accordion>
@@ -458,14 +466,20 @@ export function DataStorageForm({
           )}
 
           {initialData?.createdAt && (
-            <FormSection title={t('formCommon.details', 'Details')} defaultOpen={false} name='storage-details'>
+            <FormSection
+              title={t('formCommon.details', 'Details')}
+              defaultOpen={false}
+              name='storage-details'
+            >
               <FormItem>
                 <FormLabel>{t('formCommon.createdBy', 'Created By')}</FormLabel>
                 <div className='text-sm'>
                   {initialData.createdByUser ? (
                     <UserReference userProjection={initialData.createdByUser} variant='full' />
                   ) : (
-                    <span className='text-muted-foreground'>{t('formCommon.unknown', 'Unknown')}</span>
+                    <span className='text-muted-foreground'>
+                      {t('formCommon.unknown', 'Unknown')}
+                    </span>
                   )}
                 </div>
               </FormItem>

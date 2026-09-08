@@ -17,9 +17,9 @@ import { useTranslation } from 'react-i18next';
 import { Button } from '../../../../shared/components/Button';
 import { useClipboard } from '../../../../hooks/useClipboard';
 import {
-  DATA_QUALITY_CATEGORY_DESCRIPTIONS,
-  DATA_QUALITY_CATEGORY_LABELS,
   dataQualityScopeLabel,
+  getDataQualityCategoryDescription,
+  getDataQualityCategoryLabel,
 } from '../model/data-quality.model';
 import type { DataQualityCheckResult, DataQualitySeverity } from '../model/types';
 
@@ -77,7 +77,7 @@ export function DataQualityResultCard({
   const { copiedSection, handleCopy } = useClipboard();
   const isCopied = copiedSection === result.id;
   const isRedactedRelationship = result.scope.type === 'RELATIONSHIP' && result.redacted;
-  const categoryTitle = DATA_QUALITY_CATEGORY_LABELS[result.category];
+  const categoryTitle = getDataQualityCategoryLabel(result.category);
   const title = titleSuffix ? `${categoryTitle} · ${titleSuffix}` : categoryTitle;
   const status = getResultStatus(result, t);
   const StatusIcon = status.icon;
@@ -96,7 +96,10 @@ export function DataQualityResultCard({
         <button
           type='button'
           aria-expanded={isExpanded}
-          aria-label={`${isExpanded ? 'Hide' : 'Show'} details for ${title}`}
+          aria-label={t(
+            isExpanded ? 'dataQualityUi.hideDetailsFor' : 'dataQualityUi.showDetailsFor',
+            { title }
+          )}
           className='hover:bg-muted/40 focus-visible:ring-ring absolute inset-0 z-0 text-left outline-none focus-visible:ring-2 focus-visible:ring-inset'
           onClick={() => {
             setIsExpanded(value => !value);
@@ -123,7 +126,7 @@ export function DataQualityResultCard({
               <TooltipTrigger asChild>
                 <button
                   type='button'
-                  aria-label={`About ${title}`}
+                  aria-label={t('dataQualityUi.aboutRule', { title })}
                   className='focus-visible:ring-ring pointer-events-none rounded-sm opacity-0 transition-opacity group-focus-within:pointer-events-auto group-focus-within:opacity-100 group-hover:pointer-events-auto group-hover:opacity-100 focus-visible:ring-2 focus-visible:outline-none'
                 >
                   <Info className='text-muted-foreground size-3.5' aria-hidden='true' />
@@ -136,7 +139,7 @@ export function DataQualityResultCard({
                 className='max-w-xs'
                 role='tooltip'
               >
-                {DATA_QUALITY_CATEGORY_DESCRIPTIONS[result.category]}
+                {getDataQualityCategoryDescription(result.category)}
               </TooltipContent>
             </Tooltip>
           </div>
@@ -184,7 +187,7 @@ export function DataQualityResultCard({
                     data-testid='quality-example'
                     className='bg-muted min-w-0 overflow-x-auto rounded-md p-3 text-xs whitespace-pre-wrap'
                   >
-                    {safeJson(example.values)}
+                    {safeJson(example.values, t('dataQualityUi.unableDisplayExample'))}
                   </pre>
                 ))}
               </div>
@@ -206,13 +209,13 @@ export function DataQualityResultCard({
                   className={cn('size-4 transition-transform', isSqlExpanded && 'rotate-180')}
                   aria-hidden='true'
                 />
-                SQL
+                {t('dataQualityUi.sql')}
               </Button>
               {isSqlExpanded && (
                 <>
                   <pre
                     role='region'
-                    aria-label={`SQL for ${title}`}
+                    aria-label={t('dataQualityUi.sqlFor', { title })}
                     tabIndex={0}
                     className='bg-muted focus-visible:ring-ring max-h-80 overflow-auto rounded-md p-3 text-xs whitespace-pre-wrap outline-none focus-visible:ring-2'
                   >
@@ -222,13 +225,15 @@ export function DataQualityResultCard({
                     <Button
                       variant='outline'
                       size='sm'
-                      aria-label={isCopied ? 'Copied' : 'Copy to Clipboard'}
+                      aria-label={t(
+                        isCopied ? 'dataQualityUi.copied' : 'dataQualityUi.copyToClipboard'
+                      )}
                       onClick={() => {
                         handleCopy(result.sql ?? '', result.id);
                       }}
                     >
                       {isCopied ? <Check className='size-4' /> : <Copy className='size-4' />}
-                      {isCopied ? 'Copied' : 'Copy to Clipboard'}
+                      {t(isCopied ? 'dataQualityUi.copied' : 'dataQualityUi.copyToClipboard')}
                     </Button>
                   </div>
                 </>
@@ -240,9 +245,9 @@ export function DataQualityResultCard({
             <div className='text-muted-foreground flex items-start gap-2 rounded-md border p-3 text-sm'>
               <AlertTriangle className='mt-0.5 size-4 shrink-0' aria-hidden='true' />
               <span>
-                SQL and examples are hidden because you don&apos;t have access to the target Data
-                Mart
-                {targetAlias ? ` ${targetAlias}` : ''}. The counts above are still accurate.
+                {t('dataQualityUi.redactedRelationship', {
+                  target: targetAlias ? ` ${targetAlias}` : '',
+                })}
               </span>
             </div>
           )}
@@ -296,10 +301,10 @@ function getResultStatus(
   }
 }
 
-function safeJson(value: Record<string, unknown>): string {
+function safeJson(value: Record<string, unknown>, fallback: string): string {
   try {
     return JSON.stringify(value, null, 2);
   } catch {
-    return '[Unable to display example]';
+    return fallback;
   }
 }

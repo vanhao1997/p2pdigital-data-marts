@@ -7,9 +7,9 @@ import { Info } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
-  DATA_QUALITY_CATEGORY_DESCRIPTIONS,
-  DATA_QUALITY_CATEGORY_LABELS,
   dataQualityScopeLabel,
+  getDataQualityCategoryDescription,
+  getDataQualityCategoryLabel,
 } from '../model/data-quality.model';
 import type {
   DataQualityRuleConfig,
@@ -42,7 +42,7 @@ export function DataQualityRuleEditor({
   onChange,
 }: DataQualityRuleEditorProps) {
   const { t } = useTranslation();
-  const categoryTitle = DATA_QUALITY_CATEGORY_LABELS[rule.category];
+  const categoryTitle = getDataQualityCategoryLabel(rule.category);
   const title = titleSuffix ? `${categoryTitle} · ${titleSuffix}` : categoryTitle;
   const controlsDisabled = disabled || !rule.isApplicable;
   const switchDisabled = disabled || (!rule.isApplicable && !value.enabled);
@@ -84,11 +84,13 @@ export function DataQualityRuleEditor({
                     className='max-w-xs'
                     role='tooltip'
                   >
-                    {DATA_QUALITY_CATEGORY_DESCRIPTIONS[rule.category]}
+                    {getDataQualityCategoryDescription(rule.category)}
                   </TooltipContent>
                 </Tooltip>
                 {!rule.isApplicable && (
-                  <Badge variant='outline'>{t('dataQualityUi.notApplicable', 'Not applicable')}</Badge>
+                  <Badge variant='outline'>
+                    {t('dataQualityUi.notApplicable', 'Not applicable')}
+                  </Badge>
                 )}
               </div>
               {shouldShowScopeLabel && (
@@ -103,7 +105,8 @@ export function DataQualityRuleEditor({
           </div>
           {!rule.isApplicable && (
             <p className='text-muted-foreground mt-2 text-xs'>
-              {rule.notApplicableReason ?? t('dataQualityUi.notApplicableReason', 'This check is not applicable.')}
+              {rule.notApplicableReason ??
+                t('dataQualityUi.notApplicableReason', 'This check is not applicable.')}
             </p>
           )}
         </div>
@@ -164,9 +167,13 @@ export function DataQualityRuleEditor({
               </Label>
               <NumericParameterInput
                 id={`${controlId}-threshold-hours`}
-                aria-label={t('dataQualityUi.freshnessThreshold', 'Data freshness threshold hours for {{scope}}', {
-                  scope: dataQualityScopeLabel(rule.scope),
-                })}
+                aria-label={t(
+                  'dataQualityUi.freshnessThreshold',
+                  'Data freshness threshold hours for {{scope}}',
+                  {
+                    scope: dataQualityScopeLabel(rule.scope),
+                  }
+                )}
                 min={0}
                 max={MAX_THRESHOLD_HOURS}
                 className='w-36'

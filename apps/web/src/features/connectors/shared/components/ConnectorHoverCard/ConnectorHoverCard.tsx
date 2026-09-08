@@ -32,6 +32,8 @@ import {
 } from '../../../../data-marts/shared';
 import { getRunDataInfo } from '../../../../data-marts/shared/utils/run-data.utils.ts';
 import { getStorageButtonText, openStorageConsole } from '../../../../data-storage';
+import { useTranslation } from 'react-i18next';
+import i18n from '../../../../../i18n';
 
 interface ConnectorHoverCardProps {
   connector: ConnectorConfig;
@@ -45,6 +47,7 @@ const useConnectorData = (connectorName: string) => {
 
 export const ConnectorHoverCard = React.memo(
   function ConnectorHoverCard({ connector, children }: ConnectorHoverCardProps) {
+    const { t } = useTranslation();
     const connectorInfo = useConnectorData(connector.source.name);
 
     // Use controlled hover card to only load context data when open
@@ -59,8 +62,8 @@ export const ConnectorHoverCard = React.memo(
 
     const descriptionText = useMemo(() => {
       const fieldsCount = connector.source.fields.length.toString();
-      return `${connector.source.node} • ${fieldsCount} fields`;
-    }, [connector.source.node, connector.source.fields.length]);
+      return `${connector.source.node} • ${t('connectorHoverCard.fieldsCount', { count: fieldsCount })}`;
+    }, [connector.source.node, connector.source.fields.length, t]);
 
     // Separate component for hover card content to isolate context usage
     const connectorFullyQualifiedName = connector.storage.fullyQualifiedName;
@@ -104,7 +107,7 @@ export const ConnectorHoverCard = React.memo(
           <HoverCardBody>
             {lastRunStatus && (
               <HoverCardItem>
-                <HoverCardItemLabel>Last run status:</HoverCardItemLabel>
+                <HoverCardItemLabel>{t('connectorHoverCard.lastRunStatus')}</HoverCardItemLabel>
                 <HoverCardItemValue>
                   <StatusLabel type={lastRunStatus.statusType} variant='ghost'>
                     {lastRunStatus.statusText}
@@ -114,7 +117,7 @@ export const ConnectorHoverCard = React.memo(
             )}
             {lastRunStatus?.date && (
               <HoverCardItem>
-                <HoverCardItemLabel>Last run date:</HoverCardItemLabel>
+                <HoverCardItemLabel>{t('connectorHoverCard.lastRunDate')}</HoverCardItemLabel>
                 <HoverCardItemValue>
                   <RelativeTime date={lastRunStatus.date} />
                 </HoverCardItemValue>
@@ -122,22 +125,25 @@ export const ConnectorHoverCard = React.memo(
             )}
             <HoverCardItem>
               {runDataInfo.totalRuns > 0 ? (
-                <HoverCardItemLabel>Total runs:</HoverCardItemLabel>
+                <HoverCardItemLabel>{t('connectorHoverCard.totalRuns')}</HoverCardItemLabel>
               ) : (
                 ''
               )}
               <HoverCardItemValue>
                 {runDataInfo.totalRuns === 0
-                  ? 'No runs'
-                  : `${runDataInfo.totalRuns.toString()} run${runDataInfo.totalRuns > 1 ? 's' : ''}`}
+                  ? t('connectorHoverCard.noRuns')
+                  : t('connectorHoverCard.runCount', { count: runDataInfo.totalRuns })}
                 {runDataInfo.firstRunDate && (
                   <>
-                    , since{' '}
-                    {runDataInfo.firstRunDate.toLocaleDateString('en-US', {
-                      year: 'numeric',
-                      month: 'short',
-                      day: 'numeric',
-                    })}
+                    , {t('connectorHoverCard.since')}{' '}
+                    {runDataInfo.firstRunDate.toLocaleDateString(
+                      i18n.resolvedLanguage === 'vi' ? 'vi-VN' : 'en-US',
+                      {
+                        year: 'numeric',
+                        month: 'short',
+                        day: 'numeric',
+                      }
+                    )}
                   </>
                 )}
               </HoverCardItemValue>
@@ -149,8 +155,8 @@ export const ConnectorHoverCard = React.memo(
               className='w-full'
               variant='default'
               onClick={handleStorageOpen}
-              title='Open Storage'
-              aria-label='Open Storage'
+              title={t('connectorHoverCard.openStorage')}
+              aria-label={t('connectorHoverCard.openStorage')}
             >
               {buttonText}
               <ExternalLink className='ml-1 inline h-4 w-4' aria-hidden='true' />

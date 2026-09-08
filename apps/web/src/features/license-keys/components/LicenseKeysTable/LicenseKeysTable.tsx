@@ -15,7 +15,10 @@ interface LicenseKeysTableProps {
 
 export function LicenseKeysTable({ keys, onCreateKey, onEdit, onRevoke }: LicenseKeysTableProps) {
   const { t } = useTranslation();
-  const columns = useMemo(() => getLicenseKeysColumns({ onEdit, onRevoke, t }), [onEdit, onRevoke, t]);
+  const columns = useMemo(
+    () => getLicenseKeysColumns({ onEdit, onRevoke, t }),
+    [onEdit, onRevoke, t]
+  );
 
   const { table } = useBaseTable<LicenseKey>({
     data: keys,
@@ -51,7 +54,11 @@ export function LicenseKeysTable({ keys, onCreateKey, onEdit, onRevoke }: Licens
         renderToolbarLeft={() => <div />}
         renderToolbarRight={
           onCreateKey
-            ? () => <TableCTAButton onClick={onCreateKey}>{t('licenseKeysPage.createButton')}</TableCTAButton>
+            ? () => (
+                <TableCTAButton onClick={onCreateKey}>
+                  {t('licenseKeysPage.createButton')}
+                </TableCTAButton>
+              )
             : () => <div />
         }
       />

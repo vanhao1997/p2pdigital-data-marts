@@ -17,7 +17,8 @@ vi.mock('sonner', () => ({
   default: {
     success: vi.fn(),
     error: vi.fn(),
-  }, toast: {
+  },
+  toast: {
     success: vi.fn(),
     error: vi.fn(),
   },
@@ -162,7 +163,7 @@ describe('RunDataQualityBatchDialog', () => {
     });
     expect(toast.success).toHaveBeenCalledWith('Data Quality check queued for 1 Data Mart');
     expect(toast.error).toHaveBeenCalledWith(
-      'The Data Quality check was queued, but the Data Mart list could not be refreshed'
+      'The Data Quality checks were queued, but the Data Mart list could not be refreshed'
     );
   });
 

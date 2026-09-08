@@ -5,6 +5,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@owox/ui/components/select';
+import { useTranslation } from 'react-i18next';
 import { BigQueryFieldMode } from '../../../../../shared/types/data-mart-schema.types';
 
 /**
@@ -21,6 +22,7 @@ interface SchemaFieldModeSelectProps {
  * Select component for choosing a BigQuery field mode
  */
 export function SchemaFieldModeSelect({ mode, onModeChange }: SchemaFieldModeSelectProps) {
+  const { t } = useTranslation();
   // Get all BigQuery field modes
   const fieldModes = Object.values(BigQueryFieldMode);
 
@@ -34,7 +36,7 @@ export function SchemaFieldModeSelect({ mode, onModeChange }: SchemaFieldModeSel
   return (
     <Select value={mode as string} onValueChange={handleValueChange}>
       <SelectTrigger className='h-90 cursor-pointer' size='sm'>
-        <SelectValue placeholder='Select field mode' />
+        <SelectValue placeholder={t('schemaUi.selectFieldMode')} />
       </SelectTrigger>
       <SelectContent className='max-h-[300px]'>
         {fieldModes.map(fieldMode => (

@@ -35,7 +35,10 @@ export default function DataMartDataSetupContent() {
         <CollapsibleCardHeader>
           <CollapsibleCardHeaderTitle
             icon={DatabaseIcon}
-            tooltip={t('dataMartDataSetup.storageTooltip', 'Configure where your data will be stored')}
+            tooltip={t(
+              'dataMartDataSetup.storageTooltip',
+              'Configure where your data will be stored'
+            )}
           >
             {t('dataMartDataSetup.storage', 'Storage')}
           </CollapsibleCardHeaderTitle>

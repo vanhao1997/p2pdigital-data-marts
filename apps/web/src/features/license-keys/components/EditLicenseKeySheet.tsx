@@ -157,9 +157,7 @@ export function EditLicenseKeySheet({
           <SheetTitle ref={titleRef} tabIndex={-1} className='focus:outline-none'>
             {t('licenseKeysPage.editTitle')}
           </SheetTitle>
-          <SheetDescription>
-            {t('licenseKeysPage.editDescription')}
-          </SheetDescription>
+          <SheetDescription>{t('licenseKeysPage.editDescription')}</SheetDescription>
         </SheetHeader>
 
         <Form {...form}>
@@ -214,7 +212,11 @@ export function EditLicenseKeySheet({
                 />
                 <MetadataItem
                   label={t('licenseKeysPage.table.lastActivity')}
-                  value={licenseKey?.lastUsedAt ? formatDateShort(licenseKey.lastUsedAt) : t('licenseKeysPage.table.never')}
+                  value={
+                    licenseKey?.lastUsedAt
+                      ? formatDateShort(licenseKey.lastUsedAt)
+                      : t('licenseKeysPage.table.never')
+                  }
                   description={t('licenseKeysPage.table.lastActivityTooltip')}
                 />
               </FormSection>
@@ -224,11 +226,17 @@ export function EditLicenseKeySheet({
                   <FormLabel tooltip={t('licenseKeysPage.keyTooltip')}>
                     {t('licenseKeysPage.keyLabel')}
                   </FormLabel>
-                  <p className='text-muted-foreground text-sm'>{t('licenseKeysPage.unavailableNotice')}</p>
+                  <p className='text-muted-foreground text-sm'>
+                    {t('licenseKeysPage.unavailableNotice')}
+                  </p>
                 </FormItem>
               </FormSection>
 
-              <FormSection title={t('licenseKeysPage.dangerZone')} name='license-key-danger-zone' defaultOpen={false}>
+              <FormSection
+                title={t('licenseKeysPage.dangerZone')}
+                name='license-key-danger-zone'
+                defaultOpen={false}
+              >
                 <FormItem>
                   <div className='flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between'>
                     <div className='space-y-1'>

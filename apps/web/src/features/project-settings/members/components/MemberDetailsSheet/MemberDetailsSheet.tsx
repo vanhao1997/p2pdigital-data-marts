@@ -173,7 +173,9 @@ export function MemberDetailsSheet({
               <FormLayout>
                 <FormSection title={t('common.general')} name='member-details-general'>
                   <FormItem>
-                    <FormLabel tooltip={t('membersPage.identityTooltip')}>{t('membersPage.identity')}</FormLabel>
+                    <FormLabel tooltip={t('membersPage.identityTooltip')}>
+                      {t('membersPage.identity')}
+                    </FormLabel>
                     <div className='flex items-center gap-3'>
                       {member.avatarUrl ? (
                         <img
@@ -198,7 +200,9 @@ export function MemberDetailsSheet({
                     name='role'
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel tooltip={t('membersPage.roleTooltip')}>{t('membersPage.role')}</FormLabel>
+                        <FormLabel tooltip={t('membersPage.roleTooltip')}>
+                          {t('membersPage.role')}
+                        </FormLabel>
                         <FormControl>
                           <Select
                             value={field.value}
@@ -221,16 +225,21 @@ export function MemberDetailsSheet({
                         <FormDescription>
                           <Accordion variant='common' type='single' collapsible>
                             <AccordionItem value='member-role-help'>
-                              <AccordionTrigger>{t('membersPage.roleHelp.question')}</AccordionTrigger>
+                              <AccordionTrigger>
+                                {t('membersPage.roleHelp.question')}
+                              </AccordionTrigger>
                               <AccordionContent>
                                 <p className='mb-2'>
-                                  <strong>{t('requestAccessPage.roles.viewer')}</strong> — {t('membersPage.roleHelp.businessUser')}
+                                  <strong>{t('requestAccessPage.roles.viewer')}</strong> —{' '}
+                                  {t('membersPage.roleHelp.businessUser')}
                                 </p>
                                 <p className='mb-2'>
-                                  <strong>{t('requestAccessPage.roles.editor')}</strong> — {t('membersPage.roleHelp.technicalUser')}
+                                  <strong>{t('requestAccessPage.roles.editor')}</strong> —{' '}
+                                  {t('membersPage.roleHelp.technicalUser')}
                                 </p>
                                 <p>
-                                  <strong>{t('requestAccessPage.roles.admin')}</strong> — {t('membersPage.roleHelp.projectAdmin')}
+                                  <strong>{t('requestAccessPage.roles.admin')}</strong> —{' '}
+                                  {t('membersPage.roleHelp.projectAdmin')}
                                 </p>
                               </AccordionContent>
                             </AccordionItem>
@@ -242,7 +251,11 @@ export function MemberDetailsSheet({
                 </FormSection>
 
                 {isAdminRole ? (
-                  <FormSection title={t('membersPage.access')} collapsible={false} name='member-details-admin'>
+                  <FormSection
+                    title={t('membersPage.access')}
+                    collapsible={false}
+                    name='member-details-admin'
+                  >
                     <FormItem className='mt-2'>
                       <p className='text-muted-foreground text-sm'>
                         {t('membersPage.adminAccessDescription')}
@@ -270,7 +283,9 @@ export function MemberDetailsSheet({
                                   <SelectValue />
                                 </SelectTrigger>
                                 <SelectContent>
-                                  <SelectItem value='entire_project'>{t('membersPage.entireProject')}</SelectItem>
+                                  <SelectItem value='entire_project'>
+                                    {t('membersPage.entireProject')}
+                                  </SelectItem>
                                   <SelectItem value='selected_contexts'>
                                     {t('membersPage.selectedContextsOnly')}
                                   </SelectItem>
@@ -281,13 +296,19 @@ export function MemberDetailsSheet({
                             <FormDescription>
                               <Accordion variant='common' type='single' collapsible>
                                 <AccordionItem value='scope-help'>
-                                  <AccordionTrigger>{t('membersPage.scopeHelp.question')}</AccordionTrigger>
+                                  <AccordionTrigger>
+                                    {t('membersPage.scopeHelp.question')}
+                                  </AccordionTrigger>
                                   <AccordionContent>
                                     <p className='mb-2'>
-                                      <strong>{t('membersPage.entireProject')}</strong> — {t('membersPage.scopeHelp.entireProject')}
+                                      <strong>{t('membersPage.entireProject')}</strong> —{' '}
+                                      {t('membersPage.scopeHelp.entireProject')}
                                     </p>
                                     <p className='mb-2'>
-                                      <strong>{t('membersPage.scopeHelp.selectedContextsLabel')}</strong> — {t('membersPage.scopeHelp.selectedContexts')}
+                                      <strong>
+                                        {t('membersPage.scopeHelp.selectedContextsLabel')}
+                                      </strong>{' '}
+                                      — {t('membersPage.scopeHelp.selectedContexts')}
                                     </p>
                                   </AccordionContent>
                                 </AccordionItem>
@@ -299,7 +320,7 @@ export function MemberDetailsSheet({
                     </FormSection>
 
                     {roleScope === 'selected_contexts' && (
-                    <FormSection title={t('membersPage.contexts')} name='member-details-contexts'>
+                      <FormSection title={t('membersPage.contexts')} name='member-details-contexts'>
                         <FormItem>
                           <FormLabel tooltip={t('membersPage.contextsAssignedTooltip')}>
                             {t('membersPage.assignedContexts')}
@@ -321,11 +342,11 @@ export function MemberDetailsSheet({
                           <FormDescription>
                             <Accordion variant='common' type='single' collapsible>
                               <AccordionItem value='member-contexts-help'>
-                                <AccordionTrigger>{t('membersPage.contextHelp.question')}</AccordionTrigger>
+                                <AccordionTrigger>
+                                  {t('membersPage.contextHelp.question')}
+                                </AccordionTrigger>
                                 <AccordionContent>
-                                  <p>
-                                    {t('membersPage.contextHelp.description')}
-                                  </p>
+                                  <p>{t('membersPage.contextHelp.description')}</p>
                                 </AccordionContent>
                               </AccordionItem>
                             </Accordion>

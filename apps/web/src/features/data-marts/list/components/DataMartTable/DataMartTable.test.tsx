@@ -111,7 +111,7 @@ describe('DataMartTable', () => {
     fireEvent.click(screen.getByRole('menuitem', { name: 'Check Quality' }));
 
     expect(screen.getByRole('heading', { name: 'Check Data Quality' })).toBeVisible();
-    expect(screen.getByText('Run Data Quality checks for 1 selected Data Mart?')).toBeVisible();
+    expect(screen.getByText('Run Data Quality checks for 1 selected Data Marts?')).toBeVisible();
   });
 
   it('opens the Delete confirmation from the selected-items Actions menu', () => {

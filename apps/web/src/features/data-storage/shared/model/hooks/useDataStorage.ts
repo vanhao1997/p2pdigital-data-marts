@@ -1,5 +1,6 @@
 import { DataStorageActionType, useDataStorageContext } from '../context';
 import { useCallback } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   mapDataStorageFromDto,
   mapDataStorageListFromDto,
@@ -17,6 +18,7 @@ import { trackEvent } from '../../../../../utils/data-layer';
 import { useRefreshSetupProgress } from '../../../../../components/AppSidebar/SetupChecklist/useSetupProgress';
 
 export function useDataStorage() {
+  const { t } = useTranslation();
   const { state, dispatch, detailRequestGenerationRef } = useDataStorageContext();
   const refreshSetupProgress = useRefreshSetupProgress();
 
@@ -85,7 +87,7 @@ export function useDataStorage() {
           details: newStorage.title,
         });
 
-        toast.success('Storage created');
+        toast.success(t('uiFeedback.storageCreated'));
         refreshSetupProgress();
         return newStorage;
       } catch (error) {
@@ -96,7 +98,7 @@ export function useDataStorage() {
         return null;
       }
     },
-    [dispatch, refreshSetupProgress]
+    [dispatch, refreshSetupProgress, t]
   );
 
   const updateDataStorage = useCallback(
@@ -136,8 +138,8 @@ export function useDataStorage() {
           context: updatedStorage.id,
         });
         const toastMessage = source
-          ? `Storage updated. Credentials copied from ${source.title}.`
-          : 'Storage updated';
+          ? t('uiFeedback.storageUpdatedWithCredentials', { title: source.title })
+          : t('uiFeedback.storageUpdated');
         toast.success(toastMessage);
         invalidateDataStorageHealthStatus(id);
         return updatedStorage;
@@ -149,7 +151,7 @@ export function useDataStorage() {
         return null;
       }
     },
-    [dispatch]
+    [dispatch, t]
   );
 
   const deleteDataStorage = useCallback(
@@ -164,7 +166,7 @@ export function useDataStorage() {
           action: 'Delete',
           label: id,
         });
-        toast.success('Storage deleted');
+        toast.success(t('uiFeedback.storageDeleted'));
       } catch (error) {
         dispatch({
           type: DataStorageActionType.DELETE_STORAGE_ERROR,
@@ -173,7 +175,7 @@ export function useDataStorage() {
         throw error;
       }
     },
-    [dispatch]
+    [dispatch, t]
   );
 
   const clearCurrentDataStorage = useCallback(() => {

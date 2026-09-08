@@ -1,4 +1,5 @@
 import { useOutletContext } from 'react-router';
+import { useTranslation } from 'react-i18next';
 import { InlineEditDescription } from '../../../../shared/components/InlineEditDescription';
 import { DataMartDefinitionType, DataMartMetadataScope } from '../../shared';
 import { useAiHelper, useAiHelperAvailability } from '../model/hooks';
@@ -14,6 +15,7 @@ interface DataMartContextType {
 }
 
 export function DataMartOverview() {
+  const { t } = useTranslation();
   const { dataMart, updateDataMartDescription } = useOutletContext<DataMartContextType>();
   const handleDescriptionUpdate = async (newDescription: string | null) => {
     await updateDataMartDescription(dataMart.id, newDescription);
@@ -31,7 +33,7 @@ export function DataMartOverview() {
       <InlineEditDescription
         description={dataMart.description}
         onUpdate={handleDescriptionUpdate}
-        placeholder='Add a description for this Data Mart...'
+        placeholder={t('dataMartOverview.descriptionPlaceholder')}
         aiButton={
           showAiHelper
             ? ({ setValue }) => (
@@ -44,7 +46,7 @@ export function DataMartOverview() {
                   }}
                   isLoading={isGenerating}
                   disabled={pendingScope !== null}
-                  tooltip='Generate description with AI'
+                  tooltip={t('dataMartOverview.generateDescription')}
                 />
               )
             : undefined

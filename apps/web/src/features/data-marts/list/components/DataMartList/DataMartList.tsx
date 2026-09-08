@@ -14,7 +14,12 @@ export function DataMartList() {
   }, [loadDataMarts]);
 
   if (loading) return <div>{t('common.loading', 'Loading...')}</div>;
-  if (error) return <div>{t('common.error', 'Error')}: {error}</div>;
+  if (error)
+    return (
+      <div>
+        {t('common.error', 'Error')}: {error}
+      </div>
+    );
 
   return (
     <div data-testid='datamartList'>

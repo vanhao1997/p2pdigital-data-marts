@@ -277,7 +277,8 @@ export const DataDestinationList = ({
           blocked ? (
             <span className='block space-y-2'>
               <span className='block'>
-                <strong>&ldquo;{blocked.impact.destinationTitle}&rdquo;</strong> is referenced by{' '}
+                <strong>&ldquo;{blocked.impact.destinationTitle}&rdquo;</strong>{' '}
+                {t('dataDestinationList.isReferencedBy')}{' '}
                 <Link
                   to={scope(buildReportsDestinationFilterPath(blocked.impact.destinationTitle))}
                   className='text-primary hover:underline'

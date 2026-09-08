@@ -54,10 +54,25 @@ const EXPORT_ITEMS: {
   defaultLabel: string;
   icon: typeof Download;
 }[] = [
-  { format: 'svg', labelKey: 'dataMartBulkActions.imageSvg', defaultLabel: 'Ảnh (SVG)', icon: ImageIcon },
-  { format: 'png', labelKey: 'dataMartBulkActions.imagePng', defaultLabel: 'Ảnh (PNG)', icon: FileImage },
+  {
+    format: 'svg',
+    labelKey: 'dataMartBulkActions.imageSvg',
+    defaultLabel: 'Ảnh (SVG)',
+    icon: ImageIcon,
+  },
+  {
+    format: 'png',
+    labelKey: 'dataMartBulkActions.imagePng',
+    defaultLabel: 'Ảnh (PNG)',
+    icon: FileImage,
+  },
   { format: 'json', labelKey: 'dataMartBulkActions.json', defaultLabel: 'JSON', icon: FileJson },
-  { format: 'okf', labelKey: 'dataMartBulkActions.okf', defaultLabel: 'OKF (Markdown)', icon: FileText },
+  {
+    format: 'okf',
+    labelKey: 'dataMartBulkActions.okf',
+    defaultLabel: 'OKF (Markdown)',
+    icon: FileText,
+  },
 ];
 
 interface DataMartBulkActionsProps {
@@ -132,7 +147,11 @@ export function DataMartBulkActions({
     }
 
     if (successCount > 0) {
-      toast.success(t('dataMartBulkActions.deleteSuccess', 'Đã xóa {{count}} Data Mart', { count: successCount }));
+      toast.success(
+        t('dataMartBulkActions.deleteSuccess', 'Đã xóa {{count}} Data Mart', {
+          count: successCount,
+        })
+      );
     }
 
     const failedCount = actionDataMarts.length - successCount;
@@ -325,8 +344,16 @@ export function DataMartBulkActions({
               <span className='mt-2 block space-y-2'>
                 <span className='block'>
                   {targetScope === 'canvas'
-                    ? t('dataMartBulkActions.deleteCanvasDescription', 'Bạn sắp xóa {{count}} Data Mart đang hiển thị theo bộ lọc canvas hiện tại.', { count: actionDataMarts.length })
-                    : t('dataMartBulkActions.deleteSelectionDescription', 'Bạn sắp xóa {{count}} Data Mart đã chọn.', { count: actionDataMarts.length })}
+                    ? t(
+                        'dataMartBulkActions.deleteCanvasDescription',
+                        'Bạn sắp xóa {{count}} Data Mart đang hiển thị theo bộ lọc canvas hiện tại.',
+                        { count: actionDataMarts.length }
+                      )
+                    : t(
+                        'dataMartBulkActions.deleteSelectionDescription',
+                        'Bạn sắp xóa {{count}} Data Mart đã chọn.',
+                        { count: actionDataMarts.length }
+                      )}
                 </span>
                 {actionDataMarts.some(
                   dataMart => dataMart.storageType === DataStorageType.LEGACY_GOOGLE_BIGQUERY
@@ -342,7 +369,9 @@ export function DataMartBulkActions({
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel disabled={isDeleting}>{t('common.cancel', 'Cancel')}</AlertDialogCancel>
+            <AlertDialogCancel disabled={isDeleting}>
+              {t('common.cancel', 'Cancel')}
+            </AlertDialogCancel>
             <AlertDialogAction
               onClick={() => {
                 void handleBatchDelete();
@@ -384,7 +413,9 @@ export function DataMartBulkActions({
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel disabled={isPublishing}>{t('common.cancel', 'Cancel')}</AlertDialogCancel>
+            <AlertDialogCancel disabled={isPublishing}>
+              {t('common.cancel', 'Cancel')}
+            </AlertDialogCancel>
             <AlertDialogAction
               onClick={() => {
                 void handleBatchPublish();

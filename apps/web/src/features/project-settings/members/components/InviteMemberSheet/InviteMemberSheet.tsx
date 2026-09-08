@@ -113,7 +113,9 @@ export function InviteMemberSheet({
         setCopied(false);
       }, 2000);
     } catch {
-      toast.error(t('membersPage.magicLinkCopyFailed', 'Failed to copy. Select the link and copy manually.'));
+      toast.error(
+        t('membersPage.magicLinkCopyFailed', 'Failed to copy. Select the link and copy manually.')
+      );
     }
   };
 
@@ -138,15 +140,25 @@ export function InviteMemberSheet({
         if (result.kind === 'magic-link') {
           setMagicLinkResult(result);
         } else {
-          toast.success(result.message ?? t('membersPage.invitationSent', { email: result.email, defaultValue: 'Invitation email sent to {{email}}' }), {
-            duration: 6000,
-          });
+          toast.success(
+            result.message ??
+              t('membersPage.invitationSent', {
+                email: result.email,
+                defaultValue: 'Invitation email sent to {{email}}',
+              }),
+            {
+              duration: 6000,
+            }
+          );
           reset();
           onInvited();
           onClose();
         }
       } catch (err) {
-        const msg = err instanceof Error ? err.message : t('membersPage.invitationFailed', 'Failed to send invitation');
+        const msg =
+          err instanceof Error
+            ? err.message
+            : t('membersPage.invitationFailed', 'Failed to send invitation');
         toast.error(msg);
       } finally {
         setSending(false);
@@ -180,7 +192,10 @@ export function InviteMemberSheet({
                   {t('membersPage.invitationLinkReady', 'Invitation link ready')}
                 </SheetTitle>
                 <SheetDescription>
-                  {t('membersPage.invitationLinkDescription', 'Share this one-time sign-in link with the invitee through any channel (email, Slack, etc.).')}
+                  {t(
+                    'membersPage.invitationLinkDescription',
+                    'Share this one-time sign-in link with the invitee through any channel (email, Slack, etc.).'
+                  )}
                 </SheetDescription>
               </SheetHeader>
 
@@ -191,7 +206,8 @@ export function InviteMemberSheet({
                       <div className='min-w-0'>
                         <div className='truncate text-sm font-medium'>{magicLinkResult.email}</div>
                         <div className='text-muted-foreground text-xs'>
-                          {t('membersPage.willJoinAs', 'Will join as')} {getRoleDisplayName(magicLinkResult.role)}
+                          {t('membersPage.willJoinAs', 'Will join as')}{' '}
+                          {getRoleDisplayName(magicLinkResult.role)}
                         </div>
                       </div>
                       <Badge variant='outline' className='shrink-0'>
@@ -201,7 +217,10 @@ export function InviteMemberSheet({
                   </FormItem>
                 </FormSection>
 
-                <FormSection title={t('membersPage.oneTimeLink', 'One-time link')} name='magic-link-url'>
+                <FormSection
+                  title={t('membersPage.oneTimeLink', 'One-time link')}
+                  name='magic-link-url'
+                >
                   <FormItem>
                     <button
                       type='button'
@@ -234,7 +253,8 @@ export function InviteMemberSheet({
                       {magicLinkResult.expiresAt && (
                         <span className='inline-flex items-center gap-1'>
                           <Clock className='h-3.5 w-3.5' />
-                          {t('membersPage.expiresAt', 'Expires')} {new Date(magicLinkResult.expiresAt).toLocaleString()}
+                          {t('membersPage.expiresAt', 'Expires')}{' '}
+                          {new Date(magicLinkResult.expiresAt).toLocaleString()}
                         </span>
                       )}
                     </div>
@@ -251,7 +271,9 @@ export function InviteMemberSheet({
                   }}
                 >
                   {copied ? <Check className='mr-2 h-4 w-4' /> : <Copy className='mr-2 h-4 w-4' />}
-                  {copied ? t('membersPage.copiedToClipboard', 'Copied to clipboard') : t('membersPage.copyInvitationLink', 'Copy invitation link')}
+                  {copied
+                    ? t('membersPage.copiedToClipboard', 'Copied to clipboard')
+                    : t('membersPage.copyInvitationLink', 'Copy invitation link')}
                 </Button>
                 <Button
                   type='button'
@@ -268,7 +290,10 @@ export function InviteMemberSheet({
               <SheetHeader>
                 <SheetTitle>{t('membersPage.inviteTitle', 'Invite member')}</SheetTitle>
                 <SheetDescription>
-                  {t('membersPage.inviteDescription', 'Send an invitation via email. The member will receive a link to join the project.')}
+                  {t(
+                    'membersPage.inviteDescription',
+                    'Send an invitation via email. The member will receive a link to join the project.'
+                  )}
                 </SheetDescription>
               </SheetHeader>
 
@@ -285,7 +310,11 @@ export function InviteMemberSheet({
                         name='email'
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel tooltip={t('membersPage.emailTooltip', "The member's email address")}>{t('membersPage.email', 'Email')}</FormLabel>
+                            <FormLabel
+                              tooltip={t('membersPage.emailTooltip', "The member's email address")}
+                            >
+                              {t('membersPage.email', 'Email')}
+                            </FormLabel>
                             <FormControl>
                               <Input
                                 {...field}

@@ -5,7 +5,7 @@ import {
   SearchDataStorageProjectReindexTriggerHandler,
   SearchEntityReindexTriggerHandler,
 } from './search-reindex-trigger-handler.service';
-import { SearchIndexerService } from './search-indexer.service';
+import { SearchEmbeddingUnavailableError, SearchIndexerService } from './search-indexer.service';
 import {
   SCHEDULER_FACADE,
   SchedulerFacade,
@@ -389,7 +389,7 @@ describe('Search reindex trigger handlers', () => {
       );
     });
 
-    it('throws when syncTypeProject reports embedding failures', async () => {
+    it('keeps the trigger successful when embeddings are temporarily unavailable', async () => {
       indexer.syncTypeProject.mockResolvedValue({
         indexed: 0,
         skipped: 0,
@@ -398,9 +398,16 @@ describe('Search reindex trigger handlers', () => {
         deletedOrphans: 0,
       });
 
-      await expect(dataMartProjectHandler.handleTrigger(makeProjectTrigger())).rejects.toThrow(
-        'search project reindex failed'
-      );
+      await expect(
+        dataMartProjectHandler.handleTrigger(makeProjectTrigger())
+      ).resolves.toBeUndefined();
+    });
+
+    it('keeps an entity trigger successful when its embedding is unavailable', async () => {
+      await compileEntityHandler();
+      indexer.reindexEntity.mockRejectedValue(new SearchEmbeddingUnavailableError());
+
+      await expect(entityHandler.handleTrigger(makeEntityTrigger())).resolves.toBeUndefined();
     });
   });
 });

@@ -4,27 +4,21 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from '@owox/ui/components/accordion';
+import { useTranslation } from 'react-i18next';
 
 /**
  * Accordion with information about AWS Secret Access Key.
  */
 export default function RedshiftSecretAccessKeyDescription() {
+  const { t } = useTranslation();
+
   return (
     <Accordion variant='common' type='single' collapsible>
       <AccordionItem value='redshift-secret-key-details'>
-        <AccordionTrigger>What is an AWS Secret Access Key?</AccordionTrigger>
+        <AccordionTrigger>{t('storageFieldHelp.redshiftSecret.title')}</AccordionTrigger>
         <AccordionContent>
-          <p className='mb-2'>
-            The Secret Access Key is the private part of your AWS security credentials. It's used
-            together with the Access Key ID to sign and authenticate AWS API requests.
-          </p>
-          <p className='mb-2'>
-            Secret Access Keys are typically 40 characters long and are only shown once when
-            created. If you lose it, you'll need to create a new access key pair.
-          </p>
-          <p className='text-muted-foreground text-sm'>
-            <strong>Security warning:</strong> Keep your secret access key secure and never share it
-            publicly. It will be stored encrypted.
+          <p className='text-sm leading-6 whitespace-pre-line'>
+            {t('storageFieldHelp.redshiftSecret.content')}
           </p>
         </AccordionContent>
       </AccordionItem>

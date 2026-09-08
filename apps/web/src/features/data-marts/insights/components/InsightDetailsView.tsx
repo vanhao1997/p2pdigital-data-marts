@@ -100,6 +100,7 @@ import type { AiAssistantPanelHandle } from '../model/ai-assistant/types/ai-assi
 import type { DataMartReport } from '../../reports/shared/model/types/data-mart-report';
 import type { StartInsightTemplateExecutionRequestDto } from '../model/templates/types/insight-templates.dto';
 import { shouldFallbackToLegacyInsight } from '../utils/insight-route-fallback';
+import i18n from '../../../../i18n';
 
 export default function InsightDetailsView() {
   const { t } = useTranslation();
@@ -1173,5 +1174,5 @@ function extractLatestRunError(
   run: { status?: string | null; id?: string | null } | null | undefined
 ): string | null {
   if (run?.status !== DataMartRunStatus.FAILED) return null;
-  return 'Execution failed';
+  return i18n.t('insightsUi.executionFailed');
 }

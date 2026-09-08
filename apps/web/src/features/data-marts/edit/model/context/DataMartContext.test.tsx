@@ -25,7 +25,8 @@ vi.mock('sonner', () => ({
     error: vi.fn(),
     loading: vi.fn(() => 'toast-id'),
     dismiss: vi.fn(),
-  }, toast: {
+  },
+  toast: {
     success: vi.fn(),
     error: vi.fn(),
     loading: vi.fn(() => 'toast-id'),

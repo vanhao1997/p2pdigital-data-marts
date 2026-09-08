@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Input } from '@owox/ui/components/input';
 import { Textarea } from '@owox/ui/components/textarea';
 import { Tabs, TabsList, TabsTrigger } from '@owox/ui/components/tabs';
@@ -30,6 +31,7 @@ interface SnowflakeFieldsProps {
 }
 
 export const SnowflakeFields = ({ form }: SnowflakeFieldsProps) => {
+  const { t } = useTranslation();
   const {
     entityId: storageId,
     onSourceSelect: onSourceStorageSelect,
@@ -61,15 +63,17 @@ export const SnowflakeFields = ({ form }: SnowflakeFieldsProps) => {
   return (
     <>
       {/* Connection Settings */}
-      <FormSection title='Cài đặt kết nối'>
+      <FormSection title={t('formCommon.connectionSettings')}>
         <FormField
           control={form.control}
           name='config.account'
           render={({ field }) => (
             <FormItem>
-              <FormLabel tooltip='Nhập mã định danh tài khoản Snowflake của bạn'>Tài khoản</FormLabel>
+              <FormLabel tooltip={t('storageForm.accountTooltip')}>
+                {t('storageForm.accountLabel')}
+              </FormLabel>
               <FormControl>
-                <Input {...field} placeholder='e.g., xy12345.us-east-1' />
+                <Input {...field} placeholder={t('storageForm.accountPlaceholder')} />
               </FormControl>
               <FormDescription>
                 <SnowflakeAccountDescription />
@@ -83,11 +87,11 @@ export const SnowflakeFields = ({ form }: SnowflakeFieldsProps) => {
           name='config.warehouse'
           render={({ field }) => (
             <FormItem>
-              <FormLabel tooltip='Chỉ định warehouse Snowflake dùng để thực thi truy vấn'>
-                Warehouse
+              <FormLabel tooltip={t('storageForm.warehouseTooltip')}>
+                {t('storageForm.warehouseLabel')}
               </FormLabel>
               <FormControl>
-                <Input {...field} placeholder='Nhập tên warehouse' />
+                <Input {...field} placeholder={t('storageForm.warehousePlaceholder')} />
               </FormControl>
               <FormDescription>
                 <SnowflakeWarehouseDescription />
@@ -120,13 +124,15 @@ export const SnowflakeFields = ({ form }: SnowflakeFieldsProps) => {
               render={({ field }) => (
                 <FormItem>
                   <div className='flex items-center justify-between'>
-                    <FormLabel>Phương thức xác thực</FormLabel>
+                    <FormLabel>{t('storageForm.authMethod')}</FormLabel>
                     <Tabs value={field.value} onValueChange={field.onChange}>
                       <TabsList>
                         <TabsTrigger value={SnowflakeAuthMethod.PASSWORD}>
-                          Tên người dùng & PAT
+                          {t('storageForm.usernameAndPat')}
                         </TabsTrigger>
-                        <TabsTrigger value={SnowflakeAuthMethod.KEY_PAIR}>Cặp khóa</TabsTrigger>
+                        <TabsTrigger value={SnowflakeAuthMethod.KEY_PAIR}>
+                          {t('storageForm.keyPair')}
+                        </TabsTrigger>
                       </TabsList>
                     </Tabs>
                   </div>
@@ -143,9 +149,11 @@ export const SnowflakeFields = ({ form }: SnowflakeFieldsProps) => {
               name='credentials.username'
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel tooltip='Tên người dùng Snowflake của bạn'>Tên người dùng</FormLabel>
+                  <FormLabel tooltip={t('storageForm.usernameTooltip')}>
+                    {t('storageForm.username')}
+                  </FormLabel>
                   <FormControl>
-                    <Input {...field} placeholder='Nhập tên người dùng' />
+                    <Input {...field} placeholder={t('storageForm.usernamePlaceholder')} />
                   </FormControl>
                   <FormDescription>
                     <SnowflakeUsernameDescription />
@@ -161,14 +169,14 @@ export const SnowflakeFields = ({ form }: SnowflakeFieldsProps) => {
                 name='credentials.password'
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel tooltip='PAT Snowflake của bạn'>
-                      PAT (mã truy cập tự động)
+                    <FormLabel tooltip={t('storageForm.patTooltip')}>
+                      {t('storageForm.pat')}
                     </FormLabel>
                     <FormControl>
                       <Input
                         {...field}
                         type='password'
-                        placeholder={maskedPasswordValue || 'Nhập PAT'}
+                        placeholder={maskedPasswordValue || t('storageForm.patPlaceholder')}
                       />
                     </FormControl>
                     <FormDescription>
@@ -187,15 +195,14 @@ export const SnowflakeFields = ({ form }: SnowflakeFieldsProps) => {
                   name='credentials.privateKey'
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel tooltip='Dán khóa riêng của bạn ở định dạng PEM'>
-                        Khóa riêng
+                      <FormLabel tooltip={t('storageForm.privateKeyTooltip')}>
+                        {t('storageForm.privateKey')}
                       </FormLabel>
                       <FormControl>
                         <Textarea
                           {...field}
                           placeholder={
-                            maskedPrivateKeyValue ||
-                            '-----BEGIN PRIVATE KEY-----\n...\n-----END PRIVATE KEY-----'
+                            maskedPrivateKeyValue || t('storageForm.privateKeyPlaceholder')
                           }
                           rows={6}
                         />
@@ -212,15 +219,15 @@ export const SnowflakeFields = ({ form }: SnowflakeFieldsProps) => {
                   name='credentials.privateKeyPassphrase'
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel tooltip='Nhập passphrase nếu khóa riêng của bạn được mã hóa'>
-                        Passphrase (Tùy chọn)
+                      <FormLabel tooltip={t('storageForm.passphraseTooltip')}>
+                        {t('storageForm.passphrase')}
                       </FormLabel>
                       <FormControl>
                         <Input
                           {...field}
                           type='password'
                           value={field.value ?? ''}
-                          placeholder='Nhập passphrase nếu khóa được mã hóa'
+                          placeholder={t('storageForm.passphrasePlaceholder')}
                         />
                       </FormControl>
                       <FormDescription>

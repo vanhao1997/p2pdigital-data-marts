@@ -64,7 +64,7 @@ export function ScheduledTriggerTable({
         <BaseTable
           tableId={tableId}
           table={table}
-          ariaLabel='Scheduled Triggers'
+          ariaLabel={t('scheduledTriggerUi.tableLabel')}
           showPagination={true}
           paginationProps={{
             displaySelected: false,
@@ -77,7 +77,7 @@ export function ScheduledTriggerTable({
               data-testid='triggerEmptyState'
             >
               <p className='text-muted-foreground text-sm font-medium'>
-                Create your first scheduled trigger
+                {t('scheduledTriggerUi.emptyTitle')}
               </p>
               {onRequestCreate && (
                 <Button
@@ -87,7 +87,7 @@ export function ScheduledTriggerTable({
                   className='text-foreground'
                 >
                   <Plus className='text-foreground h-4 w-4' />
-                  New Trigger
+                  {t('scheduledTriggerUi.newTrigger')}
                 </Button>
               )}
             </div>

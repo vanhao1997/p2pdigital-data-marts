@@ -4,7 +4,7 @@
  * which already depends on @owox/ui and has vitest configured.
  */
 import { describe, it, expect } from 'vitest';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -140,7 +140,9 @@ describe('FormSection validation awareness', () => {
 
     // User collapses the auto-opened section — it must stay collapsed
     fireEvent.click(screen.getByRole('button', { name: /general/i }));
-    expect(screen.queryByText('Title is required')).not.toBeInTheDocument();
+    await waitFor(() => {
+      expect(screen.queryByText('Title is required')).not.toBeInTheDocument();
+    });
 
     // The next submit attempt reopens it again
     fireEvent.click(screen.getByRole('button', { name: 'Save' }));

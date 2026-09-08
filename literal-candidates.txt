@@ -1,0 +1,231 @@
+apps\web\src\components\AppSidebar\MainMenu\MainMenu.tsx:74:attr:className:size-4 shrink-0 transition-all
+apps\web\src\components\AppSidebar\MainMenu\MainMenu.tsx:102:attr:className:size-4 shrink-0 transition-all
+apps\web\src\components\AppSidebar\MainMenu\MainMenu.tsx:126:attr:className:size-4 shrink-0 transition-all
+apps\web\src\components\AppSidebar\PluginsMenu\PluginsMenu.tsx:68:attr:className:size-4 shrink-0 transition-all
+apps\web\src\components\AppSidebar\PluginsMenu\PluginsMenu.tsx:92:attr:className:size-4 shrink-0 transition-all
+apps\web\src\components\AppSidebar\ProjectMenu\ProjectMenuTrigger.tsx:44:attr:aria-hidden:true
+apps\web\src\components\AppSidebar\ProjectMenu\ProjectMenuTrigger.tsx:45:attr:className:sr-only
+apps\web\src\components\AppSidebar\ProjectMenu\SwitchProjectMenu.tsx:257:attr:aria-hidden:true
+apps\web\src\components\AppSidebar\ProjectMenu\SwitchProjectMenu.tsx:258:attr:className:sr-only
+apps\web\src\components\AppSidebar\SetupChecklist\CircularProgress.tsx:25:attr:aria-hidden:true
+apps\web\src\components\AppSidebar\SetupChecklist\CircularProgress.tsx:49:attr:className:text-primary transition-all duration-300
+apps\web\src\components\AppSidebar\SetupChecklist\SetupChecklist.tsx:61:attr:className:bg-primary h-full transition-all duration-300
+apps\web\src\components\AppSidebar\SetupChecklist\SetupChecklistCompleted.tsx:8:attr:className:animate-in fade-in zoom-in-95 duration-500
+apps\web\src\components\AppSidebar\SetupChecklist\SetupChecklistCompleted.tsx:20:attr:aria-hidden:true
+apps\web\src\components\AppSidebar\SetupChecklist\SetupStepAccordion.tsx:87:attr:className:bg-primary/5 animate-in fade-in zoom-in-95 -mb-6 flex flex-col items-center gap-1 rounded-md p-4 text-center duration-300
+apps\web\src\components\AppSidebar\UserMenu\UserMenuTrigger.tsx:31:attr:className:peer/menu-button ring-sidebar-ring active:bg-sidebar-accent active:text-sidebar-accent-foreground data-[active=true]:bg-sidebar-accent data-[active=true]:text-sidebar-accent-foreground data-[state=open]:hover:bg-sidebar-accent data-[state=open]:hover:text-sidebar-accent-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground flex h-12 w-full items-center gap-2 overflow-hidden rounded-md p-2 text-left text-sm outline-hidden transition-[width,height,padding] group-has-data-[sidebar=menu-action]/menu-item:pr-8 group-data-[collapsible=icon]:size-8! group-data-[collapsible=icon]:rounded-full group-data-[collapsible=icon]:p-0! focus-visible:ring-2 disabled:pointer-events-none disabled:opacity-50 aria-disabled:pointer-events-none aria-disabled:opacity-50 [&>span:last-child]:truncate [&>svg]:size-4 [&>svg]:shrink-0
+apps\web\src\components\ContentPopovers\popovers\Video1GoogleSheetsReport.tsx:5:attr:src:https://customer-4geatlj66rtkaxtz.cloudflarestream.com/4cb8184b0d34d9a293de77e73e405d55/iframe?muted=true&autoplay=true&loop=true&poster=https%3A%2F%2Fcustomer-4geatlj66rtkaxtz.cloudflarestream.com%2F4cb8184b0d34d9a293de77e73e405d55%2Fthumbnails%2Fthumbnail.jpg%3Ftime%3D%26height%3D600
+apps\web\src\components\ContentPopovers\popovers\Video1GoogleSheetsReport.tsx:8:attr:allow:accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture;
+apps\web\src\components\ContentPopovers\popovers\Video2LookerAsDestination.tsx:5:attr:src:https://customer-4geatlj66rtkaxtz.cloudflarestream.com/93985b60a2758efc77b762f9e291870e/iframe?muted=true&autoplay=true&loop=true&poster=https%3A%2F%2Fcustomer-4geatlj66rtkaxtz.cloudflarestream.com%2F93985b60a2758efc77b762f9e291870e%2Fthumbnails%2Fthumbnail.jpg%3Ftime%3D%26height%3D600
+apps\web\src\components\ContentPopovers\popovers\Video2LookerAsDestination.tsx:8:attr:allow:accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture;
+apps\web\src\components\ContentPopovers\popovers\Video3GettingStartedDataMarts.tsx:5:attr:src:https://customer-4geatlj66rtkaxtz.cloudflarestream.com/e5dc9849e472884ef88fb5e98e7acc99/iframe?muted=true&autoplay=true&loop=true&poster=https%3A%2F%2Fcustomer-4geatlj66rtkaxtz.cloudflarestream.com%2Fe5dc9849e472884ef88fb5e98e7acc99%2Fthumbnails%2Fthumbnail.jpg%3Ftime%3D%26height%3D600
+apps\web\src\components\ContentPopovers\popovers\Video3GettingStartedDataMarts.tsx:8:attr:allow:accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture;
+apps\web\src\components\ContentPopovers\popovers\Video4LegacyStorageSetup.tsx:5:attr:src:https://customer-4geatlj66rtkaxtz.cloudflarestream.com/c2c31d3821d2e0c910fb1d9260323cb4/iframe?muted=true&autoplay=true&poster=https%3A%2F%2Fcustomer-4geatlj66rtkaxtz.cloudflarestream.com%2Fc2c31d3821d2e0c910fb1d9260323cb4%2Fthumbnails%2Fthumbnail.jpg%3Ftime%3D%26height%3D600
+apps\web\src\components\ContentPopovers\popovers\Video4LegacyStorageSetup.tsx:8:attr:allow:accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture;
+apps\web\src\components\ContentPopovers\popovers\Video5TryInsights.tsx:5:attr:src:https://customer-4geatlj66rtkaxtz.cloudflarestream.com/ac0673d19f6eddc08b09a87dc012b8fa/iframe?muted=true&autoplay=true&poster=https%3A%2F%2Fcustomer-4geatlj66rtkaxtz.cloudflarestream.com%2Fac0673d19f6eddc08b09a87dc012b8fa%2Fthumbnails%2Fthumbnail.jpg%3Ftime%3D%26height%3D600
+apps\web\src\components\ContentPopovers\popovers\Video5TryInsights.tsx:8:attr:allow:accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture;
+apps\web\src\components\ContentPopovers\popovers\Video6EmailReports.tsx:8:attr:allow:accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture;
+apps\web\src\features\api-keys\components\ApiKeyFormShared.tsx:50:attr:aria-hidden:true
+apps\web\src\features\connectors\edit\components\ConnectorDefinitionField\EditFieldsButton.tsx:55:attr:mode:fields-only
+apps\web\src\features\connectors\edit\components\ConnectorEditForm\steps\ConfigurationStep\GoogleSheetsServiceAccountField.tsx:148:attr:autoComplete:new-password
+apps\web\src\features\connectors\edit\components\ConnectorEditForm\steps\FieldsSelectionStep.tsx:305:attr:aria-hidden:true
+apps\web\src\features\connectors\shared\components\ConnectorHoverCard\ConnectorHoverCard.tsx:158:attr:aria-hidden:true
+apps\web\src\features\connectors\shared\components\FacebookLoginButton\FacebookLoginButton.tsx:181:attr:aria-hidden:true
+apps\web\src\features\connectors\shared\components\LinkedInLoginButton\LinkedInLoginButton.tsx:115:attr:aria-hidden:true
+apps\web\src\features\connectors\shared\components\TikTokLoginButton\TikTokLoginButton.tsx:103:attr:aria-hidden:true
+apps\web\src\features\contexts\components\AddContextSheet\AddContextSheet.tsx:228:attr:idPrefix:new-ctx-mem
+apps\web\src\features\contexts\components\ContextsTable\ContextsActionsCell.tsx:54:attr:aria-hidden:true
+apps\web\src\features\contexts\components\ContextsTable\ContextsActionsCell.tsx:67:attr:aria-hidden:true
+apps\web\src\features\data-destination\edit\components\DataDestinationEditForm\DataDestinationForm.tsx:352:JSX:Ngữ cảnh là các miền nghiệp vụ (ví dụ: Marketing, Finance, Sales) dùng để nhóm Storages, Destinations và Data Mart. Chúng cũng kiểm soát quyền truy cập: thành viên chỉ được giới hạn trong một số ngữ cảnh sẽ chỉ thấy các tài nguyên được gán cho những ngữ cảnh đó. Hãy gán một hoặc nhiều ngữ cảnh để điểm đến này dễ được đúng người tìm thấy.
+apps\web\src\features\data-destination\edit\components\DataDestinationEditForm\FormDescriptions\LookerStudioJsonConfigDescription.tsx:15:JSX:JSON Config cho Data Studio là gì?
+apps\web\src\features\data-destination\edit\components\DataDestinationEditForm\FormDescriptions\LookerStudioJsonConfigDescription.tsx:18:JSX:JSON Config chứa thông tin xác thực và cấu hình cần thiết để kết nối với Data Studio.
+apps\web\src\features\data-destination\edit\components\DataDestinationEditForm\FormDescriptions\LookerStudioJsonConfigDescription.tsx:21:JSX:Bạn cần sao chép JSON config này để dùng trong Data Studio Connector.
+apps\web\src\features\data-destination\edit\components\DataDestinationEditForm\GoogleSheetsFields.tsx:403:attr:aria-hidden:true
+apps\web\src\features\data-destination\edit\components\DataDestinationEditSheet\DataDestinationConfigSheet.tsx:203:attr:ariaLabel:Copy link to this destination
+apps\web\src\features\data-destination\list\components\DataDestinationTable\DataDestinationActionsCell.tsx:80:attr:aria-hidden:true
+apps\web\src\features\data-destination\list\components\DataDestinationTable\DataDestinationActionsCell.tsx:88:attr:aria-hidden:true
+apps\web\src\features\data-destination\list\components\DataDestinationTable\DataDestinationActionsCell.tsx:96:attr:aria-hidden:true
+apps\web\src\features\data-destination\list\components\DataDestinationTable\DataDestinationActionsCell.tsx:104:attr:aria-hidden:true
+apps\web\src\features\data-marts\data-quality\components\DataQualityCompactStatusLink.tsx:71:attr:aria-hidden:true
+apps\web\src\features\data-marts\data-quality\components\DataQualityCompactStatusLink.tsx:79:attr:aria-hidden:true
+apps\web\src\features\data-marts\data-quality\components\DataQualityFieldChecks.tsx:142:attr:aria-hidden:true
+apps\web\src\features\data-marts\data-quality\components\DataQualityFieldPicker.tsx:54:attr:aria-hidden:true
+apps\web\src\features\data-marts\data-quality\components\DataQualityFieldPicker.tsx:147:attr:aria-hidden:true
+apps\web\src\features\data-marts\data-quality\components\DataQualityFieldPicker.tsx:178:attr:aria-hidden:true
+apps\web\src\features\data-marts\data-quality\components\DataQualityResultCard.tsx:110:attr:aria-hidden:true
+apps\web\src\features\data-marts\data-quality\components\DataQualityResultCard.tsx:118:attr:className:sr-only
+apps\web\src\features\data-marts\data-quality\components\DataQualityResultCard.tsx:132:attr:aria-hidden:true
+apps\web\src\features\data-marts\data-quality\components\DataQualityResultCard.tsx:165:attr:aria-hidden:true
+apps\web\src\features\data-marts\data-quality\components\DataQualityResultCard.tsx:210:attr:aria-hidden:true
+apps\web\src\features\data-marts\data-quality\components\DataQualityResultCard.tsx:246:attr:aria-hidden:true
+apps\web\src\features\data-marts\data-quality\components\DataQualityRuleEditor.tsx:77:attr:aria-hidden:true
+apps\web\src\features\data-marts\data-quality\components\DataQualitySummaryPanel.tsx:62:attr:aria-hidden:true
+apps\web\src\features\data-marts\data-quality\components\DataQualityWorkspace.tsx:414:attr:aria-hidden:true
+apps\web\src\features\data-marts\data-quality\components\DataQualityWorkspace.tsx:416:attr:aria-hidden:true
+apps\web\src\features\data-marts\data-quality\components\DataQualityWorkspace.tsx:432:attr:aria-hidden:true
+apps\web\src\features\data-marts\data-quality\components\DataQualityWorkspace.tsx:434:attr:aria-hidden:true
+apps\web\src\features\data-marts\data-quality\components\DataQualityWorkspace.tsx:557:attr:aria-hidden:true
+apps\web\src\features\data-marts\data-quality\components\DataQualityWorkspace.tsx:559:attr:aria-hidden:true
+apps\web\src\features\data-marts\edit\components\AiHelperButton\AiHelperButton.tsx:46:attr:aria-hidden:true
+apps\web\src\features\data-marts\edit\components\AiHelperButton\AiHelperButton.tsx:48:attr:aria-hidden:true
+apps\web\src\features\data-marts\edit\components\DataMartDefinitionSettings\form\ConnectorDefinitionField.tsx:409:attr:mode:fields-only
+apps\web\src\features\data-marts\edit\components\DataMartDetails.tsx:599:attr:className:from-background pointer-events-none absolute inset-y-0 right-0 w-8 bg-gradient-to-l to-transparent
+apps\web\src\features\data-marts\edit\components\DataMartRelationships\RelationshipCanvas.tsx:295:attr:aria-hidden:true
+apps\web\src\features\data-marts\edit\components\DataMartRelationships\RelationshipCanvas.tsx:337:attr:aria-hidden:true
+apps\web\src\features\data-marts\edit\components\DataMartRelationships\RelationshipCanvas.tsx:359:attr:aria-hidden:true
+apps\web\src\features\data-marts\edit\components\DataMartRelationships\RelationshipCanvas.tsx:377:attr:aria-hidden:true
+apps\web\src\features\data-marts\edit\components\DataMartRunHistoryView\DataQualityRunHistoryDetails.tsx:55:attr:aria-hidden:true
+apps\web\src\features\data-marts\edit\components\DataMartRunHistoryView\DataQualityRunHistoryDetails.tsx:73:attr:aria-hidden:true
+apps\web\src\features\data-marts\edit\components\DataMartRunHistoryView\DataQualityRunHistoryDetails.tsx:75:attr:aria-hidden:true
+apps\web\src\features\data-marts\edit\components\DataMartRunHistoryView\DataQualityRunHistoryDetails.tsx:185:attr:aria-hidden:true
+apps\web\src\features\data-marts\edit\components\DataMartRunHistoryView\DataQualityRunHistoryDetails.tsx:219:attr:aria-hidden:true
+apps\web\src\features\data-marts\edit\components\DataMartRunHistoryView\DataQualityRunHistoryDetails.tsx:229:attr:aria-hidden:true
+apps\web\src\features\data-marts\edit\components\DataMartRunHistoryView\DataQualityRunHistoryDetails.tsx:272:attr:aria-hidden:true
+apps\web\src\features\data-marts\edit\components\DataMartRunHistoryView\RunItem.tsx:276:attr:aria-hidden:true
+apps\web\src\features\data-marts\edit\components\DataMartSchemaSettings\components\fields\SchemaFieldActionsButton.tsx:113:attr:aria-hidden:true
+apps\web\src\features\data-marts\edit\components\DataMartSchemaSettings\components\table\TableToolbar.tsx:89:attr:aria-hidden:true
+apps\web\src\features\data-marts\edit\components\DataMartSchemaSettings\components\table\TableToolbar.tsx:91:attr:aria-hidden:true
+apps\web\src\features\data-marts\edit\components\DataMartSchemaSettings\components\table\TableToolbar.tsx:107:attr:aria-hidden:true
+apps\web\src\features\data-marts\edit\components\DataMartSchemaSettings\components\table\TableToolbar.tsx:124:attr:aria-hidden:true
+apps\web\src\features\data-marts\edit\components\DataMartSchemaSettings\components\table\TableToolbar.tsx:140:attr:aria-hidden:true
+apps\web\src\features\data-marts\edit\components\DataMartSchemaSettings\SourceFieldsTable.tsx:187:attr:value:all
+apps\web\src\features\data-marts\edit\components\DataMartSchemaSettings\tables\SchemaTable.tsx:325:attr:aria-hidden:true
+apps\web\src\features\data-marts\edit\components\DataMartSchemaSettings\tables\SchemaTable.tsx:336:attr:aria-hidden:true
+apps\web\src\features\data-marts\edit\components\ReportColumnPicker\FieldInfoTooltip.tsx:28:attr:aria-hidden:true
+apps\web\src\features\data-marts\edit\components\ReportColumnPicker\GeneratedSqlViewer.tsx:154:attr:aria-hidden:true
+apps\web\src\features\data-marts\edit\components\ReportColumnPicker\ReportColumnPicker.tsx:403:attr:className:sr-only whitespace-pre-line
+apps\web\src\features\data-marts\edit\components\ReportColumnPicker\ReportColumnPicker.tsx:608:attr:className:sr-only whitespace-pre-line
+apps\web\src\features\data-marts\edit\components\ReportColumnPicker\ReportColumnPicker.tsx:661:attr:aria-hidden:true
+apps\web\src\features\data-marts\edit\components\ReportColumnPicker\UniqueCountRow.tsx:242:attr:aria-hidden:true
+apps\web\src\features\data-marts\edit\components\ReportColumnPicker\UniqueCountRow.tsx:247:attr:aria-hidden:true
+apps\web\src\features\data-marts\edit\components\ReportColumnPicker\UniqueCountRow.tsx:281:attr:className:sr-only whitespace-pre-line
+apps\web\src\features\data-marts\insights\components\InsightLoader.tsx:70:attr:className:text-muted-foreground animate-fade-slide-in-out
+apps\web\src\features\data-marts\insights\components\InsightLoader.tsx:76:attr:className:text-muted-foreground animate-fade-slide-in-out text-sm
+apps\web\src\features\data-marts\insights\components\InsightReportsList.tsx:146:attr:className:bg-muted/30 hover:bg-muted/50 flex items-center justify-between gap-4 rounded-lg border border-dashed p-4 shadow-xs transition-all
+apps\web\src\features\data-marts\insights\components\InsightReportsList.tsx:183:attr:className:bg-background group relative mb-3 flex cursor-pointer flex-col overflow-hidden rounded-lg border shadow-xs transition-all last:mb-0 hover:shadow-md
+apps\web\src\features\data-marts\insights\components\InsightSourcesPanel.tsx:483:attr:className:break-all
+apps\web\src\features\data-marts\insights-prev\components\InsightEditor.tsx:448:attr:aria-hidden:true
+apps\web\src\features\data-marts\insights-prev\components\InsightMinerLoader.tsx:70:attr:className:text-muted-foreground animate-fade-slide-in-out
+apps\web\src\features\data-marts\insights-prev\components\InsightMinerLoader.tsx:76:attr:className:text-muted-foreground animate-fade-slide-in-out text-sm
+apps\web\src\features\data-marts\insights-prev\components\InsightsListSection.tsx:81:attr:aria-hidden:true
+apps\web\src\features\data-marts\insights-prev\components\InsightsListSection.tsx:96:attr:aria-hidden:true
+apps\web\src\features\data-marts\insights-prev\components\InsightsListSection.tsx:107:attr:aria-hidden:true
+apps\web\src\features\data-marts\insights-prev\components\InsightsListSection.tsx:121:attr:aria-hidden:true
+apps\web\src\features\data-marts\list\components\BulkCreateFromStorageDialog\BulkCreateFromStorageDialog.tsx:526:attr:aria-hidden:true
+apps\web\src\features\data-marts\list\components\DataMartsOverviewPanel.tsx:73:attr:aria-hidden:true
+apps\web\src\features\data-marts\list\components\DataMartTable\components\DataMartActionsCell.tsx:66:attr:aria-hidden:true
+apps\web\src\features\data-marts\list\components\DataMartTable\components\DataMartActionsCell.tsx:76:attr:aria-hidden:true
+apps\web\src\features\data-marts\model-canvas\components\DataLastUpdatedCanvasIcon.tsx:51:attr:aria-hidden:true
+apps\web\src\features\data-marts\model-canvas\components\DataLastUpdatedCanvasIcon.tsx:53:attr:aria-hidden:true
+apps\web\src\features\data-marts\model-canvas\components\DataQualityCanvasStatusIcon.tsx:422:attr:aria-hidden:true
+apps\web\src\features\data-marts\model-canvas\components\DataQualityCanvasStatusIcon.tsx:424:attr:aria-hidden:true
+apps\web\src\features\data-marts\model-canvas\components\ModelCanvasFlowNode.tsx:125:attr:aria-hidden:true
+apps\web\src\features\data-marts\model-canvas\components\ModelCanvasFlowNode.tsx:146:attr:aria-hidden:true
+apps\web\src\features\data-marts\model-canvas\components\ModelCanvasFlowNode.tsx:164:attr:aria-hidden:true
+apps\web\src\features\data-marts\model-canvas\components\ModelCanvasToolbar.tsx:77:attr:value:all
+apps\web\src\features\data-marts\model-canvas\components\ModelCanvasToolbar.tsx:94:attr:value:all
+apps\web\src\features\data-marts\reports\edit\components\EmailReportEditForm\FormDescriptions\MessageTemplateDescription.tsx:65:JSX:để hiển thị kết quả Data Mart dưới dạng bảng. Gõ
+apps\web\src\features\data-marts\reports\edit\components\EmailReportEditForm\FormDescriptions\SendingConditionDescription.tsx:12:JSX:Kết quả chạy Data Mart là gì?
+apps\web\src\features\data-marts\reports\edit\components\EmailReportEditForm\FormDescriptions\SendingConditionDescription.tsx:15:JSX:Kết quả chạy Data Mart là kết quả sau khi xử lý Data Mart của bạn — ví dụ như chạy một truy vấn SQL để lấy dữ liệu cho báo cáo.
+apps\web\src\features\data-marts\reports\edit\components\EmailReportEditForm\FormDescriptions\SendingConditionDescription.tsx:19:JSX:Trước khi gửi báo cáo, P2PDigital sẽ tự động chạy Data Mart và kiểm tra kết quả. Tùy theo cài đặt, báo cáo có thể được gửi luôn, chỉ khi kết quả không trống, hoặc chỉ khi kết quả trống.
+apps\web\src\features\data-marts\reports\edit\components\LookerStudioReportEditForm\LookerStudioCacheLifetimeDescription.tsx:12:JSX:Thời gian lưu bộ nhớ đệm cho Data Studio là gì?
+apps\web\src\features\data-marts\reports\edit\components\ReportEditForm\GoogleSheetsTargetSection.tsx:135:attr:aria-hidden:true
+apps\web\src\features\data-marts\reports\edit\components\ReportEditForm\GoogleSheetsTargetSection.tsx:156:attr:aria-hidden:true
+apps\web\src\features\data-marts\reports\edit\components\ReportEditForm\GoogleSheetsTargetSection.tsx:158:attr:aria-hidden:true
+apps\web\src\features\data-marts\reports\edit\components\shared\ReportFormActions.tsx:109:attr:aria-hidden:true
+apps\web\src\features\data-marts\reports\list\components\EmailReportsTable\EmailActionsCell.tsx:120:attr:aria-haspopup:true
+apps\web\src\features\data-marts\reports\list\components\EmailReportsTable\EmailActionsCell.tsx:124:attr:aria-hidden:true
+apps\web\src\features\data-marts\reports\list\components\EmailReportsTable\EmailActionsCell.tsx:137:attr:aria-hidden:true
+apps\web\src\features\data-marts\reports\list\components\EmailReportsTable\EmailActionsCell.tsx:151:attr:aria-hidden:true
+apps\web\src\features\data-marts\reports\list\components\EmailReportsTable\EmailActionsCell.tsx:166:attr:aria-hidden:true
+apps\web\src\features\data-marts\reports\list\components\ReportsTable\ReportActionsCell.tsx:197:attr:aria-haspopup:true
+apps\web\src\features\data-marts\reports\list\components\ReportsTable\ReportActionsCell.tsx:201:attr:aria-hidden:true
+apps\web\src\features\data-marts\reports\list\components\ReportsTable\ReportActionsCell.tsx:213:attr:aria-hidden:true
+apps\web\src\features\data-marts\reports\list\components\ReportsTable\ReportActionsCell.tsx:234:attr:aria-hidden:true
+apps\web\src\features\data-marts\reports\list\components\ReportsTable\ReportActionsCell.tsx:259:attr:aria-hidden:true
+apps\web\src\features\data-marts\reports\list\components\ReportsTable\ReportActionsCell.tsx:279:attr:aria-hidden:true
+apps\web\src\features\data-marts\reports\shared\components\ReportHoverCard\ReportHoverCard.tsx:200:attr:aria-hidden:true
+apps\web\src\features\data-marts\reports\shared\components\ReportOpenDocumentAction.tsx:56:attr:aria-hidden:true
+apps\web\src\features\data-marts\reports\shared\components\ReportQuickRunCell.tsx:141:attr:className:dm-card-table-body-row-actionbtn cursor-pointer transition-all disabled:opacity-30
+apps\web\src\features\data-marts\reports\shared\components\ReportQuickRunCell.tsx:151:attr:aria-hidden:true
+apps\web\src\features\data-marts\reports\shared\components\ReportQuickRunCell.tsx:153:attr:aria-hidden:true
+apps\web\src\features\data-marts\reports\shared\components\RunUndoToast.tsx:60:attr:aria-hidden:true
+apps\web\src\features\data-marts\reports\shared\components\RunUndoToast.tsx:75:attr:aria-hidden:true
+apps\web\src\features\data-marts\scheduled-triggers\components\ReportSchedulesInlineList\ReportSchedulesInlineList.tsx:285:attr:aria-hidden:true
+apps\web\src\features\data-marts\scheduled-triggers\components\ScheduleConfig\ScheduleConfig.tsx:117:attr:className:border-border text-muted-foreground hover:text-foreground group hover:border-foreground/20 relative flex cursor-pointer items-center gap-1 rounded border py-0.5 pr-1.5 pl-5 font-sans text-xs transition-all duration-200 ease-out select-none hover:bg-neutral-50 active:scale-95
+apps\web\src\features\data-marts\scheduled-triggers\components\ScheduledTriggerTable\ScheduledTriggerActionsCell.tsx:67:attr:aria-hidden:true
+apps\web\src\features\data-marts\scheduled-triggers\components\ScheduledTriggerTable\ScheduledTriggerActionsCell.tsx:78:attr:aria-hidden:true
+apps\web\src\features\data-marts\scheduled-triggers\components\TimeTriggerAnnouncement\TimeTriggerAnnouncement.tsx:9:attr:aria-hidden:true
+apps\web\src\features\data-marts\shared\canvas\canvas-settings-panel.tsx:170:attr:aria-hidden:true
+apps\web\src\features\data-marts\shared\canvas\canvas-settings-panel.tsx:200:attr:aria-hidden:true
+apps\web\src\features\data-marts\shared\canvas\canvas-settings-panel.tsx:217:attr:aria-hidden:true
+apps\web\src\features\data-marts\shared\canvas\erd-card.tsx:24:attr:aria-hidden:true
+apps\web\src\features\data-marts\shared\canvas\erd-card.tsx:26:attr:className:sr-only
+apps\web\src\features\data-marts\shared\components\DataMartBulkActions\DataMartBulkActions.tsx:242:attr:aria-hidden:true
+apps\web\src\features\data-marts\shared\components\DataMartBulkActions\DataMartBulkActions.tsx:253:attr:aria-hidden:true
+apps\web\src\features\data-marts\shared\components\DataMartBulkActions\DataMartBulkActions.tsx:263:attr:aria-hidden:true
+apps\web\src\features\data-marts\shared\components\DataMartBulkActions\DataMartBulkActions.tsx:272:attr:aria-hidden:true
+apps\web\src\features\data-marts\shared\components\DataMartBulkActions\DataMartBulkActions.tsx:287:attr:aria-hidden:true
+apps\web\src\features\data-marts\shared\components\DataMartBulkActions\DataMartBulkActions.tsx:300:attr:aria-hidden:true
+apps\web\src\features\data-marts\shared\components\DataMartBulkActions\DataMartBulkActions.tsx:317:attr:aria-hidden:true
+apps\web\src\features\data-marts\shared\components\RunActivityIndicator\RunActivityIndicator.tsx:38:attr:aria-hidden:true
+apps\web\src\features\data-storage\edit\components\DataStorageEditForm\DataStorageForm.tsx:278:attr:tooltip:Nguồn đã chọn sẽ được dùng để xử lý dữ liệu trong các Data Mart của bạn
+apps\web\src\features\data-storage\edit\components\DataStorageEditForm\DataStorageForm.tsx:403:JSX:Ngữ cảnh là các miền nghiệp vụ (ví dụ: Marketing, Finance, Sales) dùng để nhóm Storages, Destinations và Data Mart. Chúng cũng kiểm soát quyền truy cập: thành viên chỉ được giới hạn trong một số ngữ cảnh sẽ chỉ thấy các tài nguyên được gán cho những ngữ cảnh đó. Hãy gán một hoặc nhiều ngữ cảnh để kho lưu trữ này dễ được đúng người tìm thấy.
+apps\web\src\features\data-storage\edit\components\DataStorageEditForm\DataStorageForm.tsx:434:JSX:Người dùng kỹ thuật có thể dùng kho lưu trữ này khi tạo Data Mart
+apps\web\src\features\data-storage\edit\components\DataStorageEditForm\DataStorageForm.tsx:442:JSX:Khi bật, Technical User không phải chủ sở hữu vẫn có thể chọn kho lưu trữ này khi tạo Data Mart mới. Nếu tắt, chỉ chủ sở hữu kho lưu trữ và quản trị viên mới dùng được.
+apps\web\src\features\data-storage\edit\components\DataStorageEditForm\FormDescriptions\GoogleBigQueryAuthMethodDescription.tsx:34:JSX:BigQuery Data Editor
+apps\web\src\features\data-storage\edit\components\DataStorageEditSheet\DataStorageConfigSheet.tsx:109:attr:ariaLabel:Copy link to this storage
+apps\web\src\features\data-storage\list\components\DataStorageTable\DataStorageActionsCell.tsx:60:attr:aria-hidden:true
+apps\web\src\features\data-storage\list\components\DataStorageTable\DataStorageActionsCell.tsx:64:attr:aria-hidden:true
+apps\web\src\features\data-storage\list\components\DataStorageTable\DataStorageActionsCell.tsx:75:attr:aria-hidden:true
+apps\web\src\features\data-storage\list\components\DataStorageTable\DataStorageActionsCell.tsx:82:attr:aria-hidden:true
+apps\web\src\features\plugins\components\PluginCard.tsx:57:JSX:by
+apps\web\src\features\project-members\components\AdminsHoverCard\AdminsHoverCard.tsx:27:attr:emptyText:No admins found
+apps\web\src\features\project-settings\members\components\MembersTable\columns.tsx:64:attr:className:min-w-0 font-medium break-all
+apps\web\src\features\project-settings\members\components\MembersTable\columns.tsx:76:attr:className:text-muted-foreground break-all
+apps\web\src\features\project-settings\members\components\MembersTable\MembersActionsCell.tsx:58:attr:aria-hidden:true
+apps\web\src\features\project-settings\members\components\MembersTable\MembersActionsCell.tsx:73:attr:aria-hidden:true
+apps\web\src\features\project-settings\members\components\PendingRequestsSection\MembershipRequestRow.tsx:56:attr:className:break-all
+apps\web\src\features\project-settings\notifications\components\EditNotificationSheet\form\FormField.tsx:37:attr:aria-hidden:true
+apps\web\src\layouts\MainLayout.tsx:58:attr:aria-disabled:true
+apps\web\src\layouts\MainLayout.tsx:78:attr:aria-disabled:true
+apps\web\src\pages\connect\ConnectGoogleSheetsDonePage.tsx:20:attr:aria-hidden:true
+apps\web\src\pages\data-marts\edit\DataMartOverviewContent.tsx:224:attr:aria-hidden:true
+apps\web\src\pages\data-marts\edit\DataMartOverviewContent.tsx:288:attr:aria-hidden:true
+apps\web\src\pages\data-marts\edit\DataMartOverviewContent.tsx:361:attr:id:available-for-maintenance
+apps\web\src\pages\data-marts\edit\DataMartOverviewContent.tsx:369:attr:htmlFor:available-for-maintenance
+apps\web\src\pages\data-marts\edit\DataMartOverviewContent.tsx:409:attr:id:available-for-reporting
+apps\web\src\pages\data-marts\edit\DataMartOverviewContent.tsx:417:attr:htmlFor:available-for-reporting
+apps\web\src\pages\data-marts\edit\DataMartOverviewContent.tsx:537:attr:aria-hidden:true
+apps\web\src\pages\data-marts\edit\DataMartOverviewContent.tsx:551:attr:aria-hidden:true
+apps\web\src\pages\data-marts\edit\DataMartOverviewContent.tsx:577:attr:aria-hidden:true
+apps\web\src\pages\data-marts\edit\DataMartOverviewContent.tsx:594:attr:aria-hidden:true
+apps\web\src\pages\data-marts\edit\DataMartOverviewContent.tsx:611:attr:aria-hidden:true
+apps\web\src\pages\data-marts\edit\DataMartOverviewContent.tsx:630:attr:aria-hidden:true
+apps\web\src\pages\data-marts\edit\DataMartTriggersContent.tsx:57:attr:aria-hidden:true
+apps\web\src\pages\data-marts\insights\DataMartInsightsPage.tsx:293:attr:ariaLabel:Project Data Mart Insights
+apps\web\src\pages\data-marts\shared\ProjectDataMartTableSearch.tsx:21:attr:aria-hidden:true
+apps\web\src\pages\plugins\detail\PluginDetailsPage.tsx:350:attr:className:max-w-72 break-all
+apps\web\src\pages\plugins\detail\PluginDetailsPage.tsx:534:attr:aria-hidden:true
+apps\web\src\pages\project-settings\OverviewTab.tsx:198:attr:className:font-mono text-xs break-all
+apps\web\src\pages\project-settings\OverviewTab.tsx:227:attr:name:project-at-a-glance
+apps\web\src\pages\project-settings\OverviewTab.tsx:337:attr:className:font-mono text-xs break-all
+apps\web\src\pages\search\SearchPage.tsx:145:attr:aria-hidden:true
+apps\web\src\shared\components\AuthenticationSectionHeader\AuthenticationSectionHeader.tsx:57:attr:aria-hidden:true
+apps\web\src\shared\components\CollapsibleCard\CollapsibleCardHeaderTitle.tsx:58:attr:className:sr-only
+apps\web\src\shared\components\GlobalLoader\GlobalLoader.tsx:52:attr:className:bg-primary h-full transition-all duration-300 ease-out
+apps\web\src\shared\components\InlineEditDescription\InlineEditDescription.tsx:135:attr:data-gramm:false
+apps\web\src\shared\components\InlineEditDescription\InlineEditDescription.tsx:136:attr:data-gramm_editor:false
+apps\web\src\shared\components\InlineEditDescription\InlineEditDescription.tsx:137:attr:data-enable-grammarly:false
+apps\web\src\shared\components\InlineEditDescription\InlineEditDescription.tsx:184:JSX:Ctrl+Enter
+apps\web\src\shared\components\InlineEditTitle\InlineEditTitle.tsx:136:attr:data-gramm:false
+apps\web\src\shared\components\InlineEditTitle\InlineEditTitle.tsx:137:attr:data-gramm_editor:false
+apps\web\src\shared\components\InlineEditTitle\InlineEditTitle.tsx:138:attr:data-enable-grammarly:false
+apps\web\src\shared\components\MarkdownEditor\MarkdownEditorPreview.tsx:65:attr:sandbox:allow-popups allow-popups-to-escape-sandbox
+apps\web\src\shared\components\MembersAssignmentField.tsx:129:attr:aria-hidden:true
+apps\web\src\shared\components\MembersCheckboxList.tsx:162:attr:aria-hidden:true
+apps\web\src\shared\components\SecretRevealDialog\SecretRevealDialog.tsx:92:attr:aria-hidden:true
+apps\web\src\shared\components\SecretRevealDialog\SecretRevealDialog.tsx:153:attr:aria-hidden:true
+apps\web\src\shared\components\SkipToContent\SkipToContent.tsx:9:attr:className:focus:bg-background focus:ring-ring sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-50 focus:rounded-md focus:px-4 focus:py-2 focus:text-sm focus:font-medium focus:shadow-md focus:ring-2
+apps\web\src\shared\components\Table\SortableHeader.tsx:72:attr:aria-hidden:true
+apps\web\src\shared\components\UserAvatarGroup\UserAvatarGroup.tsx:25:attr:variant:avatar-only

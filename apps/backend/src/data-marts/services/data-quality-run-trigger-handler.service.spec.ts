@@ -216,7 +216,7 @@ describe('DataQualityRunTriggerHandlerService', () => {
     expect(dataMartRunRepository.save).toHaveBeenCalledWith(
       expect.objectContaining({
         status: DataMartRunStatus.FAILED,
-        errors: ['Data Quality run failed during execution'],
+        errors: [expect.stringContaining('"code":"DATA_QUALITY_EXECUTION_FAILED"')],
         finishedAt: expect.any(Date),
         dataQualitySummary: expect.objectContaining({
           state: DataQualitySummaryState.EXECUTION_FAILED,

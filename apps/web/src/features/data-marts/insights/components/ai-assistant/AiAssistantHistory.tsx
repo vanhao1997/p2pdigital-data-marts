@@ -51,7 +51,11 @@ export function AiAssistantHistory({
   }
 
   if (sessions.length === 0) {
-    return <div className='text-muted-foreground px-2 py-3 text-sm'>{t('insightsUi.noChats', 'No chats yet.')}</div>;
+    return (
+      <div className='text-muted-foreground px-2 py-3 text-sm'>
+        {t('insightsUi.noChats', 'No chats yet.')}
+      </div>
+    );
   }
 
   return (
@@ -155,7 +159,7 @@ export function AiAssistantHistory({
                     disabled={!canEdit}
                   >
                     <Trash2 className='text-destructive h-4 w-4' />
-                    {t('insightsUi.delete', 'Delete')}
+                    {t('common.delete')}
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>

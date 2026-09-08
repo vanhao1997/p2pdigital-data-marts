@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Filter } from 'lucide-react';
 import { cn } from '@owox/ui/lib/utils';
 import { ActiveRulesPopover } from './ActiveRulesPopover';
@@ -54,6 +55,7 @@ export function RowFilterIcon({
   onReplaceAt,
   sliceIconProps,
 }: RowFilterIconProps) {
+  const { t } = useTranslation();
   const [open, setOpen] = useState(false);
   const filterCount = activeRules.length;
   const sliceCount = sliceIconProps?.existingSlices.length ?? 0;
@@ -127,7 +129,10 @@ export function RowFilterIcon({
   const trigger = (
     <button
       type='button'
-      aria-label={isActive ? 'Manage filters and slices' : 'Add filter'}
+      aria-label={t(
+        isActive ? 'reportColumnPicker.manageFiltersAndSlices' : 'reportColumnPicker.addFilter',
+        isActive ? 'Manage filters and slices' : 'Add filter'
+      )}
       className={cn(
         'ml-auto flex h-6 w-6 items-center justify-center gap-0.5 rounded transition-opacity',
         isActive

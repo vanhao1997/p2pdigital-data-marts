@@ -65,10 +65,10 @@ function DataMartDestinationsContentInner() {
     }
     checkedReportIdRef.current = deepLinkReportId;
     if (!reports.some(report => report.id === deepLinkReportId)) {
-      toast.error(`Report not found by id ${deepLinkReportId}`);
+      toast.error(t('reportsUi.reportNotFound', { id: deepLinkReportId }));
       removeReportIdParam();
     }
-  }, [reportsLoading, reports, deepLinkReportId, removeReportIdParam]);
+  }, [reportsLoading, reports, deepLinkReportId, removeReportIdParam, t]);
 
   // Show onboarding video about email reports if the user has not seen it yet
   const shouldShowOnboarding = !isLoading && dataDestinations.length === 0;
@@ -95,12 +95,7 @@ function DataMartDestinationsContentInner() {
         <SkeletonList />
       ) : hasLoadError ? (
         <div className='dm-card-block flex flex-col items-center gap-3 text-center text-sm'>
-          <p className='text-muted-foreground'>
-            {t(
-              'reportsUi.loadFailed',
-              'Failed to load destinations and reports. Please try again.'
-            )}
-          </p>
+          <p className='text-muted-foreground'>{t('reportsUi.loadFailed')}</p>
           <button
             type='button'
             className='border-input hover:bg-muted rounded-md border px-3 py-1.5 transition-colors'
@@ -134,20 +129,20 @@ function DataMartDestinationsContentInner() {
               <PromoBlock
                 icon={GoogleSheetsIcon}
                 size='compact'
-                title='Analyze your data in&nbsp;Google Sheets'
-                description='Access live data directly in&nbsp;Sheets&nbsp;— choose columns and build reports without SQL or&nbsp;CSV&nbsp;exports.'
+                title={t('reportsEmptyDestinations.analyzeTitle')}
+                description={t('reportsEmptyDestinations.description')}
                 primaryAction={{
-                  label: 'Connect Google Sheets',
+                  label: t('reportsEmptyDestinations.connectSheets'),
                   onClick: handleOpenCreateDestination,
                 }}
                 secondaryAction={{
-                  label: 'View all destinations',
+                  label: t('reportsEmptyDestinations.viewDestinations'),
                   href: scope('/data-destinations'),
                 }}
               />
               <InviteTeammatesCard
-                hint='— Ask colleagues to configure Google Sheets destination'
-                docsLabel='Learn more about Google Sheets destination'
+                hint={t('destinationsPage.inviteHint')}
+                docsLabel={t('reportsEmptyDestinations.learnMore')}
                 docsHref='https://docs.p2pdigital.io.vn/docs/destinations/supported-destinations/google-sheets/?utm_source=owox_data_marts&utm_medium=dm_page_destinations_tab&utm_campaign=no_sheets_destination_invite_teammates_card'
               />
             </div>
@@ -160,7 +155,7 @@ function DataMartDestinationsContentInner() {
         onClose={handleCloseCreateDestination}
         dataDestination={null}
         initialFormData={{
-          title: 'New Google Sheets Destination',
+          title: t('dataDestinationForm.googleSheetsTitle', 'New Google Sheets Destination'),
           type: DataDestinationType.GOOGLE_SHEETS,
           credentials: {
             serviceAccount: '',

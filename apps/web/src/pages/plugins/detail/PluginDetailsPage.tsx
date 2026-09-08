@@ -77,7 +77,11 @@ export default function PluginDetailsPage() {
   if (isLoading || !plugin) {
     return (
       <div className='dm-page'>
-        <div className='dm-page-content'>{isLoading ? t('pluginsPage.loading', 'Loading…') : t('pluginsPage.notFound', 'Plugin not found')}</div>
+        <div className='dm-page-content'>
+          {isLoading
+            ? t('pluginsPage.loading', 'Loading…')
+            : t('pluginsPage.notFound', 'Plugin not found')}
+        </div>
       </div>
     );
   }
@@ -157,7 +161,9 @@ export default function PluginDetailsPage() {
 
           <div className='flex shrink-0 items-center gap-2'>
             {plugin.suspended && (
-              <Badge variant='destructive'>{t('pluginsPage.runtime.suspended', 'Temporarily unavailable')}</Badge>
+              <Badge variant='destructive'>
+                {t('pluginsPage.runtime.suspended', 'Temporarily unavailable')}
+              </Badge>
             )}
 
             <Button
@@ -188,7 +194,11 @@ export default function PluginDetailsPage() {
 
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant='ghost' size='icon' aria-label={t('pluginsPage.moreActions', 'More plugin actions')}>
+                <Button
+                  variant='ghost'
+                  size='icon'
+                  aria-label={t('pluginsPage.moreActions', 'More plugin actions')}
+                >
                   <EllipsisVertical className='size-4' />
                 </Button>
               </DropdownMenuTrigger>
@@ -237,7 +247,7 @@ export default function PluginDetailsPage() {
 
         <nav
           className='no-scrollbar -mb-px flex gap-2 overflow-x-auto border-b whitespace-nowrap'
-            aria-label={t('pluginsPage.tabs', 'Tabs')}
+          aria-label={t('pluginsPage.tabs', 'Tabs')}
         >
           <span className='border-primary text-primary border-b-2 px-4 py-4 text-sm font-medium'>
             {t('pluginsPage.overview', 'Overview')}
@@ -249,14 +259,18 @@ export default function PluginDetailsPage() {
             <CollapsibleCardHeader>
               <CollapsibleCardHeaderTitle
                 icon={BookOpenIcon}
-                tooltip={t('pluginsPage.descriptionTooltip', 'What the publisher says this plugin does')}
+                tooltip={t(
+                  'pluginsPage.descriptionTooltip',
+                  'What the publisher says this plugin does'
+                )}
               >
                 {t('common.description', 'Description')}
               </CollapsibleCardHeaderTitle>
             </CollapsibleCardHeader>
             <CollapsibleCardContent>
               <p className='max-w-prose text-sm'>
-                {plugin.description || t('pluginsPage.noDescription', 'This plugin has no description.')}
+                {plugin.description ||
+                  t('pluginsPage.noDescription', 'This plugin has no description.')}
               </p>
             </CollapsibleCardContent>
             <CollapsibleCardFooter></CollapsibleCardFooter>
@@ -266,7 +280,10 @@ export default function PluginDetailsPage() {
             <CollapsibleCardHeader>
               <CollapsibleCardHeaderTitle
                 icon={GitHubIcon}
-                tooltip={t('pluginsPage.sourceTooltip', 'Where this plugin comes from and which version is current')}
+                tooltip={t(
+                  'pluginsPage.sourceTooltip',
+                  'Where this plugin comes from and which version is current'
+                )}
               >
                 {t('pluginsPage.source', 'Source')}
               </CollapsibleCardHeaderTitle>
@@ -277,7 +294,13 @@ export default function PluginDetailsPage() {
                 {/* §16: the owner is always disclosed. Shown with the same avatar pill the
                     project's member lists use -- a GitHub owner is not a P2PDigital user and has
                     no avatar, but it should not read as a different kind of thing either. */}
-                <InfoCard label={t('pluginsPage.author', 'Author')} hint={t('pluginsPage.authorHint', 'The GitHub account that controls future releases')}>
+                <InfoCard
+                  label={t('pluginsPage.author', 'Author')}
+                  hint={t(
+                    'pluginsPage.authorHint',
+                    'The GitHub account that controls future releases'
+                  )}
+                >
                   {ownerHref ? (
                     <ExternalAnchor href={ownerHref}>
                       <Pill
@@ -309,7 +332,10 @@ export default function PluginDetailsPage() {
 
                 {/* §16: withheld for a private repository -- naming it would confirm that
                     one specific private repository exists. */}
-                <InfoCard label={t('pluginsPage.repository', 'Repository')} hint={t('pluginsPage.repositoryHint', 'The plugin identity is this repository')}>
+                <InfoCard
+                  label={t('pluginsPage.repository', 'Repository')}
+                  hint={t('pluginsPage.repositoryHint', 'The plugin identity is this repository')}
+                >
                   {repositoryHref ? (
                     // owner/name runs long often enough that it has to truncate; the
                     // tooltip is how the full path stays reachable once it does.
@@ -340,9 +366,14 @@ export default function PluginDetailsPage() {
                   ask what the version is, not as standing body text. The time is rendered in
                   the member's own timezone.
                 */}
-                <InfoCard label={t('pluginsPage.version', 'Version')} hint={versionHint(plugin.nextCheckAt)}>
+                <InfoCard
+                  label={t('pluginsPage.version', 'Version')}
+                  hint={versionHint(plugin.nextCheckAt)}
+                >
                   <Pill icon={<Tag className='text-muted-foreground size-3.5 shrink-0' />}>
-                    {plugin.currentSemver ? `v${plugin.currentSemver}` : t('pluginsPage.noEligibleRelease', 'No eligible release')}
+                    {plugin.currentSemver
+                      ? `v${plugin.currentSemver}`
+                      : t('pluginsPage.noEligibleRelease', 'No eligible release')}
                   </Pill>
                   {/*
                     Beside the value, not in the title row: a button there is taller than
@@ -392,7 +423,10 @@ export default function PluginDetailsPage() {
 
           <CollapsibleCard collapsible name='plugin-details'>
             <CollapsibleCardHeader>
-              <CollapsibleCardHeaderTitle icon={Info} tooltip={t('pluginsPage.detailsTooltip', 'Your installation of this plugin')}>
+              <CollapsibleCardHeaderTitle
+                icon={Info}
+                tooltip={t('pluginsPage.detailsTooltip', 'Your installation of this plugin')}
+              >
                 {t('pluginsPage.details', 'Details')}
               </CollapsibleCardHeaderTitle>
             </CollapsibleCardHeader>
@@ -401,7 +435,13 @@ export default function PluginDetailsPage() {
                 <div className='flex flex-col gap-4 md:flex-row'>
                   {/* Always the reader: an installation belongs to one member in one
                       project, and nobody ever sees anyone else's. */}
-                  <InfoCard label={t('pluginsPage.installedBy', 'Installed by')} hint={t('pluginsPage.installedByHint', 'Installations are personal, never shared')}>
+                  <InfoCard
+                    label={t('pluginsPage.installedBy', 'Installed by')}
+                    hint={t(
+                      'pluginsPage.installedByHint',
+                      'Installations are personal, never shared'
+                    )}
+                  >
                     <Pill
                       icon={
                         <UserAvatar
@@ -416,7 +456,13 @@ export default function PluginDetailsPage() {
                     </Pill>
                   </InfoCard>
 
-                  <InfoCard label={t('pluginsPage.installedAt', 'Installed at')} hint={t('pluginsPage.installedAtHint', 'When you last installed or restored it')}>
+                  <InfoCard
+                    label={t('pluginsPage.installedAt', 'Installed at')}
+                    hint={t(
+                      'pluginsPage.installedAtHint',
+                      'When you last installed or restored it'
+                    )}
+                  >
                     <Pill
                       icon={<CalendarIcon className='text-muted-foreground size-3.5 shrink-0' />}
                     >
@@ -426,7 +472,10 @@ export default function PluginDetailsPage() {
                 </div>
               ) : (
                 <p className='text-muted-foreground text-sm'>
-                  {t('pluginsPage.notInstalledHere', 'You have not installed this plugin in this project.')}
+                  {t(
+                    'pluginsPage.notInstalledHere',
+                    'You have not installed this plugin in this project.'
+                  )}
                 </p>
               )}
             </CollapsibleCardContent>
@@ -435,7 +484,10 @@ export default function PluginDetailsPage() {
 
           {publications.length > 0 && (
             <p className='text-muted-foreground text-sm'>
-              {t('pluginsPage.unpublishNote', 'Unpublishing only removes the listing. Nobody is uninstalled, anyone who already installed it keeps it, and publishing again restores this listing rather than creating a second one.')}
+              {t(
+                'pluginsPage.unpublishNote',
+                'Unpublishing only removes the listing. Nobody is uninstalled, anyone who already installed it keeps it, and publishing again restores this listing rather than creating a second one.'
+              )}
             </p>
           )}
         </div>

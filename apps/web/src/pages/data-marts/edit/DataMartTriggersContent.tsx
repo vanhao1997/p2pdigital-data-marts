@@ -40,7 +40,10 @@ export default function DataMartTriggersContent() {
         <CollapsibleCardHeader>
           <CollapsibleCardHeaderTitle
             icon={CalendarClock}
-            tooltip={t('scheduledTriggers.timeTooltip', 'Time triggers allow you to schedule Data Mart runs at specific times')}
+            tooltip={t(
+              'scheduledTriggers.timeTooltip',
+              'Time triggers allow you to schedule Data Mart runs at specific times'
+            )}
           >
             {t('scheduledTriggers.timeTitle', 'Time triggers')}
           </CollapsibleCardHeaderTitle>

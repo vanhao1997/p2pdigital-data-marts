@@ -133,7 +133,10 @@ export function AddContextSheet({ isOpen, members, onClose, onCreated }: AddCont
         <SheetHeader>
           <SheetTitle>{t('contextsPage.addTitle', 'Add context')}</SheetTitle>
           <SheetDescription>
-            {t('contextsPage.addDescription', 'Create a business-domain context and optionally assign members to it.')}
+            {t(
+              'contextsPage.addDescription',
+              'Create a business-domain context and optionally assign members to it.'
+            )}
           </SheetDescription>
         </SheetHeader>
 
@@ -150,11 +153,21 @@ export function AddContextSheet({ isOpen, members, onClose, onCreated }: AddCont
                   name='name'
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel tooltip={t('contextsPage.nameTooltip', 'Business-domain label shown on resources')}>
+                      <FormLabel
+                        tooltip={t(
+                          'contextsPage.nameTooltip',
+                          'Business-domain label shown on resources'
+                        )}
+                      >
                         {t('common.name', 'Name')}
                       </FormLabel>
                       <FormControl>
-                        <Input {...field} placeholder='Marketing' disabled={saving} autoFocus />
+                        <Input
+                          {...field}
+                          placeholder={t('contextsPage.nameExample', 'Marketing')}
+                          disabled={saving}
+                          autoFocus
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -166,25 +179,39 @@ export function AddContextSheet({ isOpen, members, onClose, onCreated }: AddCont
                   name='description'
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel tooltip={t('contextsPage.descriptionTooltip', 'Helps members understand what resources belong to this context')}>
-                        {t('common.description', 'Description')} ({t('common.optional', 'optional')})
+                      <FormLabel
+                        tooltip={t(
+                          'contextsPage.descriptionTooltip',
+                          'Helps members understand what resources belong to this context'
+                        )}
+                      >
+                        {t('common.description', 'Description')} ({t('common.optional', 'optional')}
+                        )
                       </FormLabel>
                       <FormControl>
                         <Textarea
                           {...field}
                           rows={3}
                           disabled={saving}
-                          placeholder={t('contextsPage.descriptionPlaceholder', 'What this context represents')}
+                          placeholder={t(
+                            'contextsPage.descriptionPlaceholder',
+                            'What this context represents'
+                          )}
                         />
                       </FormControl>
                       <FormMessage />
                       <FormDescription>
                         <Accordion variant='common' type='single' collapsible>
                           <AccordionItem value='add-ctx-help'>
-                            <AccordionTrigger>{t('contextsPage.whatIsContext', 'What is a context?')}</AccordionTrigger>
+                            <AccordionTrigger>
+                              {t('contextsPage.whatIsContext', 'What is a context?')}
+                            </AccordionTrigger>
                             <AccordionContent>
                               <p className='mb-2'>
-                                {t('contextsPage.whatIsContextDescription', 'A context is a business-domain label (e.g. Marketing, Finance) that you can attach to Data Marts, Storages, Destinations and members. Non-admin members with "Selected contexts" scope can only access resources that share at least one of their contexts.')}
+                                {t(
+                                  'contextsPage.whatIsContextDescription',
+                                  'A context is a business-domain label (e.g. Marketing, Finance) that you can attach to Data Marts, Storages, Destinations and members. Non-admin members with "Selected contexts" scope can only access resources that share at least one of their contexts.'
+                                )}
                               </p>
                             </AccordionContent>
                           </AccordionItem>
@@ -200,7 +227,10 @@ export function AddContextSheet({ isOpen, members, onClose, onCreated }: AddCont
                   <MembersAssignmentField
                     idPrefix='new-ctx-mem'
                     label={`${t('contextsPage.assignMembers', 'Assign to members')} (${t('common.optional', 'optional')})`}
-                    tooltip={t('contextsPage.assignMembersTooltip', 'Members you select here will get access to resources tagged with this context')}
+                    tooltip={t(
+                      'contextsPage.assignMembersTooltip',
+                      'Members you select here will get access to resources tagged with this context'
+                    )}
                     members={members.map(m => ({
                       userId: m.userId,
                       email: m.email,

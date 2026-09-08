@@ -104,8 +104,14 @@ export function CanvasSettingsPanel({
           </button>
         ))}
       </div>
-      <PopoverTitle className='mt-3 border-t pt-3'>{t('canvasSettings.layoutAlgorithm', 'Layout algorithm')}</PopoverTitle>
-      <div role='radiogroup' aria-label={t('canvasSettings.layoutAlgorithm', 'Layout algorithm')} className='mt-2 space-y-0.5'>
+      <PopoverTitle className='mt-3 border-t pt-3'>
+        {t('canvasSettings.layoutAlgorithm', 'Layout algorithm')}
+      </PopoverTitle>
+      <div
+        role='radiogroup'
+        aria-label={t('canvasSettings.layoutAlgorithm', 'Layout algorithm')}
+        className='mt-2 space-y-0.5'
+      >
         {CANVAS_DIRECTION_OPTIONS.map(option => (
           <button
             key={option.value}
@@ -132,7 +138,9 @@ export function CanvasSettingsPanel({
           onCheckedChange={onShowJoinFieldsChange}
         />
       </div>
-      <PopoverTitle className='mt-3 border-t pt-3'>{t('canvasSettings.objectLabels', 'Object labels')}</PopoverTitle>
+      <PopoverTitle className='mt-3 border-t pt-3'>
+        {t('canvasSettings.objectLabels', 'Object labels')}
+      </PopoverTitle>
       <p className='text-muted-foreground mt-1 text-xs leading-snug'>
         {t('canvasSettings.objectLabelsHelp', 'Tick what every object shows — untick to hide it.')}
       </p>
@@ -230,7 +238,12 @@ export function CanvasSettingsPopover(props: CanvasSettingsPopoverProps) {
   return (
     <Popover>
       <PopoverTrigger asChild>
-        <Button variant='outline' size='icon' className='h-12 w-12' aria-label={t('canvasSettings.title', 'Canvas settings')}>
+        <Button
+          variant='outline'
+          size='icon'
+          className='h-12 w-12'
+          aria-label={t('canvasSettings.title', 'Canvas settings')}
+        >
           <Settings className='h-6 w-6' />
         </Button>
       </PopoverTrigger>

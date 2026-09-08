@@ -1,6 +1,7 @@
 import { GoogleAdsLoginButton } from '../../../../../../../shared/components/GoogleAdsLoginButton';
 import type { GoogleAdsLoginResponse } from '../../../../../../../shared/components/GoogleAdsLoginButton';
 import type { OauthRenderComponentProps } from '../OauthRenderFactory';
+import { useTranslation } from 'react-i18next';
 
 export function GoogleAdsOauthRender({
   isLoading,
@@ -8,6 +9,7 @@ export function GoogleAdsOauthRender({
   settings,
   onOAuthSuccess,
 }: OauthRenderComponentProps) {
+  const { t } = useTranslation();
   const handleGoogleAdsLogin = (response: GoogleAdsLoginResponse) => {
     void onOAuthSuccess({ code: response.code });
   };
@@ -22,10 +24,11 @@ export function GoogleAdsOauthRender({
       >
         {status?.user ? (
           <>
-            Connected as <strong>{status.user.name ?? status.user.id}</strong>
+            {t('connectorWizard.oauth.connectedAs')}{' '}
+            <strong>{status.user.name ?? status.user.id}</strong>
           </>
         ) : (
-          'Sign in with Google'
+          t('connectorWizard.oauth.signInWithGoogle')
         )}
       </GoogleAdsLoginButton>
     </div>

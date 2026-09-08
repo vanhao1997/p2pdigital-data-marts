@@ -1,6 +1,7 @@
 import { TikTokLoginButton } from '../../../../../../../shared/components/TikTokLoginButton';
 import type { TikTokLoginResponse } from '../../../../../../../shared/components/TikTokLoginButton';
 import type { OauthRenderComponentProps } from '../OauthRenderFactory';
+import { useTranslation } from 'react-i18next';
 
 export function TikTokOauthRender({
   isLoading,
@@ -8,6 +9,7 @@ export function TikTokOauthRender({
   settings,
   onOAuthSuccess,
 }: Pick<OauthRenderComponentProps, 'isLoading' | 'status' | 'settings' | 'onOAuthSuccess'>) {
+  const { t } = useTranslation();
   const handleTikTokLogin = (response: TikTokLoginResponse) => {
     void onOAuthSuccess({
       authCode: response.authCode,
@@ -24,10 +26,11 @@ export function TikTokOauthRender({
       >
         {status?.user ? (
           <>
-            Authenticated as <strong>{status.user.name ?? status.user.id}</strong>
+            {t('connectorWizard.oauth.authenticatedAs')}{' '}
+            <strong>{status.user.name ?? status.user.id}</strong>
           </>
         ) : (
-          'Continue with TikTok'
+          t('connectorWizard.oauth.continueWithTikTok')
         )}
       </TikTokLoginButton>
     </div>

@@ -163,7 +163,7 @@ export function GeneratedSqlViewer({
         <DialogTrigger asChild>
           <Button type='button' variant='outline' size='sm'>
             <FileCode2 className='mr-2 h-4 w-4' />
-            Preview SQL
+            {t('generatedSql.preview')}
           </Button>
         </DialogTrigger>
       )}

@@ -10,6 +10,7 @@ import {
 } from '@owox/ui/components/form';
 import { SecureJsonInput } from '../../../../../shared';
 import { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { isLookerStudioCredentials } from '../../../shared/model/types/looker-studio-credentials.ts';
 import LookerStudioJsonConfigDescription from './FormDescriptions/LookerStudioJsonConfigDescription';
 
@@ -18,6 +19,7 @@ interface LookerStudioFieldsProps {
 }
 
 export function LookerStudioFields({ form }: LookerStudioFieldsProps) {
+  const { t } = useTranslation();
   const credentials = form.getValues('credentials');
 
   const lookerStudioCredentials = useMemo(() => {
@@ -39,7 +41,7 @@ export function LookerStudioFields({ form }: LookerStudioFieldsProps) {
           name='credentials.destinationSecretKey'
           render={() => (
             <FormItem>
-              <FormLabel>Cấu hình JSON</FormLabel>
+              <FormLabel>{t('destinationForm.lookerJsonLabel')}</FormLabel>
               <FormControl>
                 <SecureJsonInput
                   value={jsonConfig}

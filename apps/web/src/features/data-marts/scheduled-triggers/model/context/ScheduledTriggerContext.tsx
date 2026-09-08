@@ -1,4 +1,5 @@
 import React, { useCallback, useReducer } from 'react';
+import { useTranslation } from 'react-i18next';
 import { ScheduledTriggerContext } from './scheduled-trigger-context';
 import { initialState, scheduledTriggerReducer } from './scheduled-trigger-reducer';
 import { scheduledTriggerService } from '../../services';
@@ -16,6 +17,7 @@ interface ScheduledTriggerProviderProps {
 }
 
 export function ScheduledTriggerProvider({ children }: ScheduledTriggerProviderProps) {
+  const { t } = useTranslation();
   const [state, dispatch] = useReducer(scheduledTriggerReducer, initialState);
   const { dataMart } = useDataMartContext();
   const { fetchAvailableConnectors } = useConnector();
@@ -137,7 +139,7 @@ export function ScheduledTriggerProvider({ children }: ScheduledTriggerProviderP
           action: 'Create',
           label: type,
         });
-        toast.success('Trigger created');
+        toast.success(t('uiFeedback.triggerCreated'));
         return trigger;
       } catch (error) {
         const message =
@@ -155,7 +157,7 @@ export function ScheduledTriggerProvider({ children }: ScheduledTriggerProviderP
         throw error;
       }
     },
-    [dataMart]
+    [dataMart, t]
   );
 
   const updateScheduledTrigger = useCallback(
@@ -186,7 +188,7 @@ export function ScheduledTriggerProvider({ children }: ScheduledTriggerProviderP
           action: 'Update',
           label: trigger.type,
         });
-        toast.success('Trigger updated');
+        toast.success(t('uiFeedback.triggerUpdated'));
       } catch (error) {
         const message =
           error instanceof Error ? error.message : 'Failed to update scheduled trigger';
@@ -203,36 +205,40 @@ export function ScheduledTriggerProvider({ children }: ScheduledTriggerProviderP
         throw error;
       }
     },
-    [dataMart]
+    [dataMart, t]
   );
 
-  const deleteScheduledTrigger = useCallback(async (dataMartId: string, id: string) => {
-    dispatch({ type: 'DELETE_TRIGGER_START' });
-    try {
-      await scheduledTriggerService.deleteScheduledTrigger(dataMartId, id);
-      dispatch({ type: 'DELETE_TRIGGER_SUCCESS', payload: id });
-      trackEvent({
-        event: 'scheduled_trigger_deleted',
-        category: 'ScheduledTrigger',
-        action: 'Delete',
-        label: id,
-      });
-      toast.success('Trigger deleted');
-    } catch (error) {
-      const message = error instanceof Error ? error.message : 'Failed to delete scheduled trigger';
-      dispatch({
-        type: 'DELETE_TRIGGER_ERROR',
-        payload: message,
-      });
-      trackEvent({
-        event: 'scheduled_trigger_error',
-        category: 'ScheduledTrigger',
-        action: 'DeleteError',
-        label: message,
-      });
-      throw error;
-    }
-  }, []);
+  const deleteScheduledTrigger = useCallback(
+    async (dataMartId: string, id: string) => {
+      dispatch({ type: 'DELETE_TRIGGER_START' });
+      try {
+        await scheduledTriggerService.deleteScheduledTrigger(dataMartId, id);
+        dispatch({ type: 'DELETE_TRIGGER_SUCCESS', payload: id });
+        trackEvent({
+          event: 'scheduled_trigger_deleted',
+          category: 'ScheduledTrigger',
+          action: 'Delete',
+          label: id,
+        });
+        toast.success(t('uiFeedback.triggerDeleted'));
+      } catch (error) {
+        const message =
+          error instanceof Error ? error.message : 'Failed to delete scheduled trigger';
+        dispatch({
+          type: 'DELETE_TRIGGER_ERROR',
+          payload: message,
+        });
+        trackEvent({
+          event: 'scheduled_trigger_error',
+          category: 'ScheduledTrigger',
+          action: 'DeleteError',
+          label: message,
+        });
+        throw error;
+      }
+    },
+    [t]
+  );
 
   const selectScheduledTrigger = useCallback((trigger: ScheduledTrigger | null) => {
     dispatch({ type: 'SELECT_TRIGGER', payload: trigger });

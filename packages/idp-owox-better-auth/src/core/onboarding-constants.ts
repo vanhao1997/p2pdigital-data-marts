@@ -64,7 +64,10 @@ export const USE_CASE_OPTIONS: OnboardingOption[] = [
     value: USE_CASE_ANSWER.SYNC_DWH_LOOKER,
     label: 'Đồng bộ dữ liệu trực tiếp từ kho của tổ chức đến Data Studio',
   },
-  { value: USE_CASE_ANSWER.AI_INSIGHTS, label: 'Gửi thông tin chuyên sâu AI đến Slack / Teams / Email' },
+  {
+    value: USE_CASE_ANSWER.AI_INSIGHTS,
+    label: 'Gửi thông tin chuyên sâu AI đến Slack / Teams / Email',
+  },
   {
     value: USE_CASE_ANSWER.IMPORT_EXTERNAL_DWH,
     label: 'Nhập dữ liệu bên ngoài vào kho dữ liệu của tổ chức',
@@ -77,7 +80,10 @@ export const USE_CASE_OPTIONS: OnboardingOption[] = [
 ];
 
 export const PRIMARY_ROLE_OPTIONS: OnboardingOption[] = [
-  { value: PRIMARY_ROLE_ANSWER.DATA_ANALYST_ENGINEER, label: 'Chuyên viên phân tích / kỹ sư dữ liệu' },
+  {
+    value: PRIMARY_ROLE_ANSWER.DATA_ANALYST_ENGINEER,
+    label: 'Chuyên viên phân tích / kỹ sư dữ liệu',
+  },
   { value: PRIMARY_ROLE_ANSWER.DIGITAL_MARKETER, label: 'Chuyên viên tiếp thị số' },
   { value: PRIMARY_ROLE_ANSWER.HEAD_OF_ANALYTICS, label: 'Trưởng bộ phận phân tích / dữ liệu' },
   { value: PRIMARY_ROLE_ANSWER.C_LEVEL, label: 'Cấp điều hành' },

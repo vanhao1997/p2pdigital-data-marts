@@ -21,6 +21,7 @@ import {
   type Viewport,
 } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
+import { useTranslation } from 'react-i18next';
 import { Button } from '../../../../shared/components/Button';
 import { CanvasSettingsPopover } from '../../shared/canvas/canvas-settings-panel';
 import { storageService } from '../../../../services/localstorage.service';
@@ -252,6 +253,7 @@ function ModelCanvasInner({
   storageTitle,
   exportApiRef,
 }: ModelCanvasInnerProps) {
+  const { t } = useTranslation();
   const reactFlow = useReactFlow<ModelCanvasFlowNodeType, ModelCanvasFlowEdgeType>();
   const paneWidth = useStore(state => state.width);
   const paneHeight = useStore(state => state.height);
@@ -645,7 +647,7 @@ function ModelCanvasInner({
           onClick={() => {
             void reactFlow.fitView({ padding: FIT_VIEW_PADDING, duration: 300 });
           }}
-          aria-label='Fit to view'
+          aria-label={t('canvasSettings.fitToView')}
         >
           <Locate className='h-6 w-6' />
         </Button>
@@ -656,7 +658,7 @@ function ModelCanvasInner({
           onClick={() => {
             void reactFlow.zoomIn({ duration: 150 });
           }}
-          aria-label='Zoom in'
+          aria-label={t('canvasSettings.zoomIn')}
         >
           <ZoomIn className='h-6 w-6' />
         </Button>
@@ -667,7 +669,7 @@ function ModelCanvasInner({
           onClick={() => {
             void reactFlow.zoomOut({ duration: 150 });
           }}
-          aria-label='Zoom out'
+          aria-label={t('canvasSettings.zoomOut')}
         >
           <ZoomOut className='h-6 w-6' />
         </Button>

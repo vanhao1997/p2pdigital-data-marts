@@ -5,40 +5,38 @@ import {
   AccordionTrigger,
 } from '@owox/ui/components/accordion';
 import { ExternalAnchor } from '@owox/ui/components/common/external-anchor';
+import { useTranslation } from 'react-i18next';
 
 /**
  * Accordion with step-by-step instructions for Snowflake Password.
  */
 export default function SnowflakePasswordDescription() {
+  const { t } = useTranslation();
+
   return (
     <Accordion variant='common' type='single' collapsible>
       <AccordionItem value='snowflake-password-details'>
-        <AccordionTrigger>How do I manage my Snowflake PAT?</AccordionTrigger>
+        <AccordionTrigger>{t('storageFieldHelp.snowflakePassword.title')}</AccordionTrigger>
         <AccordionContent>
-          <p className='mb-2'>
-            Use a Personal Access Token (PAT) from your Snowflake account for authentication.
-          </p>
-          <p className='mb-2'>Security tips:</p>
+          <p className='mb-2'>{t('storageFieldHelp.snowflakePassword.intro')}</p>
+          <p className='mb-2'>{t('storageFieldHelp.snowflakePassword.securityTips')}</p>
           <ul className='list-inside list-disc space-y-2 text-sm'>
             <li>
-              To reset your PAT, go to{' '}
-              <b>Settings &gt; Authentication &gt; Programmatic access tokens</b> in your Snowflake
-              user menu.
+              {t('storageFieldHelp.snowflakePassword.step1Prefix')}{' '}
+              <b>{t('storageFieldHelp.snowflakePassword.step1Path')}</b>{' '}
+              {t('storageFieldHelp.snowflakePassword.step1Suffix')}
             </li>
             <li>
-              For production, consider using{' '}
+              {t('storageFieldHelp.snowflakePassword.step2Prefix')}{' '}
               <ExternalAnchor
                 className='underline'
                 href='https://docs.snowflake.com/en/user-guide/key-pair-auth.html'
               >
-                Key Pair authentication
+                {t('storageFieldHelp.common.keyPairAuthentication')}
               </ExternalAnchor>{' '}
-              for stronger security.
+              {t('storageFieldHelp.snowflakePassword.step2Suffix')}
             </li>
-            <li>
-              PATs are encrypted and securely stored. They are never shown in plain text after
-              saving.
-            </li>
+            <li>{t('storageFieldHelp.snowflakePassword.step3')}</li>
           </ul>
         </AccordionContent>
       </AccordionItem>

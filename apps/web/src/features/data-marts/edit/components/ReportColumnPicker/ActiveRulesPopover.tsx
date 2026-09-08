@@ -1,4 +1,5 @@
 import { type ReactNode } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Popover, PopoverContent, PopoverTrigger } from '@owox/ui/components/popover';
 import { Button } from '@owox/ui/components/button';
 import { Label } from '@owox/ui/components/label';
@@ -47,6 +48,7 @@ export function ActiveRulesPopover({
   filters,
   slices,
 }: ActiveRulesPopoverProps) {
+  const { t } = useTranslation();
   const slicesOnly = !filters?.rules.length && !!slices?.rules.length && sliceColumn != null;
   return (
     <Popover open={open} onOpenChange={onOpenChange}>
@@ -61,8 +63,8 @@ export function ActiveRulesPopover({
 
         {!!filters?.rules.length && (
           <RuleSection
-            label='Active filters'
-            removeLabel='Remove filter'
+            label={t('uiFeedback.activeFilters')}
+            removeLabel={t('uiFeedback.removeFilter')}
             fieldType={fieldType}
             rules={filters.rules}
             onRemoveAt={filters.onRemoveAt}
@@ -70,8 +72,8 @@ export function ActiveRulesPopover({
         )}
         {!!slices?.rules.length && (
           <RuleSection
-            label='Active slices'
-            removeLabel='Remove slice'
+            label={t('uiFeedback.activeSlices')}
+            removeLabel={t('uiFeedback.removeSlice')}
             fieldType={sliceFieldType ?? fieldType}
             rules={slices.rules}
             onRemoveAt={slices.onRemoveAt}
@@ -86,7 +88,7 @@ export function ActiveRulesPopover({
               onOpenChange(false);
             }}
           >
-            Close
+            {t('uiFeedback.close')}
           </Button>
         </div>
       </PopoverContent>

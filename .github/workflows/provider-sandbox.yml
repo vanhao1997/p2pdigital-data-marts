@@ -1,0 +1,64 @@
+name: Provider Sandbox Contract
+
+on:
+  pull_request:
+    paths:
+      - 'apps/admicro-extractor/**'
+      - 'packages/connectors/**'
+      - 'test/provider-sandbox/**'
+      - 'docker-compose.provider-sandbox.yml'
+      - '.github/workflows/provider-sandbox.yml'
+  workflow_dispatch:
+
+concurrency:
+  group: provider-sandbox-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  provider-sandbox:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    services:
+      redis:
+        image: redis:7.4-alpine
+        ports:
+          - 6379:6379
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 5s
+          --health-timeout 3s
+          --health-retries 10
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: '22'
+          cache: npm
+      - name: Install dependencies
+        run: npm ci --prefer-offline --no-audit --no-fund --loglevel error
+      - name: Start provider fixture
+        run: node test/provider-sandbox/server.mjs > "$RUNNER_TEMP/provider-sandbox.log" 2>&1 &
+      - name: Wait for provider fixture
+        run: node -e "const retry=async()=>{for(let i=0;i<30;i++){try{if((await fetch('http://127.0.0.1:8099/healthz')).ok)process.exit(0)}catch{}await new Promise(r=>setTimeout(r,1000))}process.exit(1)};retry()"
+      - name: Run provider fixture smoke
+        run: node test/provider-sandbox/smoke.mjs
+      - name: Run provider adapter round-trip
+        run: node test/provider-sandbox/adapter-roundtrip.mjs
+        env:
+          PROVIDER_SANDBOX_URL: http://127.0.0.1:8099
+      - name: Run Admicro tests against Redis replay store
+        run: npm test --prefix apps/admicro-extractor
+        env:
+          NODE_ENV: test
+          ADMICRO_EXTRACTOR_SHARED_SECRET: sandbox-secret
+          ADMICRO_EXTRACTOR_NONCE_STORE: redis
+          ADMICRO_EXTRACTOR_REDIS_URL: redis://127.0.0.1:6379
+      - name: Run connector contract tests
+        run: npm run test -w @owox/connectors
+      - name: Upload provider fixture log
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: provider-sandbox-log
+          path: ${{ runner.temp }}/provider-sandbox.log
+          if-no-files-found: ignore

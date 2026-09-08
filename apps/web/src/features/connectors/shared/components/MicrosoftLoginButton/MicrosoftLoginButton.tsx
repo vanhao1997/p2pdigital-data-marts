@@ -1,5 +1,6 @@
 import { Button } from '@owox/ui/components/button';
 import { useOAuthPopup } from '../../hooks/useOAuthPopup';
+import { useTranslation } from 'react-i18next';
 
 interface MicrosoftLoginButtonProps {
   clientId: string;
@@ -44,6 +45,7 @@ export function MicrosoftLoginButton({
   disabled = false,
   children,
 }: MicrosoftLoginButtonProps) {
+  const { t } = useTranslation();
   const { openPopup, isLoading, error } = useOAuthPopup<
     MicrosoftLoginResponse,
     MicrosoftAuthMessage
@@ -89,15 +91,15 @@ export function MicrosoftLoginButton({
 
   const getButtonContent = () => {
     if (isLoading) {
-      return 'Connecting...';
+      return t('connectorWizard.oauth.connecting');
     }
     if (children) {
       return children;
     }
     if (!clientId || !redirectUri) {
-      return 'OAuth not configured';
+      return t('connectorWizard.oauth.notConfigured');
     }
-    return 'Sign in with Microsoft';
+    return t('connectorWizard.oauth.signInWithMicrosoft');
   };
 
   return (

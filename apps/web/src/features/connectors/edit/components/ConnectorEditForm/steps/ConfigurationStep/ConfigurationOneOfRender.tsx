@@ -7,6 +7,7 @@ import { NestedConfigurationField } from './NestedConfigurationField';
 import { SECRET_MASK } from '../../../../../../../shared/constants/secrets';
 import { GoogleSheetsServiceAccountField } from './GoogleSheetsServiceAccountField';
 import { GOOGLE_SHEETS_CONNECTOR_NAME } from '../../../../../shared/utils/google-sheets-fields.utils';
+import { localizeConnectorSpecification } from '../../../../../shared/utils/connector-metadata';
 
 interface ConfigurationOneOfRenderProps {
   specification: ConnectorSpecificationResponseApiDto;
@@ -23,6 +24,9 @@ export function ConfigurationOneOfRender({
   isEditingExisting,
   connectorName,
 }: ConfigurationOneOfRenderProps) {
+  const oneOf = specification.oneOf;
+  const localizedSpecification = localizeConnectorSpecification(specification);
+  const localizedOneOf = localizedSpecification.oneOf ?? oneOf ?? [];
   const detectSelectedOption = useMemo(() => {
     const configObject = configuration[specification.name];
     if (configObject && typeof configObject === 'object') {
@@ -57,7 +61,7 @@ export function ConfigurationOneOfRender({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedOption, specification.name]);
 
-  if (!specification.oneOf) {
+  if (!oneOf) {
     return null;
   }
 
@@ -106,12 +110,16 @@ export function ConfigurationOneOfRender({
   return (
     <AppWizardStepItemOneOf
       key={specification.name}
-      label={specification.title ?? specification.name}
-      options={specification.oneOf.map(option => ({ value: option.value, label: option.label }))}
+      label={localizedSpecification.title ?? specification.name}
+      options={localizedOneOf.map(option => ({
+        value: option.value,
+        label: option.label,
+      }))}
       value={selectedOption}
       onValueChange={handleTabChange}
     >
-      {specification.oneOf.map(option => {
+      {oneOf.map(option => {
+        const localizedOption = localizedOneOf.find(item => item.value === option.value) ?? option;
         const isOAuthFlow =
           option.attributes &&
           Array.isArray(option.attributes) &&
@@ -122,7 +130,7 @@ export function ConfigurationOneOfRender({
             {isOAuthFlow ? (
               <OauthRenderFactory
                 specification={specification}
-                option={option}
+                option={localizedOption}
                 configuration={configuration}
                 onValueChange={onValueChange}
                 connectorName={connectorName}
@@ -151,8 +159,13 @@ export function ConfigurationOneOfRender({
                     <GoogleSheetsServiceAccountField
                       key={itemName}
                       itemName={itemName}
-                      title={itemSpec.title}
-                      description={itemSpec.description}
+                      title={
+                        localizeConnectorSpecification({ ...itemSpec, oneOf: undefined }).title
+                      }
+                      description={
+                        localizeConnectorSpecification({ ...itemSpec, oneOf: undefined })
+                          .description
+                      }
                       value={nestedConfiguration[itemName]}
                       metadata={{
                         email:
@@ -185,7 +198,7 @@ export function ConfigurationOneOfRender({
                   <NestedConfigurationField
                     key={itemName}
                     itemName={itemName}
-                    itemSpec={itemSpec}
+                    itemSpec={localizeConnectorSpecification({ ...itemSpec, oneOf: undefined })}
                     nestedConfiguration={nestedConfiguration}
                     isEditingExisting={isEditingExisting}
                     isSecretEditing={fieldSecretEditing[itemName] ?? false}

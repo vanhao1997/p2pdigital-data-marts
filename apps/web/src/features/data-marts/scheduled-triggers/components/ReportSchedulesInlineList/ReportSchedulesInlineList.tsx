@@ -269,7 +269,7 @@ export const ReportSchedulesInlineList = forwardRef<
                   htmlFor={`trigger-enabled-${String(idx)}`}
                   className='cursor-pointer text-sm font-normal'
                 >
-                  {it.enabled ? 'Enabled' : 'Disabled'}
+                  {it.enabled ? t('scheduledTriggerUi.enabled') : t('scheduledTriggerUi.disabled')}
                 </Label>
               </div>
               <div>
@@ -299,13 +299,17 @@ export const ReportSchedulesInlineList = forwardRef<
               <div className='text-muted-foreground mt-3 grid gap-1 text-xs sm:grid-cols-2'>
                 {it.lastRun && (
                   <div>
-                    <span className='text-foreground/80 font-medium'>Last run: </span>
+                    <span className='text-foreground/80 font-medium'>
+                      {t('scheduledTriggerUi.lastRunInline')}{' '}
+                    </span>
                     <RelativeTime date={new Date(it.lastRun)} />
                   </div>
                 )}
                 {it.nextRun && (
                   <div>
-                    <span className='text-foreground/80 font-medium'>{t('scheduledTriggers.nextRun')}: </span>
+                    <span className='text-foreground/80 font-medium'>
+                      {t('scheduledTriggers.nextRun')}:{' '}
+                    </span>
                     <RelativeTime date={new Date(it.nextRun)} />
                   </div>
                 )}
@@ -324,7 +328,7 @@ export const ReportSchedulesInlineList = forwardRef<
                   <AlertDialogHeader>
                     <AlertDialogTitle>{t('scheduledTriggers.deleteQuestion')}</AlertDialogTitle>
                     <AlertDialogDescription>
-                      This action will remove this schedule from the report.
+                      {t('scheduledTriggers.removeScheduleDescription')}
                     </AlertDialogDescription>
                   </AlertDialogHeader>
                   <AlertDialogFooter>
@@ -342,7 +346,7 @@ export const ReportSchedulesInlineList = forwardRef<
                         setDeleteIndex(null);
                       }}
                     >
-                        {t('common.delete')}
+                      {t('common.delete')}
                     </AlertDialogAction>
                   </AlertDialogFooter>
                 </AlertDialogContent>
@@ -366,7 +370,7 @@ export const ReportSchedulesInlineList = forwardRef<
           />
           <div className='gp-2 mt-3 flex items-center justify-between text-sm'>
             <Button variant='outline' type='button' onClick={addTrigger} size='sm'>
-              + Add trigger
+              + {t('scheduledTriggers.add')}
             </Button>
           </div>
         </div>
@@ -375,7 +379,7 @@ export const ReportSchedulesInlineList = forwardRef<
       {hasItems && (
         <div>
           <Button variant='outline' type='button' onClick={addTrigger}>
-            + Add trigger
+            + {t('scheduledTriggers.add')}
           </Button>
         </div>
       )}

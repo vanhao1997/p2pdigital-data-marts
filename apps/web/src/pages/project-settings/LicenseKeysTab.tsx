@@ -71,12 +71,8 @@ export function LicenseKeysTab() {
             <div className='dm-card'>
               <div className='dm-empty-state'>
                 <ShieldCheck className='dm-empty-state-ico' strokeWidth={1} />
-                <h2 className='dm-empty-state-title'>
-                  {t('licenseKeysPage.emptyTitle')}
-                </h2>
-                <p className='dm-empty-state-subtitle'>
-                  {t('licenseKeysPage.emptySubtitle')}
-                </p>
+                <h2 className='dm-empty-state-title'>{t('licenseKeysPage.emptyTitle')}</h2>
+                <p className='dm-empty-state-subtitle'>{t('licenseKeysPage.emptySubtitle')}</p>
                 {isAdmin && (
                   <Button
                     variant='outline'
@@ -105,9 +101,7 @@ export function LicenseKeysTab() {
             />
           )}
           <div className='bg-muted/50 rounded-md border-b border-gray-200 px-4 py-3 dark:border-white/2 dark:bg-white/2'>
-            <p className='text-muted-foreground text-sm'>
-              {t('licenseKeysPage.infoNote')}
-            </p>
+            <p className='text-muted-foreground text-sm'>{t('licenseKeysPage.infoNote')}</p>
           </div>
         </div>
       )}

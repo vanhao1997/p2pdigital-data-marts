@@ -40,7 +40,9 @@ export const getLicenseKeysColumns = ({
     accessorKey: 'licenseKeyId',
     size: 240,
     meta: { title: t('licenseKeysPage.table.licenseKeyId') },
-    header: ({ column }) => <SortableHeader column={column}>{t('licenseKeysPage.table.licenseKeyId')}</SortableHeader>,
+    header: ({ column }) => (
+      <SortableHeader column={column}>{t('licenseKeysPage.table.licenseKeyId')}</SortableHeader>
+    ),
     cell: ({ row }) => (
       <div className='flex items-center gap-1.5'>
         <code className='text-muted-foreground text-xs'>{row.original.licenseKeyId}</code>
@@ -66,7 +68,9 @@ export const getLicenseKeysColumns = ({
     accessorKey: 'origin',
     size: 240,
     meta: { title: t('licenseKeysPage.table.origin') },
-    header: ({ column }) => <SortableHeader column={column}>{t('licenseKeysPage.table.origin')}</SortableHeader>,
+    header: ({ column }) => (
+      <SortableHeader column={column}>{t('licenseKeysPage.table.origin')}</SortableHeader>
+    ),
     cell: ({ row }) => (
       <div className='flex items-center gap-1.5'>
         <code className='text-muted-foreground text-xs'>{row.original.origin}</code>
@@ -97,7 +101,9 @@ export const getLicenseKeysColumns = ({
     size: 200,
     meta: { title: t('licenseKeysPage.table.expires') },
     sortingFn: 'basic',
-    header: ({ column }) => <SortableHeader column={column}>{t('licenseKeysPage.table.expires')}</SortableHeader>,
+    header: ({ column }) => (
+      <SortableHeader column={column}>{t('licenseKeysPage.table.expires')}</SortableHeader>
+    ),
     cell: ({ row }) => (
       <ExpirationValue
         expiresAt={row.original.expiresAt}
@@ -111,7 +117,9 @@ export const getLicenseKeysColumns = ({
     accessorKey: 'createdAt',
     size: 130,
     meta: { title: t('common.createdAt') },
-    header: ({ column }) => <SortableHeader column={column}>{t('common.createdAt')}</SortableHeader>,
+    header: ({ column }) => (
+      <SortableHeader column={column}>{t('common.createdAt')}</SortableHeader>
+    ),
     cell: ({ row }) => (
       <RelativeTime date={new Date(row.original.createdAt)} className={relativeTimeCellClassName} />
     ),
@@ -120,10 +128,13 @@ export const getLicenseKeysColumns = ({
     accessorKey: 'lastUsedAt',
     size: 150,
     meta: { title: t('licenseKeysPage.table.lastActivity') },
-    header: ({ column }) => <SortableHeader column={column}>{t('licenseKeysPage.table.lastActivity')}</SortableHeader>,
+    header: ({ column }) => (
+      <SortableHeader column={column}>{t('licenseKeysPage.table.lastActivity')}</SortableHeader>
+    ),
     cell: ({ row }) => {
       const { lastUsedAt } = row.original;
-      if (!lastUsedAt) return <span className='text-muted-foreground'>{t('licenseKeysPage.table.never')}</span>;
+      if (!lastUsedAt)
+        return <span className='text-muted-foreground'>{t('licenseKeysPage.table.never')}</span>;
       return <RelativeTime date={new Date(lastUsedAt)} className={relativeTimeCellClassName} />;
     },
   },
@@ -132,7 +143,9 @@ export const getLicenseKeysColumns = ({
     accessorFn: row => row.createdByUser?.fullName ?? row.createdByUser?.email ?? '',
     size: 200,
     meta: { title: t('common.createdBy') },
-    header: ({ column }) => <SortableHeader column={column}>{t('common.createdBy')}</SortableHeader>,
+    header: ({ column }) => (
+      <SortableHeader column={column}>{t('common.createdBy')}</SortableHeader>
+    ),
     cell: ({ row }) => {
       const creator = row.original.createdByUser;
       if (!creator) return <span className='text-muted-foreground'>—</span>;

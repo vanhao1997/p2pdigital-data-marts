@@ -96,7 +96,9 @@ export function MembersTable({
                       aria-disabled={!isAdmin}
                     >
                       <UserPlus className='h-4 w-4' />
-                      <span className='hidden lg:block'>{t('membersPage.inviteTitle', 'Invite member')}</span>
+                      <span className='hidden lg:block'>
+                        {t('membersPage.inviteTitle', 'Invite member')}
+                      </span>
                     </button>
                   </TableCTAButton>
                 );

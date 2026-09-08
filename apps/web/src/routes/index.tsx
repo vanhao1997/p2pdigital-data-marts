@@ -94,11 +94,7 @@ function lazyElement(element: ReactNode) {
 const routes: RouteObject[] = [
   {
     path: '/projects',
-    element: (
-      <AuthGuard>
-        {lazyElement(<ProjectsPage />)}
-      </AuthGuard>
-    ),
+    element: <AuthGuard>{lazyElement(<ProjectsPage />)}</AuthGuard>,
     errorElement: <RootErrorBoundary />,
   },
   {

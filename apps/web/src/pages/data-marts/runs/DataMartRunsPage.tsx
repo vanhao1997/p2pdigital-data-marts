@@ -54,7 +54,7 @@ export default function DataMartRunsPage() {
   const runs = useMemo(() => runsQuery.data?.runs ?? [], [runsQuery.data?.runs]);
   const isLoading = runsQuery.isLoading;
   const queryError = runsQuery.isError
-    ? (extractApiError(runsQuery.error).message ?? 'Failed to fetch Data Mart runs')
+    ? (extractApiError(runsQuery.error).message ?? t('projectDataMartPages.loadRunsFailed'))
     : null;
   const error = queryError && runs.length === 0 ? queryError : null;
   const hasMoreRunsToLoad = runsQuery.data?.hasMore ?? false;
@@ -192,10 +192,12 @@ export default function DataMartRunsPage() {
         await dataMartService.cancelDataMartRun(dataMartId, runId);
         await queryClient.invalidateQueries({ queryKey: dataMartQueryKeys.runsRoot(projectId) });
       } catch (caught) {
-        throw new Error(extractApiError(caught).message ?? 'Failed to cancel Data Mart run');
+        throw new Error(
+          extractApiError(caught).message ?? t('projectDataMartPages.cancelRunFailed')
+        );
       }
     },
-    [projectId, queryClient]
+    [projectId, queryClient, t]
   );
 
   const toggleRunDetails = (runId: string) => {
@@ -214,9 +216,9 @@ export default function DataMartRunsPage() {
             className='dm-card-block mb-3 flex items-center justify-between gap-3 text-sm'
             role='status'
           >
-            <span>Data may be stale because automatic refresh is failing.</span>
+            <span>{t('projectDataMartPages.staleRefresh')}</span>
             <Button size='sm' variant='outline' onClick={() => void loadRuns(0)}>
-              Retry
+              {t('common.retry')}
             </Button>
           </div>
         )}
@@ -227,7 +229,7 @@ export default function DataMartRunsPage() {
           >
             <span className='text-muted-foreground'>{queryError}</span>
             <Button size='sm' variant='outline' onClick={() => void loadRuns(0)}>
-              Retry
+              {t('common.retry')}
             </Button>
           </div>
         )}

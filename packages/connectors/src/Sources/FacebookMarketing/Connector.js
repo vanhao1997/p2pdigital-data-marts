@@ -6,10 +6,8 @@
  */
 
 var FacebookMarketingConnector = class FacebookMarketingConnector extends AbstractConnector {
-
   // ---- constructor ------------------------------------
-      constructor(config, source, storageName = "GoogleBigQueryStorage", runConfig = null) {
-    
+  constructor(config, source, storageName = 'GoogleBigQueryStorage', runConfig = null) {
     super(config, source, null, runConfig);
 
     this.storageName = storageName;
@@ -17,142 +15,186 @@ var FacebookMarketingConnector = class FacebookMarketingConnector extends Abstra
     // accountId -> errors that made this account unreachable, kept so a partial failure can be
     // reported per account instead of collapsing into whichever error happened to come last
     this.skippedAccounts = new Map();
+  }
 
-    }
+  //---- startImportProcess -------------------------------------------------
+  async startImportProcess() {
+    // Getting account IDs by splitting the configuration value by commas
+    let accountsIds = [
+      ...new Set(
+        String(this.config.AccountIDs.value)
+          .split(/[,;]\s*/)
+          .map(accountId => accountId.trim())
+          .filter(Boolean)
+      ),
+    ];
 
-
-//---- startImportProcess -------------------------------------------------
-    async startImportProcess() {
-
-      // Getting account IDs by splitting the configuration value by commas
-      let accountsIds = String(this.config.AccountIDs.value).split(/[,;]\s*/);
-
-      // Getting an object of nodes whose fields array needs to be fetched from
-      let fields = this.config.Fields.value.split(", ").reduce( (acc, pair) => {
-        let [key, value] = pair.split(" ");
-        (acc[key] = acc[key] || []).push( value.trim() );
+    // Getting an object of nodes whose fields array needs to be fetched from
+    let fields = String(this.config.Fields.value)
+      .split(',')
+      .reduce((acc, pair) => {
+        const parts = pair.trim().split(/\s+/);
+        if (parts.length < 2) {
+          return acc;
+        }
+        let [key, ...valueParts] = parts;
+        const value = valueParts.join(' ').trim();
+        if (!key || !value) {
+          return acc;
+        }
+        (acc[key] = acc[key] || []).push(value);
         return acc;
       }, {});
 
-      let timeSeriesNodes = {};
+    let timeSeriesNodes = {};
 
-      // Data must be imported differently depending on whether it is time-series or not
-      for(var nodeName in fields) {
-
-        if( nodeName in this.source.fieldsSchema && this.source.fieldsSchema[nodeName].isTimeSeries ) {
-
-            timeSeriesNodes[nodeName] = fields[nodeName];
+    // Data must be imported differently depending on whether it is time-series or not
+    for (var nodeName in fields) {
+      if (nodeName in this.source.fieldsSchema && this.source.fieldsSchema[nodeName].isTimeSeries) {
+        timeSeriesNodes[nodeName] = fields[nodeName];
 
         // node's data is catalog like, it must be imported right away
-        } else {
-
-          await this.startImportProcessOfCatalogData(nodeName, accountsIds, fields[ nodeName ]);
-
-        }
-
+      } else {
+        await this.startImportProcessOfCatalogData(nodeName, accountsIds, fields[nodeName]);
       }
+    }
 
-      // if there are some time series nodes to import
-      if( Object.keys(timeSeriesNodes).length > 0 ) {
-        let startDate = null;
-        let daysToFetch = null;
-        [startDate, daysToFetch] = this.getStartDateAndDaysToFetch();
+    // if there are some time series nodes to import
+    if (Object.keys(timeSeriesNodes).length > 0) {
+      let startDate = null;
+      let daysToFetch = null;
+      [startDate, daysToFetch] = this.getStartDateAndDaysToFetch();
 
-        if( daysToFetch > 0 ) {
-          await this.startImportProcessOfTimeSeriesData(accountsIds, timeSeriesNodes, startDate, daysToFetch);
-        }
-
-      }
-
-      // A run that skipped an account still completes, so without this the only trace would be a
-      // log line: the run would report plain success while that account's data is missing.
-      if( this.skippedAccounts.size ) {
-        this.config.addWarningToCurrentStatus(
-          `${this.skippedAccounts.size} out of ${accountsIds.length} configured accounts were skipped and their data is missing.`
+      if (daysToFetch > 0) {
+        await this.startImportProcessOfTimeSeriesData(
+          accountsIds,
+          timeSeriesNodes,
+          startDate,
+          daysToFetch
         );
       }
-
     }
+
+    // A run that skipped an account still completes, so without this the only trace would be a
+    // log line: the run would report plain success while that account's data is missing.
+    if (this.skippedAccounts.size) {
+      this.config.addWarningToCurrentStatus(
+        `${this.skippedAccounts.size} out of ${accountsIds.length} configured accounts were skipped and their data is missing.`
+      );
+    }
+  }
 
   //---- skipOrRethrow -------------------------------------------------
-    /**
-     * Decides whether a failure lets the import move on to the next account.
-     *
-     * Only account-scoped permission failures are safe to skip: the account stays unreachable
-     * however often it is retried, so continuing costs nothing. Everything else — a storage
-     * write, an exhausted transient error — must fail the run: swallowing it would let
-     * LastRequestedDate advance past a day whose data was never stored, and once
-     * ReimportLookbackWindow has passed that day is never requested again.
-     *
-     * @param {string} accountId - The account being imported
-     * @param {Error} error - The failure to classify
-     * @param {string} context - What was being attempted, for the warning text
-     * @throws {Error} The original error, when it is not an account-scoped permission failure
-     * @private
-     */
-    _skipOrRethrow(accountId, error, context) {
-
-      const safeMessage = this._safeErrorMessage(error);
-      if (error?.message && safeMessage !== error.message) {
-        error.message = safeMessage;
-      }
-
-      if( !error?.isWarning ) {
-        throw error;
-      }
-
-      if( !this.skippedAccounts.has(accountId) ) {
-        this.skippedAccounts.set(accountId, []);
-      }
-      this.skippedAccounts.get(accountId).push(error);
-
-      this.config.addWarningToCurrentStatus(
-        `${context}: skipped one configured account: ${this._safeErrorMessage(error)}`
-      );
-
+  /**
+   * Decides whether a failure lets the import move on to the next account.
+   *
+   * Only account-scoped permission failures are safe to skip: the account stays unreachable
+   * however often it is retried, so continuing costs nothing. Everything else — a storage
+   * write, an exhausted transient error — must fail the run: swallowing it would let
+   * LastRequestedDate advance past a day whose data was never stored, and once
+   * ReimportLookbackWindow has passed that day is never requested again.
+   *
+   * @param {string} accountId - The account being imported
+   * @param {Error} error - The failure to classify
+   * @param {string} context - What was being attempted, for the warning text
+   * @throws {Error} The original error, when it is not an account-scoped permission failure
+   * @private
+   */
+  _skipOrRethrow(accountId, error, context) {
+    const safeMessage = this._safeErrorMessage(error);
+    if (error?.message && safeMessage !== error.message) {
+      error.message = safeMessage;
     }
+
+    if (!error?.isWarning) {
+      throw error;
+    }
+
+    if (!this._isAccountScopedPermissionError(error)) {
+      this._throwGlobalAuthorizationError(error, context);
+    }
+
+    if (!this.skippedAccounts.has(accountId)) {
+      this.skippedAccounts.set(accountId, []);
+    }
+    this.skippedAccounts.get(accountId).push(error);
+
+    this.config.addWarningToCurrentStatus(
+      `${context}: skipped one configured account: ${this._safeErrorMessage(error)}`
+    );
+  }
+
+  _isAccountScopedPermissionError(error) {
+    const providerError = error?.payload?.error || {};
+    const code = Number(providerError.code);
+    const message = String(error?.message || providerError.message || '');
+
+    if (code && code !== 200) {
+      return false;
+    }
+
+    return (
+      /ad account/i.test(message) &&
+      /(ads_read|ads_management|permission|permissions|grant|role|access)/i.test(message)
+    );
+  }
+
+  _throwGlobalAuthorizationError(error, context) {
+    const safeMessage = this._safeErrorMessage(error);
+    const readableContext = String(context || 'importing Facebook data').replace(
+      /^Importing/,
+      'importing'
+    );
+    const authError = new Error(
+      `Facebook authorization failed while ${readableContext}. Reconnect Facebook and grant ` +
+        `ads_read and ads_management to the authorized user. Provider details: ${safeMessage}`
+    );
+    authError.name = 'FacebookAuthorizationError';
+    authError.isWarning = true;
+    authError.statusCode = error?.statusCode;
+    authError.payload = error?.payload;
+    throw authError;
+  }
 
   //---- throwIfAllAccountsSkipped -------------------------------------------------
-    /**
-     * Fails the run when no account was importable.
-     *
-     * Every account failing at once is not a set of individual accounts losing access on the same
-     * day: it points to a global cause, typically an expired access token. Reporting success there
-     * would hide a total outage behind a run that imported nothing.
-     *
-     * @param {array} accountIds - Every account the run was asked to import
-     * @param {Set} skipped - The accounts skipped in the current pass
-     * @param {string} context - What was being imported, for the error text
-     * @throws {Error} When every account was skipped
-     * @private
-     */
-    _throwIfAllAccountsSkipped(accountIds, skipped, context) {
-
-      if( !accountIds.length || skipped.size < accountIds.length ) {
-        return;
-      }
-
-      const details = accountIds.map(accountId => {
-        const errors = this.skippedAccounts.get(accountId) || [];
-        const last = errors[errors.length - 1];
-        return last ? this._safeErrorMessage(last) : 'unknown error';
-      });
-
-      const error = new Error(
-        `Facebook authorization failed: all ${accountIds.length} configured account${accountIds.length === 1 ? '' : 's'} `
-        + `${accountIds.length === 1 ? 'was' : 'were'} inaccessible ${context}, so no data was imported. Reconnect Facebook and grant `
-        + `ads_read and ads_management to the authorized user. Provider details: ${details.join('; ')}`
-      );
-      error.name = 'FacebookAuthorizationError';
-      // Keep this customer-actionable failure readable in run history while preventing the
-      // connector runner from treating it as an opaque provider stack trace.
-      error.isWarning = true;
-      throw error;
-
+  /**
+   * Fails the run when no account was importable.
+   *
+   * Every account failing at once is not a set of individual accounts losing access on the same
+   * day: it points to a global cause, typically an expired access token. Reporting success there
+   * would hide a total outage behind a run that imported nothing.
+   *
+   * @param {array} accountIds - Every account the run was asked to import
+   * @param {Set} skipped - The accounts skipped in the current pass
+   * @param {string} context - What was being imported, for the error text
+   * @throws {Error} When every account was skipped
+   * @private
+   */
+  _throwIfAllAccountsSkipped(accountIds, skipped, context) {
+    if (!accountIds.length || skipped.size < accountIds.length) {
+      return;
     }
-  
+
+    const details = accountIds.map(accountId => {
+      const errors = this.skippedAccounts.get(accountId) || [];
+      const last = errors[errors.length - 1];
+      return last ? this._safeErrorMessage(last) : 'unknown error';
+    });
+
+    const error = new Error(
+      `Facebook authorization failed: all ${accountIds.length} configured account${accountIds.length === 1 ? '' : 's'} ` +
+        `${accountIds.length === 1 ? 'was' : 'were'} inaccessible ${context}, so no data was imported. Reconnect Facebook and grant ` +
+        `ads_read and ads_management to the authorized user. Provider details: ${details.join('; ')}`
+    );
+    error.name = 'FacebookAuthorizationError';
+    // Keep this customer-actionable failure readable in run history while preventing the
+    // connector runner from treating it as an opaque provider stack trace.
+    error.isWarning = true;
+    throw error;
+  }
+
   //---- startImportProcessOfCatalogData -------------------------------------------------
-    /*
+  /*
 
     Imports catalog (not time seriesed) data
 
@@ -161,50 +203,44 @@ var FacebookMarketingConnector = class FacebookMarketingConnector extends Abstra
     @param fields array list of fields
 
     */
-    async startImportProcessOfCatalogData(nodeName, accountIds, fields) {
+  async startImportProcessOfCatalogData(nodeName, accountIds, fields) {
+    const skipped = new Set();
 
-      const skipped = new Set();
+    for (var i in accountIds) {
+      let accountId = accountIds[i];
 
-      for(var i in accountIds) {
+      try {
+        const storage = await this.getStorageByNode(nodeName);
 
-        let accountId = accountIds[i];
+        let totalRows = 0;
+        await this.source.fetchData(nodeName, accountId, fields, null, async pageData => {
+          await storage.saveData(pageData);
+          totalRows += pageData.length;
+        });
 
-        try {
+        // If no data was fetched but CreateEmptyTables is enabled, ensure the table exists
+        if (!totalRows && this.config.CreateEmptyTables?.value) {
+          await storage.saveData([]);
+        }
 
-          const storage = await this.getStorageByNode(nodeName);
-
-          let totalRows = 0;
-          await this.source.fetchData(nodeName, accountId, fields, null,
-            async (pageData) => {
-              await storage.saveData(pageData);
-              totalRows += pageData.length;
-            }
+        totalRows &&
+          this.config.logMessage(
+            `${totalRows} rows of ${nodeName} were fetched for a configured account`
           );
-
-          // If no data was fetched but CreateEmptyTables is enabled, ensure the table exists
-          if(!totalRows && this.config.CreateEmptyTables?.value) {
-            await storage.saveData([]);
-          }
-
-          totalRows && this.config.logMessage(`${totalRows} rows of ${nodeName} were fetched for a configured account`);
 
         // catalog nodes are imported before any time-series node, so an unreachable account here
         // would otherwise abort the whole run before a single day is requested
-        } catch( error ) {
-
-          this._skipOrRethrow(accountId, error, `Importing ${nodeName}`);
-          skipped.add(accountId);
-
-        }
-
+      } catch (error) {
+        this._skipOrRethrow(accountId, error, `Importing ${nodeName}`);
+        skipped.add(accountId);
       }
-
-      this._throwIfAllAccountsSkipped(accountIds, skipped, `while importing ${nodeName}`);
-
     }
-  
+
+    this._throwIfAllAccountsSkipped(accountIds, skipped, `while importing ${nodeName}`);
+  }
+
   //---- startImportProcessOfTimeSeriesData -------------------------------------------------
-    /*
+  /*
 
     Imports time series (not catalog) data
 
@@ -214,107 +250,120 @@ var FacebookMarketingConnector = class FacebookMarketingConnector extends Abstra
     @param daysToFetch (integer) days to import
 
     */
-    async startImportProcessOfTimeSeriesData(accountsIds, timeSeriesNodes, startDate, daysToFetch = 1) {
+  async startImportProcessOfTimeSeriesData(
+    accountsIds,
+    timeSeriesNodes,
+    startDate,
+    daysToFetch = 1
+  ) {
+    // start requesting data day by day from startDate to startDate + daysToFetch
+    for (var daysShift = 0; daysShift < daysToFetch; daysShift++) {
+      // reset per day: an account skipped today may well import tomorrow, and a token that
+      // expires mid-run must not retroactively invalidate the days already completed
+      const skipped = new Set();
 
-      // start requesting data day by day from startDate to startDate + daysToFetch
-      for(var daysShift = 0; daysShift < daysToFetch; daysShift++) {
+      // itterating accounts
+      for (let accountId of accountsIds) {
+        try {
+          // itteration nodes to fetch data
+          for (var nodeName in timeSeriesNodes) {
+            this.config.logMessage(
+              `Start importing data for ${DateUtils.formatDate(startDate)}: configured account/${nodeName}`
+            );
 
-        // reset per day: an account skipped today may well import tomorrow, and a token that
-        // expires mid-run must not retroactively invalidate the days already completed
-        const skipped = new Set();
+            // fetching new data from a data source
+            let data = await this.source.fetchData(
+              nodeName,
+              accountId,
+              timeSeriesNodes[nodeName],
+              startDate
+            );
 
-        // itterating accounts
-        for (let accountId of accountsIds) {
-
-          try {
-
-            // itteration nodes to fetch data
-            for(var nodeName in timeSeriesNodes) {
-
-              this.config.logMessage(`Start importing data for ${DateUtils.formatDate(startDate)}: configured account/${nodeName}`);
-
-              // fetching new data from a data source
-              let data = await this.source.fetchData(nodeName, accountId, timeSeriesNodes[ nodeName ], startDate);
-
-              if( data.length || this.config.CreateEmptyTables?.value ) {
-                const storage = await this.getStorageByNode(nodeName);
-                await storage.saveData(data);
-              }
-
-              this.config.logMessage(data.length ? `${data.length} records were fetched` : `No records have been fetched`);
-
+            if (data.length || this.config.CreateEmptyTables?.value) {
+              const storage = await this.getStorageByNode(nodeName);
+              await storage.saveData(data);
             }
 
-          // an account the token can no longer access must not abort the whole import
-          } catch( error ) {
-
-            this._skipOrRethrow(accountId, error, `Importing ${DateUtils.formatDate(startDate)}`);
-            skipped.add( accountId );
-
+            this.config.logMessage(
+              data.length ? `${data.length} records were fetched` : `No records have been fetched`
+            );
           }
 
+          // an account the token can no longer access must not abort the whole import
+        } catch (error) {
+          this._skipOrRethrow(accountId, error, `Importing ${DateUtils.formatDate(startDate)}`);
+          skipped.add(accountId);
         }
-
-        // Runs before the cursor moves: a day nobody could import must be requested again
-        this._throwIfAllAccountsSkipped(accountsIds, skipped, `for ${DateUtils.formatDate(startDate)}`);
-
-        // Only update LastRequestedDate for incremental runs
-        if (this.runConfig.type === RUN_CONFIG_TYPE.INCREMENTAL) {
-          this.config.updateLastRequstedDate(startDate);
-        }
-        startDate.setDate( startDate.getDate() + 1);  // let's move on to the next date
-
       }
-    }
 
-    _safeErrorMessage(error) {
-      return String(error?.message || 'unknown error')
-        .replace(/(access[_ -]?token|client[_ -]?secret|password|cookie|authorization)\s*[:=]\s*\S+/gi, '$1=[REDACTED]')
-        .replace(/\bEA[A-Za-z0-9_-]{20,}\b/g, '[REDACTED_TOKEN]')
-        .replace(/\bact_[^\s;)]+\b/gi, 'the configured account')
-        .replace(/\b\d{6,}\b/g, '[REDACTED_ID]');
+      // Runs before the cursor moves: a day nobody could import must be requested again
+      this._throwIfAllAccountsSkipped(
+        accountsIds,
+        skipped,
+        `for ${DateUtils.formatDate(startDate)}`
+      );
+
+      // Only update LastRequestedDate for incremental runs
+      if (this.runConfig.type === RUN_CONFIG_TYPE.INCREMENTAL) {
+        this.config.updateLastRequstedDate(startDate);
+      }
+      startDate.setUTCDate(startDate.getUTCDate() + 1); // let's move on to the next date
     }
-  
-//---- getStorageName -------------------------------------------------
+  }
+
+  _safeErrorMessage(error) {
+    return String(error?.message || 'unknown error')
+      .replace(
+        /(access[_ -]?token|client[_ -]?secret|password|cookie|authorization)\s*[:=]\s*\S+/gi,
+        '$1=[REDACTED]'
+      )
+      .replace(/\bBearer\s+[A-Za-z0-9._-]+\b/gi, 'Bearer [REDACTED]')
+      .replace(/\bEA[A-Za-z0-9_-]{20,}\b/g, '[REDACTED_TOKEN]')
+      .replace(/\bact_[^\s;)]+\b/gi, 'the configured account')
+      .replace(/\b\d{6,}\b/g, '[REDACTED_ID]');
+  }
+
+  //---- getStorageName -------------------------------------------------
   /**
    *
    * @param nodeName string name of the node
    * @param requestedFields array list of requested fields
-   * 
-   * @return AbstractStorage 
-   * 
+   *
+   * @return AbstractStorage
+   *
    */
   async getStorageByNode(nodeName) {
-
     // initiate blank object for storages
-    if( !("storages" in this) ) {
+    if (!('storages' in this)) {
       this.storages = {};
     }
 
-    if( !(nodeName in this.storages) ) {
-
-      if( !("uniqueKeys" in this.source.fieldsSchema[ nodeName ]) ) {
+    if (!(nodeName in this.storages)) {
+      if (!('uniqueKeys' in this.source.fieldsSchema[nodeName])) {
         throw new Error(`Unique keys for '${nodeName}' are not defined in the fields schema`);
       }
 
-      let uniqueFields = this.source.fieldsSchema[ nodeName ]["uniqueKeys"];
+      let uniqueFields = this.source.fieldsSchema[nodeName]['uniqueKeys'];
 
-      this.storages[ nodeName ] = new globalThis[ this.storageName ](
+      this.storages[nodeName] = new globalThis[this.storageName](
         this.config.mergeParameters({
-          DestinationSheetName: {value: this.source.fieldsSchema[nodeName].destinationName },
-          DestinationTableName: { value: this.getDestinationName(nodeName, this.config, this.source.fieldsSchema[nodeName].destinationName) },
+          DestinationSheetName: { value: this.source.fieldsSchema[nodeName].destinationName },
+          DestinationTableName: {
+            value: this.getDestinationName(
+              nodeName,
+              this.config,
+              this.source.fieldsSchema[nodeName].destinationName
+            ),
+          },
         }),
         uniqueFields,
-        this.source.fieldsSchema[ nodeName ]["fields"],
-        `${this.source.fieldsSchema[ nodeName ]["description"]} ${this.source.fieldsSchema[ nodeName ]["documentation"]}`
+        this.source.fieldsSchema[nodeName]['fields'],
+        `${this.source.fieldsSchema[nodeName]['description']} ${this.source.fieldsSchema[nodeName]['documentation']}`
       );
 
       await this.storages[nodeName].init();
     }
 
-    return this.storages[ nodeName ];
-
+    return this.storages[nodeName];
   }
-  
-  
-}
+};

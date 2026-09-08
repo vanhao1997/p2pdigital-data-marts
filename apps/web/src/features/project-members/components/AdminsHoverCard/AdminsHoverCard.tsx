@@ -1,4 +1,5 @@
 import { type ReactNode } from 'react';
+import { useTranslation } from 'react-i18next';
 import { projectMembersService } from '../../services/project-members.service';
 import { MembersHoverCard, type MembersHoverCardItem } from '../MembersHoverCard';
 
@@ -21,11 +22,13 @@ interface AdminsHoverCardProps {
  * around the word and users get a concrete list to reach out to.
  */
 export function AdminsHoverCard({ children, ...rest }: AdminsHoverCardProps) {
+  const { t } = useTranslation();
+
   return (
     <MembersHoverCard
       loader={loadAdmins}
-      emptyText='No admins found'
-      errorText='Could not load admins'
+      emptyText={t('membersPage.noAdminsFound')}
+      errorText={t('membersPage.loadAdminsFailed')}
       {...rest}
     >
       {children}

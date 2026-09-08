@@ -99,7 +99,13 @@ export function TargetDataMartPicker({
           disabled={isLoadingDMs || isCreating}
         />
       </div>
-      <Button type='button' variant='ghost' size='sm' onClick={onCancel} aria-label={t('dataMartRelationships.cancel', 'Cancel')}>
+      <Button
+        type='button'
+        variant='ghost'
+        size='sm'
+        onClick={onCancel}
+        aria-label={t('dataMartRelationships.cancel', 'Cancel')}
+      >
         <X className='h-4 w-4' />
         {t('dataMartRelationships.cancel', 'Cancel')}
       </Button>

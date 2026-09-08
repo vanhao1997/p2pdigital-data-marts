@@ -446,9 +446,13 @@ describe('RunReportService', () => {
       expect(reportReaderResolver.resolve).not.toHaveBeenCalled();
       expect(report.lastRunStatus).toBe(ReportRunStatus.RESTRICTED);
       expect(reportRun.getDataMartRun().status).toBe(DataMartRunStatus.RESTRICTED);
-      expect(reportRun.getDataMartRun().errors).toEqual([
-        expect.stringContaining('https://digitalreport.p2pdigital.io.vn'),
-      ]);
+      const [errorEntry] = reportRun.getDataMartRun().errors ?? [];
+      expect(JSON.parse(errorEntry)).toMatchObject({
+        type: 'error',
+        code: ProjectBlockedReason.LICENSE_REQUIRED,
+        message: expect.stringContaining('[redacted URL]'),
+      });
+      expect(errorEntry).not.toContain('https://digitalreport.p2pdigital.io.vn');
       expect(reportRunService.finish).toHaveBeenCalled();
     }
   );

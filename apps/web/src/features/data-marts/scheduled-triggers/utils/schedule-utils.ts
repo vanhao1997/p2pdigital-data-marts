@@ -42,7 +42,10 @@ export function getScheduleDescription(config: ScheduleConfig, isEnabled: boolea
     case 'weekly': {
       const selectedDays = config.weekdays
         .map(day =>
-          t(`scheduleConfig.weekday${day}`, WEEKDAYS.find(w => w.value === day)?.label ?? String(day))
+          t(
+            `scheduleConfig.weekday${day}`,
+            WEEKDAYS.find(w => w.value === day)?.label ?? String(day)
+          )
         )
         .join(', ');
       return t('scheduleDescription.weekly', 'Weekly on {{days}} at {{time}}', {

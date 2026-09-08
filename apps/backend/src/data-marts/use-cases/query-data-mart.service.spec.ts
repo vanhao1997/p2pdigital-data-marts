@@ -1916,6 +1916,7 @@ describe('QueryDataMartService', () => {
         expect.objectContaining({
           status: DataMartRunStatus.RESTRICTED,
           metadata: expect.objectContaining({ columns: [], rowCount: 0, truncated: false }),
+          errors: [expect.stringMatching(/"code":"OVERDRAFT_LIMIT_EXCEEDED"/)],
         })
       );
       expect(composer.compose).not.toHaveBeenCalled();
@@ -1945,6 +1946,7 @@ describe('QueryDataMartService', () => {
         expect.objectContaining({
           status: DataMartRunStatus.FAILED,
           metadata: expect.objectContaining({ columns: [], rowCount: 0, truncated: false }),
+          errors: [expect.stringMatching(/"code":"MCP_QUERY_AUTHORIZATION_FAILED"/)],
         })
       );
     });

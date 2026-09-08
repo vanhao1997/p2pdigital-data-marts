@@ -11,14 +11,7 @@
   "engines": {
     "node": ">=22.22.0"
   },
-  "keywords": [
-    "p2pdigital",
-    "data-marts",
-    "web-app",
-    "react",
-    "typescript",
-    "tailwind"
-  ],
+  "keywords": ["p2pdigital", "data-marts", "web-app", "react", "typescript", "tailwind"],
   "homepage": "https://github.com/vanhao1997/p2pdigital-data-marts",
   "repository": {
     "type": "git",
@@ -29,9 +22,7 @@
     "url": "https://github.com/vanhao1997/p2pdigital-data-marts/issues"
   },
   "main": "./dist/index.html",
-  "files": [
-    "dist"
-  ],
+  "files": ["dist"],
   "scripts": {
     "build": "tsc -b && vite build",
     "dev": "vite --config vite.config.ts",

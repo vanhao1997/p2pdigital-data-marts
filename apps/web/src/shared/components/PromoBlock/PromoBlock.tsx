@@ -218,7 +218,7 @@ export function PromoBlock({
                 {bgLight && (
                   <img
                     src={bgLight}
-                    alt='Background'
+                    alt=''
                     className='h-full w-full object-cover dark:hidden'
                     onError={e => (e.currentTarget.style.display = 'none')}
                   />
@@ -227,7 +227,7 @@ export function PromoBlock({
                 {bgDark && (
                   <img
                     src={bgDark}
-                    alt='Background'
+                    alt=''
                     className='hidden h-full w-full object-cover opacity-20 dark:block'
                     onError={e => (e.currentTarget.style.display = 'none')}
                   />

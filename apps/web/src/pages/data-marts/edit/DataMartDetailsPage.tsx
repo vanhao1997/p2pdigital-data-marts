@@ -16,11 +16,19 @@ export function DataMartDetailsPage() {
   const { id, projectId } = params;
 
   if (!id) {
-    return <div className='dm-page-header'>{t('dataMartDetailsPage.dataMartIdRequired', 'Data Mart ID is required')}</div>;
+    return (
+      <div className='dm-page-header'>
+        {t('dataMartDetailsPage.dataMartIdRequired', 'Data Mart ID is required')}
+      </div>
+    );
   }
 
   if (!projectId) {
-    return <div className='dm-page-header'>{t('dataMartDetailsPage.projectIdRequired', 'Project ID is required')}</div>;
+    return (
+      <div className='dm-page-header'>
+        {t('dataMartDetailsPage.projectIdRequired', 'Project ID is required')}
+      </div>
+    );
   }
 
   return (

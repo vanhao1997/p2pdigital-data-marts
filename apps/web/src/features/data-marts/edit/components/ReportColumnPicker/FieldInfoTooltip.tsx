@@ -2,6 +2,7 @@ import { Info } from 'lucide-react';
 import type { MouseEvent } from 'react';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@owox/ui/components/tooltip';
 import { cn } from '@owox/ui/lib/utils';
+import { useTranslation } from 'react-i18next';
 
 interface FieldInfoTooltipProps {
   text: string | undefined;
@@ -11,6 +12,7 @@ interface FieldInfoTooltipProps {
 }
 
 export function FieldInfoTooltip({ text, compact, dataMartHeader, label }: FieldInfoTooltipProps) {
+  const { t } = useTranslation();
   if (!text) return null;
   const className = cn(
     'text-muted-foreground hover:text-foreground inline-flex h-6 w-6 shrink-0 items-center justify-center rounded opacity-0 transition-opacity',
@@ -32,7 +34,9 @@ export function FieldInfoTooltip({ text, compact, dataMartHeader, label }: Field
         {dataMartHeader ? (
           <button
             type='button'
-            aria-label={`Data Mart details for ${label ?? 'data mart'}`}
+            aria-label={t('reportColumnPicker.dataMartDetailsFor', {
+              label: label ?? t('reportColumnPicker.dataMartLabel'),
+            })}
             className={className}
           >
             {icon}

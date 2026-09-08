@@ -1,4 +1,5 @@
 import { ConfirmationDialog } from '../ConfirmationDialog';
+import { useTranslation } from 'react-i18next';
 
 /**
  * Standard "exit without saving?" confirmation for sheet forms with unsaved changes.
@@ -18,14 +19,19 @@ export function UnsavedChangesConfirmationDialog({
   onOpenChange,
   onConfirm,
 }: UnsavedChangesConfirmationDialogProps) {
+  const { t } = useTranslation();
+
   return (
     <ConfirmationDialog
       open={open}
       onOpenChange={onOpenChange}
-      title='Unsaved Changes'
-      description='You have unsaved changes. Exit without saving?'
-      confirmLabel='Yes, leave now'
-      cancelLabel='No, stay here'
+      title={t('common.unsavedChangesTitle', 'Unsaved Changes')}
+      description={t(
+        'common.unsavedChangesDescription',
+        'You have unsaved changes. Exit without saving?'
+      )}
+      confirmLabel={t('common.leaveWithoutSaving', 'Yes, leave now')}
+      cancelLabel={t('common.stayOnPage', 'No, stay here')}
       onConfirm={onConfirm}
       variant='destructive'
     />

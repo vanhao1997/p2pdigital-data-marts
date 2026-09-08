@@ -1,5 +1,6 @@
 import { Button } from '@owox/ui/components/button';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 interface StepNavigationProps {
   currentStep: number;
@@ -24,10 +25,14 @@ export function StepNavigation({
   onNext,
   onBack,
   onFinish,
-  nextLabel = 'Next',
-  backLabel = 'Back',
-  finishLabel = 'Save',
+  nextLabel,
+  backLabel,
+  finishLabel,
 }: StepNavigationProps) {
+  const { t } = useTranslation();
+  const resolvedNextLabel = nextLabel ?? t('common.next');
+  const resolvedBackLabel = backLabel ?? t('common.back');
+  const resolvedFinishLabel = finishLabel ?? t('common.save');
   const isLastStep = currentStep === totalSteps;
 
   // Single-step layout
@@ -40,7 +45,7 @@ export function StepNavigation({
           onClick={onFinish}
           disabled={!canGoNext || isLoading}
         >
-          {finishLabel}
+          {resolvedFinishLabel}
         </Button>
       </div>
     );
@@ -53,23 +58,23 @@ export function StepNavigation({
         {canGoBack && (
           <Button variant='outline' onClick={onBack} disabled={isLoading}>
             <ChevronLeft className='h-4 w-4' />
-            {backLabel}
+            {resolvedBackLabel}
           </Button>
         )}
       </div>
 
       <div className='text-muted-foreground/75 px-4 text-sm'>
-        Step {currentStep} of {totalSteps}
+        {t('common.stepOf', { current: currentStep, total: totalSteps })}
       </div>
 
       <div className='flex flex-1 justify-end'>
         {isLastStep ? (
           <Button variant='default' onClick={onFinish} disabled={!canGoNext || isLoading}>
-            {finishLabel}
+            {resolvedFinishLabel}
           </Button>
         ) : (
           <Button variant='default' onClick={onNext} disabled={!canGoNext || isLoading}>
-            {nextLabel}
+            {resolvedNextLabel}
             <ChevronRight className='h-4 w-4' />
           </Button>
         )}

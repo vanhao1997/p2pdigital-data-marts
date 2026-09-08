@@ -96,7 +96,10 @@ export function TablePatternDefinitionField({
                         href={resourceUrl}
                         target='_blank'
                         rel='noopener noreferrer'
-                        title={t('dataMartDefinitionType.openInStorageConsole', 'Open in storage console')}
+                        title={t(
+                          'dataMartDefinitionType.openInStorageConsole',
+                          'Open in storage console'
+                        )}
                       >
                         <ExternalLink className='!h-3.5 !w-3.5 shrink-0' />
                       </a>

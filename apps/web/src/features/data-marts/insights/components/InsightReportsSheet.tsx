@@ -44,7 +44,12 @@ export function InsightReportsSheet({
         <SheetHeader>
           <div className='flex flex-col gap-1.5 pr-8'>
             <SheetTitle>{t('insightsUi.insightReportsTitle', 'Insight Reports')}</SheetTitle>
-            <SheetDescription>{t('insightsUi.manageReportsDescription', 'Manage reports associated with this insight')}</SheetDescription>
+            <SheetDescription>
+              {t(
+                'insightsUi.manageReportsDescription',
+                'Manage reports associated with this insight'
+              )}
+            </SheetDescription>
           </div>
         </SheetHeader>
         <div className='bg-muted/50 dark:bg-sidebar flex-1 overflow-y-auto p-4'>

@@ -40,15 +40,12 @@ export function reportError(error: Error, componentStack?: string): void {
 }
 
 export function initGlobalErrorHandlers(): void {
-  window.addEventListener('error', (event) => {
+  window.addEventListener('error', event => {
     reportError(event.error instanceof Error ? event.error : new Error(event.message));
   });
 
-  window.addEventListener('unhandledrejection', (event) => {
-    const error =
-      event.reason instanceof Error
-        ? event.reason
-        : new Error(String(event.reason));
+  window.addEventListener('unhandledrejection', event => {
+    const error = event.reason instanceof Error ? event.reason : new Error(String(event.reason));
     reportError(error);
   });
 }

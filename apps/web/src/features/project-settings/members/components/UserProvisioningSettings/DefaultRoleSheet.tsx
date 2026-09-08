@@ -117,9 +117,7 @@ export function DefaultRoleSheet({
       <SheetContent>
         <SheetHeader>
           <SheetTitle>{t('membersPage.defaultRoleTitle')}</SheetTitle>
-          <SheetDescription>
-            {t('membersPage.defaultRoleDescription')}
-          </SheetDescription>
+          <SheetDescription>{t('membersPage.defaultRoleDescription')}</SheetDescription>
         </SheetHeader>
 
         <FormLayout>
@@ -167,7 +165,9 @@ export function DefaultRoleSheet({
                   <SelectContent>
                     {ROLE_SCOPE_VALUES.map(scope => (
                       <SelectItem key={scope} value={scope}>
-                        {scope === 'entire_project' ? t('membersPage.entireProject') : t('membersPage.selectedContextsOnly')}
+                        {scope === 'entire_project'
+                          ? t('membersPage.entireProject')
+                          : t('membersPage.selectedContextsOnly')}
                       </SelectItem>
                     ))}
                   </SelectContent>
@@ -192,7 +192,10 @@ export function DefaultRoleSheet({
                   <p className='text-muted-foreground text-sm'>
                     {t('membersPage.staleContexts', {
                       count: staleContextCount,
-                      contextWord: staleContextCount === 1 ? t('membersPage.context') : t('membersPage.contextsLower'),
+                      contextWord:
+                        staleContextCount === 1
+                          ? t('membersPage.context')
+                          : t('membersPage.contextsLower'),
                       state: staleContextCount === 1 ? 'is' : 'are',
                     })}
                   </p>

@@ -80,7 +80,9 @@ export function RequestAccessPage() {
       await refresh();
     } catch (err) {
       setActionError(
-        err instanceof Error ? err.message : t('requestAccessPage.requestFailed', 'Failed to request access')
+        err instanceof Error
+          ? err.message
+          : t('requestAccessPage.requestFailed', 'Failed to request access')
       );
     } finally {
       setSubmitting(false);
@@ -96,7 +98,9 @@ export function RequestAccessPage() {
       signIn({ projectId: project.projectId, redirect });
     } catch (err) {
       setActionError(
-        err instanceof Error ? err.message : t('requestAccessPage.createProjectFailed', 'Failed to create project')
+        err instanceof Error
+          ? err.message
+          : t('requestAccessPage.createProjectFailed', 'Failed to create project')
       );
       setCreatingProject(false);
     }
@@ -118,16 +122,18 @@ export function RequestAccessPage() {
       <div className='dm-page-content'>
         <div className='w-full max-w-3xl'>
           {error && (
-              <Alert variant='destructive' className='mb-4'>
-                <AlertCircle className='h-4 w-4' />
-              <AlertTitle>{t('requestAccessPage.loadErrorTitle', 'Could not load access request')}</AlertTitle>
+            <Alert variant='destructive' className='mb-4'>
+              <AlertCircle className='h-4 w-4' />
+              <AlertTitle>
+                {t('requestAccessPage.loadErrorTitle', 'Could not load access request')}
+              </AlertTitle>
               <AlertDescription>{error}</AlertDescription>
             </Alert>
           )}
 
           {actionError && (
-              <Alert variant='destructive' className='mb-4'>
-                <AlertCircle className='h-4 w-4' />
+            <Alert variant='destructive' className='mb-4'>
+              <AlertCircle className='h-4 w-4' />
               <AlertTitle>{t('requestAccessPage.actionFailedTitle', 'Action failed')}</AlertTitle>
               <AlertDescription>{actionError}</AlertDescription>
             </Alert>
@@ -137,8 +143,14 @@ export function RequestAccessPage() {
             <div className='dm-card flex flex-col gap-3'>
               <section className='dm-card-block'>
                 <dl className='grid gap-4 sm:grid-cols-3'>
-                  <SummaryItem label={t('requestAccessPage.account', 'Account')} value={context.user.email} />
-                  <SummaryItem label={t('requestAccessPage.project', 'Project')} value={context.project.projectTitle} />
+                  <SummaryItem
+                    label={t('requestAccessPage.account', 'Account')}
+                    value={context.user.email}
+                  />
+                  <SummaryItem
+                    label={t('requestAccessPage.project', 'Project')}
+                    value={context.project.projectTitle}
+                  />
                   {context.organization?.name && (
                     <SummaryItem
                       label={t('requestAccessPage.organization', 'Organization')}
@@ -164,7 +176,8 @@ export function RequestAccessPage() {
                         </Badge>
                       </div>
                       <p className='text-muted-foreground text-sm'>
-                        {t('requestAccessPage.requestedRole', 'Requested role')}: {roleLabel(submitted.request.role)}
+                        {t('requestAccessPage.requestedRole', 'Requested role')}:{' '}
+                        {roleLabel(submitted.request.role)}
                       </p>
                     </div>
                   </div>

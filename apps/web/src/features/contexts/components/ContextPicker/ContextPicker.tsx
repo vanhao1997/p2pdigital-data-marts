@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
 import { contextService } from '../../services/context.service';
 import { AdminsHoverCard } from '../../../project-members/components/AdminsHoverCard';
@@ -28,6 +29,7 @@ export function ContextPicker({
   onRequestCreate,
   refreshToken,
 }: ContextPickerProps) {
+  const { t } = useTranslation();
   const [allContexts, setAllContexts] = useState<ContextDto[]>([]);
 
   useEffect(() => {
@@ -40,12 +42,12 @@ export function ContextPicker({
       .catch((err: unknown) => {
         if (cancelled) return;
         setAllContexts([]);
-        toast.error(err instanceof Error ? err.message : 'Failed to load contexts');
+        toast.error(err instanceof Error ? err.message : t('uiFeedback.contextLoadFailed'));
       });
     return () => {
       cancelled = true;
     };
-  }, [refreshToken]);
+  }, [refreshToken, t]);
 
   const handleToggle = (contextId: string, checked: boolean) => {
     const next = checked
@@ -56,7 +58,9 @@ export function ContextPicker({
 
   const adminWord = (
     <AdminsHoverCard>
-      <span className='cursor-help underline decoration-dotted underline-offset-2'>admin</span>
+      <span className='cursor-help underline decoration-dotted underline-offset-2'>
+        {t('common.administrator')}
+      </span>
     </AdminsHoverCard>
   );
 
@@ -70,7 +74,10 @@ export function ContextPicker({
       onRequestCreate={onRequestCreate}
       emptyText={
         onRequestCreate ? undefined : (
-          <>No contexts available. Ask your {adminWord} to create contexts.</>
+          <>
+            {t('uiFeedback.noContextsAvailablePrefix')} {adminWord}{' '}
+            {t('uiFeedback.noContextsAvailableSuffix')}
+          </>
         )
       }
     />

@@ -35,8 +35,10 @@ deployment secret store; it is used for timestamped HMAC requests and must not b
 git, a public environment file, or a ConfigMap. The sidecar should be reachable only on the
 private application network. `ADMICRO_EXTRACTOR_MAX_CONCURRENCY` limits simultaneous browser
 jobs and defaults to `2` (maximum `100`). Disable the connector by setting
-`ADMICRO_EXTRACTOR_ENABLED=false`. Run one extractor replica in MVP because replay nonces are
-kept in process memory; horizontal scaling requires a shared replay store.
+`ADMICRO_EXTRACTOR_ENABLED=false`. `ADMICRO_EXTRACTOR_NONCE_STORE=memory` supports one replica.
+For horizontal scaling, set `ADMICRO_EXTRACTOR_NONCE_STORE=redis` and configure
+`ADMICRO_EXTRACTOR_REDIS_URL` in the secret store. Redis claims nonces atomically with an expiry;
+if Redis is unavailable, signed jobs fail closed rather than accepting replayable requests.
 
 For a host-based self-managed backend, start the sidecar with
 `docker compose -f docker-compose.admicro.yml --profile admicro up -d` and use

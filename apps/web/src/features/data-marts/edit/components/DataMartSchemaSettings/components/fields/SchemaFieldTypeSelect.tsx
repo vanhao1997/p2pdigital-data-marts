@@ -5,6 +5,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@owox/ui/components/select';
+import { useTranslation } from 'react-i18next';
 import { DataStorageType } from '../../../../../../data-storage';
 import {
   AthenaFieldType,
@@ -76,12 +77,13 @@ export function SchemaFieldTypeSelect({
   onTypeChange,
   ariaLabel,
 }: SchemaFieldTypeSelectProps) {
+  const { t } = useTranslation();
   const fieldTypes = fieldTypesFor(storageType);
 
   return (
     <Select value={type} onValueChange={onTypeChange}>
       <SelectTrigger className='cursor-pointer' size='sm' aria-label={ariaLabel}>
-        <SelectValue placeholder='Select field type' />
+        <SelectValue placeholder={t('schemaUi.selectFieldType')} />
       </SelectTrigger>
       <SelectContent className='max-h-[300px]'>
         {fieldTypes.map(fieldType => (

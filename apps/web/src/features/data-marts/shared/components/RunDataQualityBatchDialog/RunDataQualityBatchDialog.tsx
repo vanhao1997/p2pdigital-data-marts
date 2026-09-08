@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 import { ConfirmationDialog } from '../../../../../shared/components/ConfirmationDialog';
@@ -22,6 +23,7 @@ export function RunDataQualityBatchDialog({
   onCompleted,
   targetScope = 'selection',
 }: RunDataQualityBatchDialogProps) {
+  const { t } = useTranslation();
   const queryClient = useQueryClient();
   const [isRunning, setIsRunning] = useState(false);
   const [requestError, setRequestError] = useState<string | null>(null);
@@ -42,7 +44,7 @@ export function RunDataQualityBatchDialog({
       const response = await dataQualityBatchApi.run(dataMarts.map(dataMart => dataMart.id));
       items = response.items;
     } catch (error) {
-      setRequestError(`Data Quality checks could not be started: ${getErrorMessage(error)}`);
+      setRequestError(t('dataQualityBatch.startFailed', { error: getErrorMessage(t, error) }));
       setIsRunning(false);
       return;
     }
@@ -75,14 +77,12 @@ export function RunDataQualityBatchDialog({
     }
 
     setIsRunning(false);
-    showBatchResult(selectedCount, successfulItems.length, getFailedItems(items));
+    showBatchResult(t, selectedCount, successfulItems.length, getFailedItems(items));
     if (
       successfulItems.length > 0 &&
       (completionFailed || refreshResults.some(result => result.status === 'rejected'))
     ) {
-      toast.error(
-        `The Data Quality check${successfulItems.length === 1 ? ' was' : 's were'} queued, but the Data Mart list could not be refreshed`
-      );
+      toast.error(t('dataQualityBatch.refreshFailed', { count: successfulItems.length }));
     }
     onOpenChange(false);
   };
@@ -93,14 +93,14 @@ export function RunDataQualityBatchDialog({
       onOpenChange={next => {
         if (!isRunning) onOpenChange(next);
       }}
-      title='Check Data Quality'
+      title={t('dataQualityBatch.title')}
       description={
         targetScope === 'canvas'
-          ? `Run Data Quality checks for all ${String(selectedCount)} Data Mart${selectedCount === 1 ? '' : 's'} shown by the current canvas filters?`
-          : `Run Data Quality checks for ${String(selectedCount)} selected Data Mart${selectedCount === 1 ? '' : 's'}?`
+          ? t('dataQualityBatch.canvasDescription', { count: selectedCount })
+          : t('dataQualityBatch.selectionDescription', { count: selectedCount })
       }
-      confirmLabel={isRunning ? 'Starting…' : 'Check Quality'}
-      cancelLabel='Cancel'
+      confirmLabel={isRunning ? t('dataQualityBatch.starting') : t('dataQualityBatch.confirm')}
+      cancelLabel={t('common.cancel')}
       confirmDisabled={selectedCount === 0 || isRunning}
       variant='brand'
       onConfirm={() => {
@@ -113,6 +113,7 @@ export function RunDataQualityBatchDialog({
 }
 
 function showBatchResult(
+  t: ReturnType<typeof useTranslation>['t'],
   selectedCount: number,
   successfulCount: number,
   failedItems: Extract<DataQualityBatchRunItem, { status: 'ERROR' }>[]
@@ -120,23 +121,29 @@ function showBatchResult(
   if (successfulCount === selectedCount) {
     toast.success(
       selectedCount === 1
-        ? 'Data Quality check queued for 1 Data Mart'
-        : `Data Quality checks queued for ${String(selectedCount)} Data Marts`
+        ? t('dataQualityBatch.queuedOne')
+        : t('dataQualityBatch.queuedMany', { count: selectedCount })
     );
     return;
   }
 
   if (successfulCount > 0) {
     toast.error(
-      `Data Quality checks queued for ${String(successfulCount)} of ${String(selectedCount)} Data Marts. ${formatFailureSummary(failedItems)}`
+      t('dataQualityBatch.queuedPartial', {
+        successful: successfulCount,
+        selected: selectedCount,
+        failures: formatFailureSummary(t, failedItems),
+      })
     );
     return;
   }
 
   toast.error(
     selectedCount === 1
-      ? `Data Quality check could not be queued: ${failedItems[0]?.message ?? 'Unknown error'}`
-      : `Data Quality checks could not be queued. ${formatFailureSummary(failedItems)}`
+      ? t('dataQualityBatch.queueFailedOne', {
+          error: failedItems[0]?.message ?? t('common.unknown'),
+        })
+      : t('dataQualityBatch.queueFailedMany', { failures: formatFailureSummary(t, failedItems) })
   );
 }
 
@@ -149,18 +156,25 @@ function getFailedItems(
 }
 
 function formatFailureSummary(
+  t: ReturnType<typeof useTranslation>['t'],
   failedItems: Extract<DataQualityBatchRunItem, { status: 'ERROR' }>[]
 ): string {
-  if (failedItems.length === 0) return 'No typed failure details were returned';
+  if (failedItems.length === 0) return t('dataQualityBatch.noFailureDetails');
   const messages = Array.from(new Set(failedItems.map(item => item.message)));
   if (messages.length === 1) {
-    return `${String(failedItems.length)} failed: ${messages[0]}`;
+    return t('dataQualityBatch.failedWithMessage', {
+      count: failedItems.length,
+      message: messages[0],
+    });
   }
   const counts = new Map<string, number>();
   failedItems.forEach(item => counts.set(item.code, (counts.get(item.code) ?? 0) + 1));
-  return `${String(failedItems.length)} failed (${Array.from(counts, ([code, count]) => `${code}: ${String(count)}`).join(', ')})`;
+  return t('dataQualityBatch.failedWithCodes', {
+    count: failedItems.length,
+    codes: Array.from(counts, ([code, count]) => `${code}: ${String(count)}`).join(', '),
+  });
 }
 
-function getErrorMessage(error: unknown): string {
-  return error instanceof Error && error.message ? error.message : 'Please try again';
+function getErrorMessage(t: ReturnType<typeof useTranslation>['t'], error: unknown): string {
+  return error instanceof Error && error.message ? error.message : t('common.tryAgain');
 }

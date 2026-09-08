@@ -3,6 +3,8 @@ import { RequiredType, type ConnectorSpecificationResponseApiDto } from '../../.
 import { configurationFieldRender } from './ConfigurationFieldRender';
 import { Button } from '@owox/ui/components/button';
 import { VariablePicker } from './VariablePicker';
+import { localizeConnectorSpecification } from '../../../../../shared/utils/connector-metadata';
+import { useTranslation } from 'react-i18next';
 
 interface ConfigurationItemRenderProps {
   specification: ConnectorSpecificationResponseApiDto;
@@ -25,16 +27,18 @@ export function ConfigurationItemRender({
   onSecretEditToggle,
   connectorName,
 }: ConfigurationItemRenderProps) {
+  const { t } = useTranslation();
+  const localizedSpecification = localizeConnectorSpecification(specification);
   return (
-    <AppWizardStepItem key={specification.name}>
-      {specification.requiredType !== RequiredType.BOOLEAN && (
+    <AppWizardStepItem key={localizedSpecification.name}>
+      {localizedSpecification.requiredType !== RequiredType.BOOLEAN && (
         <div className='flex items-center justify-between'>
           <AppWizardStepLabel
-            htmlFor={specification.name}
-            required={specification.required}
-            tooltip={specification.description}
+            htmlFor={localizedSpecification.name}
+            required={localizedSpecification.required}
+            tooltip={localizedSpecification.description}
           >
-            {specification.title ?? specification.name}
+            {localizedSpecification.title ?? localizedSpecification.name}
           </AppWizardStepLabel>
           {isSecret && isEditingExisting && (
             <Button
@@ -42,19 +46,22 @@ export function ConfigurationItemRender({
               size='sm'
               type='button'
               onClick={() => {
-                onSecretEditToggle(specification.name, !isSecretEditing);
+                onSecretEditToggle(localizedSpecification.name, !isSecretEditing);
               }}
             >
-              {isSecretEditing ? 'Cancel' : 'Edit'}
+              {isSecretEditing ? t('common.cancel') : t('common.edit')}
             </Button>
           )}
-          {specification.requiredType !== RequiredType.OBJECT && !isSecret && (
+          {localizedSpecification.requiredType !== RequiredType.OBJECT && !isSecret && (
             <VariablePicker
               connectorName={connectorName}
               kind='value'
-              value={configuration[specification.name]}
+              value={configuration[localizedSpecification.name]}
               onSelect={variableId => {
-                onValueChange(specification.name, variableId ? { _variable_id: variableId } : '');
+                onValueChange(
+                  localizedSpecification.name,
+                  variableId ? { _variable_id: variableId } : ''
+                );
               }}
             />
           )}
@@ -62,7 +69,7 @@ export function ConfigurationItemRender({
       )}
 
       {configurationFieldRender({
-        specification,
+        specification: localizedSpecification,
         configuration,
         onValueChange: onValueChange,
         flags: {

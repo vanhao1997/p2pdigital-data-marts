@@ -350,7 +350,8 @@ export const DataStorageList = ({
           blocked ? (
             <span className='block space-y-2'>
               <span className='block'>
-                <strong>&ldquo;{blocked.storageTitle}&rdquo;</strong> is referenced by{' '}
+                <strong>&ldquo;{blocked.storageTitle}&rdquo;</strong>{' '}
+                {t('dataStorageList.isReferencedBy')}{' '}
                 <Link
                   to={`${scope('/data-marts')}?${new URLSearchParams({
                     filters: JSON.stringify([

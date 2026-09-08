@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { FacebookLoginButton } from '../../../../../../../shared/components/FacebookLoginButton';
 import type { FacebookLoginResponse } from '../../../../../../../shared/components/FacebookLoginButton';
 import type { OAuthCallbackResponseDto } from '../../../../../../../shared/api/types/response/oauth.response.dto';
@@ -23,6 +24,7 @@ export function FacebookPagesOauthRender({
   configuration,
   onValueChange,
 }: FacebookPagesOauthRenderProps) {
+  const { t } = useTranslation();
   const [pages, setPages] = useState<FacebookPageOption[]>([]);
   const [pageError, setPageError] = useState<string | null>(null);
   const configuredPageIds =
@@ -46,9 +48,7 @@ export function FacebookPagesOauthRender({
     const discoveredPages = parsePages(exchanged);
     setPages(discoveredPages);
     if (discoveredPages.length === 0) {
-      setPageError(
-        'No managed Facebook Pages with the ANALYZE task were found. Check Page permissions and try again.'
-      );
+      setPageError(t('facebookAuth.noManagedPages'));
     }
   };
 
@@ -81,21 +81,20 @@ export function FacebookPagesOauthRender({
       >
         {status?.user ? (
           <>
-            Connected as <strong>{status.user.name ?? status.user.id}</strong>
+            {t('facebookAuth.connectedAs')} <strong>{status.user.name ?? status.user.id}</strong>
           </>
         ) : (
-          'Continue with Facebook'
+          t('facebookAuth.continue')
         )}
       </FacebookLoginButton>
 
       <div className='rounded-md border border-amber-300 bg-amber-50 p-3 text-sm text-amber-950'>
-        Page Insights are usually delayed T+1 / approximately 24 hours. The latest day can be
-        incomplete or unavailable until Meta finishes processing it.
+        {t('facebookAuth.pageInsightsDelay')}
       </div>
 
       {pages.length > 0 && (
         <div className='space-y-2'>
-          <div className='text-sm font-medium'>Select Facebook Pages</div>
+          <div className='text-sm font-medium'>{t('facebookAuth.selectPages')}</div>
           <div className='space-y-2 rounded-md border p-3'>
             {pages.map(page => (
               <label key={page.id} className='flex items-center gap-2 text-sm'>
@@ -112,9 +111,7 @@ export function FacebookPagesOauthRender({
               </label>
             ))}
           </div>
-          <p className='text-muted-foreground text-xs'>
-            Each selected Page must retain the ANALYZE task.
-          </p>
+          <p className='text-muted-foreground text-xs'>{t('facebookAuth.pageTaskRequired')}</p>
         </div>
       )}
 

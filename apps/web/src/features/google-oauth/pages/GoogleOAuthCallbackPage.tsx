@@ -55,7 +55,11 @@ export function GoogleOAuthCallbackPage() {
     if (errorParam) {
       if (!sendToOpener({ error: `OAuth error: ${errorParam}` }, state)) {
         setFallbackMessage(
-          t('googleOAuth.callback.authenticationFailed', 'Authentication failed: {{error}}. You can close this window.', { error: errorParam })
+          t(
+            'googleOAuth.callback.authenticationFailed',
+            'Authentication failed: {{error}}. You can close this window.',
+            { error: errorParam }
+          )
         );
       }
       return;
@@ -63,7 +67,12 @@ export function GoogleOAuthCallbackPage() {
 
     if (!code || !state) {
       if (!sendToOpener({ error: 'Missing authorization code or state' }, state)) {
-        setFallbackMessage(t('googleOAuth.callback.missingCode', 'Missing authorization code. You can close this window and try again.'));
+        setFallbackMessage(
+          t(
+            'googleOAuth.callback.missingCode',
+            'Missing authorization code. You can close this window and try again.'
+          )
+        );
       }
       return;
     }
@@ -73,7 +82,10 @@ export function GoogleOAuthCallbackPage() {
     // JWT signature on the state token remains the real CSRF protection.
     if (!sendToOpener({ code, state }, state)) {
       setFallbackMessage(
-        t('googleOAuth.callback.openerUnavailable', 'The window that started the connection is no longer available. Please close this window and try connecting again.')
+        t(
+          'googleOAuth.callback.openerUnavailable',
+          'The window that started the connection is no longer available. Please close this window and try connecting again.'
+        )
       );
     }
   }, [searchParams, t]);

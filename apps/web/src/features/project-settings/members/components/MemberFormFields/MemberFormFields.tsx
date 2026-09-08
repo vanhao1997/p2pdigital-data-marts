@@ -61,7 +61,7 @@ export function MemberFormFields({
 
   return (
     <>
-      <FormSection title='Role' name='member-role'>
+      <FormSection title={t('membersPage.role')} name='member-role'>
         <FormField
           control={control}
           name='role'
@@ -117,7 +117,9 @@ export function MemberFormFields({
                     <SelectContent>
                       {ROLE_SCOPE_VALUES.map(s => (
                         <SelectItem key={s} value={s}>
-                          {s === 'entire_project' ? t('membersPage.entireProject') : t('membersPage.selectedContextsOnly')}
+                          {s === 'entire_project'
+                            ? t('membersPage.entireProject')
+                            : t('membersPage.selectedContextsOnly')}
                         </SelectItem>
                       ))}
                     </SelectContent>

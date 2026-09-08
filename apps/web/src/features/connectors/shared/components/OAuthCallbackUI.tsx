@@ -41,7 +41,10 @@ export function OAuthCallbackUI({ status, errorMessage }: OAuthCallbackUIProps) 
               {t('googleOAuth.callback.success', 'Authentication successful!')}
             </h2>
             <p className='mt-2 text-sm text-gray-600'>
-              {t('googleOAuth.callback.closeAutomatically', 'This window will close automatically.')}
+              {t(
+                'googleOAuth.callback.closeAutomatically',
+                'This window will close automatically.'
+              )}
             </p>
           </div>
         )}

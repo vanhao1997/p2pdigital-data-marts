@@ -20,6 +20,7 @@ import {
   isDateType,
   isTimeType,
 } from './output-controls-operators';
+import { useTranslation } from 'react-i18next';
 
 export interface FilterValueEditorProps {
   column: string;
@@ -48,19 +49,19 @@ interface EditorState {
   relativeN: string;
 }
 
-const RELATIVE_KINDS: { value: RelativeDatePreset['kind']; label: string }[] = [
-  { value: 'today', label: 'Today' },
-  { value: 'yesterday', label: 'Yesterday' },
-  { value: 'this_week', label: 'This week' },
-  { value: 'last_week', label: 'Last week' },
-  { value: 'this_month', label: 'This month' },
-  { value: 'last_month', label: 'Last month' },
-  { value: 'this_quarter', label: 'This quarter' },
-  { value: 'last_quarter', label: 'Last quarter' },
-  { value: 'this_year', label: 'This year' },
-  { value: 'last_n_days', label: 'Last N days' },
-  { value: 'last_n_months', label: 'Last N months' },
-  { value: 'next_n_days', label: 'Next N days' },
+const RELATIVE_KINDS: { value: RelativeDatePreset['kind']; labelKey: string }[] = [
+  { value: 'today', labelKey: 'relativeToday' },
+  { value: 'yesterday', labelKey: 'relativeYesterday' },
+  { value: 'this_week', labelKey: 'relativeThisWeek' },
+  { value: 'last_week', labelKey: 'relativeLastWeek' },
+  { value: 'this_month', labelKey: 'relativeThisMonth' },
+  { value: 'last_month', labelKey: 'relativeLastMonth' },
+  { value: 'this_quarter', labelKey: 'relativeThisQuarter' },
+  { value: 'last_quarter', labelKey: 'relativeLastQuarter' },
+  { value: 'this_year', labelKey: 'relativeThisYear' },
+  { value: 'last_n_days', labelKey: 'relativeLastNDays' },
+  { value: 'last_n_months', labelKey: 'relativeLastNMonths' },
+  { value: 'next_n_days', labelKey: 'relativeNextNDays' },
 ];
 
 /** Presets that take the numeric N input. */
@@ -292,6 +293,7 @@ export function FilterValueEditor({
   initialRule,
   onChange,
 }: FilterValueEditorProps) {
+  const { t } = useTranslation();
   const operators = operatorsForType(fieldType);
   const fallbackOp = operators[0]?.value ?? 'eq';
 
@@ -337,7 +339,7 @@ export function FilterValueEditor({
   return (
     <>
       <div>
-        <Label>Condition</Label>
+        <Label>{t('tableFilters.condition')}</Label>
         <Select
           value={state.op}
           onValueChange={v => {
@@ -359,7 +361,7 @@ export function FilterValueEditor({
 
       {state.op === 'between' && (
         <div className='space-y-2'>
-          <Label>From / To</Label>
+          <Label>{t('tableFilters.fromTo')}</Label>
           <div className='flex gap-2'>
             <Input
               type={inputType}
@@ -367,7 +369,7 @@ export function FilterValueEditor({
               onChange={e => {
                 setState(s => ({ ...s, betweenFrom: e.target.value }));
               }}
-              placeholder='from'
+              placeholder={t('reportColumnPicker.from')}
             />
             <Input
               type={inputType}
@@ -375,7 +377,7 @@ export function FilterValueEditor({
               onChange={e => {
                 setState(s => ({ ...s, betweenTo: e.target.value }));
               }}
-              placeholder='to'
+              placeholder={t('reportColumnPicker.to')}
             />
           </div>
         </div>
@@ -383,9 +385,7 @@ export function FilterValueEditor({
 
       {(state.op === 'in' || state.op === 'not_in') && (
         <div className='space-y-1'>
-          <Label>
-            Values (comma-separated; wrap a value in "double quotes" if it contains a comma)
-          </Label>
+          <Label>{t('reportColumnPicker.valuesListHelp')}</Label>
           {/* Plain text even for number/date columns — the field holds a comma list, not one value. */}
           <Input
             type='text'
@@ -397,10 +397,10 @@ export function FilterValueEditor({
             }}
             placeholder={
               isNumberType(fieldType)
-                ? '10, 20, 30'
+                ? t('reportColumnPicker.numberListPlaceholder')
                 : dateField
-                  ? '2026-01-01, 2026-01-15'
-                  : 'value1, value2'
+                  ? t('reportColumnPicker.dateListPlaceholder')
+                  : t('reportColumnPicker.valueListPlaceholder')
             }
           />
         </div>
@@ -408,7 +408,7 @@ export function FilterValueEditor({
 
       {state.op === 'relative_date' && (
         <div className='space-y-2'>
-          <Label>Preset</Label>
+          <Label>{t('tableFilters.preset')}</Label>
           <Select
             value={state.relativeKind}
             onValueChange={v => {
@@ -421,7 +421,7 @@ export function FilterValueEditor({
             <SelectContent>
               {RELATIVE_KINDS.map(p => (
                 <SelectItem key={p.value} value={p.value}>
-                  {p.label}
+                  {t(`reportColumnPicker.${p.labelKey}`)}
                 </SelectItem>
               ))}
             </SelectContent>
@@ -446,14 +446,14 @@ export function FilterValueEditor({
         state.op !== 'in' &&
         state.op !== 'not_in' && (
           <div className='space-y-1'>
-            <Label>Value</Label>
+            <Label>{t('tableFilters.value')}</Label>
             <Input
               type={inputType}
               value={state.scalar}
               onChange={e => {
                 setState(s => ({ ...s, scalar: e.target.value }));
               }}
-              placeholder={state.op === 'regex' ? 'pattern' : ''}
+              placeholder={state.op === 'regex' ? t('reportColumnPicker.patternPlaceholder') : ''}
             />
           </div>
         )}

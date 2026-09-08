@@ -38,7 +38,9 @@ export function SetupChecklist({ progressResult, visibility }: SetupChecklistPro
               {t('setupChecklist.title')}
             </span>
             <span className='text-muted-foreground text-xs'>
-              {isEmpty ? t('setupChecklist.subtitle') : t('setupChecklist.percentCompleted', { percentage })}
+              {isEmpty
+                ? t('setupChecklist.subtitle')
+                : t('setupChecklist.percentCompleted', { percentage })}
             </span>
           </div>
           <button

@@ -1,4 +1,4 @@
-import { Inject, Injectable, OnModuleInit } from '@nestjs/common';
+import { Inject, Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import {
@@ -14,7 +14,7 @@ import {
   SearchDataStorageProjectReindexTrigger,
   SearchProjectReindexTrigger,
 } from '../../entities/search/search-project-reindex-trigger.entity';
-import { SearchIndexerService } from './search-indexer.service';
+import { SearchEmbeddingUnavailableError, SearchIndexerService } from './search-indexer.service';
 import { ADVANCED_SEARCH_CONFIG, AdvancedSearchConfig } from '../config/advanced-search.config';
 
 const ENTITY_STUCK_TRIGGER_TIMEOUT_SECONDS = 5 * 60;
@@ -30,6 +30,8 @@ abstract class BaseSearchTriggerHandler<
 >
   implements TriggerHandler<TTrigger>, OnModuleInit
 {
+  protected readonly logger = new Logger(this.constructor.name);
+
   protected constructor(
     private readonly schedulerFacade: SchedulerFacade,
     private readonly triggerRepo: Repository<TTrigger>,
@@ -87,7 +89,12 @@ abstract class BaseSearchProjectReindexTriggerHandler<
       trigger.projectId,
       options?.signal
     );
-    if (!options?.signal?.aborted && (stats.errors > 0 || stats.embedFailed > 0)) {
+    if (!options?.signal?.aborted && stats.embedFailed > 0 && stats.errors === 0) {
+      this.logger.warn(
+        `[${this.entityType}] Search embeddings unavailable; indexed rows will be retried by drift reconciliation.`
+      );
+    }
+    if (!options?.signal?.aborted && stats.errors > 0) {
       throw new Error(
         `search project reindex failed for ${this.entityType} project=${trigger.projectId}: errors=${stats.errors}, embedFailed=${stats.embedFailed}`
       );
@@ -135,7 +142,17 @@ export class SearchEntityReindexTriggerHandler extends BaseSearchTriggerHandler<
       return;
     }
 
-    await this.indexer.reindexEntity(entityType, trigger.entityId, trigger.projectId);
+    try {
+      await this.indexer.reindexEntity(entityType, trigger.entityId, trigger.projectId);
+    } catch (error) {
+      if (error instanceof SearchEmbeddingUnavailableError) {
+        this.logger.warn(
+          `Search embedding unavailable; deferred entity reindex for ${entityType}.`
+        );
+        return;
+      }
+      throw error;
+    }
   }
 }
 

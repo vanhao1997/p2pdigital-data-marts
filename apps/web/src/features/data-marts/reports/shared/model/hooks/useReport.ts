@@ -1,4 +1,5 @@
 import { useCallback, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { reportService, reportStatusPollingService } from '../../services';
 import { dataDestinationService } from '../../../../../data-destination';
 import type { CreateReportRequestDto, UpdateReportRequestDto } from '../../services';
@@ -11,6 +12,7 @@ import { useRefreshSetupProgress } from '../../../../../../components/AppSidebar
 import { ReportStatusEnum } from '../../enums';
 
 export function useReport() {
+  const { t } = useTranslation();
   const { state, dispatch, reportsRequestGenerationRef } = useReportContext();
   const refreshSetupProgress = useRefreshSetupProgress();
 
@@ -20,7 +22,8 @@ export function useReport() {
       const destinations = await dataDestinationService.getDataDestinations();
       dispatch({ type: ReportActionType.FETCH_DESTINATIONS_SUCCESS, payload: destinations });
     } catch (error) {
-      const message = error instanceof Error ? error.message : 'Failed to fetch destinations';
+      const message =
+        error instanceof Error ? error.message : t('reportStatus.errors.loadDestinations');
       dispatch({
         type: ReportActionType.FETCH_DESTINATIONS_ERROR,
         payload: message,
@@ -32,7 +35,7 @@ export function useReport() {
         label: message,
       });
     }
-  }, [dispatch]);
+  }, [dispatch, t]);
 
   const fetchReports = useCallback(async () => {
     const requestId = ++reportsRequestGenerationRef.current;
@@ -49,7 +52,7 @@ export function useReport() {
       });
       return true;
     } catch (error) {
-      const message = error instanceof Error ? error.message : 'Failed to fetch reports';
+      const message = error instanceof Error ? error.message : t('reportStatus.errors.loadReports');
       dispatch({
         type: ReportActionType.FETCH_REPORTS_ERROR,
         payload: { requestId, error: message, silent: false },
@@ -62,7 +65,7 @@ export function useReport() {
       });
       return false;
     }
-  }, [dispatch, reportsRequestGenerationRef]);
+  }, [dispatch, reportsRequestGenerationRef, t]);
 
   const fetchReportsByDataMartId = useCallback(
     async (dataMartId: string, options?: { silent?: boolean; signal?: AbortSignal }) => {
@@ -91,7 +94,8 @@ export function useReport() {
         return true;
       } catch (error) {
         if (signal?.aborted) return false;
-        const message = error instanceof Error ? error.message : 'Failed to fetch reports';
+        const message =
+          error instanceof Error ? error.message : t('reportStatus.errors.loadReports');
         dispatch({
           type: ReportActionType.FETCH_REPORTS_ERROR,
           payload: { requestId, error: message, silent },
@@ -105,7 +109,7 @@ export function useReport() {
         return false;
       }
     },
-    [dispatch, reportsRequestGenerationRef]
+    [dispatch, reportsRequestGenerationRef, t]
   );
 
   const fetchReportById = useCallback(
@@ -116,7 +120,8 @@ export function useReport() {
         const mappedReport = mapReportDtoToEntity(report);
         dispatch({ type: ReportActionType.FETCH_REPORT_SUCCESS, payload: mappedReport });
       } catch (error) {
-        const message = error instanceof Error ? error.message : 'Failed to fetch report';
+        const message =
+          error instanceof Error ? error.message : t('reportStatus.errors.loadReport');
         dispatch({
           type: ReportActionType.FETCH_REPORT_ERROR,
           payload: message,
@@ -129,7 +134,7 @@ export function useReport() {
         });
       }
     },
-    [dispatch]
+    [dispatch, t]
   );
 
   const createReport = useCallback(
@@ -147,11 +152,12 @@ export function useReport() {
           details: mappedReport.title,
           context: mappedReport.dataMart.id,
         });
-        toast.success('Report created');
+        toast.success(t('uiFeedback.reportCreated'));
         refreshSetupProgress();
         return mappedReport;
       } catch (error) {
-        const message = error instanceof Error ? error.message : 'Failed to create report';
+        const message =
+          error instanceof Error ? error.message : t('reportStatus.errors.createReport');
         dispatch({
           type: ReportActionType.CREATE_REPORT_ERROR,
           payload: message,
@@ -166,7 +172,7 @@ export function useReport() {
         return null;
       }
     },
-    [dispatch, refreshSetupProgress]
+    [dispatch, refreshSetupProgress, t]
   );
 
   const updateReport = useCallback(
@@ -185,10 +191,11 @@ export function useReport() {
           context: mappedReport.dataMart.id,
           details: mappedReport.id,
         });
-        toast.success('Report updated');
+        toast.success(t('uiFeedback.reportUpdated'));
         return mappedReport;
       } catch (error) {
-        const message = error instanceof Error ? error.message : 'Failed to update report';
+        const message =
+          error instanceof Error ? error.message : t('reportStatus.errors.updateReport');
         dispatch({
           type: ReportActionType.UPDATE_REPORT_ERROR,
           payload: message,
@@ -202,7 +209,7 @@ export function useReport() {
         return null;
       }
     },
-    [dispatch]
+    [dispatch, t]
   );
 
   const deleteReport = useCallback(
@@ -217,9 +224,10 @@ export function useReport() {
           action: 'Delete',
           label: id,
         });
-        toast.success('Report deleted');
+        toast.success(t('uiFeedback.reportDeleted'));
       } catch (error) {
-        const message = error instanceof Error ? error.message : 'Failed to delete report';
+        const message =
+          error instanceof Error ? error.message : t('reportStatus.errors.deleteReport');
         dispatch({
           type: ReportActionType.DELETE_REPORT_ERROR,
           payload: message,
@@ -234,7 +242,7 @@ export function useReport() {
         throw error;
       }
     },
-    [dispatch]
+    [dispatch, t]
   );
 
   const clearCurrentReport = useCallback(() => {
@@ -309,10 +317,10 @@ export function useReport() {
           action: 'Run',
           label: id,
         });
-        toast.success('Report run started');
+        toast.success(t('uiFeedback.reportRunStarted'));
         return true;
       } catch (error) {
-        const message = error instanceof Error ? error.message : 'Failed to run report';
+        const message = error instanceof Error ? error.message : t('uiFeedback.reportRunFailed');
         trackEvent({
           event: 'report_error',
           category: 'Report',
@@ -323,7 +331,7 @@ export function useReport() {
         return false;
       }
     },
-    [fetchReportById, startPollingReport, stopPollingReport]
+    [fetchReportById, startPollingReport, stopPollingReport, t]
   );
 
   // Clean up polling when component unmounts

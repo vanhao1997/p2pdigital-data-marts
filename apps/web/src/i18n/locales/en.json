@@ -4,6 +4,19 @@
     "productName": "P2PDigital Data Marts",
     "tagline": "P2PDigital Data Marts — Free, Open-Source Connectors for Data Analysts"
   },
+  "facebookAuth": {
+    "sdkNotReady": "Facebook SDK not loaded or not ready",
+    "loginCancelled": "User cancelled login or did not fully authorize",
+    "connecting": "Connecting...",
+    "loading": "Loading...",
+    "continue": "Continue with Facebook",
+    "authenticatedAs": "Authenticated as",
+    "connectedAs": "Connected as",
+    "noManagedPages": "No managed Facebook Pages with the ANALYZE task were found. Check Page permissions and try again.",
+    "pageInsightsDelay": "Page Insights are usually delayed T+1 / approximately 24 hours. The latest day can be incomplete or unavailable until Meta finishes processing it.",
+    "selectPages": "Select Facebook Pages",
+    "pageTaskRequired": "Each selected Page must retain the ANALYZE task."
+  },
   "sidebar": {
     "dataMarts": "Data Marts",
     "models": "Models",
@@ -161,22 +174,37 @@
   "common": {
     "project": "Project",
     "readOnly": "Read-only",
+    "unsavedChangesTitle": "Unsaved Changes",
+    "unsavedChangesDescription": "You have unsaved changes. Exit without saving?",
+    "leaveWithoutSaving": "Yes, leave now",
+    "stayOnPage": "No, stay here",
+    "selectAnOption": "Select an option",
+    "noResultsFound": "No results found.",
+    "searchPlaceholder": "Search...",
+    "clear": "Clear",
     "cancel": "Cancel",
     "save": "Save",
     "delete": "Delete",
+    "run": "Run",
     "edit": "Edit",
     "create": "Create",
     "confirm": "Confirm",
     "close": "Close",
+    "closePopover": "Close popover",
     "loading": "Loading...",
     "search": "Search",
     "select": "Select...",
     "copy": "Copy",
+    "undo": "Undo",
     "publish": "Publish",
     "actions": "Actions",
     "view": "View",
     "open": "Open",
+    "openIssueHere": "Open issue here",
     "back": "Back",
+    "next": "Next",
+    "stepOf": "Step {{current}} of {{total}}",
+    "discard": "Discard",
     "title": "Title",
     "updated": "Updated",
     "status": "Status",
@@ -192,6 +220,7 @@
     "enabled": "Enabled",
     "saving": "Saving...",
     "helpInformation": "Help information",
+    "or": "or",
     "done": "Done",
     "active": "Active",
     "draft": "Draft",
@@ -220,7 +249,99 @@
     "expired": "Expired",
     "expiresSoon": "Expires soon",
     "noPermission": "You don’t have access to this action. Ask a project administrator for permission.",
-    "moreOptions": "More options"
+    "moreOptions": "More options",
+    "learnMore": "Learn more",
+    "tryAgain": "Please try again",
+    "administrator": "administrator"
+  },
+  "uiFeedback": {
+    "apiKeysLoadFailed": "Failed to load API keys",
+    "apiKeyRevoked": "API key revoked",
+    "apiKeyRevokeFailed": "Failed to revoke API key",
+    "projectDescriptionUpdated": "Description updated",
+    "projectDescriptionUpdateFailed": "Failed to update description",
+    "projectDescriptionLoadFailed": "Failed to load project description",
+    "pluginPublished": "Plugin published",
+    "pluginUnpublished": "Plugin unpublished",
+    "pluginPublishFailed": "Could not publish this plugin.",
+    "licenseKeysLoadFailed": "Failed to load license keys",
+    "licenseKeyRevoked": "License key revoked",
+    "licenseKeyRevokeFailed": "Failed to revoke license key",
+    "storageCreated": "Storage created",
+    "storageUpdated": "Storage updated",
+    "storageUpdatedWithCredentials": "Storage updated. Credentials copied from {{title}}.",
+    "storageDeleted": "Storage deleted",
+    "destinationCreated": "Destination created",
+    "destinationUpdated": "Destination updated",
+    "destinationUpdatedWithCredentials": "Destination updated. Credentials copied from {{title}}.",
+    "destinationDeleted": "Destination deleted",
+    "dataMartCreated": "Data Mart created",
+    "dataMartDeleted": "Data Mart deleted",
+    "dataMartTitleUpdated": "Title updated",
+    "dataMartDescriptionUpdated": "Description updated",
+    "dataMartOwnersUpdated": "Owners updated",
+    "dataMartPublished": "Data Mart published",
+    "dataMartRunCanceled": "Data Mart run canceled",
+    "outputSchemaUpdated": "Output schema updated",
+    "triggerCreated": "Trigger created",
+    "triggerUpdated": "Trigger updated",
+    "triggerDeleted": "Trigger deleted",
+    "reportCreated": "Report created",
+    "reportUpdated": "Report updated",
+    "reportDeleted": "Report deleted",
+    "reportRunStarted": "Report run started",
+    "reportRunFailed": "Failed to run report",
+    "relationshipSaveFailed": "Failed to save relationship description",
+    "manualRunPublishedOnly": "Manual run is only available for published data marts",
+    "qualityRunQueued": "Data Quality run queued",
+    "draftsPublishFailed": "Failed to publish Data Mart drafts",
+    "draftsPublishStarted": "Publishing Data Mart drafts. This may take a while.",
+    "draftsPublishStartFailed": "Failed to start publishing Data Mart drafts",
+    "draftsPublished_one": "Published {{count}} Data Mart draft",
+    "draftsPublished_other": "Published {{count}} Data Mart drafts",
+    "noDraftsToPublish": "No Data Mart drafts to publish",
+    "moreValidationErrors": "(+{{count}} more)",
+    "dismissError": "Dismiss error",
+    "dismissNotice": "Dismiss notice",
+    "showTechnicalDetails": "Show technical details",
+    "aiRunCanceled": "AI suggestion generation was canceled because you left the page. Run it again when you are ready.",
+    "activeFilters": "Active filters",
+    "activeSlices": "Active slices",
+    "removeFilter": "Remove filter",
+    "removeSlice": "Remove slice",
+    "close": "Close",
+    "contextLoadFailed": "Failed to load contexts",
+    "noContextsAvailablePrefix": "No contexts available. Ask your",
+    "noContextsAvailableSuffix": "to create contexts.",
+    "illustration": "Illustration",
+    "dataMartDeleteFailed": "Failed to delete data mart",
+    "dataMartPublishFailed": "Failed to publish data mart",
+    "qualityRunStartFailed": "Failed to start Data Quality run",
+    "canvasStillLoadingDetails": "The canvas is still loading details — please try again in a moment.",
+    "canvasStillLoading": "The canvas is still loading — please try again in a moment.",
+    "canvasExportPartial": "Exported without schema details for {{count}} {{dataMartWord}} — reload the page to retry.",
+    "canvasExportFailed": "Couldn't export the model — please try again.",
+    "dataMartWord": "data mart",
+    "dataMartsWord": "data marts",
+    "schemaActualizeStartFailed": "Failed to start schema actualization",
+    "publishFailure": {
+      "draft": "draft",
+      "drafts": "drafts",
+      "it": "it",
+      "them": "them",
+      "sharedReason": ": {{reason}}",
+      "differentReasons": " due to different errors",
+      "message": "Failed to publish {{count}} Data Mart {{draftWord}}{{reasonClause}}. Review {{pronoun}} in the Data Marts list and try again."
+    }
+  },
+  "fileDrop": {
+    "multipleFiles": "Only one file can be dropped at a time.",
+    "fileTooLarge": "File is too large. Maximum allowed size is 1 MB.",
+    "invalidServiceAccountJson": "File is not a valid Google Service Account JSON.",
+    "invalidJson": "File is not valid JSON.",
+    "readFailed": "Failed to read file.",
+    "invalidFileType": "Invalid file type. Only {{extensions}} files are allowed.",
+    "dropJsonFile": "Drop JSON file here"
   },
   "authentication": {
     "authentication": "Authentication",
@@ -263,6 +384,9 @@
     "and": "AND",
     "selectField": "Select field",
     "condition": "Condition",
+    "fromTo": "From / To",
+    "preset": "Preset",
+    "value": "Value",
     "selectCondition": "Select condition",
     "newFilter": "New filter",
     "noOptions": "No options",
@@ -306,6 +430,17 @@
       "enable": "Enable",
       "alreadyEnabled": "If it's already enabled, you'll see the API dashboard — that's fine."
     },
+    "bigQueryAuth": {
+      "title": "Which authentication method should I choose?",
+      "intro": "BigQuery supports two authentication methods:",
+      "oauthLabel": "Connect with Google (OAuth):",
+      "oauthText": "The quickest way to get started. Sign in with your Google account and grant access to BigQuery in a few clicks. Best for most users.",
+      "serviceAccountLabel": "Service Account JSON:",
+      "serviceAccountText": "Uses a Google Cloud service account key for server-to-server authentication. Recommended when you need unattended access without a personal Google account, or when your organization requires service accounts for compliance.",
+      "permissionsPrefix": "Whichever method you choose, the account (personal or service account) needs the",
+      "permissionsAnd": "and",
+      "permissionsSuffix": "roles on the target Google Cloud project."
+    },
     "redshift": {
       "title": "What is AWS Redshift?",
       "intro": "Amazon Redshift is a fast, fully managed cloud data warehouse that makes it simple and cost-effective to analyze data using standard SQL and existing business intelligence tools.",
@@ -327,7 +462,8 @@
       "privileges": "Make sure you have the necessary privileges to create and access databases, schemas, and warehouses.",
       "auth": "Choose your authentication method: Username & PAT (Programmatic access token) for quick setup, or Key Pair authentication for better security.",
       "connection": "Fill in the connection details below (account identifier and warehouse).",
-      "path": "You can access tables using the full path format: database.schema.table (similar to BigQuery and Athena)."
+      "path": "You can access tables using the full path format: database.schema.table (similar to BigQuery and Athena).",
+      "documentation": "P2PDigital Snowflake documentation"
     },
     "databricks": {
       "title": "How do I get started with Databricks?",
@@ -346,6 +482,188 @@
       "separateStoragePrefix": "A separate system storage is created for each GCP project to maintain compatibility with the",
       "separateStorageSuffix": "for Google Sheets. Its title automatically matches the project ID.",
       "contactSupport": "If you need storage for a different project, please contact support."
+    }
+  },
+  "storageFieldHelp": {
+    "common": {
+      "learnMore": "Learn more about how to create a user in AWS",
+      "documentation": "in documentation",
+      "iamCredentials": "AWS IAM Security Credentials",
+      "s3Console": "AWS S3 console",
+      "athenaConsole": "AWS Athena console",
+      "googleCloudBigQuery": "Google Cloud Console BigQuery",
+      "googleCloudConsole": "Google Cloud Console",
+      "googleAccountSettings": "Google Account settings",
+      "moreDetails": "More details in",
+      "snowflakeKeyPairDocs": "Snowflake's key pair authentication documentation",
+      "snowflakeAuthDocs": "Snowflake authentication documentation",
+      "databricksDocs": "Databricks documentation",
+      "databricksWarehouseDocs": "Databricks SQL Warehouses documentation",
+      "databricksTokenDocs": "Databricks Personal Access Tokens documentation",
+      "p2pdigitalExtension": "P2PDigital extension",
+      "keyPairAuthentication": "Key Pair authentication"
+    },
+    "snowflakeWarehouse": {
+      "title": "How do I find my Snowflake warehouse?",
+      "intro": "A warehouse in Snowflake is a cluster of compute resources that executes queries and performs data loading operations.",
+      "stepsIntro": "Here's how to find your warehouse:",
+      "step1": "Log in to your Snowflake account and navigate to the \"Compute - Warehouses\" section in the left sidebar.",
+      "step2": "You'll see a list of available warehouses. Common default names include \"COMPUTE_WH\" or \"PROD_WH\".",
+      "step3": "Select the warehouse you want to use for this connection. Make sure it has the appropriate size and auto-suspend settings for your workload.",
+      "step4": "If you don't have a warehouse, you can create one using the \"Create Warehouse\" button or run: CREATE WAREHOUSE my_warehouse;"
+    },
+    "snowflakeUsername": {
+      "title": "How do I find my Snowflake username?",
+      "intro": "Your Snowflake username is the login identifier for your Snowflake account.",
+      "stepsIntro": "Here's what you need to know:",
+      "step1": "Use the same username you use to log in to the Snowflake web interface.",
+      "step2": "Snowflake usernames are case-insensitive and are typically in uppercase by default.",
+      "step3": "If you're using SSO (Single Sign-On) for the web interface, you may need to set a password or programmatic access token (PAT) for your user account, or ask your administrator to enable programmatic access.",
+      "step4": "You can view all users in your account by running: SHOW USERS; (requires appropriate privileges)"
+    },
+    "snowflakePassword": {
+      "title": "How do I manage my Snowflake PAT?",
+      "intro": "Use a Personal Access Token (PAT) from your Snowflake account for authentication.",
+      "securityTips": "Security tips:",
+      "step1Prefix": "To reset your PAT, go to",
+      "step1Path": "Settings > Authentication > Programmatic access tokens",
+      "step1Suffix": "in your Snowflake user menu.",
+      "step2Prefix": "For production, consider using",
+      "step2Suffix": "for stronger security.",
+      "step3": "PATs are encrypted and securely stored. They are never shown in plain text after saving."
+    },
+    "snowflakePassphrase": {
+      "title": "What is a passphrase and when do I need it?",
+      "intro": "A passphrase is an optional encryption password that protects your private key.",
+      "stepsIntro": "Here's what you need to know:",
+      "step1": "If you generated your private key with a passphrase (encrypted key), you must provide it here.",
+      "step2": "If your private key is not encrypted (generated without the -nocrypt flag), leave this field empty.",
+      "step3": "When generating an encrypted key with OpenSSL, you set the passphrase during the key generation process.",
+      "step4": "The passphrase adds an extra layer of security by encrypting the private key file itself.",
+      "step5": "This passphrase is only used to decrypt the private key and is never sent to Snowflake."
+    },
+    "snowflakeKeyPair": {
+      "title": "How do I set up key pair authentication?",
+      "content": "To use key pair authentication, generate an RSA key pair and configure your Snowflake user.\n\n1. Generate an RSA key pair using OpenSSL:\nopenssl genrsa 2048 | openssl pkcs8 -topk8 -inform PEM -out rsa_key.p8 -nocrypt\n\n2. Extract the public key:\nopenssl rsa -in rsa_key.p8 -pubout -out rsa_key.pub\n\n3. Assign the public key to your Snowflake user as ACCOUNTADMIN:\nALTER USER your_username SET RSA_PUBLIC_KEY='MIIBIjANBg...';\n\n4. Copy the private key content from rsa_key.p8 into the Private Key field above."
+    },
+    "snowflakeAuthMethod": {
+      "title": "Which authentication method should I choose?",
+      "content": "Snowflake supports two authentication methods:\n\nUsername & PAT (Programmatic access token): The simplest method using your Snowflake username and PAT. Suitable for development and testing.\n\nKey Pair Authentication: A more secure method using public/private key cryptography. Recommended for production. Generate an RSA key pair and assign the public key to your Snowflake user."
+    },
+    "snowflakeAccount": {
+      "title": "How do I find my Snowflake account identifier?",
+      "content": "1. Open the account selector and review accounts you previously signed in to.\n2. Select View account details.\n3. The Account Details dialog shows the account identifier and account URL.\n4. Copy the locator from the Account locator field.\n5. Find the region in the account selector.\n6. Combine locator and region as locator.region. Examples: xy12345.ap-northeast-3.aws or xy12345.north-europe.azure."
+    },
+    "redshiftWorkgroup": {
+      "title": "What is a Redshift Serverless workgroup?",
+      "content": "A workgroup is a collection of compute resources in Redshift Serverless. Use this field with Redshift Serverless. You can find the workgroup name in the Redshift Serverless Console.\n\nNote: provide either a workgroup name (Serverless) or a cluster identifier (provisioned clusters), not both."
+    },
+    "redshiftSecret": {
+      "title": "What is an AWS Secret Access Key?",
+      "content": "The Secret Access Key is the private part of your AWS security credentials. It is used with the Access Key ID to sign and authenticate AWS API requests.\n\nSecret Access Keys are typically 40 characters long and shown only once when created. If you lose it, create a new access key pair.\n\nSecurity warning: keep this key secure and never share it publicly. It is stored encrypted."
+    },
+    "redshiftRegion": {
+      "title": "What is the AWS region?",
+      "content": "The AWS region is the geographic location where your Redshift cluster or Serverless workgroup is hosted.\n\nCommon examples:\nus-east-1 - US East (N. Virginia)\nus-west-2 - US West (Oregon)\neu-west-1 - Europe (Ireland)\nap-southeast-1 - Asia Pacific (Singapore)\n\nFind the region in the AWS Redshift Console."
+    },
+    "redshiftDatabase": {
+      "title": "What is the database name?",
+      "content": "The database name is the database you want to connect to inside your Redshift cluster or workgroup. Every cluster/workgroup has at least one database; the default is often dev. This field is required for all authentication methods."
+    },
+    "redshiftCluster": {
+      "title": "What is a cluster identifier?",
+      "content": "A cluster identifier is the unique name of a provisioned Redshift cluster. Use this field for a traditional Redshift cluster, not Serverless. Find it in the Redshift Clusters Console.\n\nNote: provide either a cluster identifier (provisioned) or a workgroup name (Serverless), not both."
+    },
+    "redshiftAccessKey": {
+      "title": "What is an AWS Access Key ID?",
+      "content": "The Access Key ID is part of your AWS security credentials. It is used with the Secret Access Key to authenticate AWS API requests.\n\nAccess keys are typically 20 characters long and start with AKIA or ASIA for temporary credentials. Create them in the AWS IAM Console."
+    },
+    "databricksToken": {
+      "title": "How do I generate a Personal Access Token?",
+      "content": "Personal Access Tokens (PAT) provide secure authentication to Databricks.\n\n1. Sign in to your Databricks workspace.\n2. Click your username and select User Settings.\n3. Open the Developer tab.\n4. Next to Access tokens, click Manage.\n5. Click Generate new token.\n6. Optionally add a comment and expiration.\n7. Click Generate, then copy the token and store it securely; it will not be shown again.\n\nSecurity: never share the token, set an expiration, revoke unused tokens, and use separate tokens per application."
+    },
+    "databricksHttpPath": {
+      "title": "How do I find the SQL warehouse HTTP path?",
+      "content": "The HTTP path identifies the SQL warehouse used for query execution.\n\n1. Sign in to Databricks.\n2. Open SQL Warehouses.\n3. Select the warehouse.\n4. Open Connection Details.\n5. Copy the HTTP Path value.\n\nExample: /sql/1.0/warehouses/abc123def456789"
+    },
+    "databricksHost": {
+      "title": "How do I find my Databricks workspace URL?",
+      "content": "The Databricks workspace URL is the hostname of your workspace. Copy the hostname from the browser address bar, before the first slash.\n\nAWS example: dbc-12345678-90ab.cloud.databricks.com\nAzure example: adb-123456789.7.azuredatabricks.net\nGCP example: 12345678901234.5.gcp.databricks.com"
+    },
+    "googleBigQueryProject": {
+      "title": "How do I find my Project ID?",
+      "content": "This is the ID of your Google Cloud project. BigQuery usage costs are charged to this project.\n\n1. Open Google Cloud Console and sign in.\n2. Open the project selector.\n3. Find the project; Project ID is shown in the ID column.\n4. Use search if the project is not visible."
+    },
+    "googleBigQueryServiceAccount": {
+      "title": "How do I get a Service Account JSON key?",
+      "content": "1. Open Google Cloud Console > IAM & Admin > Service Accounts.\n2. Create a service account or select an existing one.\n3. Grant bigquery.dataEditor and bigquery.jobUser roles.\n4. Open Keys > Add key > Create new key.\n5. Choose JSON and click Create.\n6. Copy the downloaded file content into the field above."
+    },
+    "googleBigQueryOAuth": {
+      "title": "What permissions will be requested?",
+      "content": "When you connect with Google, P2PDigital requests:\n\n- BigQuery: read and write access to configured datasets and tables.\n- Basic profile info: your name and email to identify the connected account.\n\nP2PDigital only accesses BigQuery resources you configure as storage. You can revoke access from Google Account settings. The connected account needs BigQuery Data Editor and BigQuery Job User roles on the target project."
+    },
+    "googleBigQueryLocation": {
+      "title": "How do I find my dataset location?",
+      "content": "BigQuery data is stored in regions. Queries must process data in the same location to avoid errors.\n\n1. Open the Google Cloud Console BigQuery page.\n2. Expand your project and find your datasets.\n3. Open a dataset and read the Data location field, such as US, EU, or asia-northeast1.\n4. Keep datasets in the same location where possible.\n5. Enter this location in the field above."
+    },
+    "legacyGoogleBigQueryProject": {
+      "title": "Why can't I change the project ID?",
+      "content": "The project ID is fixed and cannot be changed. A separate system storage is created for each GCP project to keep compatibility with the P2PDigital extension for Google Sheets. Its project ID automatically matches the GCP project. Contact support if you need storage for another project."
+    },
+    "legacyGoogleBigQueryLocation": {
+      "title": "How do I find my dataset location?",
+      "content": "Auto-detect location is selected by default. A specific location can improve stability. BigQuery queries must process data in the same region as the stored data.\n\n1. Open the Google Cloud Console BigQuery page.\n2. Expand your project and find your datasets.\n3. Read the Data location field, such as US, EU, or asia-northeast1.\n4. Keep datasets in one location where possible.\n5. Enter the location in the field above."
+    },
+    "athenaAccessKey": {
+      "title": "How do I get my AWS Access Key ID?",
+      "content": "Before accessing an AWS Access Key ID, make sure an IAM user has the required Athena and Glue permissions.\n\nThe Access Key ID is part of the AWS credentials used to connect and authenticate.\n\n1. Open the AWS IAM Security Credentials page.\n2. Under Access keys, use an existing key or create a new one.\n3. When creating a key, download and securely store both the Access Key ID and Secret Access Key."
+    },
+    "athenaSecret": {
+      "title": "How do I get my AWS Secret Access Key?",
+      "content": "The Secret Access Key is part of the AWS credentials used to connect and authenticate. It is shown only when a new key is created.\n\n1. Open the AWS IAM Security Credentials page.\n2. Under Access keys, create a new key if you do not have one or lost the secret.\n3. Copy and securely store the Secret Access Key; it cannot be displayed again."
+    },
+    "athenaRegion": {
+      "title": "How do I find my Athena region?",
+      "content": "Athena queries run in a specific AWS region. Select the region where Athena and the data are located.\n\n1. Open the AWS Athena console.\n2. Read the selected region in the top-right region selector.\n3. Enter the same region here to avoid connection or query errors."
+    },
+    "athenaBucket": {
+      "title": "How do I find an S3 bucket?",
+      "content": "Athena stores query results in an S3 bucket. Specify the bucket used for query output.\n\n1. Open the AWS S3 console.\n2. Select an existing Athena result bucket or create one.\n3. A new bucket must be in the same region as Athena.\n4. Enter the bucket name in this field."
+    }
+  },
+  "workflowHelp": {
+    "triggerType": {
+      "title": "How do I choose a type?",
+      "reportRun": "Report Run - runs a report to import data from the specified Data Storage into a Destination provider (for example, a Google Sheets document).",
+      "connectorRun": "Connector Run - runs a connector (for example, Facebook Ads) configured in the Data Mart to update raw data in the selected Data Storage.",
+      "dataQualityRun": "Data Quality Run - runs the enabled Data Quality checks configured for the Data Mart."
+    },
+    "triggerTypeChange": {
+      "title": "How do I change the trigger type?",
+      "body": "Trigger type cannot be changed after the trigger is created. If you need a different type, delete the existing trigger and create a new one with the desired type."
+    },
+    "reportSelection": {
+      "title": "How do I choose the report?",
+      "intro": "For a Report Run trigger, select one of the available Destinations, such as a Google Sheets report.",
+      "details": "You can use an existing destination or create a new one on the Destinations tab of this Data Mart."
+    },
+    "reportChanging": {
+      "title": "How do I change a report?",
+      "body": "The report cannot be changed after the trigger is created. If you need a different report, delete the existing trigger and create a new one with the desired report."
+    },
+    "documentLink": {
+      "title": "How do I get a correct document link?",
+      "tipPrefix": "Tip: click",
+      "createDocument": "Create document",
+      "tipMiddle": "to auto-create a new Google Sheet in the selected destination - the link is filled in for you. Or paste an existing document URL manually:",
+      "intro": "To get the correct Google Sheets document URL with a Sheet ID (GID), follow these steps:",
+      "step1": "Open your Google Sheets document and select the specific sheet tab where the data should be inserted.",
+      "sharePrefix": "Share the document with the following email and grant it",
+      "shareAccess": "Editor",
+      "shareSuffix": "access:",
+      "shareNoEmail": "Share the document with the service account email and grant it Editor access.",
+      "step3": "While the correct sheet is selected, copy the URL from your browser's address bar - it should include the gid of that sheet.",
+      "step4": "Paste this URL into the field above."
     }
   },
   "connectorRun": {
@@ -368,6 +686,18 @@
     "stateIncrementalDescription": "Connector state is available only for connectors that support incremental runs. It adds only new or updated records since the last run without reloading existing data."
   },
   "connectorWizard": {
+    "oauth": {
+      "connectedAs": "Connected as",
+      "authenticatedAs": "Authenticated as",
+      "signInWithGoogle": "Sign in with Google",
+      "signInWithMicrosoft": "Sign in with Microsoft",
+      "continueWithLinkedIn": "Continue with LinkedIn",
+      "continueWithTikTok": "Continue with TikTok",
+      "connecting": "Connecting...",
+      "notConfigured": "OAuth not configured",
+      "backToOAuth": "Back to OAuth",
+      "manually": "Manually"
+    },
     "selectDataFor": "Select data for {{connector}}",
     "selectData": "Select data",
     "noNodesFor": "No nodes found for {{connector}}",
@@ -387,6 +717,7 @@
     "learnMore": "Learn more about Connectors",
     "setup": "Setup Connector",
     "searchField": "Search field",
+    "searchColumn": "Search column",
     "fields": "fields",
     "field": "field",
     "columns": "columns",
@@ -420,11 +751,106 @@
     "removeLastOnly": "Remove last configuration only after adding a new one.",
     "workgroup": "Workgroup",
     "cluster": "Cluster",
-    "unknownStorage": "Unknown storage type configuration"
+    "unknownStorage": "Unknown storage type configuration",
+    "noConfiguration": "No configuration found",
+    "incompleteConfiguration": "This connector might not be fully implemented yet or there could be other issues.",
+    "serviceAccount": "Service Account",
+    "copyServiceAccountEmail": "Copy service account email",
+    "serviceAccountPlaceholder": "Paste your service account JSON here or drag & drop the file",
+    "needConfiguration": "Need configuration?",
+    "connectorFields": "Connector fields",
+    "editConnector": "Edit connector",
+    "selectFieldsForDataMart": "Select fields for your Data Mart",
+    "updateConfiguration": "Update configuration",
+    "followSetupSteps": "Follow these steps to set it up",
+    "retryLoadingFields": "Retry loading {{item}}",
+    "googleSheetsColumns": "Google Sheets columns",
+    "admicroFields": "Admicro fields",
+    "configureSettings": "Configure settings",
+    "advancedSettings": "Advanced settings",
+    "selectValue": "Select {{name}}",
+    "noOptionsAvailable": "No options available",
+    "enterValue": "Enter {{name}}",
+    "enterValueLines": "Enter {{name}} (one per line)",
+    "enterJson": "Enter {{name}} as JSON",
+    "savedVariable": "{{saved variable}}",
+    "steps": {
+      "configuration": "Configuration",
+      "configurationDescription": "Set up connector parameters",
+      "selectConnector": "Select Connector",
+      "selectConnectorDescription": "Choose a data source",
+      "selectColumns": "Select Columns",
+      "selectColumnsDescription": "Pick sheet columns",
+      "selectNodes": "Select Nodes",
+      "selectNodesDescription": "Choose data nodes",
+      "selectFields": "Select Fields",
+      "selectFieldsDescription": "Pick specific fields",
+      "selectAdmicroFieldsDescription": "Pick Admicro fields",
+      "targetSetup": "Target Setup",
+      "targetSetupDescription": "Configure destination"
+    },
+    "previewErrors": {
+      "loadGoogleSheetsColumns": "Failed to load Google Sheets columns",
+      "noGoogleSheetsColumns": "No columns were found in the selected Google Sheets tab",
+      "noAdmicroFields": "No Admicro fields were returned",
+      "admicroNodeUnavailable": "Admicro report node '{{node}}' is no longer available",
+      "loadAdmicroFields": "Failed to load Admicro fields"
+    }
+  },
+  "connectorTargetSetup": {
+    "chooseStorage": "Choose where to store your data",
+    "scheduleUpdates": "Schedule updates",
+    "datasetName": "Dataset name",
+    "databaseName": "Database name",
+    "schemaName": "Schema name",
+    "catalogName": "Catalog name",
+    "tableName": "Table name",
+    "datasetPlaceholder": "Enter dataset name",
+    "databasePlaceholder": "Enter database name",
+    "schemaPlaceholder": "Enter schema name",
+    "tablePlaceholder": "Enter table name",
+    "publicPlaceholder": "PUBLIC",
+    "publicPlaceholderLower": "public",
+    "tableExamplePlaceholder": "my_table",
+    "mainPlaceholder": "main",
+    "datasetTooltip": "Enter dataset name for {{provider}} where the connector data will be stored.",
+    "databaseTooltip": "Enter database name for {{provider}} where the connector data will be stored.",
+    "schemaTooltip": "Enter schema name for {{provider}} where the connector data will be stored.",
+    "catalogTooltip": "Enter the Databricks catalog where the connector data will be stored.",
+    "schemaTooltipQuoted": "Enter schema name for {{provider}} where the connector data will be stored. Identifiers will be quoted automatically to preserve case sensitivity.",
+    "tableTooltip": "Enter table name where the connector data will be stored.",
+    "tableTooltipQuoted": "Enter table name where the connector data will be stored. Identifiers will be quoted automatically to preserve case sensitivity.",
+    "datasetAutoCreated": "Dataset is auto-created on first run if it doesn't exist",
+    "databaseAutoCreated": "Database is auto-created on first run if it doesn't exist",
+    "schemaAutoCreated": "Schema is auto-created on first run if it doesn't exist",
+    "catalogAutoCreated": "Catalog is auto-created on first run if it doesn't exist",
+    "tableAutoCreated": "Table is auto-created on first run if it doesn't exist",
+    "tableAutoCreatedQuoted": "Table is auto-created on first run if it doesn't exist. Identifiers will be quoted automatically to preserve case sensitivity.",
+    "fieldRequired": "This field is required",
+    "quotedIdentifierEmpty": "Quoted identifier cannot be empty",
+    "identifierFormat": "Use letters, numbers, and underscores; start with a letter"
   },
   "reportColumnPicker": {
     "closeSearch": "Close search",
     "searchColumns": "Search columns",
+    "aboutColumn": "About {{title}}",
+    "dataMartDetailsFor": "Data Mart details for {{label}}",
+    "dataMartLabel": "data mart",
+    "searchColumnsPlaceholder": "Search columns...",
+    "selectAll": "Select all",
+    "deselectAllFields": "Deselect all fields",
+    "selectAllFields": "Select all fields",
+    "showSelectedOnly": "Show selected only",
+    "outputControlsUnsupported": "Output controls are not yet supported for this storage type.",
+    "clear": "Clear",
+    "disconnectedColumns": "Disconnected columns",
+    "aboutDisconnectedColumns": "About disconnected columns",
+    "disconnectedColumnsHelp": "They are missing from the current Data Mart output schema. Uncheck them to remove them from the report, or contact your analyst to restore the schema.",
+    "noMatchingColumns": "No matching columns found.",
+    "noFieldsAvailable": "No fields available.",
+    "expandGroup": "Expand {{name}}",
+    "collapseGroup": "Collapse {{name}}",
+    "currentDataMartColumnRequired": "At least one column from the current Data Mart must be selected",
     "searchFields": "Search fields…",
     "noFields": "No fields found.",
     "deleteFilter": "Delete filter",
@@ -463,12 +889,28 @@
     "addFilter": "Add filter",
     "addSort": "Add sort by",
     "addAggregation": "Add aggregation",
+    "manageAggregations": "Manage aggregations",
+    "manageFiltersAndSlices": "Manage filters and slices",
+    "showJoinPathFor": "Show join path for {{name}}",
+    "uniqueCountPrimaryKeyUnavailable": "No Primary Key is available for reporting in {{name}}, so unique values can't be counted",
+    "uniqueCountNoPrimaryKey": "Primary Key is not set for {{name}}",
+    "uniqueCountDisconnectedPrimaryKey": "Part of the Primary Key of {{name}} is disconnected, so unique values can't be counted",
+    "uniqueCountNestedPrimaryKey": "Unique Count doesn't support the nested Primary Key of {{name}}",
+    "uniqueCountNestedAndDisconnectedPrimaryKey": "The Primary Key of {{name}} is a nested field, which Unique Count doesn't support, and part of it is disconnected",
+    "uniqueCountBothNeedFixing": "Both need fixing — reach your analyst to handle it",
+    "uniqueCountReachAnalyst": "Reach your analyst to handle it",
+    "uniqueCountNotEmitted": "This Data Mart is not allowed for reporting, so this column is not generated. Allow it for reporting again, or clear this row.",
+    "uniqueCountUnverifiedNote": "This app can't confirm whether this Data Mart can still be counted, so the column may be missing from the report. Your selection is kept — reload the page, and reach your analyst if it stays this way.",
+    "uniqueCountUnverified": "Auto-generated column — unconfirmed, see the note on the row.",
+    "uniqueCountDescription": "Auto-generated column — counts the distinct values of the primary key.",
+    "thisDataMart": "this Data Mart",
     "noJoinedFilterableColumns": "No filterable joined columns.",
     "noMoreFilterableColumns": "No more filterable columns.",
     "noAggregatableColumns": "No aggregatable columns.",
     "allColumnsSorted": "All selected columns are already sorted.",
     "rows": "rows",
     "aggregationsHelp": "Choose aggregate functions or date buckets for the selected report columns.",
+    "aggregationInfo": "Aggregate a column with one or more functions (SUM, AVG, COUNT…). Each function adds its own output column. Grouping is implied: every selected column without an aggregation becomes a grouping key. The available functions depend on the column's type and governance.",
     "aggregationColumnUnavailable": "This column can no longer be aggregated. Remove this rule or restore the column.",
     "columnNotFound": "Column not found in schema",
     "editDisabledColumnMissing": "Edit disabled — column missing from schema",
@@ -476,7 +918,42 @@
     "dateColumnUnavailable": "This column is no longer a date/timestamp column. Remove this rule or restore the column.",
     "aggregatedBy": "aggregated by",
     "groupedBy": "grouped by",
-    "editDateBucket": "Edit date bucket"
+    "editDateBucket": "Edit date bucket",
+    "orphanFilterHelp": "This column is no longer available in the data mart schema. Remove this rule or restore the column.",
+    "orphanSortHelp": "This column is no longer available for sorting. Remove this rule or restore the column.",
+    "preJoinFilter": "Pre-join filter (slice)",
+    "editFilter": "Edit filter",
+    "editSlice": "Edit slice",
+    "dragToReorder": "Drag to reorder",
+    "toggleDirection": "Toggle direction (currently {{direction}})",
+    "removeSort": "Remove sort",
+    "removeDateBucket": "Remove date bucket",
+    "removeAggregation": "Remove aggregation",
+    "filterTab": "Filter",
+    "sliceTab": "Slice",
+    "slicesBanner": "Slices filter the joined data mart before it is joined — reducing rows pulled in.",
+    "all": "All",
+    "rowLimit": "Row limit",
+    "clearLimit": "Clear limit",
+    "from": "from",
+    "to": "to",
+    "valuesListHelp": "Values (comma-separated; wrap a value in double quotes if it contains a comma)",
+    "numberListPlaceholder": "10, 20, 30",
+    "dateListPlaceholder": "2026-01-01, 2026-01-15",
+    "valueListPlaceholder": "value1, value2",
+    "patternPlaceholder": "pattern",
+    "relativeToday": "Today",
+    "relativeYesterday": "Yesterday",
+    "relativeThisWeek": "This week",
+    "relativeLastWeek": "Last week",
+    "relativeThisMonth": "This month",
+    "relativeLastMonth": "Last month",
+    "relativeThisQuarter": "This quarter",
+    "relativeLastQuarter": "Last quarter",
+    "relativeThisYear": "This year",
+    "relativeLastNDays": "Last N days",
+    "relativeLastNMonths": "Last N months",
+    "relativeNextNDays": "Next N days"
   },
   "healthStatus": {
     "noRunsLast30": "No runs in the last 30 days",
@@ -493,6 +970,19 @@
     "insightRun": "Insight run",
     "noRuns": "No runs",
     "viewFullHistory": "View Full Run History"
+  },
+  "connectorHelp": {
+    "redshiftSchema": {
+      "title": "How to grant permissions for schema creation?",
+      "intro": "You need to grant permissions to the IAM user who will be used to upload data.",
+      "grant": "Grant permissions:",
+      "replacePrefix": "Replace",
+      "replaceMiddle": "with your database name and",
+      "replaceSuffix": "with your IAM username.",
+      "findPrefix": "You can find your IAM username in the",
+      "console": "AWS IAM Console",
+      "usersSuffix": "under the Users tab."
+    }
   },
   "logsUi": {
     "noLogs": "No logs found"
@@ -517,24 +1007,34 @@
     "hiddenFromReports": "Hidden from reports",
     "fieldNameRequired": "Field name is required",
     "availableAggregations": "Available aggregations",
-    "availableAggregationsFor": "Aggregations for {{name}}",
+    "availableAggregationsFor": "Available aggregations for {{name}}",
     "availableAggregationsAria": "Available aggregations",
     "availableAggregationsHelp": "Available aggregations — functions a report may apply to this field. Defaults by type; clear all to disallow aggregating it.",
     "primaryKeyHelp": "This field is part of the output Primary Key",
     "generateAliases": "Generate aliases for all fields",
     "generateFieldAliases": "Generate field aliases",
+    "unsupportedType": "Unsupported schema type",
     "generateDescriptions": "Generate descriptions for all fields",
     "generateFieldDescriptions": "Generate field descriptions",
+    "generateAliasWithAi": "Generate alias with AI",
+    "generateDescriptionWithAi": "Generate description with AI",
     "rowActions": "Row actions",
     "showInReports": "Show in reports",
     "hideFromReports": "Hide from reports",
     "noMatch": "No fields match the current filter",
     "mode": "Mode",
+    "bigQueryModeHelp": "BigQuery field mode:\nNULLABLE - field can be NULL\nREQUIRED - field cannot be NULL\nREPEATED - field is an array of the type",
     "collapseNested": "Collapse nested fields",
     "expandNested": "Expand nested fields",
     "dedupHelp": "Deduplication rollup — collapses a joined field to one row per join key so the join never multiplies rows.",
     "availableAfterJoin": "Available aggregations — functions a report may apply to this field after the join.",
-    "noFieldsCurrentFilter": "No fields match the current filter"
+    "noFieldsCurrentFilter": "No fields match the current filter",
+    "selectFieldType": "Select field type",
+    "selectFieldMode": "Select field mode",
+    "primaryKey": "Primary Key",
+    "noConfiguredFields": "Output schema has no configured fields",
+    "addField": "Add Field",
+    "addCalculatedField": "Add Calculated Field"
   },
   "sqlValidator": {
     "validating": "Validating...",
@@ -547,6 +1047,8 @@
     "addFieldCheck": "Add field check",
     "searchFields": "Search fields…",
     "noFields": "No fields found.",
+    "dataMartScope": "Data Mart",
+    "relationshipId": "Relationship {{id}}",
     "chooseField": "Choose a field",
     "addedCount": "{{count}} added",
     "chooseAnotherField": "Choose another field",
@@ -595,10 +1097,100 @@
     "checksFor": "Data Quality checks for {{title}}",
     "queued": "Queued",
     "started": "Started",
-    "lastChecked": "Last checked"
+    "lastChecked": "Last checked",
+    "lastCheckedWithDate": "Last checked {{date}}",
+    "requested": "Requested",
+    "open": "Open Data Quality",
+    "openStatusAria": "Open Data Quality: {{status}}",
+    "openPageFor": "Open Data Quality page for {{title}}",
+    "runFor": "Run Data Quality for {{title}}",
+    "activeRunTooltip": "A Data Quality run is already active",
+    "starting": "Starting…",
+    "runChecks": "Run checks",
+    "hideDetailsFor": "Hide details for {{title}}",
+    "showDetailsFor": "Show details for {{title}}",
+    "sql": "SQL",
+    "sqlFor": "SQL for {{title}}",
+    "copied": "Copied",
+    "copyToClipboard": "Copy to clipboard",
+    "redactedRelationship": "SQL and examples are hidden because you don't have access to the target Data Mart{{target}}. The counts above are still accurate.",
+    "unableDisplayExample": "Unable to display example",
+    "categoryLabels": {
+      "emptyTable": "Empty table",
+      "primaryKeyUniqueness": "Primary key uniqueness",
+      "duplicateRows": "Duplicate rows",
+      "nullRate": "Null rate",
+      "columnUniqueness": "Column uniqueness",
+      "constantColumn": "Constant column",
+      "typeMismatch": "Type mismatch",
+      "dataFreshness": "Data freshness",
+      "negativeValues": "Negative values",
+      "relationshipIntegrity": "Relationship integrity",
+      "reverseRelationship": "Reverse relationship"
+    },
+    "categoryDescriptions": {
+      "emptyTable": "Finds a problem when the Data Mart contains no rows.",
+      "primaryKeyUniqueness": "Checks that the Output Schema primary key identifies each row once.",
+      "duplicateRows": "Finds duplicate rows across all materialized Output Schema fields.",
+      "nullRate": "Checks whether the share of null values exceeds the configured threshold.",
+      "columnUniqueness": "Finds repeated non-null values in this field.",
+      "constantColumn": "Finds fields that contain only one distinct value.",
+      "typeMismatch": "Compares the stored column type with the saved Output Schema type.",
+      "dataFreshness": "Checks whether the latest instant timestamp is within the configured threshold.",
+      "negativeValues": "Finds numeric values below zero.",
+      "relationshipIntegrity": "Finds source join values missing from the target Data Mart.",
+      "reverseRelationship": "Finds target join values unused by the source Data Mart."
+    },
+    "statusPresentations": {
+      "neverRunTitle": "No runs yet",
+      "neverRunDescription": "Run the enabled checks to create the first quality report.",
+      "queuedTitle": "Run queued…",
+      "queuedDescription": "The run will start as soon as a worker is available.",
+      "runningTitle": "Running checks…",
+      "passedTitle": "All checks passed",
+      "passedDescription": "No data quality findings were detected.",
+      "issuesTitle": "Issues found",
+      "issuesDescription": "Settings and the detailed report are available below.",
+      "executionFailedTitle": "Execution failed",
+      "executionFailedDescription": "Some checks could not execute. Completed results are still available below.",
+      "restrictedTitle": "Run restricted",
+      "restrictedDescription": "Project operations are currently restricted. Check the project status or available credits and try again.",
+      "cancelledTitle": "Run cancelled",
+      "cancelledDescription": "Results completed before cancellation are preserved.",
+      "allDisabledTitle": "All checks are disabled",
+      "allDisabledDescription": "Enable at least one applicable check before running Data Quality.",
+      "noApplicableTitle": "No checks are applicable",
+      "noApplicableDescription": "The configured checks do not apply to the current schema or relationships."
+    },
+    "compactStatus": {
+      "neverRun": "Data Quality has not been checked yet",
+      "allChecksDisabled": "Data Quality checks are disabled",
+      "noApplicableChecks": "No applicable Data Quality checks",
+      "queued": "Data Quality check queued",
+      "running": "Data Quality check running",
+      "passed": "Data Quality checks passed",
+      "issuesFound": "Data Quality issues found",
+      "runFailed": "Data Quality check failed",
+      "restricted": "Data Quality run restricted",
+      "cancelled": "Data Quality check cancelled",
+      "unavailable": "Data Quality status unavailable",
+      "loading": "Loading Data Quality status"
+    },
+    "chips": {
+      "enabled": "enabled",
+      "passed": "passed",
+      "notApplicable": "not applicable",
+      "executionError": "execution error",
+      "executionErrors": "execution errors",
+      "error": "error",
+      "warning": "warning",
+      "notice": "notice",
+      "noFindings": "No findings"
+    }
   },
   "dataMartsPage": {
     "title": "Data Marts",
+    "loadFailed": "Failed to load Data Marts. Please try again.",
     "checkingQuality": "Checking data quality",
     "createDataMart": "New Data Mart",
     "emptyTitle": "Let's build your first Data Mart",
@@ -614,6 +1206,7 @@
     "viewRuns": "View runs",
     "selectAllRows": "Select all rows on this page",
     "selectRow": "Select row",
+    "lastUpdated": "Last updated",
     "tableAriaLabel": "Data Mart table",
     "importButtonTitle": "Import Data Marts from storage resources",
     "importButton": "Import…",
@@ -621,6 +1214,15 @@
     "bigQueryPromoDescription": "Automatically create multiple Data Marts from BigQuery resources in seconds",
     "bigQueryPromoPrimaryAction": "Create multiple Data Marts...",
     "bigQueryPromoSecondaryAction": "Create from one table"
+  },
+  "dataMartsOverview": {
+    "sectionLabel": "Data Marts overview",
+    "dataHealth": "Data health",
+    "dataHealthHint": "{{published}}/{{total}} published",
+    "lastUpdated": "Last updated",
+    "runIssues": "Run issues",
+    "nextAction": "Next action",
+    "viewRuns": "View runs"
   },
   "dataMartEmptyState": {
     "illustrationLabel": "Data Mart creation illustration",
@@ -727,6 +1329,13 @@
     "current": "current",
     "openInStorageConsole": "Open in storage console"
   },
+  "dataMartDefinitionSettings": {
+    "deleteConfigurationTitle": "Delete configuration",
+    "deleteConfigurationDescription": "Are you sure you want to delete this configuration? This action cannot be undone.",
+    "save": "Save",
+    "discard": "Discard",
+    "sourceChangeNotice": "Pick a new source and save to apply the change. Relationships, reports and field metadata are kept. Fields that are missing from the new source will be marked as disconnected."
+  },
   "canvasSettings": {
     "title": "Canvas settings",
     "view": "View",
@@ -750,7 +1359,26 @@
     "directions": {
       "horizontal": "Horizontal",
       "vertical": "Vertical"
-    }
+    },
+    "fitToView": "Fit to view",
+    "zoomIn": "Zoom in",
+    "zoomOut": "Zoom out",
+    "expandDiagram": "Expand diagram",
+    "descriptionFor": "Description for {{title}}",
+    "openInNewTab": "Open {{title}} in new tab",
+    "primaryKey": "Primary key",
+    "hiddenFromReportingTitle": "{{alias}} (hidden from reporting)",
+    "showLess": "Show less",
+    "field": "field",
+    "fields": "fields",
+    "moreFields": "+{{count}} more {{fieldWord}}"
+  },
+  "secretReveal": {
+    "show": "Show {{label}}",
+    "hide": "Hide {{label}}",
+    "copy": "Copy {{label}}",
+    "copied": "{{label}} copied",
+    "copyFailed": "Failed to copy {{label}}"
   },
   "dataLastUpdated": {
     "checkingShort": "checking…",
@@ -765,6 +1393,24 @@
     "checked": "Checked {{time}}",
     "writeTimeCaveat": "Reflects when source tables were written to, not which period the data covers.",
     "notCheckedYet": "Not checked yet"
+  },
+  "storageUrl": {
+    "openBigQueryTable": "Open table in Google BigQuery",
+    "openAthenaRegion": "Open region in AWS Athena",
+    "openSnowflakeConsole": "Open console in Snowflake",
+    "openRedshiftQueryEditor": "Open Query Editor v2 in AWS Redshift",
+    "openStorageData": "Open data in storage"
+  },
+  "calculatedFieldIssues": {
+    "missingReferences": "This calculated field reads {{fields}}, which {{verb}} missing from the Data Mart, or broken.",
+    "is": "is",
+    "are": "are"
+  },
+  "calculatedFieldReferences": {
+    "unsaved": "{{field}} is a calculated field. Whether it aggregates is known once the schema is saved.",
+    "metric": "{{field}} is a calculated field that already aggregates, so it cannot be wrapped in another aggregation.",
+    "rowLevel": "{{field}} is a row-level calculated field, so it behaves like any other column.",
+    "joined": "{{field}} from the joined Data Mart \u201C{{label}}\u201D"
   },
   "owners": {
     "title": "Owners",
@@ -787,7 +1433,23 @@
   },
   "dataMartRunHistory": {
     "title": "Run history",
-    "tooltip": "View all Data Mart execution runs with detailed logs and errors"
+    "tooltip": "View all Data Mart execution runs with detailed logs and errors",
+    "manualRunStarted": "Manual run started",
+    "refreshAfterCancellationFailed": "Failed to refresh Data Mart runs after cancellation"
+  },
+  "schemaActualization": {
+    "failed": "Schema actualization failed",
+    "startFailed": "Failed to start schema actualization",
+    "syncing": "Synchronizing output schema with the storage state. Please wait..."
+  },
+  "schemaFieldSummary": {
+    "actualized": "Output schema actualized",
+    "field": "field",
+    "fields": "fields",
+    "disconnected": "{{count}} disconnected",
+    "typeMismatch": "{{count}} with a type mismatch",
+    "actualizedConnected": "Output schema actualized: {{count}} {{fieldWord}} connected",
+    "actualizedWithProblems": "Output schema actualized: {{count}} {{fieldWord}}, {{problems}}"
   },
   "runHistory": {
     "structured": "Structured",
@@ -803,6 +1465,7 @@
     "duration": "Duration",
     "runId": "Run ID",
     "diagnostics": "Run diagnostics",
+    "openDataMart": "Open Data Mart",
     "downloadDiagnostics": "Download diagnostics JSON",
     "cancelRun": "Cancel run",
     "cancelling": "Cancelling",
@@ -810,6 +1473,38 @@
     "cancelQualityDescription": "This stops the Data Quality run between checks. Results already completed will remain available.",
     "cancelDescription": "This will request cancellation and stop the run if it is still in progress. Cancelling a run may result in incomplete data.",
     "keepRunning": "Keep running",
+    "warning": "Warning",
+    "error": "Error",
+    "dataStudioDataFetching": "Data Studio data fetching",
+    "runDescription": "{{trigger}} {{runType}} run",
+    "triggerTypes": {
+      "manual": "Manual",
+      "scheduled": "Scheduled"
+    },
+    "runTypes": {
+      "connector": "connector",
+      "report": "report",
+      "insight": "insight",
+      "insightTemplate": "insight template",
+      "aiAssistant": "AI assistant",
+      "httpData": "HTTP Data",
+      "mcpQuery": "MCP query",
+      "dataQuality": "data quality"
+    },
+    "qualitySummary": {
+      "notApplicable": "Nothing to check \u00b7 all not applicable",
+      "findingSingular": "{{count}} finding",
+      "findingPlural": "{{count}} findings",
+      "checksPassed": "{{passed}} of {{total}} checks",
+      "allChecksPassed": "All checks passed",
+      "queued": "Queued",
+      "running": "Running",
+      "partialResults": "Partial results",
+      "restricted": "Restricted",
+      "partialResultsKept": "Partial results kept",
+      "allChecksDisabled": "Nothing to check \u00b7 all checks disabled",
+      "neverRun": "Never run"
+    },
     "status": {
       "running": "Running",
       "success": "Success",
@@ -819,6 +1514,80 @@
       "pending": "Pending",
       "restricted": "Restricted",
       "unknown": "Unknown"
+    }
+  },
+  "operationalErrors": {
+    "unknown": "The run failed. Error code: {{code}}.",
+    "categories": {
+      "authentication": "The provider authentication failed. Reconnect the account and try again.",
+      "permission": "The provider denied access. Check the account and requested permissions.",
+      "rate_limit": "The provider rate limit was reached. Try again later.",
+      "timeout": "The provider request timed out. Try again.",
+      "unavailable": "The provider is temporarily unavailable. Try again later.",
+      "validation": "The provider rejected the request. Check the configuration.",
+      "billing": "This operation is blocked by the project billing policy.",
+      "internal": "The operation failed unexpectedly.",
+      "unknown": "The operation failed."
+    },
+    "codes": {
+      "PROJECT_ARCHIVED_READ_ONLY": "The project is archived and read-only, so the scheduled run was skipped.",
+      "RUN_CONCURRENCY_LIMIT_EXCEEDED": "The run could not start because the project concurrency limit was reached.",
+      "RUN_TRIGGER_FAILED": "The run trigger failed before execution completed.",
+      "REPORT_RUN_FAILED": "The report run failed.",
+      "REPORT_RUN_LOG_ERROR": "The report execution failed.",
+      "DATA_QUALITY_EXECUTION_FAILED": "The Data Quality run failed during execution.",
+      "DATA_QUALITY_COMPILATION_ERROR": "A Data Quality check could not be compiled.",
+      "DATA_QUALITY_EXECUTION_ERROR": "A Data Quality check could not be executed.",
+      "DATA_QUALITY_PARSING_ERROR": "A Data Quality result could not be parsed.",
+      "STORAGE_READ_FAILED": "The data storage could not be read.",
+      "BQ_VIEW_REFRESH_FAILED": "The BigQuery view could not be refreshed.",
+      "VIEW_REFRESH_FAILED": "The data view could not be refreshed.",
+      "BI_PROJECT_NOT_ACTIVE": "This P2PDigital Data Marts project is inactive.",
+      "OVERDRAFT_LIMIT_EXCEEDED": "The project credit limit has been reached.",
+      "LICENSE_REQUIRED": "A valid license is required for this operation.",
+      "MCP_QUERY_AUTHORIZATION_FAILED": "The MCP query could not be authorized.",
+      "OAUTH_NOT_CONFIGURED": "Google OAuth is not configured for this deployment.",
+      "INVALID_OAUTH_STATE": "The Google authorization session expired or is invalid. Start the connection again.",
+      "TOKEN_EXCHANGE_FAILED": "Google authorization could not be completed. Start the connection again.",
+      "TOKEN_REFRESH_FAILED": "Google access could not be refreshed. Reconnect the account.",
+      "CREDENTIALS_NOT_FOUND": "The connected Google credentials were not found.",
+      "CREDENTIALS_EXPIRED": "The Google credentials expired. Reconnect the account.",
+      "UNAUTHORIZED_OAUTH_ACCESS": "You do not have access to these Google credentials.",
+      "GOOGLE_API_ERROR": "Google API rejected the request. Check access and try again.",
+      "OAUTH_NOT_CONNECTED": "Connect a Google account before creating documents.",
+      "SA_REQUIRES_FOLDER": "Set a Shared Drive folder and grant the service account Content Manager access.",
+      "DESTINATION_FOLDER_ACCESS": "The configured Google Drive folder is not accessible.",
+      "SHEET_FOLDER_CREATE_FAILED": "The Google Sheet could not be created in the configured Drive folder.",
+      "FILTER_COLUMN_UNKNOWN": "A filter references an unknown column.",
+      "PRE_JOIN_FILTERS_REQUIRE_JOINED_DATA_MART": "Pre-join filters require a joined Data Mart.",
+      "AGGREGATION_ON_CALCULATED_FIELD": "This calculated field cannot be aggregated.",
+      "CALCULATED_FIELD_AS_DIMENSION": "This calculated field cannot be used as a dimension.",
+      "CALCULATED_FIELD_BROKEN_REFERENCES": "A calculated field references unavailable columns.",
+      "JOINED_CALCULATED_FIELD_UNSUPPORTED": "Calculated fields from a joined Data Mart are not supported here.",
+      "AGGREGATION_REQUIRES_COLUMN_CONFIG": "Configure report columns before adding aggregation.",
+      "CALCULATED_FIELD_FILTER_REQUIRES_COLUMN_CONFIG": "Configure report columns before filtering a calculated field.",
+      "JOINED_UNIQUE_COUNT_REQUIRES_COLUMN_CONFIG": "Configure report columns before using unique count on joined data.",
+      "JOINED_UNIQUE_COUNT_SOURCE_UNAVAILABLE": "The joined source for unique count is unavailable.",
+      "UNIQUE_COUNT_FILTER_UNSUPPORTED": "Filters are not supported with this unique count.",
+      "UNIQUE_COUNT_AGGREGATION_UNSUPPORTED": "This aggregation is not supported with unique count.",
+      "UNIQUE_COUNT_DATE_TRUNC_UNSUPPORTED": "Date truncation is not supported with unique count.",
+      "UNIQUE_COUNT_COLUMN_NOT_PROJECTABLE": "The unique-count column cannot be selected from this source.",
+      "HAVING_FILTER_NOT_AGGREGATED": "A HAVING filter must use an aggregated field.",
+      "HAVING_FILTER_INVALID_PLACEMENT": "The HAVING filter is not valid in this report position.",
+      "HAVING_ON_BLENDED_SLEEVE_METRIC_NOT_SUPPORTED": "This blended metric cannot be used in a HAVING filter.",
+      "HAVING_ON_BLENDED_SLEEVE_CALCULATED_FIELD_NOT_SUPPORTED": "This blended calculated field cannot be used in a HAVING filter.",
+      "INVALID_OPERATOR_FOR_TYPE": "The selected operator is not valid for this field type.",
+      "DATE_TRUNC_REQUIRES_DATE_COLUMN": "Date truncation requires a date or timestamp column.",
+      "DATE_TRUNC_TIMEZONE_REQUIRES_TIMESTAMP": "A date-truncation timezone requires a timestamp column.",
+      "DATE_TRUNC_INVALID_TIMEZONE": "The selected date-truncation timezone is invalid.",
+      "DATE_TRUNC_COLUMN_IS_AGGREGATED": "Date truncation cannot be applied to an aggregated column.",
+      "DATE_TRUNC_TIMEZONE_ON_CALCULATED_FIELD": "A timezone cannot be applied to this calculated field.",
+      "AGGREGATION_COLUMN_NOT_SELECTED": "Select the aggregation column in the report output.",
+      "DATE_TRUNC_COLUMN_NOT_SELECTED": "Select the date-truncation column in the report output.",
+      "SORT_COLUMN_NOT_SELECTED": "Select the sort column in the report output.",
+      "AGGREGATION_FUNCTION_NOT_ALLOWED_FOR_FIELD": "The aggregation function is not allowed for this field.",
+      "AGGREGATION_FUNCTION_NOT_ALLOWED_FOR_TYPE": "The aggregation function is not allowed for this field type.",
+      "DUPLICATE_AGGREGATION": "The report contains a duplicate aggregation."
     }
   },
   "dataQualityWorkspace": {
@@ -844,7 +1613,37 @@
     "latestReport": "Latest report",
     "viewInRunHistory": "View in Run History",
     "filterResults": "Filter check results",
-    "noChecks": "No checks are available for this scope."
+    "checkAdded": "{{check}} added to {{field}} — not saved yet",
+    "fromRunOn": "From the run on {{date}}",
+    "noChecks": "No checks are available for this scope.",
+    "latestReportTooltip": "Review the latest Data Quality check results",
+    "runEligibility": {
+      "notPublished": "Publish this Data Mart before running Data Quality checks",
+      "outputSchemaRequired": "Configure an Output Schema before running Data Quality checks",
+      "definitionRequired": "Configure a Data Mart definition before running Data Quality checks",
+      "noApplicableChecks": "Enable at least one applicable Data Quality check",
+      "activeRun": "A Data Quality run is already active",
+      "actionInProgress": "Another Data Quality action is in progress",
+      "editorRequiredToRun": "Editor access is required to run Data Quality checks",
+      "editorRequiredToSave": "Editor access is required to save and run Data Quality checks"
+    }
+  },
+  "dataQualityBatch": {
+    "title": "Check Data Quality",
+    "canvasDescription": "Run Data Quality checks for all {{count}} Data Marts shown by the current canvas filters?",
+    "selectionDescription": "Run Data Quality checks for {{count}} selected Data Marts?",
+    "starting": "Starting…",
+    "confirm": "Check Quality",
+    "startFailed": "Data Quality checks could not be started: {{error}}",
+    "refreshFailed": "The Data Quality checks were queued, but the Data Mart list could not be refreshed",
+    "queuedOne": "Data Quality check queued for 1 Data Mart",
+    "queuedMany": "Data Quality checks queued for {{count}} Data Marts",
+    "queuedPartial": "Data Quality checks queued for {{successful}} of {{selected}} Data Marts. {{failures}}",
+    "queueFailedOne": "Data Quality check could not be queued: {{error}}",
+    "queueFailedMany": "Data Quality checks could not be queued. {{failures}}",
+    "noFailureDetails": "No typed failure details were returned",
+    "failedWithMessage": "{{count}} failed: {{message}}",
+    "failedWithCodes": "{{count}} failed ({{codes}})"
   },
   "dataMartOverview": {
     "description": "Description",
@@ -864,6 +1663,8 @@
     "createdOn": "Created on",
     "dataLastUpdated": "Data last updated",
     "createdBy": "Created by",
+    "descriptionPlaceholder": "Add a description for this Data Mart...",
+    "generateDescription": "Generate description with AI",
     "helpInformation": "Help information",
     "technicalOwnerHelp": "Responsible for data sources and schema",
     "technicalOwnerQuestion": "What is a Technical Owner?",
@@ -920,6 +1721,15 @@
     "joinableTooltip": "Business users can add columns from joinable data marts directly into their spreadsheet reports. No hallucinations - row counts remain unchanged",
     "diagramTitle": "Relationship Diagram",
     "close": "Close",
+    "descriptionFor": "Description for {{label}}",
+    "cycleStubTooltip": "This data mart is already joined earlier in this branch — stopping here to avoid a loop.",
+    "missingPrimaryKeyTooltip": "This data mart has no primary key, so the join cannot deduplicate rows reliably — metrics from it can be double-counted (fan-out).",
+    "noRelatedDataMartsForFilters": "No related data marts match the current filters",
+    "openDataMartInNewTab": "Open {{label}} in new tab",
+    "joinConditionsEmpty": "Fields will appear after configuring join conditions.",
+    "deleting": "Deleting...",
+    "noAccessTooltip": "You don't have access to this data mart",
+    "noAccessAria": "You do not have access to this data mart",
     "failedLoad": "Failed to load relationships",
     "relationshipAdded": "Relationship added",
     "relationshipUpdated": "Relationship updated",
@@ -945,6 +1755,12 @@
     "addJoinField": "Add Join Field",
     "sourceField": "Source field",
     "relatedField": "Related field",
+    "sourceFieldRequired": "Source field is required",
+    "relatedFieldRequired": "Related field is required",
+    "fieldPrefixRequired": "Field prefix is required",
+    "fieldPrefixFormat": "Field prefix must contain only lowercase letters, numbers, and underscores",
+    "aliasAlreadyUsed": "This alias is already used by another joined data mart",
+    "joinConditionRequired": "At least one join condition is required",
     "selectField": "Select field...",
     "removeJoinCondition": "Remove join condition",
     "typeMismatch": "Type mismatch: source is {{source}}, target is {{target}}",
@@ -956,7 +1772,26 @@
     "publishedOnly": "Published only",
     "draftOnly": "Draft only",
     "field": "field",
-    "fields": "fields"
+    "fields": "fields",
+    "failedSaveJoinSettings": "Failed to save join settings",
+    "inheritedJoin": "Inherited from",
+    "editJoinThere": "edit the join there",
+    "joinedDataMart": "Joined Data Mart",
+    "joinedDataMartTooltip": "The data mart linked here, plus who configured the join and when.",
+    "inheritedDescription": "Inherited from",
+    "editDescriptionThere": "edit the description there",
+    "relationshipDescription": "Relationship description",
+    "relationshipDescriptionTooltip": "Optional business meaning of this relationship. AI assistants read it through MCP to understand how the joined data relates — not just how the rows are matched.",
+    "descriptionPlaceholder": "e.g. Visitors from the website sign up for the product and convert into users",
+    "openInNewTab": "Open in new tab",
+    "deleteRelationship": "Delete relationship",
+    "inheritedRelationshipTooltip": "This relationship is inherited. Remove it from the source data mart instead.",
+    "reportFields": "Report fields",
+    "joinSettings": "Join settings",
+    "description": "Description",
+    "outputAlias": "Output alias",
+    "outputAliasTooltip": "Short name that appears in the output data schema for fields from this data mart.",
+    "outputAliasPlaceholder": "e.g. campaign_performance"
   },
   "scheduleConfig": {
     "type": "Type",
@@ -1048,6 +1883,10 @@
     "reportRun": "Report Run",
     "connectorRun": "Connector Run",
     "qualityRun": "Data Quality Run",
+    "lastRunInline": "Last run:",
+    "tableLabel": "Scheduled triggers",
+    "emptyTitle": "Create your first scheduled trigger",
+    "newTrigger": "New trigger",
     "columns": {
       "triggerType": "Trigger Type",
       "runTarget": "Run Target",
@@ -1079,8 +1918,84 @@
     "errorMessage": "Error message:",
     "totalRuns": "Total runs:"
   },
+  "inlineEditDescription": {
+    "pressToSave": "Press",
+    "toSave": "to save",
+    "toCancel": "to cancel",
+    "savedOnOutsideClick": "Changes are also saved when you click outside"
+  },
+  "connectorHoverCard": {
+    "lastRunStatus": "Last run status:",
+    "lastRunDate": "Last run date:",
+    "totalRuns": "Total runs:",
+    "noRuns": "No runs",
+    "runCount_one": "{{count}} run",
+    "runCount_other": "{{count}} runs",
+    "fieldsCount": "{{count}} fields",
+    "since": "since",
+    "openStorage": "Open Storage"
+  },
+  "variablePicker": {
+    "useSavedVariable": "Use saved variable",
+    "useVariable": "Use variable",
+    "manualValue": "Manual value"
+  },
+  "copyCredentials": {
+    "copyFrom": "Copy from…",
+    "loading": "Loading…",
+    "noMatching": "No matching {{entityLabel}}s",
+    "noOther": "No other {{entityLabel}}s of this type exist in the project.",
+    "selectToCopy": "Select a {{entityLabel}} to copy its credentials."
+  },
+  "copyConfiguration": {
+    "copyFrom": "Copy from…",
+    "loading": "Loading…",
+    "noMatching": "No matching Data Marts",
+    "noOther": "You can reuse configuration settings only from connector-based Data Marts that use the same source.",
+    "selectToReuse": "Select one of your existing Data Marts to reuse its configuration settings.",
+    "configuration": "Configuration {{index}}"
+  },
+  "schemaUnsavedChanges": {
+    "title": "Unsaved {{changeLabel}} changes",
+    "ai": "AI metadata is generated from the saved schema. Save to include your changes, or discard to ignore them.",
+    "refresh": "Refreshing reloads the schema from the source. Save to keep your changes, or discard to lose them.",
+    "publish": "Publishing refreshes the schema from the source. Save to keep your changes, or discard to lose them.",
+    "definition": "Saving the input source refreshes the schema. Save to keep your schema changes, or discard to lose them.",
+    "navigation": "You have unsaved {{changeLabel}} changes. Save to keep them, or discard them to leave this page.",
+    "continueDescription": "You have unsaved {{changeLabel}} changes. Save to keep them, or discard them to continue.",
+    "continue": "continue",
+    "leave": "leave",
+    "discardAnd": "Discard & {{verb}}",
+    "saveAnd": "Save & {{verb}}"
+  },
+  "recipients": {
+    "label": "Recipients of this report",
+    "empty": "No recipients found"
+  },
+  "membersAssignment": {
+    "hideSearch": "Hide search",
+    "searchMembers": "Search members",
+    "searchByNameOrEmail": "Search by name or email",
+    "selectAllMembers": "Select all members",
+    "selectedCount": "{{selected}} of {{total}} selected",
+    "selectAll": "Select all",
+    "reset": "Reset",
+    "noMembersAvailable": "No members available.",
+    "noMembersMatch": "No members match \"{{query}}\".",
+    "adminLockedReason": "Admins always have access to every context.",
+    "projectScopeLockedReason": "Members with project-wide scope already see every resource, regardless of context assignments.",
+    "memberLockedAria": "{{member}} — {{reason}}"
+  },
+  "calculatedFieldsHelp": {
+    "warehouseSql": "Warehouse SQL over this Data Mart's fields.",
+    "saveFailed": "This formula could not be saved.",
+    "formula": "Formula",
+    "formulaRequired": "Formula is required"
+  },
   "reportsUi": {
     "newReport": "New Report",
+    "loadFailed": "Failed to load destinations and reports. Please try again.",
+    "reportNotFound": "Report not found by id {{id}}",
     "addNewReport": "Add new report",
     "createFirstForDestination": "Create your first report for this destination",
     "createFirstFromExcelAddin": "Create your first report from the P2PDigital add-in in Excel",
@@ -1141,6 +2056,7 @@
     "cacheConfiguration": "Cache Configuration",
     "cacheTooltip": "Period during which query results are served from storage-side cache, avoiding re-execution",
     "title": "Title",
+    "updated": "Updated",
     "destination": "Destination",
     "selectDestination": "Select destination",
     "reportTitlePlaceholder": "Enter report title",
@@ -1159,6 +2075,31 @@
     "dataMartRunResultsTooltip": "Define when the report is sent based on Data Mart run results",
     "cacheLifetime": "Cache lifetime",
     "selectCacheTime": "Select cache lifetime",
+    "cacheHelpTitle": "What is the Data Studio cache lifetime?",
+    "cacheHelpDescription": "The cache lifetime determines how long results from previous queries are served from the storage-side cache, so the query does not need to run again.",
+    "sendingConditionHelpTitle": "What are Data Mart run results?",
+    "sendingConditionHelpIntro": "Data Mart run results are the output produced after your Data Mart is processed, such as the result of a SQL query used to populate a report.",
+    "sendingConditionHelpBehavior": "Before sending a report, P2PDigital runs the Data Mart and checks its result. Depending on your settings, the report can always be sent, sent only when the result is non-empty, or sent only when the result is empty.",
+    "messageTemplateInsightHelpTitle": "How do insights work?",
+    "messageTemplateInsightHelpDescription": "Insights let you use a prepared data layout and charts. Select an insight from the list to use it in the report.",
+    "messageTemplateMarkdownHelpTitle": "How do I format the content?",
+    "messageTemplateMarkdownHelpIntro": "You can format the content with Markdown — a simple text syntax for adding structure and styling without a complex editor.",
+    "messageTemplateMarkdownHelpExample": "Example:",
+    "messageTemplateMarkdownHelpBold": "**bold text** → bold text",
+    "messageTemplateMarkdownHelpItalic": "*italic text* → italic text",
+    "messageTemplateMarkdownHelpList": "- list item → • list item",
+    "messageTemplateMarkdownHelpPreview": "Use the Preview tab to see how the content will look after formatting.",
+    "messageTemplateMarkdownHelpGuide": "If you are new to Markdown, see the",
+    "messageTemplateMarkdownHelpGuideLink": "quick guide",
+    "messageTemplateDataHelpTitle": "How do I add data to the content?",
+    "messageTemplateDataHelpIntroPrefix": "Use the",
+    "messageTemplateDataHelpIntroSuffix": "tag to render Data Mart results as a table. Type / in the editor to insert it quickly, or paste it manually.",
+    "messageTemplateDataHelpParameters": "Optional parameters:",
+    "messageTemplateDataHelpLimit": "limit — maximum number of rows to display. Allowed from 1 to 100. Default: 100 (also the maximum). Example: limit=20",
+    "messageTemplateDataHelpColumns": "columns — comma-separated list of columns. Example:",
+    "messageTemplateDataHelpExample": "Example:",
+    "messageTemplateDataHelpHeadersCountPrefix": "You can also use the",
+    "messageTemplateDataHelpHeadersCountSuffix": "variable to display the total number of columns.",
     "minutes": "{{count}} minutes",
     "hours": "{{count}} hours",
     "createReport": "Create report",
@@ -1179,7 +2120,31 @@
     "saveChanges": "Save changes",
     "moreActions": "More actions",
     "creating": "Creating...",
-    "saving": "Saving..."
+    "saving": "Saving...",
+    "startingReport": "Starting \"{{title}}\"…",
+    "undoWithinSeconds": "Undo within {{seconds}} seconds",
+    "documentLinkLabel": "Document link with Sheet ID (GID)",
+    "documentLinkTooltip": "The link must include the Sheet ID to insert data into the correct tab",
+    "documentUrlPlaceholder": "Paste a Google Sheets URL",
+    "openDocumentInNewTab": "Open document in new tab",
+    "openDocument": "Open document",
+    "newSheet": "New Sheet",
+    "createGoogleSheetTooltip": "Create a new Google Sheet in the selected destination and fill the link above",
+    "selectDestinationFirst": "Select a destination first",
+    "googleSheetCreated": "Google Sheet created",
+    "googleSheetFolderNotUsed": "the selected Drive folder was not used (the file was created in your Drive root)",
+    "googleSheetNotShared": "the file was not shared with you",
+    "googleSheetCreatedWarning": "Google Sheet created, but {{issues}}. Reconnect the destination's Google account with Drive access to fix this.",
+    "createGoogleSheetFailed": "Failed to create Google Sheet",
+    "lookerStudioCard": {
+      "lastFetched": "Last fetched",
+      "successfully": "successfully",
+      "failedWithError": "but failed with error",
+      "waitingForFetch": "Waiting for Data Studio to fetch data",
+      "enableAccess": "Switch on to enable access",
+      "removeAccess": "Switch off to remove access",
+      "publishFirst": "Publish the Data Mart first to enable access in Data Studio"
+    }
   },
   "reportTable": {
     "title": "Title",
@@ -1194,7 +2159,16 @@
     "inProgress": "In progress",
     "cancelled": "Cancelled",
     "restricted": "Restricted",
-    "unknown": "Unknown"
+    "unknown": "Unknown",
+    "errors": {
+      "loadDestinations": "Failed to fetch destinations",
+      "loadReports": "Failed to fetch reports",
+      "loadReport": "Failed to fetch report",
+      "createReport": "Failed to create report",
+      "updateReport": "Failed to update report",
+      "deleteReport": "Failed to delete report",
+      "runReport": "Failed to run report"
+    }
   },
   "insightsUi": {
     "rowActions": "Insight actions",
@@ -1212,9 +2186,12 @@
     "reuseSourceAction": "Reuse source",
     "applyTemplateEditAction": "Apply template changes",
     "noArtifacts": "No data artifacts yet",
+    "maxArtifactsReached": "Maximum limit of {{count}} data artifacts reached",
     "artifactDescription": "Data Artifacts are SQL queries that fetch data from your Data Mart",
+    "artifactIdHelp": "The ID of the data artifact is used as a unique identifier in the template. This field cannot be changed after creation.",
     "addArtifact": "Data Artifact",
     "title": "Title",
+    "updated": "Updated",
     "insertTemplate": "Insert into template",
     "copyArtifactId": "Copy the data artifact id to your clipboard",
     "copiedArtifactId": "Copied Data Artifact id to clipboard",
@@ -1244,6 +2221,9 @@
       "loadProject": "Failed to fetch Data Mart insights",
       "delete": "Failed to delete insight"
     },
+    "toast": {
+      "deleted": "Insight deleted"
+    },
     "titleUpdated": "Title updated",
     "unsavedChanges": "Unsaved changes",
     "save": "Save",
@@ -1255,6 +2235,21 @@
     "expandAiAssistant": "Expand AI Assistant",
     "aiAssistant": "AI Assistant",
     "newChat": "New chat",
+    "newChatWithDate": "New chat {{date}}",
+    "executionFailed": "Execution failed",
+    "aiAssistantMessages": {
+      "snippetAlreadyExists": "No changes: snippet already exists in template.",
+      "templateValidationFailed": "Template validation failed. Review the patch and try again.",
+      "applyFinished": "Apply finished.",
+      "sourceSqlUpdated": "Source SQL updated.",
+      "sourceCreatedAttached": "Source created and attached to template.",
+      "existingSourceAttached": "Existing source attached to template.",
+      "templateUpdated": "Template updated.",
+      "sourceRemoved": "Source removed from template sources.",
+      "applyUpdated": "Apply updated successfully.",
+      "templateAlreadyUpToDate": "No changes: template is already up to date.",
+      "noChangesApplied": "No changes were applied."
+    },
     "backToChat": "Back to chat",
     "chatHistory": "Chat history",
     "hide": "Hide",
@@ -1418,6 +2413,9 @@
     "goDestinations": "Go to Destinations",
     "learnMore": "Learn more about Google Sheets destination"
   },
+  "dataDestinationForm": {
+    "googleSheetsTitle": "New Google Sheets Destination"
+  },
   "dataMartStatus": {
     "draft": "Draft",
     "draftDescription": "Data Mart is in draft mode and not yet published",
@@ -1442,7 +2440,9 @@
     "emptySubtitle": "Centralize access to raw data by connecting a data warehouse to build Data Marts and reports.",
     "newStorage": "New Storage",
     "inviteHint": "- Not sure which storage to connect? Ask someone with access to help you",
-    "learnMore": "Learn more about Storages"
+    "learnMore": "Learn more about Storages",
+    "loadFailed": "Failed to load storages. Please try again.",
+    "tableAriaLabel": "Storages table"
   },
   "destinationsPage": {
     "title": "Destinations",
@@ -1450,12 +2450,15 @@
     "emptySubtitle": "Send Data Mart data to dashboards and reports by connecting your reporting tools.",
     "newDestination": "New Destination",
     "inviteHint": "- Not sure which destination to connect? Ask someone with access to help you",
-    "learnMore": "Learn more about Destinations"
+    "learnMore": "Learn more about Destinations",
+    "loadFailed": "Failed to load destinations. Please try again.",
+    "tableAriaLabel": "Destinations table"
   },
   "dataStorageList": {
     "notFound": "Storage not found by id {{id}}",
     "cannotDelete": "Cannot delete storage",
     "referencedBy": "{{count}} Data Mart{{suffix}}",
+    "isReferencedBy": "is referenced by",
     "publishedDraftSummary": "({{published}} published, {{draft}} draft)",
     "detachBeforeDelete": "Detach or delete those Data Marts before deleting the storage.",
     "deleteTitle": "Delete Storage",
@@ -1488,7 +2491,8 @@
     "reconnect": "Reconnect Storage",
     "validationTitle": "Storage Validation",
     "validationResult": "Storage validation result",
-    "compactInvalid": "Storage access failed. Check Storage settings."
+    "compactInvalid": "Storage access failed. Check Storage settings.",
+    "validationFailed": "Unable to validate storage access"
   },
   "bulkCreateFromStorage": {
     "title": "Import Data Marts from storage",
@@ -1511,7 +2515,10 @@
     "creatingSingle": "Creating…",
     "createSelected": "Create {{count}} Data Mart(s)",
     "create": "Create Data Mart",
-    "removeResource": "Remove {{name}}"
+    "removeResource": "Remove {{name}}",
+    "errors": {
+      "createDataMart": "Failed to create data mart"
+    }
   },
   "redshiftForm": {
     "region": "Region",
@@ -1570,12 +2577,14 @@
       "seeGuide": "See the",
       "guide": "Google Chat webhook guide",
       "forDetails": "for more details."
-    }
+    },
+    "webhookPlaceholder": "https://chat.googleapis.com/v1/spaces/.../messages?key=...&token=..."
   },
   "dataDestinationList": {
     "notFound": "Destination not found by id {{id}}",
     "cannotDelete": "Cannot delete destination",
     "referencedReports": "{{reports}} Report{{reportSuffix}}",
+    "isReferencedBy": "is referenced by",
     "acrossDataMarts": "across {{dataMarts}} Data Mart{{dataMartSuffix}}.",
     "referencedBy": "{{reports}} Report{{reportSuffix}} across {{dataMarts}} Data Mart{{dataMartSuffix}}.",
     "removeBeforeDelete": "Remove or repoint those reports before deleting the destination.",
@@ -1596,8 +2605,10 @@
   "configDialogs": {
     "destinationTitle": "Destination Config",
     "destinationDescription": "Customize settings for your destination",
+    "copyLinkToDestination": "Copy link to this destination",
     "storageTitle": "Configure Storage Provider",
-    "storageDescription": "Customize settings for your storage provider"
+    "storageDescription": "Customize settings for your storage provider",
+    "copyLinkToStorage": "Copy link to this storage"
   },
   "formCommon": {
     "general": "General",
@@ -1624,12 +2635,133 @@
     "save": "Save",
     "cancel": "Cancel"
   },
+  "storageForm": {
+    "accountLabel": "Account",
+    "accountTooltip": "Enter your Snowflake account identifier",
+    "accountPlaceholder": "e.g., xy12345.us-east-1",
+    "warehouseLabel": "Warehouse",
+    "warehouseTooltip": "Specify the Snowflake warehouse used to execute queries",
+    "warehousePlaceholder": "Enter warehouse name",
+    "authMethod": "Authentication method",
+    "usernameAndPat": "Username & PAT",
+    "keyPair": "Key pair",
+    "username": "Username",
+    "usernameTooltip": "Your Snowflake username",
+    "usernamePlaceholder": "Enter username",
+    "pat": "PAT (programmatic access token)",
+    "patTooltip": "Your Snowflake PAT",
+    "patPlaceholder": "Enter PAT",
+    "privateKey": "Private key",
+    "privateKeyTooltip": "Paste your private key in PEM format",
+    "privateKeyPlaceholder": "-----BEGIN PRIVATE KEY-----\n...\n-----END PRIVATE KEY-----",
+    "passphrase": "Passphrase (optional)",
+    "passphraseTooltip": "Enter the passphrase if your private key is encrypted",
+    "passphrasePlaceholder": "Enter the passphrase if the key is encrypted",
+    "projectId": "Project ID",
+    "projectIdTooltip": "Enter the Google Cloud project that will be billed for BigQuery",
+    "projectIdPlaceholder": "Enter project ID",
+    "location": "Location",
+    "locationTooltip": "Choose the same location where your BigQuery data is stored so queries run correctly",
+    "locationPlaceholder": "Select a location",
+    "locationEmpty": "No locations found",
+    "oauthMethod": "Connect with Google",
+    "serviceAccountMethod": "Service Account JSON",
+    "oauthTooltip": "Allow P2PDigital to access your BigQuery datasets",
+    "sheetsOauthTooltip": "Allow P2PDigital to access your Google Sheets",
+    "serviceAccount": "Service account",
+    "serviceAccountTooltip": "Paste a JSON key from a service account with access to the selected provider",
+    "serviceAccountCopyEmail": "Copy email",
+    "serviceAccountOpenDetails": "Open details",
+    "serviceAccountPlaceholder": "Paste the service account JSON here or drop a file",
+    "storageTypeTooltip": "The selected source will be used to process data in your Data Marts",
+    "awsRegion": "Region",
+    "awsRegionTooltip": "Enter the AWS region where your Athena service is active",
+    "awsRegionPlaceholder": "Enter a region",
+    "outputBucket": "Output bucket",
+    "outputBucketTooltip": "Specify the S3 bucket where Athena query results will be stored",
+    "outputBucketPlaceholder": "Enter output bucket",
+    "accessKeyId": "Access Key ID",
+    "accessKeyIdTooltip": "AWS Access Key ID used for authentication",
+    "accessKeyIdPlaceholder": "Enter access key ID",
+    "secretAccessKey": "Secret Access Key",
+    "secretAccessKeyTooltip": "AWS Secret Access Key used for authentication",
+    "secretAccessKeyPlaceholder": "Enter secret access key",
+    "ownersTooltip": "Members responsible for this storage",
+    "ownersQuestion": "What does storage ownership mean?",
+    "ownersDescription": "The storage owner has direct technical ownership of this storage. When the owner is a Technical User or Project Admin, they can view, edit, delete, configure sharing, and copy credentials regardless of sharing settings. Assigning a Business User as owner records the assignment, but maintenance access is not granted until the role changes.",
+    "edit": "Edit",
+    "cancelEdit": "Cancel",
+    "databricksHost": "Host",
+    "databricksHostTooltip": "Enter your Databricks workspace URL",
+    "databricksHostPlaceholder": "e.g., adb-123456.7.azuredatabricks.net",
+    "httpPath": "HTTP Path",
+    "httpPathTooltip": "Specify the SQL warehouse HTTP path",
+    "httpPathPlaceholder": "e.g., /sql/1.0/warehouses/abc123def456",
+    "personalAccessToken": "Personal access token",
+    "personalAccessTokenTooltip": "Your Databricks Personal Access Token",
+    "personalAccessTokenPlaceholder": "Enter access token",
+    "legacyAutodetect": "Auto-detect location",
+    "legacyCommonGroup": "Common",
+    "legacyProjectTooltip": "Google Cloud project associated with this storage",
+    "legacyLocationTooltip": "Choose the same location where BigQuery data is stored, or use auto-detect",
+    "legacyLocationPlaceholder": "Select a location",
+    "legacyLocationEmpty": "No locations found",
+    "storageContextsTooltip": "Business contexts assigned to this storage",
+    "storageContextsQuestion": "What are contexts?",
+    "storageContextsDescription": "Contexts are business domains (for example Marketing, Finance, or Sales) used to group storages, destinations, and Data Marts. They also control access: members limited to selected contexts only see resources assigned to those contexts. Assign one or more contexts so the storage is easy for the right people to find.",
+    "sharedForUseDescription": "Technical users can use this storage when creating a Data Mart",
+    "sharedForUseQuestion": "What does “Shared for use” mean?",
+    "sharedForUseHelp": "When enabled, non-owner Technical Users can select this storage when creating a new Data Mart. When disabled, only the storage owner and project administrators can use it.",
+    "sharedForMaintenanceDescription": "Project members with access can copy credentials, edit, and delete this storage",
+    "sharedForMaintenanceQuestion": "What does “Shared for maintenance” mean?",
+    "sharedForMaintenanceHelp": "When enabled, project members can copy credentials from this storage, edit its configuration, and delete it. When disabled, only the owner and project administrators can perform these actions."
+  },
   "destinationForm": {
     "emailList": "Emails list",
+    "lookerJsonLabel": "JSON configuration",
+    "sheetsAuthMethodLabel": "Authentication method",
+    "sheetsOauthTab": "Connect with Google",
+    "sheetsServiceAccountTab": "Service account JSON",
+    "sheetsAuthenticatedEmailLabel": "Authenticated email",
     "emailPlaceholder": "Enter emails separated by comma, semicolon or newline",
     "userEmailsTitle": "Enter user emails list",
     "slackChannelEmailsTitle": "Enter Slack channel emails list",
-    "microsoftTeamsChannelEmailsTitle": "Enter Microsoft Teams channel emails list"
+    "microsoftTeamsChannelEmailsTitle": "Enter Microsoft Teams channel emails list",
+    "destinationTypeTooltip": "Choose the destination that will receive your data",
+    "destinationTypePlaceholder": "Select a destination type",
+    "ownersTooltip": "Members responsible for this destination",
+    "ownersQuestion": "What does destination ownership mean?",
+    "ownersDescription": "The destination owner has direct ownership of this destination. When the owner is a Technical User or Project Admin, they can view, edit, delete, configure sharing, and copy credentials regardless of sharing settings. Assigning a Business User as owner records the assignment, but maintenance access is not granted until the role changes.",
+    "contextsTooltip": "Business contexts assigned to this destination",
+    "contextsQuestion": "What are contexts?",
+    "contextsDescription": "Contexts are business domains (for example Marketing, Finance, or Sales) used to group storages, destinations, and Data Marts. They also control access: members limited to selected contexts only see resources assigned to those contexts. Assign one or more contexts so the destination is easy for the right people to find.",
+    "sharedForUseDescription": "Project members can use this destination in their reports",
+    "sharedForUseQuestion": "What does “Shared for use” mean?",
+    "sharedForUseHelp": "When enabled, project members can select this destination when configuring a report. When disabled, only the destination owner and project administrators can use it.",
+    "sharedForMaintenanceDescription": "Project members with access can copy credentials, edit, and delete this destination",
+    "sharedForMaintenanceQuestion": "What does “Shared for maintenance” mean?",
+    "sharedForMaintenanceHelp": "When enabled, project members can copy credentials from this destination, edit its configuration, and delete it. When disabled, only the owner and project administrators can perform these actions.",
+    "createdBy": "Created by",
+    "createdAt": "Created at",
+    "unknown": "Unknown",
+    "sheetsFolderOptionalTooltip": "Documents created from chat or reports will be placed in this Drive folder",
+    "sheetsFolderOptionalLabel": "Drive folder for created documents (optional)",
+    "sheetsChangeFolder": "Change folder",
+    "sheetsChooseFolder": "Choose folder",
+    "sheetsClearFolder": "Clear",
+    "sheetsFolderDescription": "Documents created with “Create document” will be placed in this Google Drive folder. Leave empty to create them in the Drive root.",
+    "sheetsFolderRequiredTooltip": "Documents created from chat or reports will be placed in this Shared Drive folder",
+    "sheetsFolderRequiredLabel": "Drive folder for created documents (required)",
+    "sheetsOpenFolder": "Open folder in a new tab",
+    "sheetsInvalidFolder": "Invalid folder link",
+    "sheetsValidFolderHelp": "Open folder in a new tab",
+    "sheetsInvalidFolderHelp": "Paste a valid Drive folder URL to enable the link",
+    "sheetsFolderPlaceholder": "https://drive.google.com/drive/folders/…",
+    "sheetsFolderRequiredDescription": "Paste a Google Drive folder URL. Documents created with “Create document” will be placed here. Use a Shared Drive folder and add the service account email above as a Content Manager.",
+    "lookerJsonTitle": "What is the Data Studio JSON Config?",
+    "lookerJsonIntro": "The JSON Config contains the credentials and configuration required to connect to Data Studio.",
+    "lookerJsonCopy": "Copy this JSON config to use it in the Data Studio Connector.",
+    "lookerJsonRotate": "To replace the old secret key, use the corresponding action in the destination list menu."
   },
   "destinationHelp": {
     "googleSheetsAuth": {
@@ -1639,6 +2771,17 @@
       "oauthText": "The quickest way to get started. Sign in with your Google account and grant access to Google Sheets in a few clicks. Best for most users.",
       "serviceAccountLabel": "Service Account JSON:",
       "serviceAccountText": "Uses a Google Cloud service account key for server-to-server authentication. Recommended when you need unattended access without a personal Google account, or when your organization requires service accounts for compliance."
+    },
+    "googleSheetsApi": {
+      "title": "How do I enable the Google Sheets API?",
+      "introPrefix": "To send data to Google Sheets, enable the",
+      "apiLink": "Google Sheets API",
+      "introSuffix": "in your Google Cloud project.",
+      "stepsIntro": "Here's how:",
+      "step1": "Open the link above and make sure the correct project is selected.",
+      "step2Prefix": "If the API is not enabled, click",
+      "enable": "Enable",
+      "step3": "If it is already enabled, you will see the API dashboard — that is all."
     },
     "googleSheetsOAuth": {
       "title": "What permissions will be requested?",
@@ -1667,7 +2810,9 @@
       "choose": "Choose",
       "formatAndClick": "format and click",
       "create": "Create",
-      "paste": "Open the downloaded file, copy its entire content, and paste it into the field above."
+      "paste": "Open the downloaded file, copy its entire content, and paste it into the field above.",
+      "sharePrefix": "Share the spreadsheet with the service account email from the JSON",
+      "shareSuffix": "field. Viewer access is enough for imports."
     },
     "common": {
       "destinations": "Destinations",
@@ -1743,7 +2888,11 @@
     "unarchive": "Unarchive",
     "archive": "Archive",
     "rename": "Rename",
-    "open": "Open"
+    "open": "Open",
+    "createFailed": "Unable to create project",
+    "renameFailed": "Unable to rename project",
+    "selectFailed": "Unable to select project",
+    "managementUnavailable": "Project creation and lifecycle management are not available with the configured identity provider."
   },
   "apiKeysPage": {
     "title": "My API Keys",
@@ -1751,6 +2900,22 @@
     "emptySubtitle": "Create one to allow external tools to access this project as you.",
     "createButton": "Create API Key",
     "infoNote": "Personal API keys for your membership in this project. These keys act as you — not as the project.",
+    "reveal": {
+      "title": "API key created",
+      "description": "Your new API key was created successfully.",
+      "label": "API key",
+      "labelTooltip": "Full secret API key. Store it securely.",
+      "notice": "Copy the API key now. You won't be able to see it again.",
+      "confirm": "I have saved the API key",
+      "docs": "API key documentation"
+    },
+    "documentation": {
+      "title": "Documentation",
+      "apiKeys": "API Keys",
+      "cliTool": "CLI tool",
+      "apiClient": "TypeScript/JavaScript API Client",
+      "openapi": "OpenAPI and Swagger UI"
+    },
     "revokeTitle": "Revoke API Key",
     "revokeButton": "Revoke",
     "revokeConfirm": "Are you sure you want to revoke",
@@ -1770,6 +2935,7 @@
     },
     "table": {
       "copyId": "Copy API Key ID",
+      "apiKeyId": "API Key ID",
       "idCopied": "API Key ID copied",
       "expires": "Expires",
       "lastAuthenticated": "Last authenticated",
@@ -1866,6 +3032,7 @@
     "edit": "Edit settings",
     "tableLabel": "Notification settings table",
     "empty": "No notification settings found",
+    "noProjectMembers": "No project members found",
     "recipients": "Recipients",
     "groupingDelay": "Grouping Delay",
     "settingsSaved": "Settings saved",
@@ -1877,6 +3044,7 @@
     "titleTooltip": "The name of this notification. Disabled for service predefined notifications",
     "notificationTitle": "Notification title",
     "enabledTooltip": "Enable or disable this notification",
+    "notificationsDisabledTooltip": "Notifications are disabled for this project",
     "enabledDescription": "When enabled, notifications will be sent to the selected recipients when events occur. Email notifications are grouped together based on the grouping delay setting.",
     "howItWorks": "How it works?",
     "delay": "Delay",
@@ -1896,13 +3064,21 @@
     "addRecipientsQuestion": "How to add new recipients to this notification?",
     "addRecipientsDescription": "Only project members can receive notifications. To add new recipients, first invite them to the project through",
     "projectSettingsMembers": "Project Settings → Members",
-    "page": "page"
+    "page": "page",
+    "loadSettingsFailed": "Failed to load notification settings",
+    "loadMembersFailed": "Failed to load project members"
   },
   "contextsPage": {
     "addTitle": "Add context",
+    "newContext": "New context",
+    "nameExample": "Marketing",
     "addDescription": "Create a business-domain context and optionally assign members to it.",
     "created": "Context created",
+    "updated": "Context updated",
     "createFailed": "Failed to create context",
+    "saveFailed": "Failed to save",
+    "nameRequired": "Name is required",
+    "nameTooLong": "Name must be 255 characters or fewer",
     "nameTooltip": "Business-domain label shown on resources",
     "descriptionTooltip": "Helps members understand what resources belong to this context",
     "descriptionPlaceholder": "What this context represents",
@@ -1910,13 +3086,29 @@
     "whatIsContextDescription": "A context is a business-domain label (e.g. Marketing, Finance) that you can attach to Data Marts, Storages, Destinations and members. Non-admin members with \"Selected contexts\" scope can only access resources that share at least one of their contexts.",
     "assignMembers": "Assign to members",
     "assignMembersTooltip": "Members you select here will get access to resources tagged with this context",
+    "tableAriaLabel": "Contexts table",
+    "searchByName": "Search by name",
+    "emptyState": "No contexts yet. Click \"Add context\" to create one.",
+    "noContextsYet": "No contexts yet",
+    "noContextsAvailable": "No contexts available",
     "configureTitle": "Configure context",
     "configureDescription": "Customize settings for this context",
     "adminOnlyHint": "You need the Project Admin role to manage contexts.",
     "noMembers": "No project members to assign yet.",
     "lockedMembersQuestion": "Why are some members locked?",
     "lockedMembersAnswer": "Admins and members with project-wide scope already see every resource, regardless of context assignments. They appear here as a reminder, but their context membership can't be changed from this screen — adjust their role scope in Project settings → Members instead.",
-    "lastModified": "Last modified"
+    "lastModified": "Last modified",
+    "loadImpactFailed": "Failed to load impact",
+    "deleted": "Context deleted",
+    "deleteFailed": "Failed to delete",
+    "deleteTitle": "Delete context",
+    "deleteDescription": "Are you sure you want to delete",
+    "deleteDescriptionSuffix": "? This action cannot be undone.",
+    "cannotDelete": "Cannot delete context",
+    "blockedPrefix": "is attached to",
+    "blockedSuffix": "Detach it from all Data Marts, Storages, Destinations, Members and User Provisioning defaults before deleting.",
+    "gotIt": "Got it",
+    "loadMembersFailed": "Failed to load members"
   },
   "membersPage": {
     "title": "Members",
@@ -1931,6 +3123,12 @@
     "approveFailed": "Failed to approve request",
     "declinedRequest": "Declined request from {{email}}",
     "declineFailed": "Failed to decline request",
+    "removed": "{{email}} removed from project",
+    "removeFailed": "Failed to remove member",
+    "removeTitle": "Remove member from project",
+    "removeDescription": "Are you sure you want to remove",
+    "removeDescriptionSuffix": "from the project?",
+    "removeWarning": "They will lose access to all resources. This action cannot be undone.",
     "membershipRequest": "Membership request",
     "membershipRequestDescription": "Choose the final role, scope and contexts, then approve or decline.",
     "requester": "Requester",
@@ -1965,6 +3163,8 @@
     "searchByName": "Search by name",
     "noMembersFound": "No members found",
     "loadFailed": "Could not load members",
+    "noAdminsFound": "No admins found",
+    "loadAdminsFailed": "Could not load admins",
     "andMore": "and {{count}} more",
     "access": "Access",
     "contexts": "Contexts",
@@ -2017,10 +3217,12 @@
     "automaticDescription": "New members with your '{{organization}}' organization domain are automatically added to this project with default roles and scopes",
     "selectedContexts": "Selected contexts",
     "manualDescription": "New members must request access before joining. Project Admins can approve or reject requests manually",
-    "discard": "Discard"
+    "discard": "Discard",
+    "loadRequestAccessFailed": "Failed to load request access context"
   },
   "pluginsPage": {
     "title": "Plugins",
+    "publishedBy": "by {{owner}}",
     "publish": "Publish Plugin",
     "moreActions": "More plugin actions",
     "history": "Installation history",
@@ -2047,6 +3249,8 @@
     "repositoryUnavailable": "Repository link unavailable",
     "privateRepository": "Private repository",
     "version": "Version",
+    "versionHint": "The highest eligible release. Versions cannot be pinned. Updates are checked daily.{{nextCheck}} A newer valid version is applied automatically to everyone using this plugin.",
+    "versionNextCheck": "Next check: {{date}}.",
     "noEligibleRelease": "No eligible release",
     "checkNow": "Check now",
     "detailsTooltip": "Your installation of this plugin",
@@ -2067,6 +3271,16 @@
     "restore": "Restore",
     "settings": "Settings",
     "install": "Install",
+    "installDialog": {
+      "title": "Install this plugin?",
+      "description": "Installing is personal. It does not change who else can find this plugin.",
+      "installing": "Installing…",
+      "install": "Install",
+      "noVersion": "No version",
+      "accessFact": "Acts with your access to P2PDigital Data Marts.",
+      "dataFact": "Anything it reads can leave P2PDigital and reach the plugin publisher.",
+      "reinstallFact": "Reinstalling restores nothing the plugin kept on its own side."
+    },
     "installNamed": "Install {{name}}",
     "openSettings": "Open {{name}} settings",
     "unavailable": "Unavailable",
@@ -2148,6 +3362,10 @@
       "failed": "Authentication failed"
     }
   },
+  "oauthCallback": {
+    "securityNoState": "Security error: no state parameter received",
+    "noAuthorizationData": "No authorization data received from the provider"
+  },
   "googleSheetsConnectPage": {
     "title": "Connect Google Sheets",
     "subtitle": "Grant access to your Google account to create this destination.",
@@ -2187,6 +3405,7 @@
     "organization": "Organization",
     "submittedTitle": "Access request submitted",
     "requestedRole": "Requested role",
+    "openRequestFrom": "Open request from {{name}}",
     "creating": "Creating...",
     "createNewProject": "Create new project",
     "submitting": "Submitting...",
@@ -2201,6 +3420,12 @@
     "title": "Project settings",
     "tabsLabel": "Tabs",
     "loadFailed": "Could not load project data",
+    "subscriptionTooltip": "Project subscription plan",
+    "subscriptionDescription": "We're bringing subscription management into this page soon. In the meantime, view or change your plan on the legacy platform.",
+    "openLegacySubscription": "Open legacy subscription",
+    "creditTooltip": "Project credit usage dashboards",
+    "creditDescription": "We're bringing credit consumption dashboards into this page soon. In the meantime, view and manage usage for this project on the legacy platform.",
+    "openLegacyConsumption": "Open legacy consumption",
     "pendingInvitations": "Pending invitations",
     "expires": "expires",
     "soon": "soon",
@@ -2218,8 +3443,56 @@
       "credit": "Credit consumption",
       "subscription": "Subscription",
       "licenseKeys": "License keys",
-      "notifications": "Notifications"
+      "notifications": "Notifications",
+      "variables": "Variables"
     }
+  },
+  "projectOverview": {
+    "aboutTooltip": "About this project",
+    "overview": "Overview",
+    "projectName": "Project name",
+    "projectId": "Project ID",
+    "status": "Status",
+    "atAGlanceTooltip": "Quick snapshot of what lives inside this project",
+    "atAGlance": "At a glance",
+    "dataMarts": "Data Marts",
+    "storages": "Storages",
+    "destinations": "Destinations",
+    "contexts": "Contexts",
+    "members": "Members",
+    "projectAdminCount": "{{count}} Project Admin",
+    "technicalUserCount": "{{count}} Technical User",
+    "businessUserCount": "{{count}} Business User",
+    "businessContextTooltip": "Business context shared with connected AI assistants",
+    "description": "Description",
+    "businessContextDescription": "Describe the project's business context, goals, terminology, and conventions. This description is shared with connected AI assistants through MCP. Do not include secrets.",
+    "descriptionPlaceholder": "Add a description for this project...",
+    "mcpTooltip": "Project-specific MCP server URL",
+    "mcpTitle": "MCP server",
+    "mcpDescription": "For a single-project setup, use the published P2PDigital MCP server in Claude, Codex, ChatGPT, and similar tools. For multi-project workflows, use this project-specific URL as a custom MCP server. See the",
+    "mcpGuide": "MCP setup guide",
+    "legacyTooltip": "Open the full project settings on platform.p2pdigital.vn",
+    "legacyTitle": "Legacy platform settings",
+    "legacyDescription": "Some project-level settings still live on platform.p2pdigital.vn. Open the legacy settings page in a new tab to manage them.",
+    "openLegacy": "Open legacy settings"
+  },
+  "variablesPage": {
+    "title": "Reusable variables",
+    "description": "Store safe values or references to existing connector credentials. Secret payloads are never returned to the browser.",
+    "loading": "Loading variables...",
+    "loadFailed": "Could not load variables",
+    "requestFailed": "Request failed",
+    "namePlaceholder": "Name (e.g. GoogleAdsCustomerId)",
+    "typePlaceholder": "Variable type",
+    "valueType": "Value",
+    "secretReference": "Saved secret reference",
+    "credentialReference": "OAuth credential reference",
+    "valuePlaceholder": "Value",
+    "credentialPlaceholder": "Choose an existing credential",
+    "descriptionPlaceholder": "Description (optional)",
+    "save": "Save variable",
+    "saveFailed": "Could not save variable",
+    "empty": "No variables saved for this project."
   },
   "notFoundPage": {
     "title": "Lost in the 404th Data Realm",
@@ -2250,7 +3523,12 @@
     },
     "chooseDataMart": "Choose a Data Mart"
   },
+  "dataMartDetailsPage": {
+    "dataMartIdRequired": "Data Mart ID is required",
+    "projectIdRequired": "Project ID is required"
+  },
   "dataMartDetails": {
+    "tabsLabel": "Tabs",
     "tabs": {
       "dataSetup": "Data Setup",
       "overview": "Overview",
@@ -2285,6 +3563,11 @@
     "notFound": "Error: Data mart not found",
     "fixCalculated": "Fix these calculated fields, then save again:",
     "savedWarnings": "Saved — worth a look:",
+    "duplicateNamesSkipped": "Some fields were skipped because duplicate field names cannot be matched reliably.",
+    "duplicateNamesNoMetadata": "No generated field metadata was applied because duplicate field names cannot be matched reliably.",
+    "noDescriptionsApplied": "No field descriptions were applied. Values may already be filled or fields may have changed during generation.",
+    "noAliasesApplied": "No field aliases were applied. Values may already be filled or fields may have changed during generation.",
+    "noMetadataApplied": "No field aliases or descriptions were applied. Values may already be filled or fields may have changed during generation.",
     "discard": "Discard",
     "searchFields": "Search fields",
     "generateMetadata": "Generate aliases & descriptions for all fields",
@@ -2296,7 +3579,8 @@
     "hideFromReports": "Hide from reports",
     "deleteField": "Delete field",
     "deleteFieldConfirm": "Are you sure you want to delete this field?",
-    "editFields": "Edit fields ({{count}})"
+    "editFields": "Edit fields ({{count}})",
+    "editFieldsButton": "Edit fields"
   },
   "inputSourceChange": {
     "title": "Change input source from {{from}} to {{to}}?",
@@ -2329,7 +3613,9 @@
     "add": "Add new trigger",
     "new": "New trigger",
     "editTitle": "Edit scheduled trigger",
-    "editDescription": "Configure automatic runs for reports, connectors, or Data Quality checks."
+    "editDescription": "Configure automatic runs for reports, connectors, or Data Quality checks.",
+    "createTitle": "Create scheduled trigger",
+    "removeScheduleDescription": "This action will remove this schedule from the report."
   },
   "runHistoryConfig": {
     "noData": "No configuration data available for this run",
@@ -2357,7 +3643,8 @@
     "enabled": "{{count}} enabled",
     "definitionType": "Definition type",
     "configuredChecks": "Configured checks",
-    "viewRawJson": "View raw JSON"
+    "viewRawJson": "View raw JSON",
+    "unableDisplaySnapshot": "Unable to display snapshot"
   },
   "storageResourcePicker": {
     "changeSelection": "Change selection",
@@ -2373,6 +3660,38 @@
       "view": "views",
       "table_pattern": "table patterns",
       "table": "tables"
+    }
+  },
+  "storageResourceTree": {
+    "noViews": "No views.",
+    "noTables": "No tables.",
+    "noShardedTables": "No sharded tables found in this namespace.",
+    "noTablesOrViews": "No tables or views.",
+    "loadingViews": "Loading views…",
+    "loadingTables": "Loading tables…",
+    "loadingTablePatterns": "Loading table patterns…",
+    "loadingResources": "Loading resources…",
+    "searchViews": "Search views (group or view name)…",
+    "searchTables": "Search tables (group or table name)…",
+    "searchTablePatterns": "Search table patterns (group or prefix)…",
+    "searchResources": "Search resources (group or name)…",
+    "views": "views",
+    "tables": "tables",
+    "tablePatterns": "table patterns",
+    "resources": "resources",
+    "searchProjectsDatasetsTables": "Search projects, datasets, or tables…",
+    "searchNamespacesCount": "Search namespaces ({{count}})…",
+    "searchResourcesAria": "Search resources",
+    "searchNamespacesAria": "Search namespaces",
+    "searchResourceTypeInNamespace": "Search {{resourceType}} in {{namespace}}",
+    "loadingNamespaces": "Loading namespaces…",
+    "retry": "Retry",
+    "noNamespacesVisible": "No namespaces are visible with the storage credentials.",
+    "noNamespacesMatch": "No namespaces match \"{{query}}\".",
+    "noResourceMatches": "No resources match \"{{query}}\".",
+    "noMatches": "No matches found.",
+    "errors": {
+      "loadResources": "Failed to load storage resources"
     }
   },
   "generatedSql": {
@@ -2444,6 +3763,7 @@
     "cancelled": "Cancelled"
   },
   "projectDataMartPages": {
+    "insightsTableAriaLabel": "Project Data Mart Insights",
     "reportsTitle": "Reports",
     "insightsTitle": "Insights",
     "triggersTitle": "Triggers",
@@ -2464,8 +3784,14 @@
     "noInsightsForAccessible": "No insights found for accessible Data Marts",
     "noTriggersForAccessible": "No triggers found for accessible Data Marts",
     "loadTriggersFailed": "Failed to fetch Data Mart triggers",
+    "loadRunsFailed": "Failed to fetch Data Mart runs",
+    "cancelRunFailed": "Failed to cancel Data Mart run",
+    "loadReportsFailed": "Failed to fetch Data Mart reports",
     "loadMore": "Load More",
-    "loadingMore": "Loading..."
+    "loadingMore": "Loading...",
+    "staleRefresh": "Data may be stale because automatic refresh is failing.",
+    "tableAriaLabel": "Project Data Mart Reports",
+    "noReportsForAccessible": "No reports found for accessible Data Marts"
   },
   "errors": {
     "somethingWentWrong": "Something went wrong",

@@ -31,6 +31,8 @@ Main runtime:
 - `ADMICRO_EXTRACTOR_URL`: private sidecar URL.
 - `ADMICRO_EXTRACTOR_SHARED_SECRET`: secret used to sign sidecar requests.
 - `ADMICRO_EXTRACTOR_MAX_CONCURRENCY`: browser job limit; keep low for MVP.
+- `ADMICRO_EXTRACTOR_NONCE_STORE=redis`: required before running more than one sidecar replica.
+- `ADMICRO_EXTRACTOR_REDIS_URL`: private Redis connection string for replay protection.
 
 Admicro sidecar:
 
@@ -39,6 +41,8 @@ Admicro sidecar:
 - `ADMICRO_EXTRACTOR_ENABLED=true`.
 - `ADMICRO_EXTRACTOR_SHARED_SECRET`: same secret as the main runtime.
 - `ADMICRO_EXTRACTOR_MAX_CONCURRENCY`: defaults to `2`.
+- `ADMICRO_EXTRACTOR_NONCE_STORE`: use `memory` for one replica or `redis` for horizontal scaling.
+- `ADMICRO_EXTRACTOR_REDIS_URL`: private Redis connection string when nonce storage is `redis`.
 
 Store secrets in Coolify secrets or GitHub Actions secrets. Do not commit them, print them in logs,
 or put them in ConfigMap-style plain text. Rotate any token pasted into chat or logs before using
@@ -92,9 +96,10 @@ deployments from `main`. Use `workflow_dispatch` for controlled redeploys or rol
 
 ## Job/queue setup
 
-For the first production month, run exactly one Admicro sidecar replica. Replay nonces are stored
-in process memory, so multiple replicas can accept the same nonce unless a shared replay store is
-added.
+For a single-replica deployment, `ADMICRO_EXTRACTOR_NONCE_STORE=memory` is sufficient. Before
+running multiple sidecar replicas, configure private Redis with
+`ADMICRO_EXTRACTOR_NONCE_STORE=redis`; the replay claim uses atomic `SET NX PX` and fails closed
+when Redis is unavailable.
 
 Set `ADMICRO_EXTRACTOR_MAX_CONCURRENCY` according to CPU and memory headroom. Start with `2` and
 lower it to `1` if Chromium memory pressure appears. The connector still runs campaign scopes
@@ -119,6 +124,9 @@ Production smoke after each deploy:
 Monitor logs for connector status, retry count, run duration, report type, platform, and row count.
 Never log Admicro passwords, cookies, raw `DATAVIEW`, project IDs, credential IDs, or HMAC secrets.
 Alert on repeated `429`, `5xx`, credential failures, stale data, and sidecar health failures.
+Scrape the private `GET /metrics` endpoint for bounded job counters, p95 latency, rate-limit
+pressure, Chromium launch failures, active browser count, and RSS. Import
+`deploy/observability/admicro-extractor-dashboard.json` into Grafana for the starter dashboard.
 
 ## Release checklist
 

@@ -5,6 +5,7 @@ import { ConnectorEditSheet } from '../ConnectorEditSheet/ConnectorEditSheet';
 import { ConnectorContextProvider } from '../../../shared/model/context';
 import { DataStorageType } from '../../../../data-storage/shared/model/types';
 import type { ConnectorConfig } from '../../../../data-marts/edit/model';
+import { useTranslation } from 'react-i18next';
 
 interface EditFieldsButtonProps {
   existingConnector: ConnectorConfig;
@@ -19,6 +20,7 @@ export function EditFieldsButton({
   onUpdateFields,
   disabled = false,
 }: EditFieldsButtonProps) {
+  const { t } = useTranslation();
   const [isEditSheetOpen, setIsEditSheetOpen] = useState(false);
 
   const handleUpdateFields = (updatedConnector: ConnectorConfig) => {
@@ -38,7 +40,7 @@ export function EditFieldsButton({
         className='flex items-center gap-2'
       >
         <Edit3 className='h-4 w-4' />
-        Edit Fields
+        {t('schemaSettings.editFieldsButton', 'Edit fields')}
       </Button>
 
       <ConnectorContextProvider>

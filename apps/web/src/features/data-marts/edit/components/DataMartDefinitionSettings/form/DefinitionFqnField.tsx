@@ -1,4 +1,5 @@
 import { useCallback } from 'react';
+import { useTranslation } from 'react-i18next';
 import { type Control, useFormContext } from 'react-hook-form';
 import { ExternalLink } from 'lucide-react';
 import { type DataMartDefinitionFormData } from '../../../model/schema/data-mart-definition.schema.ts';
@@ -44,6 +45,7 @@ export function DefinitionFqnField({
   mode,
   autoOpen,
 }: DefinitionFqnFieldProps) {
+  const { t } = useTranslation();
   const placeholder = getFullyQualifiedNamePlaceholder(storageType);
   const helpText = getFullyQualifiedNameHelpText(storageType);
   const { setValue } = useFormContext<DataMartDefinitionFormData>();
@@ -97,7 +99,7 @@ export function DefinitionFqnField({
                         href={resourceUrl}
                         target='_blank'
                         rel='noopener noreferrer'
-                        title='Open in storage console'
+                        title={t('dataMartDefinitionType.openInStorageConsole')}
                       >
                         <ExternalLink className='!h-3.5 !w-3.5 shrink-0' />
                       </a>

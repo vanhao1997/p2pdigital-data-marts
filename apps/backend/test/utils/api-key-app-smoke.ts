@@ -1,6 +1,6 @@
 import { spawn } from 'node:child_process';
 import { randomUUID } from 'node:crypto';
-import { mkdtempSync, rmSync } from 'node:fs';
+import { existsSync, mkdtempSync, readFileSync, rmSync } from 'node:fs';
 import { createServer } from 'node:net';
 import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
@@ -23,6 +23,7 @@ export type ParsedApiKey = {
 export type StartedApp = {
   origin: string;
   tempDir: string;
+  testMagicLinkFile: string;
   logs: () => string;
   stop: () => Promise<void>;
   waitForLog: (pattern: RegExp) => Promise<RegExpMatchArray>;
@@ -46,6 +47,7 @@ export async function startOwoxApp(
   const tempDir = mkdtempSync(join(tmpdir(), `owox-api-key-smoke-${idpProvider}-`));
   const appDbPath = join(tempDir, 'app.sqlite');
   const authDbPath = join(tempDir, 'auth.sqlite');
+  const testMagicLinkFile = join(tempDir, 'magic-link.txt');
   const bufferedLogs = createLogBuffer();
   let exited: { code: number | null; signal: NodeJS.Signals | null } | null = null;
 
@@ -66,6 +68,7 @@ export async function startOwoxApp(
       IDP_BETTER_AUTH_SQLITE_DB_PATH: authDbPath,
       IDP_BETTER_AUTH_BASE_URL: origin,
       IDP_BETTER_AUTH_TRUSTED_ORIGINS: origin,
+      IDP_BETTER_AUTH_TEST_MAGIC_LINK_FILE: testMagicLinkFile,
       ...envOverrides,
     },
     stdio: ['ignore', 'pipe', 'pipe'],
@@ -135,7 +138,7 @@ export async function startOwoxApp(
     throw error;
   }
 
-  return { origin, tempDir, logs, stop, waitForLog };
+  return { origin, tempDir, testMagicLinkFile, logs, stop, waitForLog };
 }
 
 export async function cleanupApp(app: StartedApp): Promise<void> {
@@ -155,8 +158,13 @@ export async function completeBetterAuthMagicLink(
   app: StartedApp,
   primaryAdminEmail: string
 ): Promise<CookieJar> {
-  const magicLinkMatch = await app.waitForLog(/Magic link: (https?:\/\/[^\s"]+)/);
-  const magicLink = magicLinkMatch[1];
+  const magicLink = await waitUntil('test magic link file', () => {
+    if (!existsSync(app.testMagicLinkFile)) {
+      return undefined;
+    }
+    const value = readFileSync(app.testMagicLinkFile, 'utf8').trim();
+    return value || undefined;
+  });
   expect(typeof magicLink).toBe('string');
   expect(magicLink.length).toBeGreaterThan(0);
 

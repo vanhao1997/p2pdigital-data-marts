@@ -67,7 +67,9 @@ export default function PluginHistoryPage() {
           >
             <ArrowLeft className='h-4 w-4 lg:h-5 lg:w-5' />
           </Button>
-          <h1 className='dm-page-header-title truncate'>{t('pluginsPage.history', 'Installation history')}</h1>
+          <h1 className='dm-page-header-title truncate'>
+            {t('pluginsPage.history', 'Installation history')}
+          </h1>
         </div>
       </header>
 
@@ -76,9 +78,14 @@ export default function PluginHistoryPage() {
           {!isLoading && installations.length === 0 && (
             <div className='dm-empty-state'>
               <History className='dm-empty-state-ico' strokeWidth={1} aria-hidden />
-              <h2 className='dm-empty-state-title'>{t('pluginsPage.historyEmptyTitle', 'Nothing installed yet')}</h2>
+              <h2 className='dm-empty-state-title'>
+                {t('pluginsPage.historyEmptyTitle', 'Nothing installed yet')}
+              </h2>
               <p className='dm-empty-state-subtitle'>
-                {t('pluginsPage.historyEmptySubtitle', 'Plugins you install stay here, and so do the ones you remove — including any nobody publishes any more.')}
+                {t(
+                  'pluginsPage.historyEmptySubtitle',
+                  'Plugins you install stay here, and so do the ones you remove — including any nobody publishes any more.'
+                )}
               </p>
             </div>
           )}
@@ -89,7 +96,10 @@ export default function PluginHistoryPage() {
                 <PluginHistoryCard
                   key={item.installationId}
                   item={item}
-                  caption={t('pluginsPage.installedOn', { date: formatDateOnly(item.installedAt), defaultValue: 'Installed {{date}}' })}
+                  caption={t('pluginsPage.installedOn', {
+                    date: formatDateOnly(item.installedAt),
+                    defaultValue: 'Installed {{date}}',
+                  })}
                   href={scope(`/plugins/${item.pluginId}`)}
                 />
               ))}
@@ -102,7 +112,10 @@ export default function PluginHistoryPage() {
                 <PluginHistoryCard
                   key={item.installationId}
                   item={item}
-                  caption={t('pluginsPage.removedOn', { date: formatDateOnly(item.uninstalledAt), defaultValue: 'Removed {{date}}' })}
+                  caption={t('pluginsPage.removedOn', {
+                    date: formatDateOnly(item.uninstalledAt),
+                    defaultValue: 'Removed {{date}}',
+                  })}
                   href={scope(`/plugins/${item.pluginId}`)}
                   action={
                     <Button

@@ -140,9 +140,11 @@ export function BigQuerySchemaTable({
         accessorKey: 'mode',
         header: () => (
           <Tooltip>
-            <TooltipTrigger className='cursor-default pl-[12px]'>{t('schemaUi.mode')}</TooltipTrigger>
+            <TooltipTrigger className='cursor-default pl-[12px]'>
+              {t('schemaUi.mode')}
+            </TooltipTrigger>
             <TooltipContent style={{ whiteSpace: 'pre' }}>
-              {`BigQuery Field mode:\nNULLABLE - field can be NULL\nREQUIRED - field cant be NULL\nREPEATED - field is an Array of Type`}
+              {t('schemaUi.bigQueryModeHelp')}
             </TooltipContent>
           </Tooltip>
         ),
@@ -216,9 +218,7 @@ export function BigQuerySchemaTable({
               onToggle={() => {
                 toggleRecordExpansion(path);
               }}
-              ariaLabel={
-                isExpanded ? t('schemaUi.collapseNested') : t('schemaUi.expandNested')
-              }
+              ariaLabel={isExpanded ? t('schemaUi.collapseNested') : t('schemaUi.expandNested')}
             />
           ) : (
             // Only add placeholder if there are record fields in the schema

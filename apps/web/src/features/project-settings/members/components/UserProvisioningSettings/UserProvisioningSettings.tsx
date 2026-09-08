@@ -67,7 +67,9 @@ function ProjectLevelAccessNotice({
   }
 
   const mainProjectLabel =
-    organization.mainProjectTitle ?? organization.mainProjectId ?? t('userProvisioning.mainProject', 'the main project');
+    organization.mainProjectTitle ??
+    organization.mainProjectId ??
+    t('userProvisioning.mainProject', 'the main project');
   const mainProjectHref = organization.mainProjectId
     ? buildProjectPath(organization.mainProjectId, '/project-settings/members')
     : null;
@@ -86,12 +88,18 @@ function ProjectLevelAccessNotice({
             {t('userProvisioning.manualAccessRequest', 'Manual access request')}
           </h3>
           <div className='text-muted-foreground mt-2 text-sm leading-6'>
-            <p>{t('userProvisioning.mustRequestAccess', 'New members must request access before joining this project.')}</p>
+            <p>
+              {t(
+                'userProvisioning.mustRequestAccess',
+                'New members must request access before joining this project.'
+              )}
+            </p>
             <div className='my-4 border-t' />
             <p>
               {t('userProvisioning.visitMainProject', {
                 organization: organization.name,
-                defaultValue: 'To manage automatic provisioning for the {{organization}} organization, please visit the main project',
+                defaultValue:
+                  'To manage automatic provisioning for the {{organization}} organization, please visit the main project',
               })}
               {mainProjectHref ? (
                 <>
@@ -196,7 +204,8 @@ export function UserProvisioningSettings({ contexts, isAdmin }: UserProvisioning
             tooltip={t('userProvisioning.organizationTooltip', {
               organization: organization?.name,
               project: organization?.mainProjectTitle,
-              defaultValue: "Control how new members from your organization domain '{{organization}}' join the '{{project}}' project",
+              defaultValue:
+                "Control how new members from your organization domain '{{organization}}' join the '{{project}}' project",
             })}
           >
             {t('userProvisioning.organizationSettings', 'Organization-level access settings')}
@@ -217,7 +226,8 @@ export function UserProvisioningSettings({ contexts, isAdmin }: UserProvisioning
                     })}
                     description={t('userProvisioning.automaticDescription', {
                       organization: organization?.name,
-                      defaultValue: "New members with your '{{organization}}' organization domain are automatically added to this project with default roles and scopes",
+                      defaultValue:
+                        "New members with your '{{organization}}' organization domain are automatically added to this project with default roles and scopes",
                     })}
                     checked={mode === 'automatic'}
                     onChange={v => {
@@ -255,7 +265,10 @@ export function UserProvisioningSettings({ contexts, isAdmin }: UserProvisioning
                     data-testid='radio-require-request'
                     value='manual'
                     label={t('userProvisioning.manualAccessRequest', 'Manual access request')}
-                    description={t('userProvisioning.manualDescription', 'New members must request access before joining. Project Admins can approve or reject requests manually')}
+                    description={t(
+                      'userProvisioning.manualDescription',
+                      'New members must request access before joining. Project Admins can approve or reject requests manually'
+                    )}
                     checked={mode === 'manual'}
                     onChange={v => {
                       form.setValue('mode', v as UserProvisioningMode, { shouldDirty: true });

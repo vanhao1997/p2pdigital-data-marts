@@ -5,8 +5,9 @@ import {
   DATA_QUALITY_STATUS_TEXT_CLASSES,
   getDataQualityStatusVisual,
 } from '../../shared/utils/data-quality-status';
-import type { DataQualityStatusLabel } from '../../shared/utils/data-quality-status';
+import type { DataQualityCompactSummary } from '../../shared/types';
 import { useDataQualitySummary } from '../model/use-data-quality-workspace';
+import { useTranslation } from 'react-i18next';
 
 interface DataQualityCompactStatusLinkProps {
   projectId: string;
@@ -22,44 +23,36 @@ const BORDER_CLASSES = {
   notice: 'border-notice/40',
 } as const;
 
-const COMPACT_STATUS_LABELS: Record<DataQualityStatusLabel, string> = {
-  'Never run': 'Data Quality has not been checked yet',
-  'All checks disabled': 'Data Quality checks are disabled',
-  'No applicable checks': 'No applicable Data Quality checks',
-  Queued: 'Data Quality check queued',
-  Running: 'Data Quality check running',
-  Passed: 'Data Quality checks passed',
-  'Issues found': 'Data Quality issues found',
-  'Run failed': 'Data Quality check failed',
-  Restricted: 'Data Quality run restricted',
-  Cancelled: 'Data Quality check cancelled',
-};
-
 export function DataQualityCompactStatusLink({
   projectId,
   dataMartId,
 }: DataQualityCompactStatusLinkProps) {
+  const { t } = useTranslation();
   const { data: currentSummary, isLoading, isError } = useDataQualitySummary(projectId, dataMartId);
   if (isLoading || !currentSummary) {
     return (
       <DataQualityStatusPlaceholder
         projectId={projectId}
         dataMartId={dataMartId}
-        label={isError ? 'Data Quality status unavailable' : 'Loading Data Quality status'}
+        label={
+          isError
+            ? t('dataQualityUi.compactStatus.unavailable')
+            : t('dataQualityUi.compactStatus.loading')
+        }
       />
     );
   }
 
   const statusVisual = getDataQualityStatusVisual(currentSummary);
-  const statusLabel = COMPACT_STATUS_LABELS[statusVisual.label];
+  const statusLabel = t(getCompactStatusLabelKey(currentSummary));
   const Icon = statusVisual.icon;
   const checkedAt = currentSummary.lastRunAt;
   const timeLabel =
     currentSummary.state === 'QUEUED'
-      ? 'Requested'
+      ? t('dataQualityUi.requested')
       : currentSummary.state === 'RUNNING'
-        ? 'Started'
-        : 'Last checked';
+        ? t('dataQualityUi.started')
+        : t('dataQualityUi.lastChecked');
 
   return (
     <div
@@ -93,13 +86,40 @@ export function DataQualityCompactStatusLink({
       </div>
       <Link
         to={`/ui/${projectId}/data-marts/${dataMartId}/quality`}
-        aria-label={`Open Data Quality: ${statusLabel}`}
+        aria-label={t('dataQualityUi.openStatusAria', { status: statusLabel })}
         className='text-muted-foreground hover:text-foreground inline-flex shrink-0 items-center text-sm font-medium hover:underline'
       >
-        Open
+        {t('common.open')}
       </Link>
     </div>
   );
+}
+
+function getCompactStatusLabelKey(summary: DataQualityCompactSummary): string {
+  if (summary.totalChecks > 0 && summary.notApplicableChecks === summary.totalChecks) {
+    return 'dataQualityUi.compactStatus.noApplicableChecks';
+  }
+
+  switch (summary.state) {
+    case 'NEVER_RUN':
+      return 'dataQualityUi.compactStatus.neverRun';
+    case 'ALL_DISABLED':
+      return 'dataQualityUi.compactStatus.allChecksDisabled';
+    case 'QUEUED':
+      return 'dataQualityUi.compactStatus.queued';
+    case 'RUNNING':
+      return 'dataQualityUi.compactStatus.running';
+    case 'PASSED':
+      return 'dataQualityUi.compactStatus.passed';
+    case 'ISSUES':
+      return 'dataQualityUi.compactStatus.issuesFound';
+    case 'EXECUTION_FAILED':
+      return 'dataQualityUi.compactStatus.runFailed';
+    case 'RESTRICTED':
+      return 'dataQualityUi.compactStatus.restricted';
+    case 'CANCELLED':
+      return 'dataQualityUi.compactStatus.cancelled';
+  }
 }
 
 function DataQualityStatusPlaceholder({
@@ -107,15 +127,17 @@ function DataQualityStatusPlaceholder({
   dataMartId,
   label,
 }: DataQualityCompactStatusLinkProps & { label: string }) {
+  const { t } = useTranslation();
+
   return (
     <div className='border-muted-foreground/30 mb-4 flex items-center justify-between gap-3 rounded-md border p-3'>
       <span className='text-muted-foreground text-sm'>{label}</span>
       <Link
         to={`/ui/${projectId}/data-marts/${dataMartId}/quality`}
-        aria-label='Open Data Quality'
+        aria-label={t('dataQualityUi.open')}
         className='text-muted-foreground hover:text-foreground inline-flex shrink-0 items-center text-sm font-medium hover:underline'
       >
-        Open
+        {t('common.open')}
       </Link>
     </div>
   );

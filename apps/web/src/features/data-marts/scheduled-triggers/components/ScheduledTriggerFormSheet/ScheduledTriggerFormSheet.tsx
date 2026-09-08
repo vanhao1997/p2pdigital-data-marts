@@ -18,6 +18,7 @@ import { UnsavedChangesConfirmationDialog } from '../../../../../shared/componen
 import { trackEvent } from '../../../../../utils';
 import { useUnsavedGuard } from '../../../../../hooks/useUnsavedGuard';
 import { useIntercomLauncher } from '../../../../../shared/hooks/useIntercomLauncher';
+import { useTranslation } from 'react-i18next';
 
 interface ScheduledTriggerFormSheetProps {
   isOpen: boolean;
@@ -34,6 +35,7 @@ export function ScheduledTriggerFormSheet({
   preSelectedReportId,
   preSelectedType,
 }: ScheduledTriggerFormSheetProps) {
+  const { t } = useTranslation();
   useIntercomLauncher(isOpen);
 
   const { createScheduledTrigger, updateScheduledTrigger, selectedTrigger } =
@@ -131,10 +133,10 @@ export function ScheduledTriggerFormSheet({
     >
       <SheetContent data-testid='triggerEditSheet'>
         <SheetHeader>
-          <SheetTitle>{isEditMode ? 'Edit' : 'Create'} Scheduled Trigger</SheetTitle>
-          <SheetDescription>
-            Configure automatic runs for reports, connectors, or Data Quality checks.
-          </SheetDescription>
+          <SheetTitle>
+            {isEditMode ? t('scheduledTriggers.editTitle') : t('scheduledTriggers.createTitle')}
+          </SheetTitle>
+          <SheetDescription>{t('scheduledTriggers.editDescription')}</SheetDescription>
         </SheetHeader>
         <ScheduledTriggerForm
           preSelectedReportId={preSelectedReportId}

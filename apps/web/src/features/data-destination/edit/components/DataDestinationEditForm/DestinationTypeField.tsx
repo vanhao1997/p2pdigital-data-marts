@@ -23,6 +23,7 @@ import {
   DataDestinationStatus,
   canCreateDestinationInApp,
 } from '../../../shared';
+import { useTranslation } from 'react-i18next';
 
 interface DestinationTypeFieldProps {
   form: UseFormReturn<DataDestinationFormData>;
@@ -35,17 +36,20 @@ export function DestinationTypeField({
   isEditMode,
   allowedDestinationTypes,
 }: DestinationTypeFieldProps) {
+  const { t } = useTranslation();
   return (
     <FormField
       control={form.control}
       name='type'
       render={({ field }) => (
         <FormItem>
-          <FormLabel tooltip='Chọn điểm đến để gửi dữ liệu của bạn'>Loại điểm đến</FormLabel>
+          <FormLabel tooltip={t('destinationForm.destinationTypeTooltip')}>
+            {t('formCommon.destinationType')}
+          </FormLabel>
           <Select onValueChange={field.onChange} defaultValue={field.value} disabled={!!isEditMode}>
             <FormControl>
               <SelectTrigger className='w-full'>
-                <SelectValue placeholder='Chọn loại điểm đến' />
+                <SelectValue placeholder={t('destinationForm.destinationTypePlaceholder')} />
               </SelectTrigger>
             </FormControl>
             <SelectContent>

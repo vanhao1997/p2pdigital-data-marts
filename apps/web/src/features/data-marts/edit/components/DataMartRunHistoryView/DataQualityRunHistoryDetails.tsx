@@ -11,8 +11,8 @@ import { formatDateShort, formatDuration } from '../../../../../utils/date-forma
 import { DataQualityResultCard } from '../../../data-quality/components/DataQualityResultCard';
 import { DataQualitySummaryChips } from '../../../data-quality/components/DataQualitySummaryPanel';
 import {
-  DATA_QUALITY_CATEGORY_LABELS,
   dataQualityScopeLabel,
+  getDataQualityCategoryLabel,
   getDataQualityRelationshipPresentation,
   getDataQualityStatusPresentation,
   sortDataQualityResults,
@@ -42,9 +42,7 @@ export function DataQualityRunHistoryDetails({
   if (isError || !data) {
     return (
       <div role='alert' className='border-destructive/40 bg-destructive/5 rounded-md border p-4'>
-        <p className='text-sm font-medium'>
-          {t('runHistoryQuality.loadFailed')}
-        </p>
+        <p className='text-sm font-medium'>{t('runHistoryQuality.loadFailed')}</p>
         <Button
           type='button'
           variant='outline'
@@ -76,11 +74,7 @@ export function DataQualityRunHistoryDetails({
           ) : (
             <Clock3 className='text-muted-foreground mt-0.5 size-4 shrink-0' aria-hidden='true' />
           )}
-          <p>
-            {isActive
-              ? t('runHistoryQuality.inProgress')
-              : t('runHistoryQuality.endedEarly')}
-          </p>
+          <p>{isActive ? t('runHistoryQuality.inProgress') : t('runHistoryQuality.endedEarly')}</p>
         </div>
       )}
 
@@ -125,7 +119,7 @@ export function DataQualityRunHistoryDetails({
           to={`/ui/${projectId}/data-marts/${dataMartId}/quality`}
           className='text-muted-foreground hover:text-foreground text-sm font-medium hover:underline'
         >
-          Open Data Quality
+          {t('dataQualityUi.open')}
         </Link>
       </div>
     </div>
@@ -145,10 +139,19 @@ function RunOverview({ run }: { run: DataQualityRun }) {
         {t('runHistoryQuality.overview')}
       </h4>
       <div className='grid grid-cols-[repeat(auto-fit,minmax(160px,1fr))] gap-3'>
-        <OverviewItem label={t('runHistoryQuality.started')} value={formatDateShort(run.startedAt ?? run.createdAt)} />
-        <OverviewItem label={t('runHistoryQuality.finished')} value={formatDateShort(run.finishedAt)} />
+        <OverviewItem
+          label={t('runHistoryQuality.started')}
+          value={formatDateShort(run.startedAt ?? run.createdAt)}
+        />
+        <OverviewItem
+          label={t('runHistoryQuality.finished')}
+          value={formatDateShort(run.finishedAt)}
+        />
         <OverviewItem label={t('runHistoryQuality.duration')} value={duration} />
-        <OverviewItem label={t('runHistoryQuality.configuration')} value={run.snapshot?.definitionType ?? '—'} />
+        <OverviewItem
+          label={t('runHistoryQuality.configuration')}
+          value={run.snapshot?.definitionType ?? '—'}
+        />
       </div>
     </section>
   );
@@ -215,7 +218,9 @@ function RunSnapshot({ snapshot }: { snapshot: DataQualityRunSnapshot }) {
       >
         <FileJson2 className='text-muted-foreground size-4' aria-hidden='true' />
         <span className='flex-1 text-sm font-medium'>{t('runHistoryQuality.snapshot')}</span>
-        <span className='text-muted-foreground text-xs'>{t('runHistoryQuality.enabled', { count: enabledRules.length })}</span>
+        <span className='text-muted-foreground text-xs'>
+          {t('runHistoryQuality.enabled', { count: enabledRules.length })}
+        </span>
         <ChevronDown
           className={cn(
             'text-muted-foreground size-4 transition-transform',
@@ -228,7 +233,10 @@ function RunSnapshot({ snapshot }: { snapshot: DataQualityRunSnapshot }) {
       {isOpen && (
         <div className='space-y-4 border-t p-4'>
           <div className='grid gap-3 sm:grid-cols-2'>
-            <SnapshotValue label={t('runHistoryQuality.definitionType')} value={snapshot.definitionType} />
+            <SnapshotValue
+              label={t('runHistoryQuality.definitionType')}
+              value={snapshot.definitionType}
+            />
           </div>
 
           <div>
@@ -236,7 +244,7 @@ function RunSnapshot({ snapshot }: { snapshot: DataQualityRunSnapshot }) {
             <div className='divide-y rounded-md border'>
               {enabledRules.map(rule => (
                 <div key={rule.key} className='flex flex-wrap items-center gap-2 px-3 py-2 text-sm'>
-                  <span className='font-medium'>{DATA_QUALITY_CATEGORY_LABELS[rule.category]}</span>
+                  <span className='font-medium'>{getDataQualityCategoryLabel(rule.category)}</span>
                   <code className='text-muted-foreground text-xs'>
                     {dataQualityScopeLabel(rule.scope)}
                   </code>
@@ -267,7 +275,7 @@ function RunSnapshot({ snapshot }: { snapshot: DataQualityRunSnapshot }) {
             </Button>
             {isRawOpen && (
               <pre className='bg-muted mt-2 max-h-80 overflow-auto rounded-md p-3 text-xs whitespace-pre-wrap'>
-                {safeJson(displayedSnapshot)}
+                {safeJson(displayedSnapshot, t('runHistoryQuality.unableDisplaySnapshot'))}
               </pre>
             )}
           </div>
@@ -306,10 +314,10 @@ function SnapshotValue({ label, value }: { label: string; value: string }) {
   );
 }
 
-function safeJson(value: unknown): string {
+function safeJson(value: unknown, fallback: string): string {
   try {
     return JSON.stringify(value, null, 2);
   } catch {
-    return '[Unable to display snapshot]';
+    return fallback;
   }
 }

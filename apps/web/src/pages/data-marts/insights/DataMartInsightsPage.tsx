@@ -290,7 +290,7 @@ export default function DataMartInsightsPage() {
             <BaseTable
               tableId={PROJECT_INSIGHTS_TABLE_ID}
               table={table}
-              ariaLabel='Project Data Mart Insights'
+              ariaLabel={t('projectDataMartPages.insightsTableAriaLabel')}
               paginationProps={{ displaySelected: false }}
               renderToolbarLeft={() => (
                 <>
@@ -325,7 +325,10 @@ export default function DataMartInsightsPage() {
           }
         }}
         title={t('insightsUi.delete.title', 'Delete insight')}
-        description={t('insightsUi.delete.description', 'Are you sure you want to delete this insight? This action cannot be undone.')}
+        description={t(
+          'insightsUi.delete.description',
+          'Are you sure you want to delete this insight? This action cannot be undone.'
+        )}
         confirmLabel={t('common.delete', 'Delete')}
         cancelLabel={t('common.cancel', 'Cancel')}
         variant='destructive'

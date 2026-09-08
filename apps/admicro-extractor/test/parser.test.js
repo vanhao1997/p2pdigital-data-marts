@@ -36,4 +36,22 @@ describe('Admicro DATAVIEW parser', () => {
     const parsed = parseDataview({ providerPayload: [['Campaign A', '12']] }, 'campaign');
     expect(parsed.rows).toEqual([['Campaign A', '12']]);
   });
+
+  it('deduplicates identical rows without changing row order', () => {
+    const parsed = parseDataview(
+      {
+        data_rpt_campaign: [
+          ['Campaign A', '12'],
+          ['Campaign A', '12'],
+          ['Campaign B', '34'],
+        ],
+      },
+      'campaign'
+    );
+
+    expect(parsed.rows).toEqual([
+      ['Campaign A', '12'],
+      ['Campaign B', '34'],
+    ]);
+  });
 });

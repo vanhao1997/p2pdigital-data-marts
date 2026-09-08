@@ -44,8 +44,12 @@ export function ReportSelector({ value, onChange, disabled }: ReportSelectorProp
       <SelectContent className='max-w-[var(--radix-select-trigger-width)]'>
         {filteredReports.length === 0 ? (
           <div className='text-muted-foreground flex flex-col gap-1 px-3 py-2 text-sm leading-tight'>
-            <div className='font-medium'>{t('scheduledTriggerForm.noReports', 'No reports yet')}</div>
-            <div className='text-xs'>{t('scheduledTriggerForm.createInDestination', 'Create one in the Destination tab')}</div>
+            <div className='font-medium'>
+              {t('scheduledTriggerForm.noReports', 'No reports yet')}
+            </div>
+            <div className='text-xs'>
+              {t('scheduledTriggerForm.createInDestination', 'Create one in the Destination tab')}
+            </div>
           </div>
         ) : (
           filteredReports.map(report => {

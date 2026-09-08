@@ -531,7 +531,10 @@ export function DataMartRelationshipsContent({
             handleStatusFilterChange(value as RelationshipStatusFilter);
           }}
         >
-          <SelectTrigger className='w-[180px] min-w-[150px]' aria-label={t('dataMartRelationships.status', 'Status')}>
+          <SelectTrigger
+            className='w-[180px] min-w-[150px]'
+            aria-label={t('dataMartRelationships.status', 'Status')}
+          >
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
@@ -552,12 +555,19 @@ export function DataMartRelationshipsContent({
             handleShowLoopedChange(value === 'show');
           }}
         >
-          <SelectTrigger className='w-[220px] min-w-[180px]' aria-label={t('dataMartRelationships.loopedDataMarts', 'Looped data marts')}>
+          <SelectTrigger
+            className='w-[220px] min-w-[180px]'
+            aria-label={t('dataMartRelationships.loopedDataMarts', 'Looped data marts')}
+          >
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value='hide'>{t('dataMartRelationships.hideLooped', 'Hide looped data marts')}</SelectItem>
-            <SelectItem value='show'>{t('dataMartRelationships.showLooped', 'Show looped data marts')}</SelectItem>
+            <SelectItem value='hide'>
+              {t('dataMartRelationships.hideLooped', 'Hide looped data marts')}
+            </SelectItem>
+            <SelectItem value='show'>
+              {t('dataMartRelationships.showLooped', 'Show looped data marts')}
+            </SelectItem>
           </SelectContent>
         </Select>
         <div className='ml-auto flex items-center gap-2'>
@@ -578,7 +588,10 @@ export function DataMartRelationshipsContent({
                 <List className='h-4 w-4' />
                 {t('dataMartRelationships.list', 'List')}
               </TabsTrigger>
-              <TabsTrigger value='graph' title={t('dataMartRelationships.diagramView', 'Diagram view')}>
+              <TabsTrigger
+                value='graph'
+                title={t('dataMartRelationships.diagramView', 'Diagram view')}
+              >
                 <Network className='h-4 w-4' />
                 {t('dataMartRelationships.graph', 'Graph')}
               </TabsTrigger>
@@ -686,9 +699,14 @@ export function DataMartRelationshipsContent({
             <EmptyMedia variant='icon'>
               <Network />
             </EmptyMedia>
-            <EmptyTitle>{t('dataMartRelationships.emptyTitle', 'No joined data marts yet')}</EmptyTitle>
+            <EmptyTitle>
+              {t('dataMartRelationships.emptyTitle', 'No joined data marts yet')}
+            </EmptyTitle>
             <EmptyDescription>
-              {t('dataMartRelationships.emptyDescription', 'Join a data mart to extend this one with fields from related sources.')}
+              {t(
+                'dataMartRelationships.emptyDescription',
+                'Join a data mart to extend this one with fields from related sources.'
+              )}
             </EmptyDescription>
           </EmptyHeader>
           {isAddingNew ? (
@@ -757,7 +775,10 @@ export function DataMartRelationshipsContent({
         <CollapsibleCardHeader>
           <CollapsibleCardHeaderTitle
             icon={Link2}
-            tooltip={t('dataMartRelationships.joinableTooltip', 'Business users can add columns from joinable data marts directly into their spreadsheet reports. No hallucinations - row counts remain unchanged')}
+            tooltip={t(
+              'dataMartRelationships.joinableTooltip',
+              'Business users can add columns from joinable data marts directly into their spreadsheet reports. No hallucinations - row counts remain unchanged'
+            )}
           >
             {t('dataMartRelationships.joinableTitle', 'Joinable Data Marts')}
           </CollapsibleCardHeaderTitle>
@@ -772,7 +793,9 @@ export function DataMartRelationshipsContent({
           showCloseButton={false}
         >
           <DialogHeader className='flex-row items-center justify-between border-b px-6 py-4'>
-            <DialogTitle>{t('dataMartRelationships.diagramTitle', 'Relationship Diagram')}</DialogTitle>
+            <DialogTitle>
+              {t('dataMartRelationships.diagramTitle', 'Relationship Diagram')}
+            </DialogTitle>
             <Button
               variant='ghost'
               size='sm'

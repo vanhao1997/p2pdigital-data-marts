@@ -18,12 +18,8 @@ export default function StorageTypeDatabricksDescription() {
       <AccordionItem value='databricks-setup'>
         <AccordionTrigger>{t('storageHelp.databricks.title')}</AccordionTrigger>
         <AccordionContent>
-          <p className='mb-2'>
-            {t('storageHelp.databricks.intro')}
-          </p>
-          <p className='mb-2'>
-            {t('storageHelp.databricks.connection')}
-          </p>
+          <p className='mb-2'>{t('storageHelp.databricks.intro')}</p>
+          <p className='mb-2'>{t('storageHelp.databricks.connection')}</p>
           <p className='mb-2'>
             {t('storageHelp.databricks.learnMore')}{' '}
             <ExternalAnchor

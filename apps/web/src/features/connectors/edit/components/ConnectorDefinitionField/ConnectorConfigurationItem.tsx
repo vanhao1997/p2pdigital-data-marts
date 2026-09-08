@@ -105,7 +105,11 @@ export function ConnectorConfigurationItem({
           <div className='flex flex-wrap items-center gap-2'>
             {formatLinkParam(t('connectorWizard.dataset'), dataset, datasetLink)}
             <span className='text-muted-foreground'>•</span>
-            {formatLinkParam(t('connectorWizard.table'), table, getBigQueryTableUrl(projectId, dataset, table))}
+            {formatLinkParam(
+              t('connectorWizard.table'),
+              table,
+              getBigQueryTableUrl(projectId, dataset, table)
+            )}
             <Tooltip>
               <TooltipTrigger asChild>
                 <Info className='h-4 w-4' />
@@ -332,7 +336,7 @@ export function ConnectorConfigurationItem({
             </span>
           </TooltipTrigger>
           {!canRemoveConfiguration() && (
-          <TooltipContent>{t('connectorWizard.removeLastOnly')}</TooltipContent>
+            <TooltipContent>{t('connectorWizard.removeLastOnly')}</TooltipContent>
           )}
         </Tooltip>
       </div>

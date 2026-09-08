@@ -49,12 +49,7 @@ describe('EmailActionsCell', () => {
 
   it('releases the optimistic running state when the run does not start', async () => {
     runReport.mockResolvedValue(false);
-    render(
-      <EmailActionsCell
-        row={{ original: buildReport() }}
-        onRunSuccess={onRunSuccess}
-      />
-    );
+    render(<EmailActionsCell row={{ original: buildReport() }} onRunSuccess={onRunSuccess} />);
 
     fireEvent.click(screen.getByRole('button', { name: 'Run report' }));
 

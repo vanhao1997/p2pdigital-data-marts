@@ -436,11 +436,17 @@ describe('DataMartReportsPage', () => {
 
     await screen.findByText('Blended Sheet Report');
 
-    fireEvent.click(
-      container.querySelector(
-        'a[href="https://docs.google.com/spreadsheets/d/spreadsheet-1/edit#gid=123"]'
-      )!
+    const documentLink = container.querySelector(
+      'a[href="https://docs.google.com/spreadsheets/d/spreadsheet-1/edit#gid=123"]'
+    )!;
+    documentLink.addEventListener(
+      'click',
+      event => {
+        event.preventDefault();
+      },
+      { once: true }
     );
+    fireEvent.click(documentLink);
 
     expect(screen.queryByRole('dialog', { name: 'Report edit sheet' })).not.toBeInTheDocument();
   });

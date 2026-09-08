@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Input } from '@owox/ui/components/input';
 
 interface InputValueControlProps {
@@ -7,6 +8,7 @@ interface InputValueControlProps {
 }
 
 export function InputValueControl({ value, onChange }: InputValueControlProps) {
+  const { t } = useTranslation();
   const [inputValue, setInputValue] = useState(value[0] ?? '');
 
   useEffect(() => {
@@ -15,7 +17,7 @@ export function InputValueControl({ value, onChange }: InputValueControlProps) {
 
   return (
     <Input
-      placeholder='Value'
+      placeholder={t('common.value')}
       value={inputValue}
       onChange={e => {
         const next = e.target.value;

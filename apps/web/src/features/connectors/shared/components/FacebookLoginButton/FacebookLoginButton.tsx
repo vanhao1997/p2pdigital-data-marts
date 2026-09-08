@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Button } from '@owox/ui/components/button';
 
 interface FacebookLoginButtonProps {
@@ -61,6 +62,7 @@ export function FacebookLoginButton({
   disabled = false,
   children,
 }: FacebookLoginButtonProps) {
+  const { t } = useTranslation();
   const [isLoading, setIsLoading] = useState(false);
   const [sdkReady, setSdkReady] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -117,7 +119,7 @@ export function FacebookLoginButton({
 
   const handleLogin = () => {
     if (!window.FB || !sdkReady) {
-      const err = new Error('Facebook SDK not loaded or not ready');
+      const err = new Error(t('facebookAuth.sdkNotReady'));
       setError(err.message);
       onError?.(err);
       return;
@@ -143,7 +145,7 @@ export function FacebookLoginButton({
             setIsLoading(false);
           });
         } else {
-          const err = new Error('User cancelled login or did not fully authorize');
+          const err = new Error(t('facebookAuth.loginCancelled'));
           setError(err.message);
           onError?.(err);
           setIsLoading(false);
@@ -157,15 +159,15 @@ export function FacebookLoginButton({
 
   const getButtonContent = () => {
     if (isLoading) {
-      return 'Connecting...';
+      return t('facebookAuth.connecting');
     }
     if (children) {
       return children;
     }
     if (!sdkReady) {
-      return 'Loading...';
+      return t('facebookAuth.loading');
     }
-    return 'Continue with Facebook';
+    return t('facebookAuth.continue');
   };
 
   return (

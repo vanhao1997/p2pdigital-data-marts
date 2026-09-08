@@ -74,11 +74,19 @@ export const RedshiftFields = ({ form }: RedshiftFieldsProps) => {
           name='config.region'
           render={({ field }) => (
             <FormItem>
-              <FormLabel tooltip={t('redshiftForm.regionTooltip', 'Enter the AWS region where your Redshift service is active')}>
+              <FormLabel
+                tooltip={t(
+                  'redshiftForm.regionTooltip',
+                  'Enter the AWS region where your Redshift service is active'
+                )}
+              >
                 {t('redshiftForm.region', 'Region')}
               </FormLabel>
               <FormControl>
-                <Input {...field} placeholder={t('redshiftForm.regionPlaceholder', 'Enter a region')} />
+                <Input
+                  {...field}
+                  placeholder={t('redshiftForm.regionPlaceholder', 'Enter a region')}
+                />
               </FormControl>
               <FormDescription>
                 <RedshiftRegionDescription />
@@ -92,7 +100,7 @@ export const RedshiftFields = ({ form }: RedshiftFieldsProps) => {
           const connectionType =
             (form.watch('config.connectionType') as RedshiftConnectionType | undefined) ??
             RedshiftConnectionType.SERVERLESS;
-              const tabs = (
+          const tabs = (
             <Tabs
               value={connectionType}
               onValueChange={value => {
@@ -118,13 +126,24 @@ export const RedshiftFields = ({ form }: RedshiftFieldsProps) => {
               render={({ field }) => (
                 <FormItem>
                   <div className='flex items-center justify-between'>
-                    <FormLabel tooltip={t('redshiftForm.workgroupNameTooltip', 'Workgroup name for Redshift Serverless')}>
+                    <FormLabel
+                      tooltip={t(
+                        'redshiftForm.workgroupNameTooltip',
+                        'Workgroup name for Redshift Serverless'
+                      )}
+                    >
                       {t('redshiftForm.workgroupName', 'Workgroup Name')}
                     </FormLabel>
                     {tabs}
                   </div>
                   <FormControl>
-                    <Input {...field} placeholder={t('redshiftForm.workgroupNamePlaceholder', 'Enter workgroup name')} />
+                    <Input
+                      {...field}
+                      placeholder={t(
+                        'redshiftForm.workgroupNamePlaceholder',
+                        'Enter workgroup name'
+                      )}
+                    />
                   </FormControl>
                   <FormDescription>
                     <RedshiftWorkgroupDescription />
@@ -140,13 +159,24 @@ export const RedshiftFields = ({ form }: RedshiftFieldsProps) => {
               render={({ field }) => (
                 <FormItem>
                   <div className='flex items-center justify-between'>
-                    <FormLabel tooltip={t('redshiftForm.clusterIdentifierTooltip', 'Cluster identifier for provisioned Redshift cluster')}>
+                    <FormLabel
+                      tooltip={t(
+                        'redshiftForm.clusterIdentifierTooltip',
+                        'Cluster identifier for provisioned Redshift cluster'
+                      )}
+                    >
                       {t('redshiftForm.clusterIdentifier', 'Cluster Identifier')}
                     </FormLabel>
                     {tabs}
                   </div>
                   <FormControl>
-                    <Input {...field} placeholder={t('redshiftForm.clusterIdentifierPlaceholder', 'Enter cluster identifier')} />
+                    <Input
+                      {...field}
+                      placeholder={t(
+                        'redshiftForm.clusterIdentifierPlaceholder',
+                        'Enter cluster identifier'
+                      )}
+                    />
                   </FormControl>
                   <FormDescription>
                     <RedshiftClusterDescription />
@@ -163,11 +193,16 @@ export const RedshiftFields = ({ form }: RedshiftFieldsProps) => {
           name='config.database'
           render={({ field }) => (
             <FormItem>
-              <FormLabel tooltip={t('redshiftForm.databaseTooltip', 'The database name to connect to')}>
+              <FormLabel
+                tooltip={t('redshiftForm.databaseTooltip', 'The database name to connect to')}
+              >
                 {t('redshiftForm.database', 'Database')}
               </FormLabel>
               <FormControl>
-                <Input {...field} placeholder={t('redshiftForm.databasePlaceholder', 'Enter database name')} />
+                <Input
+                  {...field}
+                  placeholder={t('redshiftForm.databasePlaceholder', 'Enter database name')}
+                />
               </FormControl>
               <FormDescription>
                 <RedshiftDatabaseDescription />
@@ -199,11 +234,22 @@ export const RedshiftFields = ({ form }: RedshiftFieldsProps) => {
               name='credentials.accessKeyId'
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel tooltip={t('redshiftForm.accessKeyIdTooltip', 'Your AWS Access Key ID used for authentication')}>
+                  <FormLabel
+                    tooltip={t(
+                      'redshiftForm.accessKeyIdTooltip',
+                      'Your AWS Access Key ID used for authentication'
+                    )}
+                  >
                     {t('redshiftForm.accessKeyId', 'Access Key ID')}
                   </FormLabel>
                   <FormControl>
-                    <Input {...field} placeholder={t('redshiftForm.accessKeyIdPlaceholder', 'Enter an access key id')} />
+                    <Input
+                      {...field}
+                      placeholder={t(
+                        'redshiftForm.accessKeyIdPlaceholder',
+                        'Enter an access key id'
+                      )}
+                    />
                   </FormControl>
                   <FormDescription>
                     <RedshiftAccessKeyIdDescription />
@@ -217,14 +263,22 @@ export const RedshiftFields = ({ form }: RedshiftFieldsProps) => {
               name='credentials.secretAccessKey'
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel tooltip={t('redshiftForm.secretAccessKeyTooltip', 'Your AWS Secret Access Key used for authentication')}>
+                  <FormLabel
+                    tooltip={t(
+                      'redshiftForm.secretAccessKeyTooltip',
+                      'Your AWS Secret Access Key used for authentication'
+                    )}
+                  >
                     {t('redshiftForm.secretAccessKey', 'Secret Access Key')}
                   </FormLabel>
                   <FormControl>
                     <Input
                       {...field}
                       type='password'
-                      placeholder={maskedSecretValue || t('redshiftForm.secretAccessKeyPlaceholder', 'Enter a secret access key')}
+                      placeholder={
+                        maskedSecretValue ||
+                        t('redshiftForm.secretAccessKeyPlaceholder', 'Enter a secret access key')
+                      }
                     />
                   </FormControl>
                   <FormDescription>

@@ -1,8 +1,7 @@
 import { CircleCheck, CircleDashed, TriangleAlert } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import {
-  DataStorageHealthStatus,
-} from '../../services/data-storage-health-status.service';
+import { DataStorageHealthStatus } from '../../services/data-storage-health-status.service';
+import { sanitizeErrorDiagnostic } from '../../../../../shared/utils/sanitize-error-diagnostic';
 
 interface Props {
   status: DataStorageHealthStatus;
@@ -12,6 +11,7 @@ interface Props {
 
 export function DataStorageHealthStatusView({ status, errorMessage, isLoading }: Props) {
   const { t } = useTranslation();
+  const diagnostic = sanitizeErrorDiagnostic(errorMessage);
   if (isLoading) {
     return (
       <div className='text-muted-foreground flex animate-pulse items-center gap-2 text-sm'>
@@ -41,17 +41,23 @@ export function DataStorageHealthStatusView({ status, errorMessage, isLoading }:
 
   if (status === DataStorageHealthStatus.REAUTH_REQUIRED) {
     return (
-      <div className='flex items-center gap-2 text-sm text-red-500'>
-        <TriangleAlert className='size-4' />
-        <span>{errorMessage ?? t('storageHealth.reauthRequired')}</span>
+      <div className='flex items-start gap-2 text-sm text-red-500'>
+        <TriangleAlert className='mt-0.5 size-4 shrink-0' />
+        <span className='flex min-w-0 flex-col'>
+          <span>{t('storageHealth.reauthRequired')}</span>
+          {diagnostic && <span className='text-muted-foreground text-xs'>{diagnostic}</span>}
+        </span>
       </div>
     );
   }
 
   return (
-    <div className='flex items-center gap-2 text-sm text-red-500'>
-      <TriangleAlert className='size-4' />
-      <span>{errorMessage ?? t('storageHealth.invalid')}</span>
+    <div className='flex items-start gap-2 text-sm text-red-500'>
+      <TriangleAlert className='mt-0.5 size-4 shrink-0' />
+      <span className='flex min-w-0 flex-col'>
+        <span>{t('storageHealth.invalid')}</span>
+        {diagnostic && <span className='text-muted-foreground text-xs'>{diagnostic}</span>}
+      </span>
     </div>
   );
 }

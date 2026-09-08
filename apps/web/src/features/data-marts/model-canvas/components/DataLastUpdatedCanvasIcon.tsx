@@ -56,7 +56,9 @@ export function DataLastUpdatedCanvasIcon({
       </TooltipTrigger>
       <TooltipContent side='top' align='start' role='tooltip' className='max-w-xs'>
         {isChecking ? (
-          <div className='text-xs'>{t('dataLastUpdated.checking', 'Checking Data Last Updated…')}</div>
+          <div className='text-xs'>
+            {t('dataLastUpdated.checking', 'Checking Data Last Updated…')}
+          </div>
         ) : block ? (
           <DataLastUpdatedDetails block={block} />
         ) : (

@@ -19,6 +19,7 @@ import { FunctionSquare, Plus } from 'lucide-react';
 import { useEffect, useMemo, useRef } from 'react';
 import type { ComponentType } from 'react';
 import { useOutletContext } from 'react-router';
+import { useTranslation } from 'react-i18next';
 import type { BaseSchemaField } from '../../../../shared/types/data-mart-schema.types.ts';
 import { DataMartSchemaFieldStatus } from '../../../../shared/types/data-mart-schema.types.ts';
 import { TableToolbar } from '../components';
@@ -110,6 +111,7 @@ export function SchemaTable<T extends BaseSchemaField>({
   getRowId,
   schemaToolbar,
 }: SchemaTableProps<T>) {
+  const { t } = useTranslation();
   // Get schema actualization loading state and current data mart from context
   const { isSchemaActualizationLoading, dataMart } = useOutletContext<DataMartContextType>();
 
@@ -294,7 +296,7 @@ export function SchemaTable<T extends BaseSchemaField>({
                   className='text-center text-gray-400'
                   style={{ whiteSpace: 'nowrap' }}
                 >
-                  Output schema has no configured fields
+                  {t('schemaUi.noConfiguredFields')}
                 </TableCell>
               </TableRow>
             )}
@@ -306,7 +308,7 @@ export function SchemaTable<T extends BaseSchemaField>({
         // buttons overflowed this row by exactly its width and pushed the second one out of the
         // card. Growing from a zero basis splits the row between them, and leaves a lone
         // "Add Field" filling it exactly as it did before.
-        <div className='flex'>
+        <div className='flex' data-testid='schema-footer-actions'>
           <Button
             variant='outline'
             className={cn(
@@ -318,10 +320,10 @@ export function SchemaTable<T extends BaseSchemaField>({
             )}
             onClick={onAddRow}
             disabled={isSchemaActualizationLoading}
-            aria-label='Add new field'
+            aria-label={t('schemaUi.addField')}
           >
             <Plus className='h-4 w-4' aria-hidden='true' />
-            Add Field
+            {t('schemaUi.addField')}
           </Button>
           {onAddCalculatedField && (
             <Button
@@ -329,10 +331,10 @@ export function SchemaTable<T extends BaseSchemaField>({
               className='bg-background dark:bg-muted flex-1 rounded-t-none rounded-bl-none border-0 border-l'
               onClick={onAddCalculatedField}
               disabled={isSchemaActualizationLoading}
-              aria-label='Add calculated field'
+              aria-label={t('schemaUi.addCalculatedField')}
             >
               <FunctionSquare className='h-4 w-4' aria-hidden='true' />
-              Add Calculated Field
+              {t('schemaUi.addCalculatedField')}
             </Button>
           )}
         </div>

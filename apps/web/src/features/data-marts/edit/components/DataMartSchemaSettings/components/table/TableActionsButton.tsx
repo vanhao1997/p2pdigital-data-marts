@@ -55,7 +55,8 @@ export function TableActionsButton<TData>({ table }: TableActionsButtonProps<TDa
                       checked={column.getIsVisible()}
                       ariaLabel={t('table.toggleColumn', 'Toggle column {{label}}', {
                         label: column.columnDef.meta
-                          ? ((column.columnDef.meta as ExtendedColumnMeta<TData>).title ?? column.id)
+                          ? ((column.columnDef.meta as ExtendedColumnMeta<TData>).title ??
+                            column.id)
                           : column.id,
                       })}
                       onClick={() => {

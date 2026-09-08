@@ -11,6 +11,7 @@
 
 import type { CalculatedFieldLevel } from '../../../../shared/types/data-mart-schema.types';
 import type { ReferenceableField } from './formula-reference-index';
+import i18n from '../../../../../../i18n';
 
 /**
  * Alias path → the joined Data Mart's display name.
@@ -78,16 +79,15 @@ export function describeReferenceSource(
     const calculated = calculatedFields.get(ref.field);
     if (!calculated) return undefined;
     if (!calculated.level) {
-      return `${ref.field} is a calculated field. Whether it aggregates is known once the schema is saved.`;
+      return i18n.t('calculatedFieldReferences.unsaved', { field: ref.field });
     }
     return calculated.level === 'metric'
-      ? `${ref.field} is a calculated field that already aggregates, so it cannot be wrapped in ` +
-          `another aggregation.`
-      : `${ref.field} is a row-level calculated field, so it behaves like any other column.`;
+      ? i18n.t('calculatedFieldReferences.metric', { field: ref.field })
+      : i18n.t('calculatedFieldReferences.rowLevel', { field: ref.field });
   }
   const label = labels.get(ref.path);
   if (!label) return undefined;
   // Typographic quotes, not straight ones: a Data Mart's title is free-form user text and
   // `My "Best" Mart` would otherwise nest one pair of quotes inside an identical pair.
-  return `${ref.field} from the joined Data Mart \u201C${label}\u201D`;
+  return i18n.t('calculatedFieldReferences.joined', { field: ref.field, label });
 }

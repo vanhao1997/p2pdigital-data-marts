@@ -119,12 +119,22 @@ export function MembershipRequestSheet({
         contextIds: effectiveContextIds,
       });
       optimisticRemoveRequest(request.requestId);
-      toast.success(t('membersPage.approvedRequest', { email: request.email, defaultValue: 'Approved request from {{email}}' }));
+      toast.success(
+        t('membersPage.approvedRequest', {
+          email: request.email,
+          defaultValue: 'Approved request from {{email}}',
+        })
+      );
       onResolved(true);
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : t('membersPage.approveFailed', 'Failed to approve request'), {
-        duration: 8000,
-      });
+      toast.error(
+        err instanceof Error
+          ? err.message
+          : t('membersPage.approveFailed', 'Failed to approve request'),
+        {
+          duration: 8000,
+        }
+      );
     } finally {
       endSubmit();
     }
@@ -136,11 +146,20 @@ export function MembershipRequestSheet({
     try {
       await projectMembersService.declineMembershipRequest(request.requestId);
       optimisticRemoveRequest(request.requestId);
-      toast.success(t('membersPage.declinedRequest', { email: request.email, defaultValue: 'Declined request from {{email}}' }));
+      toast.success(
+        t('membersPage.declinedRequest', {
+          email: request.email,
+          defaultValue: 'Declined request from {{email}}',
+        })
+      );
       setDeclineConfirm(false);
       onResolved(true);
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : t('membersPage.declineFailed', 'Failed to decline request'));
+      toast.error(
+        err instanceof Error
+          ? err.message
+          : t('membersPage.declineFailed', 'Failed to decline request')
+      );
     } finally {
       endSubmit();
     }
@@ -158,7 +177,10 @@ export function MembershipRequestSheet({
           <SheetHeader>
             <SheetTitle>{t('membersPage.membershipRequest', 'Membership request')}</SheetTitle>
             <SheetDescription>
-              {t('membersPage.membershipRequestDescription', 'Choose the final role, scope and contexts, then approve or decline.')}
+              {t(
+                'membersPage.membershipRequestDescription',
+                'Choose the final role, scope and contexts, then approve or decline.'
+              )}
             </SheetDescription>
           </SheetHeader>
 
@@ -169,9 +191,17 @@ export function MembershipRequestSheet({
               }}
             >
               <FormLayout>
-                <FormSection title={t('membersPage.requester', 'Requester')} name='membership-request-requester'>
+                <FormSection
+                  title={t('membersPage.requester', 'Requester')}
+                  name='membership-request-requester'
+                >
                   <FormItem>
-                    <FormLabel tooltip={t('membersPage.identityTooltip', 'Display name and email of the requester')}>
+                    <FormLabel
+                      tooltip={t(
+                        'membersPage.identityTooltip',
+                        'Display name and email of the requester'
+                      )}
+                    >
                       {t('membersPage.identity', 'Identity')}
                     </FormLabel>
                     <div className='flex items-center gap-3'>
@@ -252,7 +282,15 @@ export function MembershipRequestSheet({
             title={t('membersPage.declineTitle', 'Decline membership request')}
             description={
               <span className='mt-2 block'>
-                {t('membersPage.declineDescription', 'Are you sure you want to decline the request from')} <strong>{request?.email}</strong>? {t('membersPage.declineNotified', 'They will be notified the request was rejected.')}
+                {t(
+                  'membersPage.declineDescription',
+                  'Are you sure you want to decline the request from'
+                )}{' '}
+                <strong>{request?.email}</strong>?{' '}
+                {t(
+                  'membersPage.declineNotified',
+                  'They will be notified the request was rejected.'
+                )}
               </span>
             }
             confirmLabel={t('membersPage.declineConfirm', 'Decline')}

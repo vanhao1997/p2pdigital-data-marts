@@ -21,15 +21,24 @@ export function LayoutErrorBoundary() {
       <div className='dm-empty-state-404page-foreground'>
         <AlertTriangle className='dm-empty-state-ico' strokeWidth={1} />
 
-        <h1 className='dm-empty-state-title'>{i18n.t('errorBoundary.title', 'Something went wrong')}</h1>
+        <h1 className='dm-empty-state-title'>
+          {i18n.t('errorBoundary.title', 'Something went wrong')}
+        </h1>
 
         <p className='dm-empty-state-subtitle'>
-          {i18n.t('errorBoundary.subtitleLayout', 'The app hit an unexpected glitch. Don’t worry — your data is safe. Try navigating to another section or heading home.')}
+          {i18n.t(
+            'errorBoundary.subtitleLayout',
+            'The app hit an unexpected glitch. Don’t worry — your data is safe. Try navigating to another section or heading home.'
+          )}
         </p>
 
         <div className='flex items-center gap-3'>
           <Button variant='default' asChild>
-            <Link to={'/'} className='flex items-center gap-1' aria-label={i18n.t('errorBoundary.home', 'Guide Me Home')}>
+            <Link
+              to={'/'}
+              className='flex items-center gap-1'
+              aria-label={i18n.t('errorBoundary.home', 'Guide Me Home')}
+            >
               {i18n.t('errorBoundary.home', 'Guide Me Home')}
               <ChevronRight className='h-4 w-4' />
             </Link>

@@ -1,4 +1,5 @@
 import type { CalculatedFieldIssue } from '../types/relationship.types';
+import i18n from '../../../../i18n';
 
 /** Anything carrying a calculated field's identity and formula — a schema field, in practice. */
 interface FieldWithOptionalFormula {
@@ -17,9 +18,10 @@ export function describeMissingReferences(missing: readonly string[]): string | 
   // NOT "gone from the Data Mart": a formula may read another calculated field, and the
   // backend's verdict is transitive — so a name here can be a field that is right there in the
   // schema and simply cannot be computed, because its own formula is broken.
-  return `This calculated field reads ${missing.map(name => `\`${name}\``).join(', ')}, which ${
-    missing.length === 1 ? 'is' : 'are'
-  } missing from the Data Mart, or broken.`;
+  return i18n.t('calculatedFieldIssues.missingReferences', {
+    fields: missing.map(name => `\`${name}\``).join(', '),
+    verb: i18n.t(missing.length === 1 ? 'calculatedFieldIssues.is' : 'calculatedFieldIssues.are'),
+  });
 }
 
 /**

@@ -86,7 +86,9 @@ export function DataMartDefinitionTypeSelector({
 
   return (
     <div className='dm-card-block'>
-      <Label className='text-foreground'>{t('dataMartDefinitionType.label', 'Definition type')}</Label>
+      <Label className='text-foreground'>
+        {t('dataMartDefinitionType.label', 'Definition type')}
+      </Label>
       <div className='space-y-2'>
         <Select
           value={selectedType ?? ''}
@@ -94,7 +96,10 @@ export function DataMartDefinitionTypeSelector({
             handleTypeChange(value as DataMartDefinitionType);
           }}
         >
-          <SelectTrigger className='dm-card-formcontrol w-full' aria-label={t('dataMartDefinitionType.label', 'Definition type')}>
+          <SelectTrigger
+            className='dm-card-formcontrol w-full'
+            aria-label={t('dataMartDefinitionType.label', 'Definition type')}
+          >
             <SelectValue placeholder={t('dataMartDefinitionType.select', 'Select definition type')}>
               {selectedType && allTypeOptions.find(opt => opt.type === selectedType)?.label}
             </SelectValue>
@@ -106,7 +111,9 @@ export function DataMartDefinitionTypeSelector({
                   {option.label}
                   <span className='text-muted-foreground/80 ml-2'>{option.description}</span>
                   {savedType === option.type && (
-                    <span className='text-muted-foreground/60 ml-2'>({t('dataMartDefinitionType.current', 'current')})</span>
+                    <span className='text-muted-foreground/60 ml-2'>
+                      ({t('dataMartDefinitionType.current', 'current')})
+                    </span>
                   )}
                 </SelectItem>
               ))}

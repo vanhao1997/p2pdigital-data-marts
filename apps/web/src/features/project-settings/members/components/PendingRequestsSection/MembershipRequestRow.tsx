@@ -5,6 +5,7 @@ import { generateInitials } from '../../../../../shared/utils';
 import { getRoleDisplayName } from '../../../../../features/idp/utils/role-display-name';
 import { formatDateShort } from '../../../../../utils/date-formatters';
 import type { MembershipRequestDto } from '../../../../../features/project-members/types';
+import { useTranslation } from 'react-i18next';
 
 interface MembershipRequestRowProps {
   request: MembershipRequestDto;
@@ -14,6 +15,7 @@ interface MembershipRequestRowProps {
 
 export function MembershipRequestRow({ request, onClick, className }: MembershipRequestRowProps) {
   const { email, fullName, avatar, requestedRole, createdAt, requestId } = request;
+  const { t } = useTranslation();
   const displayName = fullName ?? email;
   const initials = generateInitials(fullName ?? null, email);
   const handleClick = () => {
@@ -31,7 +33,7 @@ export function MembershipRequestRow({ request, onClick, className }: Membership
       role='button'
       tabIndex={0}
       data-testid={`membershipRequestRow-${requestId}`}
-      aria-label={`Open request from ${displayName}`}
+      aria-label={t('requestAccessPage.openRequestFrom', { name: displayName })}
       onClick={handleClick}
       onKeyDown={handleKeyDown}
       className={cn(
@@ -53,7 +55,10 @@ export function MembershipRequestRow({ request, onClick, className }: Membership
           <div className='text-muted-foreground/75 flex flex-wrap gap-x-2 text-sm'>
             <span className='break-all'>{email}</span>
             <span aria-hidden>•</span>
-            <span>Requested role: {getRoleDisplayName(requestedRole)}</span>
+            <span>
+              {t('requestAccessPage.requestedRole')}:{' '}
+              {t(`requestAccessPage.roles.${requestedRole}`, getRoleDisplayName(requestedRole))}
+            </span>
             <span aria-hidden>•</span>
             <span>{formatDateShort(createdAt)}</span>
           </div>

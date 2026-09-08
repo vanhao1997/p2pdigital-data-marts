@@ -10,6 +10,7 @@ import {
 } from '@owox/ui/components/select';
 import { configurationVariablesApi } from '../../../../../../configuration-variables';
 import type { ConfigurationVariableKind } from '../../../../../../configuration-variables';
+import { useTranslation } from 'react-i18next';
 
 interface VariablePickerProps {
   connectorName?: string;
@@ -48,6 +49,7 @@ export function VariablePicker({ connectorName, kind, value, onSelect }: Variabl
 }
 
 function VariablePickerInRouter({ connectorName, kind, value, onSelect }: VariablePickerProps) {
+  const { t } = useTranslation();
   const { projectId } = useParams<{ projectId?: string }>();
   const query = useQuery({
     queryKey: ['configuration-variables', projectId],
@@ -69,11 +71,14 @@ function VariablePickerInRouter({ connectorName, kind, value, onSelect }: Variab
         onSelect(next === '__manual__' ? null : next);
       }}
     >
-      <SelectTrigger className='h-8 w-auto min-w-32 text-xs' aria-label='Use saved variable'>
-        <SelectValue placeholder='Use variable' />
+      <SelectTrigger
+        className='h-8 w-auto min-w-32 text-xs'
+        aria-label={t('variablePicker.useSavedVariable')}
+      >
+        <SelectValue placeholder={t('variablePicker.useVariable')} />
       </SelectTrigger>
       <SelectContent>
-        <SelectItem value='__manual__'>Manual value</SelectItem>
+        <SelectItem value='__manual__'>{t('variablePicker.manualValue')}</SelectItem>
         {variables.map(variable => (
           <SelectItem key={variable.id} value={variable.id}>
             {variable.name}

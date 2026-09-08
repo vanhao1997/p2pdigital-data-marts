@@ -26,6 +26,7 @@ describe('GoogleTagManager', () => {
 
   afterEach(() => {
     cleanup();
+    vi.restoreAllMocks();
   });
 
   it('does nothing when flags are not loaded', () => {
@@ -66,6 +67,9 @@ describe('GoogleTagManager', () => {
   });
 
   it('installs GTM when container id is set and session is not view-only', () => {
+    const insertBefore = vi
+      .spyOn(document.body, 'insertBefore')
+      .mockImplementation((node: Node) => node as never);
     vi.mocked(useFlags).mockReturnValue({
       flags: { GOOGLE_TAG_MANAGER_CONTAINER_ID: 'GTM-TEST123' },
       callState: RequestStatus.LOADED,
@@ -77,8 +81,10 @@ describe('GoogleTagManager', () => {
     render(<GoogleTagManager />);
 
     expect(document.getElementById('gtm-script')).not.toBeNull();
-    expect(document.getElementById('gtm-noscript')).not.toBeNull();
     expect(document.getElementById('gtm-script')?.innerHTML).toContain('GTM-TEST123');
+    const noScript = insertBefore.mock.calls[0]?.[0] as HTMLElement;
+    expect(noScript.id).toBe('gtm-noscript');
+    expect(noScript.innerHTML).toContain('https://www.googletagmanager.com/ns.html?id=GTM-TEST123');
   });
 
   it('does nothing when container id flag is empty', () => {

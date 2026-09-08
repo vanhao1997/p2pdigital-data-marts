@@ -1,25 +1,28 @@
 import { AccordionItem, AccordionTrigger, AccordionContent } from '@owox/ui/components/accordion';
 import { ExternalAnchor } from '@owox/ui/components/common/external-anchor';
+import { useTranslation } from 'react-i18next';
 
 export default function GoogleSheetsDescription() {
+  const { t } = useTranslation();
   return (
     <AccordionItem value='sheets-api-details'>
-      <AccordionTrigger>Làm sao bật Google Sheets API?</AccordionTrigger>
+      <AccordionTrigger>{t('destinationHelp.googleSheetsApi.title')}</AccordionTrigger>
       <AccordionContent>
         <p className='mb-2'>
-          Để gửi dữ liệu sang Google Sheets, bạn cần bật{' '}
+          {t('destinationHelp.googleSheetsApi.introPrefix')}{' '}
           <ExternalAnchor href='https://console.cloud.google.com/apis/library/sheets.googleapis.com'>
-            Google Sheets API
+            {t('destinationHelp.googleSheetsApi.apiLink')}
           </ExternalAnchor>{' '}
-          trong dự án Google Cloud của bạn.
+          {t('destinationHelp.googleSheetsApi.introSuffix')}
         </p>
-        <p className='mb-2'>Cách thực hiện:</p>
+        <p className='mb-2'>{t('destinationHelp.googleSheetsApi.stepsIntro')}</p>
         <ol className='list-inside list-decimal space-y-2 text-sm'>
-          <li>Mở liên kết ở trên và bảo đảm dự án đúng đã được chọn.</li>
+          <li>{t('destinationHelp.googleSheetsApi.step1')}</li>
           <li>
-            Nếu API chưa bật, hãy bấm <strong>Bật</strong>.
+            {t('destinationHelp.googleSheetsApi.step2Prefix')}{' '}
+            <strong>{t('destinationHelp.googleSheetsApi.enable')}</strong>.
           </li>
-          <li>Nếu API đã bật rồi, bạn sẽ thấy bảng điều khiển API — như vậy là ổn.</li>
+          <li>{t('destinationHelp.googleSheetsApi.step3')}</li>
         </ol>
       </AccordionContent>
     </AccordionItem>

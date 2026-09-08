@@ -96,9 +96,7 @@ export default function SqlValidator({
                   </div>
                 </TooltipTrigger>
                 <TooltipContent>
-                  <p className='text-xs'>
-                    {t('sqlValidator.estimatedVolume')}
-                  </p>
+                  <p className='text-xs'>{t('sqlValidator.estimatedVolume')}</p>
                 </TooltipContent>
               </Tooltip>
             </>

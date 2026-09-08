@@ -35,7 +35,10 @@ export function DataMartsOverviewPanel({
   );
 
   return (
-    <section aria-label={t('dataMartsOverview.sectionLabel', 'Data Marts overview')} className='mb-4'>
+    <section
+      aria-label={t('dataMartsOverview.sectionLabel', 'Data Marts overview')}
+      className='mb-4'
+    >
       <div className='grid gap-3 lg:grid-cols-[1.2fr_1fr_1fr_1.1fr]'>
         <OverviewCard
           label={t('dataMartsOverview.dataHealth', 'Tình trạng dữ liệu')}
@@ -58,13 +61,13 @@ export function DataMartsOverviewPanel({
           hint={overview.runIssuesHint}
           tone={overview.runIssueCount > 0 ? 'danger' : 'success'}
         />
-        <div className='rounded-xl border border-border bg-surface p-4 shadow-sm'>
+        <div className='border-border bg-surface rounded-xl border p-4 shadow-sm'>
           <div className='flex items-start justify-between gap-3'>
             <div className='min-w-0'>
-              <div className='text-muted-foreground text-xs font-medium uppercase tracking-wide'>
+              <div className='text-muted-foreground text-xs font-medium tracking-wide uppercase'>
                 {t('dataMartsOverview.nextAction', 'Bước tiếp theo')}
               </div>
-              <div className='mt-2 text-sm font-medium text-foreground'>{overview.nextAction}</div>
+              <div className='text-foreground mt-2 text-sm font-medium'>{overview.nextAction}</div>
               <p className='text-muted-foreground mt-1 text-sm'>{overview.nextActionHint}</p>
             </div>
             <Sparkles className='text-primary mt-1 size-4 shrink-0' aria-hidden='true' />
@@ -98,8 +101,10 @@ function OverviewCard({ label, value, hint, tone = 'default' }: OverviewCardProp
 
   return (
     <div className={`rounded-xl border p-4 shadow-sm ${toneClass}`}>
-      <div className='text-muted-foreground text-xs font-medium uppercase tracking-wide'>{label}</div>
-      <div className='mt-2 text-2xl font-semibold leading-tight text-foreground'>{value}</div>
+      <div className='text-muted-foreground text-xs font-medium tracking-wide uppercase'>
+        {label}
+      </div>
+      <div className='text-foreground mt-2 text-2xl leading-tight font-semibold'>{value}</div>
       {hint ? <div className='text-muted-foreground mt-2 text-sm'>{hint}</div> : null}
     </div>
   );

@@ -96,7 +96,10 @@ export function EmailReportsTable({
           aria-live='polite'
         >
           <p className='text-muted-foreground text-sm font-medium'>
-            {t('reportsUi.createFirstForDestination', 'Create your first report for this destination')}
+            {t(
+              'reportsUi.createFirstForDestination',
+              'Create your first report for this destination'
+            )}
           </p>
           <AddReportButton onAddReport={onAddReport} />
         </div>

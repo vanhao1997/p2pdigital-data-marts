@@ -40,7 +40,10 @@ export function OutputSettingsButton({
               variant={hasDisconnectedControls ? 'destructive' : 'default'}
               aria-label={
                 hasDisconnectedControls
-                  ? t('reportColumnPicker.disconnectedOutputControls', 'Disconnected output controls')
+                  ? t(
+                      'reportColumnPicker.disconnectedOutputControls',
+                      'Disconnected output controls'
+                    )
                   : t('reportColumnPicker.outputControlsCount', 'Output controls count')
               }
               className='pointer-events-none absolute -top-1.5 -right-1.5 flex h-4 w-4 items-center justify-center rounded-full p-0 text-[8px] leading-none'

@@ -241,7 +241,7 @@ export default function DataMartReportsPage() {
   const reports = useMemo(() => reportsQuery.data ?? [], [reportsQuery.data]);
   const isLoading = reportsQuery.isLoading;
   const queryError = reportsQuery.isError
-    ? (extractApiError(reportsQuery.error).message ?? 'Failed to fetch Data Mart reports')
+    ? (extractApiError(reportsQuery.error).message ?? t('projectDataMartPages.loadReportsFailed'))
     : null;
   const error = queryError && reports.length === 0 ? queryError : null;
 
@@ -528,13 +528,13 @@ export default function DataMartReportsPage() {
               className='dm-card-block mb-3 flex items-center justify-between gap-3 text-sm'
               role='status'
             >
-              <span>Data may be stale because automatic refresh is failing.</span>
+              <span>{t('projectDataMartPages.staleRefresh')}</span>
               <button
                 type='button'
                 className='text-primary font-medium underline underline-offset-4'
                 onClick={() => void loadReports()}
               >
-                Retry
+                {t('common.retry')}
               </button>
             </div>
           )}
@@ -549,7 +549,7 @@ export default function DataMartReportsPage() {
                 className='text-primary font-medium underline underline-offset-4'
                 onClick={() => void loadReports()}
               >
-                Retry
+                {t('common.retry')}
               </button>
             </div>
           )}
@@ -566,7 +566,7 @@ export default function DataMartReportsPage() {
               <BaseTable
                 tableId={PROJECT_REPORTS_TABLE_ID}
                 table={table}
-                ariaLabel='Project Data Mart Reports'
+                ariaLabel={t('projectDataMartPages.tableAriaLabel')}
                 paginationProps={{ displaySelected: false }}
                 renderToolbarLeft={() => (
                   <>
@@ -585,7 +585,7 @@ export default function DataMartReportsPage() {
                     role='status'
                     aria-live='polite'
                   >
-                    No reports found for accessible Data Marts
+                    {t('projectDataMartPages.noReportsForAccessible')}
                   </div>
                 )}
                 onRowClick={row => {

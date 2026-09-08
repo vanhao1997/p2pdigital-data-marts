@@ -1,6 +1,8 @@
 import { toast } from 'sonner';
 import type { ApiError, ApiValidationError } from '../../app/api/api-error.interface';
 import { extractApiError } from '../../app/api/extract-api-error.util';
+import i18n from '../../i18n';
+import { sanitizeErrorDiagnostic } from './sanitize-error-diagnostic';
 
 /** How many validator errors one toast shows before summarising the rest. */
 const MAX_LISTED_VALIDATION_ERRORS = 3;
@@ -47,7 +49,10 @@ function formatValidationErrors(errors: ApiValidationError[] | undefined): strin
   if (unique.length === 0) return null;
   if (unique.length <= MAX_LISTED_VALIDATION_ERRORS) return unique.join(' ');
   const hidden = unique.length - MAX_LISTED_VALIDATION_ERRORS;
-  return `${unique.slice(0, MAX_LISTED_VALIDATION_ERRORS).join(' ')} (+${hidden} more)`;
+  return `${unique.slice(0, MAX_LISTED_VALIDATION_ERRORS).join(' ')} ${i18n.t(
+    'uiFeedback.moreValidationErrors',
+    { count: hidden }
+  )}`;
 }
 
 /**
@@ -57,28 +62,25 @@ function formatValidationErrors(errors: ApiValidationError[] | undefined): strin
  */
 export function showApiErrorToast(
   error: unknown,
-  fallbackMessage = 'Something went wrong',
+  fallbackMessage?: string,
   options?: { persistent?: boolean; id?: string }
 ) {
   const apiError = extractApiError(error) as ApiError | undefined;
+  const resolvedFallbackMessage = fallbackMessage ?? i18n.t('errors.somethingWentWrong');
 
-  // Ensure we always have a base message (empty server messages fall back too)
-  let message = apiError?.message?.trim() ?? fallbackMessage;
-  if (message.length === 0) message = fallbackMessage;
-
-  // Append details if present
-  const errorDetails = apiError?.errorDetails?.error?.trim();
-  if (errorDetails) {
-    message = `${message}. ${errorDetails}`;
-  }
+  const message = resolvedFallbackMessage.trim() || i18n.t('errors.somethingWentWrong');
+  const diagnostics = [
+    sanitizeErrorDiagnostic(apiError?.message),
+    sanitizeErrorDiagnostic(apiError?.errorDetails?.error),
+  ].filter((detail): detail is string => Boolean(detail && detail !== message));
 
   // The output-controls validator uses a different envelope (`details.errors`) than
   // BusinessViolation (`errorDetails.error`). It was dropped entirely, so a rejected report
   // showed only "Output controls validation failed" — no column, no reason, nothing to act on.
   const validationDetails = formatValidationErrors(apiError?.details?.errors);
-  if (validationDetails) {
-    message = `${message}. ${validationDetails}`;
-  }
+  const safeValidationDetails = sanitizeErrorDiagnostic(validationDetails ?? undefined);
+  if (safeValidationDetails) diagnostics.push(safeValidationDetails);
+  const description = diagnostics.length > 0 ? [...new Set(diagnostics)].join(' ') : undefined;
 
   // Persistent toasts stay until the user dismisses them. A stable id keeps
   // repeated identical errors from stacking. The message text stays selectable
@@ -88,14 +90,19 @@ export function showApiErrorToast(
     toast.error(message, {
       duration: Infinity,
       id: `persistent-error:${message}`,
+      ...(description ? { description } : {}),
     });
     return;
   }
 
   if (options?.id) {
-    toast.error(message, { id: options.id });
+    toast.error(message, { id: options.id, ...(description ? { description } : {}) });
     return;
   }
 
-  toast.error(message);
+  if (description) {
+    toast.error(message, { description });
+  } else {
+    toast.error(message);
+  }
 }

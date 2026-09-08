@@ -14,6 +14,7 @@ import type {
   RedshiftConfigDto,
   SnowflakeConfigDto,
 } from '../api/types/response/data-storage.response.dto.ts';
+import i18n from '../../../../i18n';
 
 export interface ParsedFullyQualifiedName {
   dataset: string;
@@ -153,22 +154,22 @@ export function openStorageConsole(storage: DataStorage, fullyQualifiedName: str
  */
 export function getStorageButtonText(storage: DataStorage): string {
   if (isGoogleBigQueryStorage(storage) || isLegacyGoogleBigQueryStorage(storage)) {
-    return 'Open table in Google BigQuery';
+    return i18n.t('storageUrl.openBigQueryTable');
   }
 
   if (isAwsAthenaStorage(storage)) {
-    return 'Open region in AWS Athena';
+    return i18n.t('storageUrl.openAthenaRegion');
   }
 
   if (isSnowflakeStorage(storage)) {
-    return 'Open console in Snowflake';
+    return i18n.t('storageUrl.openSnowflakeConsole');
   }
 
   if (isRedshiftStorage(storage)) {
-    return 'Open Query Editor v2 in AWS Redshift';
+    return i18n.t('storageUrl.openRedshiftQueryEditor');
   }
 
-  return 'Open data in storage';
+  return i18n.t('storageUrl.openStorageData');
 }
 
 /**

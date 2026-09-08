@@ -33,6 +33,7 @@ import {
 } from '@owox/ui/components/accordion';
 import { Loader2 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import type { TFunction } from 'i18next';
 import { toast } from 'sonner';
 import { contextService } from '../../services/context.service';
 import { MembersAssignmentField } from '../../../../shared/components/MembersAssignmentField';
@@ -40,31 +41,31 @@ import { UserReference } from '../../../../shared/components/UserReference';
 import { getRoleDisplayName } from '../../../idp/utils/role-display-name';
 import type { ContextDto, MemberWithScopeDto } from '../../types/context.types';
 
-const DATE_FORMATTER = new Intl.DateTimeFormat('en-US', {
-  year: 'numeric',
-  month: 'short',
-  day: 'numeric',
-  hour: '2-digit',
-  minute: '2-digit',
-});
-
-function formatDate(value: string | null | undefined): string {
+function formatDate(value: string | null | undefined, locale: string): string {
   if (!value) return '—';
   const d = new Date(value);
   if (Number.isNaN(d.getTime())) return '—';
-  return DATE_FORMATTER.format(d);
+  return new Intl.DateTimeFormat(locale, {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+  }).format(d);
 }
 
-const contextDetailsSchema = z.object({
-  name: z
-    .string()
-    .trim()
-    .min(1, 'Name is required')
-    .max(255, 'Name must be 255 characters or fewer'),
-  description: z.string().optional(),
-});
+function createContextDetailsSchema(t: TFunction) {
+  return z.object({
+    name: z
+      .string()
+      .trim()
+      .min(1, t('contextsPage.nameRequired'))
+      .max(255, t('contextsPage.nameTooLong')),
+    description: z.string().optional(),
+  });
+}
 
-type ContextDetailsFormValues = z.infer<typeof contextDetailsSchema>;
+type ContextDetailsFormValues = z.infer<ReturnType<typeof createContextDetailsSchema>>;
 
 interface ContextDetailsSheetProps {
   isOpen: boolean;
@@ -81,7 +82,8 @@ export function ContextDetailsSheet({
   onClose,
   onSaved,
 }: ContextDetailsSheetProps) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const contextDetailsSchema = useMemo(() => createContextDetailsSchema(t), [t]);
   const form = useForm<ContextDetailsFormValues>({
     resolver: zodResolver(contextDetailsSchema),
     defaultValues: { name: '', description: '' },
@@ -132,15 +134,15 @@ export function ContextDetailsSheet({
           await contextService.updateContextMembers(context.id, selectedMemberIds);
         }
 
-        toast.success('Context updated');
+        toast.success(t('contextsPage.updated'));
         onSaved();
       } catch (error) {
-        toast.error(error instanceof Error ? error.message : 'Failed to save');
+        toast.error(error instanceof Error ? error.message : t('contextsPage.saveFailed'));
       } finally {
         setSaving(false);
       }
     },
-    [context, selectedMemberIds, memberSelectionDirty, onSaved]
+    [context, selectedMemberIds, memberSelectionDirty, onSaved, t]
   );
 
   if (!context) return null;
@@ -172,8 +174,8 @@ export function ContextDetailsSheet({
                     name='name'
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel tooltip='Business-domain label shown on resources'>
-                          Name
+                        <FormLabel tooltip={t('contextsPage.nameTooltip')}>
+                          {t('common.name')}
                         </FormLabel>
                         <FormControl>
                           <Input {...field} disabled={saving} />
@@ -188,15 +190,15 @@ export function ContextDetailsSheet({
                     name='description'
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel tooltip='Helps members understand what resources belong to this context'>
-                          Description
+                        <FormLabel tooltip={t('contextsPage.descriptionTooltip')}>
+                          {t('common.description')}
                         </FormLabel>
                         <FormControl>
                           <Textarea
                             {...field}
                             rows={3}
                             disabled={saving}
-                            placeholder='What this context represents'
+                            placeholder={t('contextsPage.descriptionPlaceholder')}
                           />
                         </FormControl>
                         <FormMessage />
@@ -208,8 +210,8 @@ export function ContextDetailsSheet({
                 <FormSection title={t('membersPage.title')} name='ctx-details-members'>
                   <MembersAssignmentField
                     idPrefix='ctx-mem'
-                    label='Assigned members'
-                    tooltip='Members assigned to this context can access resources tagged with it. Admins and project-wide members are always included.'
+                    label={t('contextsPage.assignMembers')}
+                    tooltip={t('contextsPage.assignMembersTooltip')}
                     members={members.map(m => ({
                       userId: m.userId,
                       email: m.email,
@@ -228,11 +230,11 @@ export function ContextDetailsSheet({
                       <FormDescription>
                         <Accordion variant='common' type='single' collapsible>
                           <AccordionItem value='ctx-members-help'>
-                            <AccordionTrigger>{t('contextsPage.lockedMembersQuestion')}</AccordionTrigger>
+                            <AccordionTrigger>
+                              {t('contextsPage.lockedMembersQuestion')}
+                            </AccordionTrigger>
                             <AccordionContent>
-                              <p className='mb-2'>
-                                {t('contextsPage.lockedMembersAnswer')}
-                              </p>
+                              <p className='mb-2'>{t('contextsPage.lockedMembersAnswer')}</p>
                             </AccordionContent>
                           </AccordionItem>
                         </Accordion>
@@ -241,7 +243,11 @@ export function ContextDetailsSheet({
                   />
                 </FormSection>
 
-                <FormSection title={t('common.viewDetails')} name='ctx-details-meta' defaultOpen={false}>
+                <FormSection
+                  title={t('common.viewDetails')}
+                  name='ctx-details-meta'
+                  defaultOpen={false}
+                >
                   <FormItem>
                     <FormLabel>{t('common.createdBy')}</FormLabel>
                     {context.createdByUser ? (
@@ -253,13 +259,13 @@ export function ContextDetailsSheet({
                   <FormItem>
                     <FormLabel>{t('common.createdAt')}</FormLabel>
                     <span className='text-muted-foreground text-sm'>
-                      {formatDate(context.createdAt)}
+                      {formatDate(context.createdAt, i18n.language)}
                     </span>
                   </FormItem>
                   <FormItem>
                     <FormLabel>{t('contextsPage.lastModified')}</FormLabel>
                     <span className='text-muted-foreground text-sm'>
-                      {formatDate(context.modifiedAt)}
+                      {formatDate(context.modifiedAt, i18n.language)}
                     </span>
                   </FormItem>
                 </FormSection>

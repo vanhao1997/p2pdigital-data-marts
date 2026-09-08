@@ -168,101 +168,117 @@ function ModelCanvasViewContent({ onActiveQualityRunChange }: ModelCanvasViewPro
   isEnrichingRef.current = isEnriching;
   const unenrichedCountRef = useRef(0);
   unenrichedCountRef.current = filtered?.nodes.filter(node => !node.fields).length ?? 0;
-  const handleExport = useCallback((format: DataMartCanvasExportFormat) => {
-    if (isExportingRef.current) return;
-    // Definitions and schemas arrive with the follow-up detail query; exporting
-    // before it settles would serialize the model without them.
-    if (isEnrichingRef.current) {
-      toast('The canvas is still loading details — please try again in a moment.');
-      return;
-    }
-    isExportingRef.current = true;
-    void (async () => {
-      try {
-        // The handle registers once the lazy canvas chunk mounts, and the
-        // export itself declines until the first layout pass — in both windows
-        // nothing downloads, so say so instead of silently succeeding, and
-        // record analytics only for real downloads.
-        const exported = (await canvasExportRef.current?.exportCanvas(format)) ?? false;
-        if (!exported) {
-          toast('The canvas is still loading — please try again in a moment.');
-          return;
-        }
-        const unenriched = unenrichedCountRef.current;
-        if (unenriched > 0) {
-          toast(
-            `Exported without schema details for ${String(unenriched)} data mart${unenriched === 1 ? '' : 's'} — reload the page to retry.`
-          );
-        }
-        trackEvent({
-          event: 'model_canvas_exported',
-          category: 'DataMart',
-          action: 'CanvasExport',
-          label: format,
-        });
-      } catch (caught) {
-        console.error('Canvas export failed:', caught);
-        toast.error("Couldn't export the model — please try again.");
-      } finally {
-        isExportingRef.current = false;
+  const handleExport = useCallback(
+    (format: DataMartCanvasExportFormat) => {
+      if (isExportingRef.current) return;
+      // Definitions and schemas arrive with the follow-up detail query; exporting
+      // before it settles would serialize the model without them.
+      if (isEnrichingRef.current) {
+        toast(t('uiFeedback.canvasStillLoadingDetails'));
+        return;
       }
-    })();
-  }, []);
+      isExportingRef.current = true;
+      void (async () => {
+        try {
+          // The handle registers once the lazy canvas chunk mounts, and the
+          // export itself declines until the first layout pass — in both windows
+          // nothing downloads, so say so instead of silently succeeding, and
+          // record analytics only for real downloads.
+          const exported = (await canvasExportRef.current?.exportCanvas(format)) ?? false;
+          if (!exported) {
+            toast(t('uiFeedback.canvasStillLoading'));
+            return;
+          }
+          const unenriched = unenrichedCountRef.current;
+          if (unenriched > 0) {
+            toast(
+              t('uiFeedback.canvasExportPartial', {
+                count: unenriched,
+                dataMartWord: t(
+                  unenriched === 1 ? 'uiFeedback.dataMartWord' : 'uiFeedback.dataMartsWord'
+                ),
+              })
+            );
+          }
+          trackEvent({
+            event: 'model_canvas_exported',
+            category: 'DataMart',
+            action: 'CanvasExport',
+            label: format,
+          });
+        } catch (caught) {
+          console.error('Canvas export failed:', caught);
+          toast.error(t('uiFeedback.canvasExportFailed'));
+        } finally {
+          isExportingRef.current = false;
+        }
+      })();
+    },
+    [t]
+  );
 
   const runQuality = useCallback(
     async (dataMartId: string) => {
       try {
         await dataQualityService.startRun(dataMartId);
-        toast.success('Data Quality run queued');
+        toast.success(t('uiFeedback.qualityRunQueued'));
         await refetchQuality();
       } catch (caught) {
-        toast.error(extractErrorMessage(caught) ?? 'Failed to start Data Quality run');
+        toast.error(extractErrorMessage(caught) ?? t('uiFeedback.qualityRunStartFailed'));
       }
     },
-    [refetchQuality]
+    [refetchQuality, t]
   );
 
-  const deleteDataMart = useCallback(async (dataMartId: string) => {
-    try {
-      await dataMartService.deleteDataMart(dataMartId);
-      trackEvent({
-        event: 'data_mart_deleted',
-        category: 'DataMart',
-        action: 'Delete',
-      });
-    } catch (error) {
-      const message = error instanceof Error ? error.message : 'Failed to delete data mart';
-      trackEvent({
-        event: 'data_mart_error',
-        category: 'DataMart',
-        action: 'DeleteError',
-        label: message,
-      });
-      throw error;
-    }
-  }, []);
+  const deleteDataMart = useCallback(
+    async (dataMartId: string) => {
+      try {
+        await dataMartService.deleteDataMart(dataMartId);
+        trackEvent({
+          event: 'data_mart_deleted',
+          category: 'DataMart',
+          action: 'Delete',
+        });
+      } catch (error) {
+        const message =
+          error instanceof Error ? error.message : t('uiFeedback.dataMartDeleteFailed');
+        trackEvent({
+          event: 'data_mart_error',
+          category: 'DataMart',
+          action: 'DeleteError',
+          label: message,
+        });
+        throw error;
+      }
+    },
+    [t]
+  );
 
-  const publishDataMart = useCallback(async (dataMartId: string) => {
-    try {
-      await dataMartService.publishDataMart(dataMartId);
-      await dataMartService.createSchemaActualizeTrigger(dataMartId);
-      trackEvent({
-        event: 'data_mart_published',
-        category: 'DataMart',
-        action: 'Publish',
-        context: dataMartId,
-      });
-    } catch (error) {
-      const message = error instanceof Error ? error.message : 'Failed to publish data mart';
-      trackEvent({
-        event: 'data_mart_error',
-        category: 'DataMart',
-        action: 'PublishError',
-        label: message,
-      });
-      throw error;
-    }
-  }, []);
+  const publishDataMart = useCallback(
+    async (dataMartId: string) => {
+      try {
+        await dataMartService.publishDataMart(dataMartId);
+        await dataMartService.createSchemaActualizeTrigger(dataMartId);
+        trackEvent({
+          event: 'data_mart_published',
+          category: 'DataMart',
+          action: 'Publish',
+          context: dataMartId,
+        });
+      } catch (error) {
+        const message =
+          error instanceof Error ? error.message : t('uiFeedback.dataMartPublishFailed');
+        trackEvent({
+          event: 'data_mart_error',
+          category: 'DataMart',
+          action: 'PublishError',
+          label: message,
+        });
+        throw error;
+      }
+    },
+    [t]
+  );
 
   const refreshCanvas = useCallback(async () => {
     await Promise.allSettled([refetch(), refetchQuality()]);

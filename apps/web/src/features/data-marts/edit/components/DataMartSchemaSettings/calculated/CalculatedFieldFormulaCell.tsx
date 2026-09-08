@@ -18,6 +18,7 @@ import {
 import { FormulaEditor, type FormulaEditorProps } from './FormulaEditor';
 import type { JoinedFieldsStatus } from './joined-fields-context';
 import { useFormulaDiagnostics } from './useFormulaDiagnostics';
+import { useTranslation } from 'react-i18next';
 
 export interface CalculatedFieldFormulaCellProps {
   /** The metric's formula in STORED form (`{{ref}}` tags) — never shown to the analyst as is. */
@@ -145,6 +146,7 @@ export function CalculatedFieldFormulaCell({
   fieldName,
   fieldType,
 }: CalculatedFieldFormulaCellProps) {
+  const { t } = useTranslation();
   const authoring = useMemo(() => toAuthoringForm(formula, refDisplayName), [formula]);
   // The row's pills answer the same questions the editor's do: `orders` is a join alias, and
   // `revenue` may be another formula — neither is knowable from the pill's own text, and both are
@@ -180,7 +182,7 @@ export function CalculatedFieldFormulaCell({
   // would travel as bare SQL (see formula-unresolved-identifiers.ts), and toStoredForm throws on a
   // reference whose field or path carries a double quote (formula-authoring.ts).
   const applyFormula = (text: string): string | null => {
-    if (text.trim() === '') return 'A calculated field needs a formula.';
+    if (text.trim() === '') return t('calculatedFieldsHelp.formulaRequired');
     const unresolved = describeUnresolvedIdentifiers(
       findUnresolvedIdentifiers(text, refs, { functionNames }),
       joinedFieldsStatus
@@ -189,7 +191,7 @@ export function CalculatedFieldFormulaCell({
     try {
       onSave(toStoredForm(text, refs));
     } catch (e) {
-      return e instanceof Error ? e.message : 'This formula could not be saved.';
+      return e instanceof Error ? e.message : t('calculatedFieldsHelp.saveFailed');
     }
     return null;
   };
@@ -198,15 +200,15 @@ export function CalculatedFieldFormulaCell({
     <div title={authoring.text}>
       <EditableText
         value={authoring.text}
-        placeholder='Formula is required'
+        placeholder={t('calculatedFieldsHelp.formulaRequired')}
         className={PREVIEW_CLASSES}
         // The name of the row being edited, which the open popover covers up. Not "Formula" when a
         // name is known — the hint below already says what this editor is.
-        editorTitle={fieldName?.trim() ? fieldName : 'Formula'}
+        editorTitle={fieldName?.trim() ? fieldName : t('calculatedFieldsHelp.formula')}
         editorHint={
           <>
-            Warehouse SQL over this Data Mart&apos;s fields.{' '}
-            <ExternalAnchor href={CALCULATED_FIELDS_DOCS}>Learn more</ExternalAnchor>
+            {t('calculatedFieldsHelp.warehouseSql')}{' '}
+            <ExternalAnchor href={CALCULATED_FIELDS_DOCS}>{t('common.learnMore')}</ExternalAnchor>
           </>
         }
         // The row shows the PERSISTED formula, so it draws the stored tags' own spans — never
@@ -230,7 +232,7 @@ export function CalculatedFieldFormulaCell({
               index={index}
               functionNames={functionNames}
               scalarFunctionNames={scalarFunctionNames}
-              ariaLabel='Formula'
+              ariaLabel={t('calculatedFieldsHelp.formula')}
               dataMartId={dataMartId}
               fieldName={fieldName}
               fieldType={fieldType}

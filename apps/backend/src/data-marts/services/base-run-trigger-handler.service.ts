@@ -7,6 +7,7 @@ import { Trigger } from '../../common/scheduler/shared/entities/trigger.entity';
 import { TriggerStatus } from '../../common/scheduler/shared/entities/trigger-status';
 import { DataMartRun } from '../entities/data-mart-run.entity';
 import { DataMartRunStatus } from '../enums/data-mart-run-status.enum';
+import { serializeOperationalError } from '../utils/run-error-message';
 import { DataMartRunService } from './data-mart-run.service';
 
 const ORPHANED_RUN_CLEANUP_INTERVAL_MS = 5 * 60 * 1000;
@@ -68,7 +69,16 @@ export abstract class BaseRunTriggerHandlerService<T extends Trigger>
       },
       {
         status: DataMartRunStatus.CANCELLED,
-        errors: ['Project is archived and read-only; scheduled run was skipped.'],
+        errors: [
+          serializeOperationalError(
+            'Project is archived and read-only; scheduled run was skipped.',
+            {
+              code: 'PROJECT_ARCHIVED_READ_ONLY',
+              message: 'Project is archived and read-only; scheduled run was skipped.',
+              type: 'warning',
+            }
+          ),
+        ],
         finishedAt: new Date(),
       }
     );
@@ -77,7 +87,13 @@ export abstract class BaseRunTriggerHandlerService<T extends Trigger>
   protected async failOrphanedRun(run: DataMartRun): Promise<void> {
     run.status = DataMartRunStatus.FAILED;
     run.errors = [
-      'The run was not started because the maximum number of concurrent runs for this project was reached. Please wait for the current runs to finish and try again.',
+      serializeOperationalError(
+        'The run was not started because the maximum number of concurrent runs for this project was reached. Please wait for the current runs to finish and try again.',
+        {
+          code: 'RUN_CONCURRENCY_LIMIT_EXCEEDED',
+          message: 'The run could not start because the concurrency limit was reached.',
+        }
+      ),
     ];
     await this.dataMartRunRepository.save(run);
   }
@@ -132,7 +148,12 @@ export abstract class BaseRunTriggerHandlerService<T extends Trigger>
         (run.status === DataMartRunStatus.PENDING || run.status === DataMartRunStatus.RUNNING)
       ) {
         run.status = DataMartRunStatus.FAILED;
-        run.errors = [error instanceof Error ? error.message : String(error)];
+        run.errors = [
+          serializeOperationalError(error, {
+            code: 'RUN_TRIGGER_FAILED',
+            message: 'The run trigger failed.',
+          }),
+        ];
         await this.dataMartRunRepository.save(run);
       }
     } catch (cleanupError) {

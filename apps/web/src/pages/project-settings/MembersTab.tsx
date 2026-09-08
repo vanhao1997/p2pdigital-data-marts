@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
 import { MembersTable } from '../../features/project-settings/members/components/MembersTable/MembersTable';
 import { MemberDetailsSheet } from '../../features/project-settings/members/components/MemberDetailsSheet/MemberDetailsSheet';
@@ -10,6 +11,7 @@ import { projectMembersService } from '../../features/project-members/services/p
 import type { MemberWithScopeDto } from '../../features/contexts/types/context.types';
 
 export function MembersTab() {
+  const { t } = useTranslation();
   const {
     members,
     contexts,
@@ -42,11 +44,11 @@ export function MembersTab() {
       // still echo the removed user. Drop them locally first so the row
       // disappears immediately; refresh() reconciles once upstream catches up.
       optimisticRemoveMember(pendingRemove.userId);
-      toast.success(`${pendingRemove.email} removed from project`);
+      toast.success(t('membersPage.removed', { email: pendingRemove.email }));
       setPendingRemove(null);
       void refresh();
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : 'Failed to remove member');
+      toast.error(error instanceof Error ? error.message : t('membersPage.removeFailed'));
     } finally {
       setRemoving(false);
     }
@@ -88,16 +90,17 @@ export function MembersTab() {
         onOpenChange={open => {
           if (!open) setPendingRemove(null);
         }}
-        title='Remove member from project'
+        title={t('membersPage.removeTitle')}
         description={
           <span className='mt-2 block'>
-            Are you sure you want to remove{' '}
-            <strong>{pendingRemove?.displayName ?? pendingRemove?.email}</strong> from the project?
-            They will lose access to all resources. This action cannot be undone.
+            {t('membersPage.removeDescription')}{' '}
+            <strong>{pendingRemove?.displayName ?? pendingRemove?.email}</strong>{' '}
+            {t('membersPage.removeDescriptionSuffix')}
+            {` ${t('membersPage.removeWarning')}`}
           </span>
         }
-        confirmLabel='Remove'
-        cancelLabel='Cancel'
+        confirmLabel={t('membersPage.remove')}
+        cancelLabel={t('common.cancel', 'Cancel')}
         variant='destructive'
         onConfirm={() => {
           void confirmRemove();

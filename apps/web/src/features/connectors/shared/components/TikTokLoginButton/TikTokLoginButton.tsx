@@ -1,5 +1,6 @@
 import { Button } from '@owox/ui/components/button';
 import { useOAuthPopup } from '../../hooks/useOAuthPopup';
+import { useTranslation } from 'react-i18next';
 
 interface TikTokLoginButtonProps {
   appId: string;
@@ -43,6 +44,7 @@ export function TikTokLoginButton({
   disabled = false,
   children,
 }: TikTokLoginButtonProps) {
+  const { t } = useTranslation();
   const { openPopup, isLoading, error } = useOAuthPopup<TikTokLoginResponse, TikTokAuthMessage>({
     redirectUri,
     buildAuthUrl: (state: string) => {
@@ -81,15 +83,15 @@ export function TikTokLoginButton({
 
   const getButtonContent = () => {
     if (isLoading) {
-      return 'Connecting...';
+      return t('connectorWizard.oauth.connecting');
     }
     if (children) {
       return children;
     }
     if (!appId || !redirectUri) {
-      return 'OAuth not configured';
+      return t('connectorWizard.oauth.notConfigured');
     }
-    return 'Continue with TikTok';
+    return t('connectorWizard.oauth.continueWithTikTok');
   };
 
   return (

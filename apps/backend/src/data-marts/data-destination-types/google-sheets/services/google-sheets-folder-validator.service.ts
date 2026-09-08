@@ -92,7 +92,7 @@ export class GoogleSheetsFolderValidator {
         `https://console.cloud.google.com/apis/library/drive.googleapis.com?project=${projectId}`;
       return (
         `The Google Drive API is not enabled in the service account's Google Cloud project (${projectId}), ` +
-        `so OWOX cannot place documents in a Drive folder. Enable it at ${url}, wait a minute for it to take effect, then save again. ` +
+        `so P2PDigital cannot place documents in a Drive folder. Enable it at ${url}, wait a minute for it to take effect, then save again. ` +
         `Note that having the Google Sheets API enabled is not enough — folder placement needs the Drive API as well.`
       );
     }

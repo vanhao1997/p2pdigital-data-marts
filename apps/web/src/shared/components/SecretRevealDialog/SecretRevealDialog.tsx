@@ -13,6 +13,7 @@ import { Label } from '@owox/ui/components/label';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@owox/ui/components/tooltip';
 import { Copy, ExternalLink, Eye, EyeOff, Info } from 'lucide-react';
 import { toast } from 'sonner';
+import { useTranslation } from 'react-i18next';
 
 interface SecretRevealDialogProps {
   title: string;
@@ -37,6 +38,7 @@ export function SecretRevealDialog({
   docsLink,
   onDone,
 }: SecretRevealDialogProps) {
+  const { t } = useTranslation();
   const inputId = useId();
   const noticeId = useId();
   const titleRef = useRef<HTMLHeadingElement>(null);
@@ -45,8 +47,10 @@ export function SecretRevealDialog({
   const copyToClipboard = () => {
     navigator.clipboard
       .writeText(secret)
-      .then(() => toast.success(`${label} copied`))
-      .catch(() => toast.error(`Failed to copy ${label}`));
+      .then(() => toast.success(t('secretReveal.copied', '{{label}} copied', { label })))
+      .catch(() =>
+        toast.error(t('secretReveal.copyFailed', 'Failed to copy {{label}}', { label }))
+      );
   };
 
   return (
@@ -81,7 +85,7 @@ export function SecretRevealDialog({
                   type='button'
                   tabIndex={-1}
                   className='pointer-events-none opacity-0 transition group-hover:pointer-events-auto group-hover:opacity-100'
-                  aria-label='Help information'
+                  aria-label={t('common.helpInformation', 'Help information')}
                 >
                   <Info
                     className='text-muted-foreground/50 hover:text-muted-foreground size-4 shrink-0 transition-colors'
@@ -110,7 +114,11 @@ export function SecretRevealDialog({
               variant='ghost'
               size='icon'
               className='size-7'
-              aria-label={secretVisible ? `Hide ${label}` : `Show ${label}`}
+              aria-label={t(
+                secretVisible ? 'secretReveal.hide' : 'secretReveal.show',
+                secretVisible ? 'Hide {{label}}' : 'Show {{label}}',
+                { label }
+              )}
               onClick={() => {
                 setSecretVisible(isVisible => !isVisible);
               }}
@@ -121,7 +129,7 @@ export function SecretRevealDialog({
               variant='ghost'
               size='icon'
               className='size-7'
-              aria-label={`Copy ${label}`}
+              aria-label={t('secretReveal.copy', 'Copy {{label}}', { label })}
               onClick={copyToClipboard}
             >
               <Copy className='size-3.5' />

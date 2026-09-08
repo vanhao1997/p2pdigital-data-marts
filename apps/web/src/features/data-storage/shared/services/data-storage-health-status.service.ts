@@ -3,6 +3,7 @@ import {
   dataStorageApiService,
   type DataStorageValidationCode,
 } from '../api/data-storage-api.service';
+import i18n from '../../../../i18n';
 
 /**
  * Health status for a data storage.
@@ -20,10 +21,6 @@ export enum DataStorageHealthStatus {
  */
 const UNCONFIGURED_CODE: DataStorageValidationCode = 'UNCONFIGURED';
 const OAUTH_REAUTH_REQUIRED_CODE: DataStorageValidationCode = 'OAUTH_REAUTH_REQUIRED';
-
-export const UNCONFIGURED_STATUS_LABEL = 'Complete setup to activate Storage';
-export const OAUTH_REAUTH_REQUIRED_STATUS_LABEL =
-  'Google authorization could not be refreshed. Reconnect this Storage to restore access.';
 
 export interface CachedDataStorageHealthStatus {
   status: DataStorageHealthStatus;
@@ -138,7 +135,7 @@ function processQueue(): void {
         console.error(`[DataStorageHealthStatus] Failed to validate storage ${storageId}:`, error);
         healthStatusCache.set(storageId, {
           status: DataStorageHealthStatus.INVALID,
-          errorMessage: 'Unable to validate storage access',
+          errorMessage: i18n.t('storageHealth.validationFailed'),
         });
         notifySubscribers();
       })

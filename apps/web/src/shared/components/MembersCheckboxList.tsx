@@ -3,6 +3,7 @@ import { Checkbox } from '@owox/ui/components/checkbox';
 import { Label } from '@owox/ui/components/label';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@owox/ui/components/tooltip';
 import { Info, User } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 /**
  * Member role used for sorting + role-label rendering. Kept as a literal
@@ -68,9 +69,10 @@ export function MembersCheckboxList({
   onToggle,
   disabled,
   excludeAdmins = false,
-  emptyText = 'No members available.',
+  emptyText,
   searchQuery,
 }: MembersCheckboxListProps) {
+  const { t } = useTranslation();
   const sorted = useMemo(() => {
     const filtered = excludeAdmins ? members.filter(m => m.role !== 'admin') : members;
     return sortMembers(filtered);
@@ -89,7 +91,7 @@ export function MembersCheckboxList({
   if (sorted.length === 0) {
     return (
       <div className='border-input text-muted-foreground rounded-md border py-4 text-center text-sm'>
-        {emptyText}
+        {emptyText ?? t('membersAssignment.noMembersAvailable')}
       </div>
     );
   }
@@ -97,7 +99,7 @@ export function MembersCheckboxList({
   if (visible.length === 0) {
     return (
       <div className='border-input text-muted-foreground rounded-md border py-4 text-center text-sm'>
-        No members match &ldquo;{searchQuery?.trim() ?? ''}&rdquo;.
+        {t('membersAssignment.noMembersMatch', { query: searchQuery?.trim() ?? '' })}
       </div>
     );
   }
@@ -108,8 +110,8 @@ export function MembersCheckboxList({
         const isAdmin = m.role === 'admin';
         const isLocked = isAdmin || m.roleScope === 'entire_project';
         const lockedReason = isAdmin
-          ? 'Admins always have access to every context.'
-          : 'Members with project-wide scope already see every resource, regardless of context assignments.';
+          ? t('membersAssignment.adminLockedReason')
+          : t('membersAssignment.projectScopeLockedReason');
         const checked = isLocked || selectedIds.includes(m.userId);
         const id = `${idPrefix}-${m.userId}`;
         return (
@@ -124,7 +126,10 @@ export function MembersCheckboxList({
               disabled={disabled === true || isLocked}
               aria-label={
                 isLocked
-                  ? `${m.displayName ?? m.email} — ${lockedReason}`
+                  ? t('membersAssignment.memberLockedAria', {
+                      member: m.displayName ?? m.email,
+                      reason: lockedReason,
+                    })
                   : (m.displayName ?? m.email)
               }
             />

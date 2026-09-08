@@ -44,7 +44,9 @@ export function AggregationSettingsButton({
           )}
         </Button>
       </TooltipTrigger>
-      <TooltipContent>{t('reportColumnPicker.aggregationsGrouping', 'Aggregations & grouping')}</TooltipContent>
+      <TooltipContent>
+        {t('reportColumnPicker.aggregationsGrouping', 'Aggregations & grouping')}
+      </TooltipContent>
     </Tooltip>
   );
 }

@@ -26,7 +26,11 @@ export default defineConfig({
         alt: 'Biểu tượng P2PDigital Data Marts',
       },
       social: [
-        { icon: 'github', label: 'GitHub', href: 'https://github.com/vanhao1997/p2pdigital-data-marts' },
+        {
+          icon: 'github',
+          label: 'GitHub',
+          href: 'https://github.com/vanhao1997/p2pdigital-data-marts',
+        },
       ],
       customCss: ['./src/styles/custom.css'],
       components: {

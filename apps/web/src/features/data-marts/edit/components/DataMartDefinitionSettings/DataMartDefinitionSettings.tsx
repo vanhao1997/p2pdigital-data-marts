@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useForm, FormProvider, type SubmitHandler, type Resolver } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { DataMartDefinitionTypeSelector } from './form/DataMartDefinitionTypeSelector.tsx';
@@ -61,6 +62,7 @@ export function DataMartDefinitionSettings({
   setDefinitionType,
   sqlRevalidateVersion,
 }: DataMartDefinitionSettingsProps) {
+  const { t } = useTranslation();
   const { dataMart, updateDataMartDefinition, runSchemaActualization, runGuarded } =
     useOutletContext<DataMartContextType>();
   const preset = useDataMartPreset();
@@ -294,7 +296,7 @@ export function DataMartDefinitionSettings({
         {definitionType !== DataMartDefinitionType.CONNECTOR && (
           <div className='flex items-center gap-4'>
             <Button variant={'default'} type='submit' disabled={!isValid || !isDirty}>
-              Save
+              {t('dataMartDefinitionSettings.save')}
             </Button>
             <Button
               type='button'
@@ -302,7 +304,7 @@ export function DataMartDefinitionSettings({
               onClick={handleReset}
               disabled={!isDirty && !isTypeChangeStaged}
             >
-              Discard
+              {t('dataMartDefinitionSettings.discard')}
             </Button>
 
             {/* SQL Validator for SQL definition type */}
@@ -343,9 +345,7 @@ export function DataMartDefinitionSettings({
             role='status'
             className='text-muted-foreground rounded-md border border-amber-500/40 bg-amber-500/5 px-3 py-2 text-sm'
           >
-            Pick a new source and save to apply the change. Relationships, reports and field
-            metadata are kept. Fields that are missing from the new source will be marked as
-            disconnected.
+            {t('dataMartDefinitionSettings.sourceChangeNotice')}
           </div>
         )}
         {renderDefinitionForm()}

@@ -1,0 +1,452 @@
+brand.productName	P2PDigital Data Marts
+brand.tagline	P2PDigital Data Marts — Trình kết nối miễn phí, mã nguồn mở cho chuyên viên phân tích dữ liệu
+facebookAuth.pageInsightsDelay	Page Insights thường trễ T+1, khoảng 24 giờ. Ngày gần nhất có thể chưa đầy đủ hoặc chưa khả dụng cho đến khi Meta xử lý xong.
+sidebar.dataMarts	Data Mart
+actionButton.newDataMart	Tạo Data Mart mới
+search.hint	Nhập từ khóa để tìm kiếm Data Mart, kho lưu trữ và điểm đến.
+search.labelDataMart	Data Mart
+projectMenu.myApiKeys	Mã API của tôi
+helpMenu.gettingStarted	Bắt đầu với Data Marts
+helpMenu.dataStudioSetup	Thiết lập Data Studio
+helpMenu.bigQuerySetup	Hoàn tất thiết lập kho BigQuery để xuất bản Data Mart
+setupChecklist.createStorageDesc	Kho lưu trữ là kết nối đến kho dữ liệu của bạn (BigQuery, Snowflake, v.v.). Cần thiết để tạo và chạy Data Mart.
+setupChecklist.createDraftDataMart	Tạo Data Mart nháp
+setupChecklist.createDraftDataMartDesc	Data Mart xác định dữ liệu cần thu thập hoặc chuyển đổi.
+setupChecklist.draftDataMartCreated	Đã tạo Data Mart nháp
+setupChecklist.publishDataMart	Xuất bản Data Mart
+setupChecklist.publishDataMartDesc	Xuất bản Data Mart để sử dụng cho báo cáo và lịch chạy.
+setupChecklist.dataMartPublished	Đã xuất bản Data Mart
+setupChecklist.createFirstDestinationDesc	Điểm đến là nơi báo cáo được gửi đến - Google Sheets, Data Studio, Email và nhiều nơi khác.
+setupChecklist.createReportDesc	Mở trang Data Mart, vào tab Điểm đến và tạo báo cáo cho điểm đến hiện có.
+setupChecklist.installGoogleSheetsExtensionDesc	Cài đặt tiện ích P2PDigital Data Marts từ Google Workspace Marketplace để chạy báo cáo trực tiếp trong Sheets.
+setupChecklist.groupPublishDataMart	Xuất bản Data Mart đầu tiên
+setupChecklist.groupPublishDataMartDesc	Thiết lập thông tin xác thực kho, tạo và xuất bản Data Mart đầu tiên.
+setupChecklist.chooseAndPublish	Chọn Data Mart và xuất bản
+setupChecklist.chooseAndCreateReport	Chọn Data Mart và tạo báo cáo
+setupChecklist.chooseAndRun	Chọn Data Mart và chạy
+about.description	P2PDigital Data Marts — Trình kết nối miễn phí, mã nguồn mở cho chuyên viên phân tích dữ liệu
+common.deleteDataMart	Xóa Data Mart
+common.legacyDataMartWarning	Xóa Data Mart này cũng khiến nó không còn khả dụng trong tiện ích Google Sheets.
+uiFeedback.apiKeysLoadFailed	Không thể tải mã API
+uiFeedback.apiKeyRevoked	Đã thu hồi mã API
+uiFeedback.apiKeyRevokeFailed	Không thể thu hồi mã API
+uiFeedback.dataMartCreated	Đã tạo Data Mart
+uiFeedback.dataMartDeleted	Đã xóa Data Mart
+uiFeedback.dataMartPublished	Đã xuất bản Data Mart
+uiFeedback.dataMartRunCanceled	Đã hủy lượt chạy Data Mart
+uiFeedback.manualRunPublishedOnly	Chỉ có thể chạy thủ công Data Mart đã xuất bản
+uiFeedback.draftsPublishFailed	Không thể xuất bản các bản nháp Data Mart
+uiFeedback.noDraftsToPublish	Không có bản nháp Data Mart để xuất bản
+uiFeedback.dataMartDeleteFailed	Không thể xóa Data Mart
+uiFeedback.dataMartPublishFailed	Không thể xuất bản Data Mart
+uiFeedback.dataMartWord	Data Mart
+uiFeedback.dataMartsWord	Data Mart
+authentication.copiedDescription	Khi sao chép thông tin xác thực, các chi tiết xác thực (như khóa API, tài khoản dịch vụ hoặc mã truy cập) từ {{itemType}} hiện có sẽ được dùng lại cho mục này. Bạn không cần nhập lại thủ công. Thông tin được sao chép lúc lưu — các thay đổi sau này ở {{itemType}} gốc không ảnh hưởng đến bản sao này.
+storageTableColumns.publishedDataMarts	Data Mart đã xuất bản
+storageTableColumns.draftDataMarts	Data Mart bản nháp
+storageHelp.athena.title	Làm cách nào để kích hoạt API Athena?
+storageHelp.bigQuery.title	Làm cách nào để bật API BigQuery?
+storageHelp.bigQuery.apiLink	API BigQuery
+storageHelp.bigQuery.enablePrefix	Nếu API chưa được bật, hãy nhấp
+storageHelp.bigQuery.alreadyEnabled	Nếu API đã bật, bạn sẽ thấy bảng điều khiển API — như vậy là được.
+storageHelp.bigQueryAuth.oauthLabel	Kết nối với Google (OAuth):
+storageHelp.redshift.intro	Amazon Redshift là kho dữ liệu đám mây nhanh, được quản lý toàn diện, giúp phân tích dữ liệu bằng SQL tiêu chuẩn và các công cụ thông minh nghiệp vụ hiện có trở nên đơn giản, tiết kiệm chi phí.
+storageHelp.redshift.serverlessText	Tự động mở rộng năng lực tính toán và bạn chỉ trả phí cho phần đã dùng
+storageHelp.redshift.provisionedText	Cụm truyền thống, nơi bạn cấp phát và quản lý các nút tính toán
+storageHelp.snowflake.path	Bạn có thể truy cập bảng bằng định dạng đường dẫn đầy đủ: database.schema.table (tương tự BigQuery và Athena).
+storageFieldHelp.snowflakeWarehouse.intro	Warehouse trong Snowflake là cụm tài nguyên tính toán dùng để thực thi truy vấn và tải dữ liệu.
+storageFieldHelp.snowflakeWarehouse.step4	Nếu chưa có warehouse, bạn có thể bấm "Create Warehouse" hoặc chạy: CREATE WAREHOUSE my_warehouse;
+storageFieldHelp.snowflakeUsername.step2	Tên người dùng Snowflake không phân biệt hoa thường và thường được hiển thị in hoa mặc định.
+storageFieldHelp.snowflakeUsername.step4	Bạn có thể xem toàn bộ người dùng bằng lệnh: SHOW USERS; (cần quyền phù hợp)
+storageFieldHelp.snowflakePassword.step1Path	Settings > Authentication > Programmatic access tokens
+storageFieldHelp.snowflakePassword.step3	PAT được mã hóa và lưu trữ an toàn. Sau khi lưu, PAT không bao giờ được hiển thị dạng văn bản thuần.
+storageFieldHelp.snowflakeKeyPair.content	Để dùng xác thực bằng key pair, hãy tạo một cặp RSA và cấu hình người dùng Snowflake.
+
+1. Tạo cặp RSA bằng OpenSSL:
+openssl genrsa 2048 | openssl pkcs8 -topk8 -inform PEM -out rsa_key.p8 -nocrypt
+
+2. Trích xuất public key:
+openssl rsa -in rsa_key.p8 -pubout -out rsa_key.pub
+
+3. Gán public key cho người dùng Snowflake với quyền ACCOUNTADMIN:
+ALTER USER your_username SET RSA_PUBLIC_KEY='MIIBIjANBg...';
+
+4. Sao chép nội dung private key từ rsa_key.p8 vào trường Private Key bên trên.
+storageFieldHelp.snowflakeAuthMethod.content	Snowflake hỗ trợ hai phương thức xác thực:
+
+Username & PAT (mã truy cập lập trình): Cách đơn giản nhất, dùng tên người dùng Snowflake và PAT. Phù hợp cho phát triển và kiểm thử.
+
+Key Pair Authentication: Cách an toàn hơn, dùng mật mã public/private key. Khuyến nghị cho production. Bạn cần tạo cặp RSA và gán public key cho người dùng Snowflake.
+storageFieldHelp.snowflakeAccount.content	1. Mở bộ chọn tài khoản và xem các tài khoản bạn từng đăng nhập.
+2. Chọn View account details.
+3. Hộp thoại Account Details hiển thị mã định danh và URL tài khoản.
+4. Sao chép locator từ trường Account locator.
+5. Tìm region trong bộ chọn tài khoản.
+6. Ghép locator và region theo dạng locator.region. Ví dụ: xy12345.ap-northeast-3.aws hoặc xy12345.north-europe.azure.
+storageFieldHelp.redshiftWorkgroup.content	Workgroup là tập hợp tài nguyên tính toán trong Redshift Serverless. Dùng trường này khi sử dụng Redshift Serverless. Bạn có thể tìm tên workgroup trong Redshift Serverless Console.
+
+Lưu ý: chỉ cung cấp workgroup name (Serverless) hoặc cluster identifier (cụm provisioned), không cung cấp cả hai.
+storageFieldHelp.redshiftSecret.content	Secret Access Key là phần riêng tư trong thông tin xác thực AWS. Key này được dùng cùng Access Key ID để ký và xác thực request đến AWS API.
+
+Secret Access Key thường dài 40 ký tự và chỉ hiển thị một lần khi tạo. Nếu mất key, hãy tạo cặp access key mới.
+
+Cảnh báo bảo mật: giữ kín key, không chia sẻ công khai. Key được lưu trữ dưới dạng mã hóa.
+storageFieldHelp.redshiftAccessKey.content	Access Key ID là một phần trong thông tin xác thực AWS. Key này được dùng cùng Secret Access Key để xác thực request đến AWS API.
+
+Access key thường dài 20 ký tự và bắt đầu bằng AKIA hoặc ASIA với credential tạm thời. Tạo key trong AWS IAM Console.
+storageFieldHelp.databricksToken.content	Personal Access Token (PAT) cung cấp xác thực an toàn cho Databricks.
+
+1. Đăng nhập workspace Databricks.
+2. Bấm tên người dùng và chọn User Settings.
+3. Mở tab Developer.
+4. Tại Access tokens, bấm Manage.
+5. Bấm Generate new token.
+6. Có thể thêm ghi chú và thời hạn.
+7. Bấm Generate, sau đó sao chép token và lưu an toàn; token sẽ không hiển thị lại.
+
+Bảo mật: không chia sẻ token, đặt thời hạn, thu hồi token không còn dùng và dùng token riêng cho từng ứng dụng.
+storageFieldHelp.databricksHttpPath.content	HTTP path xác định SQL warehouse dùng để thực thi truy vấn.
+
+1. Đăng nhập Databricks.
+2. Mở SQL Warehouses.
+3. Chọn warehouse.
+4. Mở Connection Details.
+5. Sao chép giá trị HTTP Path.
+
+Ví dụ: /sql/1.0/warehouses/abc123def456789
+storageFieldHelp.googleBigQueryProject.title	Làm cách nào để tìm Project ID?
+storageFieldHelp.googleBigQueryProject.content	Đây là mã dự án Google Cloud. Chi phí sử dụng BigQuery được tính cho dự án này.
+
+1. Mở Google Cloud Console và đăng nhập.
+2. Mở bộ chọn dự án.
+3. Tìm dự án; Project ID nằm trong cột ID.
+4. Dùng ô tìm kiếm nếu không thấy dự án.
+storageFieldHelp.googleBigQueryServiceAccount.title	Làm cách nào để lấy key JSON của Service Account?
+storageFieldHelp.googleBigQueryServiceAccount.content	1. Mở Google Cloud Console > IAM & Admin > Service Accounts.
+2. Tạo service account hoặc chọn tài khoản hiện có.
+3. Cấp vai trò bigquery.dataEditor và bigquery.jobUser.
+4. Mở Keys > Add key > Create new key.
+5. Chọn JSON và bấm Create.
+6. Sao chép nội dung tệp đã tải vào trường bên trên.
+storageFieldHelp.googleBigQueryOAuth.content	Khi kết nối Google, P2PDigital yêu cầu:
+
+- BigQuery: quyền đọc và ghi vào dataset, bảng đã cấu hình.
+- Thông tin hồ sơ cơ bản: tên và email để nhận diện tài khoản kết nối.
+
+P2PDigital chỉ truy cập tài nguyên BigQuery bạn cấu hình làm kho lưu trữ. Bạn có thể thu hồi quyền trong cài đặt tài khoản Google. Tài khoản kết nối cần vai trò BigQuery Data Editor và BigQuery Job User trên dự án đích.
+storageFieldHelp.googleBigQueryLocation.content	Dữ liệu BigQuery được lưu theo region. Truy vấn phải xử lý dữ liệu trong cùng vị trí để tránh lỗi.
+
+1. Mở trang BigQuery trong Google Cloud Console.
+2. Mở rộng dự án và tìm dataset.
+3. Mở dataset và xem trường Data location, ví dụ US, EU hoặc asia-northeast1.
+4. Nên giữ các dataset trong cùng một vị trí nếu có thể.
+5. Nhập vị trí này vào trường bên trên.
+storageFieldHelp.legacyGoogleBigQueryProject.title	Tại sao tôi không thể đổi Project ID?
+storageFieldHelp.legacyGoogleBigQueryProject.content	Project ID được cố định và không thể thay đổi. Một kho hệ thống riêng được tạo cho từng dự án GCP để duy trì tương thích với tiện ích P2PDigital cho Google Sheets. Project ID của kho tự khớp với dự án GCP. Hãy liên hệ hỗ trợ nếu cần kho cho dự án khác.
+storageFieldHelp.legacyGoogleBigQueryLocation.content	Mặc định hệ thống chọn Auto-detect location. Chọn vị trí cụ thể có thể giúp ổn định hơn. Truy vấn BigQuery phải xử lý dữ liệu trong cùng region với nơi dữ liệu được lưu.
+
+1. Mở trang BigQuery trong Google Cloud Console.
+2. Mở rộng dự án và tìm dataset.
+3. Xem trường Data location, ví dụ US, EU hoặc asia-northeast1.
+4. Nên giữ dataset trong cùng một vị trí nếu có thể.
+5. Nhập vị trí vào trường bên trên.
+storageFieldHelp.athenaAccessKey.content	Trước khi lấy AWS Access Key ID, hãy bảo đảm IAM user có đủ quyền Athena và Glue.
+
+Access Key ID là một phần của credential AWS dùng để kết nối và xác thực.
+
+1. Mở trang AWS IAM Security Credentials.
+2. Trong Access keys, dùng key hiện có hoặc tạo key mới.
+3. Khi tạo key, tải xuống và lưu an toàn cả Access Key ID lẫn Secret Access Key.
+storageFieldHelp.athenaSecret.content	Secret Access Key là một phần của credential AWS dùng để kết nối và xác thực. Key chỉ hiển thị khi vừa được tạo.
+
+1. Mở trang AWS IAM Security Credentials.
+2. Trong Access keys, tạo key mới nếu chưa có hoặc đã mất secret.
+3. Sao chép và lưu Secret Access Key an toàn; key không thể hiển thị lại.
+workflowHelp.triggerType.connectorRun	Chạy trình kết nối - chạy trình kết nối (chẳng hạn Facebook Ads) được cấu hình trong Data Mart để cập nhật dữ liệu thô vào kho lưu trữ đã chọn.
+workflowHelp.triggerType.dataQualityRun	Chạy kiểm tra chất lượng - chạy các kiểm tra chất lượng dữ liệu đã bật cho Data Mart.
+workflowHelp.reportSelection.details	Bạn có thể dùng điểm đến hiện có hoặc tạo điểm đến mới trong tab Điểm đến của Data Mart này.
+connectorRun.runTypeTooltip	Chọn cách tải dữ liệu: cập nhật tăng dần hoặc tải lại toàn bộ một khoảng thời gian
+connectorRun.manualBackfillDescription	Tải lại toàn bộ dữ liệu trong một khoảng thời gian từ nguồn, thay thế các bản ghi hiện có trong khoảng đó. Dùng khi cần sửa hoặc cập nhật dữ liệu lịch sử.
+connectorRun.incrementalDescription	Chỉ thêm các bản ghi mới hoặc được cập nhật kể từ lượt chạy trước, dựa trên trạng thái hiện tại của Data Mart. Phù hợp để cập nhật dữ liệu mà không tải lại phần đã có.
+connectorWizard.oauth.backToOAuth	Quay lại OAuth
+connectorWizard.selectedFields	Đã chọn {{selected}}/{{total}} {{itemLabel}} cho dữ liệu "{{field}}"
+connectorWizard.dataLevelRequired	Các trường bắt buộc phụ thuộc vào Data Level. Data Level hiện tại:
+connectorWizard.changeDataLevel	Nếu cần, hãy đổi Data Level trong cài đặt trình kết nối trước khi chọn trường.
+connectorWizard.autoCreated	{{items}} sẽ tự động được tạo trong lần chạy Data Mart đầu tiên nếu chưa tồn tại
+connectorWizard.selectFieldsForDataMart	Chọn trường cho Data Mart
+reportColumnPicker.dataMartDetailsFor	Chi tiết Data Mart cho {{label}}
+reportColumnPicker.dataMartLabel	Data Mart
+reportColumnPicker.disconnectedColumnsHelp	Các cột này không còn trong lược đồ đầu ra hiện tại của Data Mart. Bỏ chọn để xóa chúng khỏi báo cáo hoặc liên hệ chuyên viên phân tích để khôi phục lược đồ.
+reportColumnPicker.currentDataMartColumnRequired	Phải chọn ít nhất một cột từ Data Mart hiện tại
+reportColumnPicker.filtersHelp	Bộ lọc thu hẹp kết quả cuối — áp dụng cho SELECT sau tất cả JOIN. Dùng lát cắt bên dưới để thu hẹp Data Mart được nối trước khi JOIN.
+reportColumnPicker.slicesHelp	Lát cắt là bộ lọc trước phép nối: thu hẹp Data Mart được nối bên trong truy vấn con trước JOIN để giảm số dòng lấy vào.
+
+Vì các phép nối là LEFT JOIN, lát cắt không làm giảm số dòng trong kết quả cuối — các dòng của Data Mart chính không còn khớp vẫn đi qua với giá trị NULL ở cột nối. Để loại bỏ các dòng đó khỏi đầu ra, hãy thêm Bộ lọc cho cột nối ở trên.
+reportColumnPicker.uniqueCountNotEmitted	Data Mart này không được phép lập báo cáo nên cột này không được tạo. Hãy cho phép lập báo cáo lại hoặc bỏ chọn dòng này.
+reportColumnPicker.uniqueCountUnverifiedNote	Ứng dụng không thể xác nhận Data Mart này còn được đếm hay không, nên cột có thể thiếu trong báo cáo. Lựa chọn của bạn được giữ lại — hãy tải lại trang và nhờ chuyên viên phân tích nếu vẫn còn.
+reportColumnPicker.thisDataMart	Data Mart này
+reportColumnPicker.orphanFilterHelp	Cột này không còn trong lược đồ Data Mart. Hãy xóa quy tắc hoặc khôi phục cột.
+reportColumnPicker.slicesBanner	Lát cắt lọc Data Mart được nối trước khi thực hiện phép nối, giúp giảm số dòng lấy vào.
+healthStatus.draftUnavailable	Data Mart nháp chưa thể chạy. Hãy xuất bản để kích hoạt lượt chạy.
+healthStatus.viewFullHistory	Xem toàn bộ lịch sử chạy
+schemaUi.fieldsFilteringHelp	Tìm kiếm và lọc các trường được cung cấp cho báo cáo từ Data Mart này.
+schemaUi.fieldNameSource	Tên trường trong Data Mart nguồn
+schemaUi.addCalculatedField	Thêm trường tính toán
+dataQualityUi.dataMartScope	Data Mart
+dataQualityUi.addCheckTo	Thêm kiểm tra cho {{field}}
+dataQualityUi.redactedRelationship	SQL và ví dụ bị ẩn vì bạn không có quyền truy cập Data Mart đích{{target}}. Các số liệu phía trên vẫn chính xác.
+dataQualityUi.categoryLabels.relationshipIntegrity	Tính toàn vẹn mối quan hệ
+dataQualityUi.categoryDescriptions.emptyTable	Phát hiện vấn đề khi Data Mart không có dòng dữ liệu.
+dataQualityUi.categoryDescriptions.relationshipIntegrity	Phát hiện giá trị nối ở nguồn bị thiếu trong Data Mart đích.
+dataQualityUi.categoryDescriptions.reverseRelationship	Phát hiện giá trị nối ở đích không được Data Mart nguồn sử dụng.
+dataMartsPage.title	Data Mart
+dataMartsPage.loadFailed	Không thể tải các Data Mart. Vui lòng thử lại.
+dataMartsPage.createDataMart	Tạo Data Mart mới
+dataMartsPage.emptyTitle	Xây dựng Data Mart đầu tiên
+dataMartsPage.emptySubtitle	Data Mart là thành phần cốt lõi của phân tích tự phục vụ - giúp nhà phân tích kiểm soát dữ liệu và người dùng nghiệp vụ chủ động khai thác. Hãy kết nối nguồn dữ liệu hoặc truy vấn dữ liệu đã có trong kho lưu trữ để bắt đầu.
+dataMartsPage.blankDataMart	Data Mart trống
+dataMartsPage.tableAriaLabel	Bảng Data Mart
+dataMartsPage.importButtonTitle	Nhập Data Mart từ tài nguyên trong kho lưu trữ
+dataMartsPage.bigQueryPromoDescription	Tự động tạo nhiều Data Mart từ tài nguyên BigQuery trong vài giây
+dataMartsPage.bigQueryPromoPrimaryAction	Tạo nhiều Data Mart...
+dataMartsOverview.sectionLabel	Tổng quan Data Mart
+dataMartEmptyState.illustrationLabel	Minh họa tạo Data Mart
+dataMartEmptyState.title	Xây dựng Data Mart đầu tiên
+dataMartEmptyState.subtitle	Data Mart là thành phần cốt lõi của phân tích tự phục vụ - giúp nhà phân tích kiểm soát dữ liệu và người dùng nghiệp vụ chủ động khai thác. Hãy kết nối nguồn dữ liệu hoặc truy vấn dữ liệu đã có trong kho lưu trữ để bắt đầu
+dataMartPresets.facebook.datamartTitle	Data Mart Facebook Ads
+dataMartPresets.facebookPages.datamartTitle	Data Mart Facebook Fanpage
+dataMartPresets.linkedin.datamartTitle	Data Mart LinkedIn Ads
+dataMartPresets.tiktok.datamartTitle	Data Mart TikTok Ads
+dataMartPresets.microsoft.datamartTitle	Data Mart Microsoft Ads
+dataMartPresets.otherConnector.datamartTitle	Data Mart dựa trên trình kết nối
+dataMartPresets.sqlQuery.datamartTitle	Data Mart dựa trên SQL
+dataMartPresets.existingTable.datamartTitle	Data Mart dựa trên bảng
+dataMartPresets.blankDataMart.title	Data Mart trống
+dataMartPresets.blankDataMart.datamartTitle	Data Mart mới
+modelCanvasPage.allDataMarts	Tất cả Data Mart
+modelCanvasPage.searchDataMarts	Tìm Data Mart...
+modelCanvasPage.searchLabel	Tìm Data Mart
+modelCanvasPage.noDataMartsInStorage	Kho lưu trữ này chưa có Data Mart
+modelCanvasPage.noDataMartsMatchFilters	Không có Data Mart phù hợp với bộ lọc hiện tại
+canvasSettings.layoutAlgorithm	Thuật toán bố cục
+canvasSettings.zoomIn	Phóng to
+dataLastUpdated.notChecked	Dữ liệu cập nhật lần cuối chưa được kiểm tra. Hãy mở Thao tác → Kiểm tra dữ liệu cập nhật lần cuối để đo các Data Mart đang hiển thị.
+dataMartDataSetup.outputSchemaTooltip	Cấu hình lược đồ đầu ra của Data Mart
+dataMartRunHistory.tooltip	Xem toàn bộ lượt chạy Data Mart cùng nhật ký và lỗi chi tiết
+dataMartRunHistory.refreshAfterCancellationFailed	Không thể làm mới các lượt chạy Data Mart sau khi hủy
+runHistory.openDataMart	Mở Data Mart
+dataQualityWorkspace.checksTooltip	Chọn các kiểm tra chạy cùng nhau trên Data Mart này
+dataQualityWorkspace.checkAdded	Đã thêm {{check}} cho {{field}} — chưa lưu
+dataQualityWorkspace.runEligibility.notPublished	Hãy xuất bản Data Mart trước khi chạy kiểm tra Chất lượng dữ liệu
+dataQualityWorkspace.runEligibility.definitionRequired	Hãy cấu hình định nghĩa Data Mart trước khi chạy kiểm tra Chất lượng dữ liệu
+dataQualityBatch.canvasDescription	Chạy kiểm tra Chất lượng dữ liệu cho tất cả {{count}} Data Mart đang hiển thị theo bộ lọc canvas hiện tại?
+dataQualityBatch.selectionDescription	Chạy kiểm tra Chất lượng dữ liệu cho {{count}} Data Mart đã chọn?
+dataQualityBatch.refreshFailed	Đã xếp hàng kiểm tra Chất lượng dữ liệu nhưng không thể làm mới danh sách Data Mart
+dataQualityBatch.queuedOne	Đã xếp hàng kiểm tra Chất lượng dữ liệu cho 1 Data Mart
+dataQualityBatch.queuedMany	Đã xếp hàng kiểm tra Chất lượng dữ liệu cho {{count}} Data Mart
+dataQualityBatch.queuedPartial	Đã xếp hàng kiểm tra Chất lượng dữ liệu cho {{successful}}/{{selected}} Data Mart. {{failures}}
+dataMartOverview.descriptionTooltip	Mô tả Data Mart này
+dataMartOverview.ownershipTooltip	Xác định người phụ trách và duy trì Data Mart này
+dataMartOverview.sharingTooltip	Kiểm soát ai có thể xem và làm việc với Data Mart này
+dataMartOverview.contextsTooltip	Các ngữ cảnh nghiệp vụ được gán cho Data Mart này
+dataMartOverview.descriptionPlaceholder	Thêm mô tả cho Data Mart này...
+dataMartOverview.technicalOwnerIntro	Phụ trách kỹ thuật chịu trách nhiệm trực tiếp về việc duy trì Data Mart này.
+dataMartOverview.technicalOwnerPermissions	Khi vai trò của người phụ trách là Người dùng kỹ thuật hoặc Quản trị viên dự án, họ có thể chỉnh sửa, xóa Data Mart, cấu hình chia sẻ và quản lý lịch chạy, báo cáo cùng các lịch chạy báo cáo lồng nhau - bất kể cài đặt chia sẻ.
+dataMartOverview.businessOwnerIntro	Phụ trách nghiệp vụ chịu trách nhiệm trực tiếp về nhu cầu báo cáo của Data Mart này.
+dataMartOverview.businessOwnerPermissions	Người phụ trách nghiệp vụ có thể thấy Data Mart trong danh mục, mở, dùng để lập báo cáo và xem lịch chạy, báo cáo cùng các lịch chạy báo cáo lồng nhau - bất kể cài đặt chia sẻ.
+dataMartOverview.maintenanceDescription	Người dùng kỹ thuật có thể chỉnh sửa, xóa và quản lý lịch chạy của Data Mart này
+dataMartOverview.maintenanceEnabled	Khi bật, Người dùng kỹ thuật không phải người phụ trách có thể chỉnh sửa định nghĩa Data Mart, xóa Data Mart và quản lý lịch chạy.
+dataMartOverview.reportingDescription	Tất cả thành viên dự án có thể xem Data Mart này và tạo báo cáo
+dataMartOverview.reportingEnabled	Khi bật, tất cả thành viên dự án (Người dùng kỹ thuật và Người dùng nghiệp vụ) có thể xem Data Mart trong danh mục và dùng để tạo báo cáo.
+dataMartOverview.contextsIntro	Ngữ cảnh là các miền nghiệp vụ (ví dụ: Tiếp thị, Tài chính, Bán hàng) dùng để nhóm Data Mart, kho lưu trữ và điểm đến.
+dataMartOverview.contextsAssign	Gán một hoặc nhiều ngữ cảnh để Data Mart này hiển thị cho đúng người.
+dataMartOverview.createdOnHelp	Thời điểm Data Mart này được tạo
+dataMartOverview.dataLastUpdatedHelp	Thời điểm các bảng nguồn của Data Mart thay đổi lần cuối trong kho - không phải khoảng thời gian dữ liệu bao phủ
+dataMartOverview.createdByHelp	Người đã tạo Data Mart này
+dataMartRelationships.search	Tìm kiếm Data Mart
+dataMartRelationships.loopedDataMarts	Data Mart tạo vòng lặp
+dataMartRelationships.hideLooped	Ẩn Data Mart tạo vòng lặp
+dataMartRelationships.showLooped	Hiện Data Mart tạo vòng lặp
+dataMartRelationships.emptyTitle	Chưa có Data Mart liên kết
+dataMartRelationships.emptyDescription	Liên kết một Data Mart để bổ sung các trường từ nguồn liên quan.
+dataMartRelationships.joinDataMart	Liên kết Data Mart
+dataMartRelationships.joinableTitle	Data Mart có thể liên kết
+dataMartRelationships.joinableTooltip	Người dùng nghiệp vụ có thể thêm cột từ Data Mart có thể liên kết trực tiếp vào báo cáo bảng tính. Không thay đổi số dòng.
+dataMartRelationships.cycleStubTooltip	Data Mart này đã được nối ở nhánh trước đó — dừng tại đây để tránh vòng lặp.
+dataMartRelationships.missingPrimaryKeyTooltip	Data Mart này không có khóa chính nên phép nối không thể khử trùng lặp dòng đáng tin cậy — các chỉ số từ đây có thể bị đếm trùng (fan-out).
+dataMartRelationships.noRelatedDataMartsForFilters	Không có Data Mart liên quan nào khớp với bộ lọc hiện tại
+dataMartRelationships.noAccessTooltip	Bạn không có quyền truy cập Data Mart này
+dataMartRelationships.noAccessAria	Bạn không có quyền xem Data Mart này
+dataMartRelationships.pickerSearch	Tìm kiếm Data Mart
+dataMartRelationships.aliasAlreadyUsed	Bí danh này đã được một Data Mart liên kết khác sử dụng
+dataMartRelationships.aliasTooltip	Tên nội bộ dùng khi tạo SQL JOIN cho Data Mart này (ví dụ: orders_customer_id). Không hiển thị trong đầu ra.
+dataMartRelationships.joinFieldsTooltip	Xác định cách ghép các dòng giữa nguồn và Data Mart liên quan.
+dataMartRelationships.joinedDataMart	Data Mart đã liên kết
+dataMartRelationships.joinedDataMartTooltip	Data Mart được liên kết, người cấu hình và thời điểm cấu hình.
+dataMartRelationships.inheritedRelationshipTooltip	Mối quan hệ này được kế thừa. Hãy xóa nó ở Data Mart nguồn.
+dataMartRelationships.outputAliasTooltip	Tên ngắn xuất hiện trong lược đồ dữ liệu đầu ra cho các trường từ Data Mart này.
+scheduleDescription.weekly	Hàng tuần vào {{days}} lúc {{time}}
+scheduleDescription.monthly	Hàng tháng vào ngày {{days}} lúc {{time}}
+timeTriggerAnnouncement.description	Thiết lập lượt chạy tự động trong tab Lịch chạy sau khi lưu và xuất bản Data Mart này.
+copyConfiguration.noMatching	Không có Data Mart phù hợp
+copyConfiguration.noOther	Bạn chỉ có thể dùng lại cấu hình từ các Data Mart dạng trình kết nối dùng cùng nguồn dữ liệu.
+copyConfiguration.selectToReuse	Chọn một Data Mart hiện có để dùng lại cấu hình.
+membersAssignment.projectScopeLockedReason	Thành viên có phạm vi toàn dự án đã nhìn thấy mọi tài nguyên, bất kể phân công ngữ cảnh.
+calculatedFieldsHelp.warehouseSql	SQL của kho dữ liệu trên các trường của Data Mart này.
+reportsUi.publishToCreateTitle	Xuất bản Data Mart để tạo báo cáo?
+reportsUi.completeSetupTitle	Hoàn tất thiết lập Data Mart trước
+reportsUi.publishToCreateDescription	Chỉ Data Mart đã xuất bản mới có thể tạo báo cáo. Biểu mẫu báo cáo mới sẽ mở sau khi xuất bản hoàn tất.
+reportsUi.dataMartRunResults	Kết quả chạy Data Mart
+reportsUi.dataMartRunResultsTooltip	Xác định khi nào báo cáo được gửi dựa trên kết quả chạy Data Mart
+reportsUi.lookerCreateDescription	Thiết lập Data Mart làm nguồn dữ liệu
+reportsUi.lookerStudioCard.waitingForFetch	Đang chờ Data Studio lấy dữ liệu
+reportsUi.lookerStudioCard.publishFirst	Hãy xuất bản Data Mart trước để bật quyền truy cập trong Data Studio
+insightsUi.artifactDescription	Tác vụ dữ liệu là các truy vấn SQL lấy dữ liệu từ Data Mart của bạn
+insightsUi.errors.loadProject	Không thể tải các phân tích chuyên sâu của Data Mart
+insightsUi.noDataMartContext	Không có ngữ cảnh Data Mart.
+insightsUi.publishBeforeRun	Để chạy phân tích chuyên sâu, trước tiên hãy xuất bản Data Mart
+insightsUi.scheduleAfterPublish	Bạn chỉ có thể lên lịch và gửi báo cáo sau khi xuất bản Data Mart
+insightsUi.loader.integrity	Đang xác nhận tính toàn vẹn dữ liệu...
+reportsEmptyDestinations.headline	Google Sheets, Data Studio, Email… và nhiều công cụ khác!
+dataMartStatus.draftDescription	Data Mart đang ở chế độ nháp và chưa được xuất bản
+dataMartStatus.publishedDescription	Data Mart đã được xuất bản và sẵn sàng sử dụng
+createDataMartPage.title	Tạo Data Mart
+createDataMartPage.createButton	Tạo Data Mart
+destinationsPage.emptySubtitle	Kết nối công cụ báo cáo để gửi dữ liệu Data Mart đến dashboard và báo cáo.
+dataStorageList.referencedBy	{{count}} Data Mart{{suffix}}
+dataStorageList.detachBeforeDelete	Hãy ngắt liên kết hoặc xóa các Data Mart đó trước khi xóa kho lưu trữ.
+dataStorageList.publishDraftsDescription	Có {{count}} Data Mart bản nháp{{suffix}} sẵn sàng. Có thể xuất bản {{pronoun}} ngay. Tiếp tục?
+dataStorageList.publishPronoun	các Data Mart này
+bulkCreateFromStorage.title	Nhập Data Mart từ kho lưu trữ
+bulkCreateFromStorage.description	Chọn tối đa {{count}} bảng hoặc view — mỗi mục sẽ trở thành một Data Mart mới.
+bulkCreateFromStorage.created	Đã tạo {{count}} Data Mart
+bulkCreateFromStorage.failed	Không thể tạo {{count}} Data Mart. Hãy kiểm tra và thử lại.
+bulkCreateFromStorage.createSelected	Tạo {{count}} Data Mart
+bulkCreateFromStorage.create	Tạo Data Mart
+dataDestinationList.acrossDataMarts	trên {{dataMarts}} Data Mart{{dataMartSuffix}}.
+dataDestinationList.referencedBy	{{reports}} báo cáo{{reportSuffix}} trên {{dataMarts}} Data Mart{{dataMartSuffix}}.
+dataDestinationList.connectorStep	Mở trình kết nối Data Studio
+dataDestinationList.saveChangesStep	Lưu thay đổi để khôi phục quyền truy cập Data Mart
+storagesPage.emptySubtitle	Tập trung quyền truy cập dữ liệu thô bằng cách kết nối kho dữ liệu để xây dựng Data Mart và báo cáo.
+destinationHelp.googleSheetsAuth.oauthLabel	Kết nối với Google (OAuth):
+destinationHelp.googleSheetsServiceAccount.paste	Mở tệp đã tải xuống, sao chép toàn bộ nội dung và dán vào trường phía trên.
+destinationHelp.email.setupAfterEmail	trong biểu mẫu này (thêm tiêu đề và chỉ định địa chỉ người nhận). Sau đó, mở trang Data Mart, vào thẻ
+destinationHelp.email.delivery	Trong cài đặt báo cáo, thêm tiêu đề, nội dung và điều kiện gửi. Báo cáo được tạo sẽ được P2PDigital Data Marts gửi tới các địa chỉ đã chọn dưới dạng văn bản có định dạng.
+destinationHelp.slack.setupAfterSlack	trong biểu mẫu này (thêm tiêu đề và chỉ định địa chỉ người nhận). Sau đó, mở trang Data Mart, vào thẻ
+destinationHelp.slack.delivery	Trong cài đặt báo cáo, thêm tiêu đề, nội dung và điều kiện gửi. Báo cáo được tạo sẽ được P2PDigital Data Marts gửi tới kênh đã chọn dưới dạng tin nhắn.
+destinationHelp.microsoftTeams.setupAfterTeams	trong biểu mẫu này (thêm tiêu đề và chỉ định địa chỉ người nhận). Sau đó, mở trang Data Mart, vào thẻ
+destinationHelp.microsoftTeams.delivery	Trong cài đặt báo cáo, thêm tiêu đề, nội dung và điều kiện gửi. Báo cáo được tạo sẽ được P2PDigital Data Marts gửi tới kênh đã chọn dưới dạng tin nhắn.
+destinationHelp.lookerStudio.title	Làm cách nào để kết nối với Data Studio?
+destinationHelp.lookerStudio.setup	Để gửi dữ liệu tới Data Studio, bạn cần cung cấp URL triển khai mà
+destinationHelp.lookerStudio.connector	trình kết nối Data Studio
+destinationHelp.odata.description	OData (Open Data Protocol) là tiêu chuẩn OASIS được ISO/IEC phê duyệt, định nghĩa các thông lệ tốt để xây dựng và sử dụng API RESTful.
+destinationHelp.googleChat.reportSetupEnd	của Data Mart và cấu hình tiêu đề, nội dung cùng điều kiện gửi.
+errorBoundary.subtitleRoot	Ứng dụng gặp sự cố bất ngờ. Đừng lo - dữ liệu của bạn vẫn an toàn. Hãy tải lại trang hoặc quay về trang chủ.
+errorBoundary.subtitleLayout	Ứng dụng gặp sự cố bất ngờ. Đừng lo - dữ liệu của bạn vẫn an toàn. Hãy chuyển sang mục khác hoặc về trang chủ.
+apiKeysPage.title	Mã API của tôi
+apiKeysPage.emptyTitle	Bạn chưa có mã API nào
+apiKeysPage.emptySubtitle	Tạo mã API để cho phép các công cụ bên ngoài truy cập dự án này dưới danh nghĩa của bạn.
+apiKeysPage.createButton	Tạo mã API
+apiKeysPage.infoNote	Mã API cá nhân dành cho thành viên của bạn trong dự án này. Các mã này đại diện cho bạn — không phải cho toàn bộ dự án.
+apiKeysPage.reveal.title	Đã tạo mã API
+apiKeysPage.reveal.description	Mã API mới đã được tạo thành công.
+apiKeysPage.reveal.label	Mã API
+apiKeysPage.reveal.labelTooltip	Mã API bí mật đầy đủ. Hãy lưu trữ an toàn.
+apiKeysPage.reveal.notice	Hãy sao chép mã API ngay. Bạn sẽ không thể xem lại mã này.
+apiKeysPage.reveal.confirm	Tôi đã lưu mã API
+apiKeysPage.reveal.docs	Tài liệu mã API
+apiKeysPage.documentation.apiKeys	Mã API
+apiKeysPage.documentation.apiClient	API client TypeScript/JavaScript
+apiKeysPage.revokeTitle	Thu hồi mã API
+apiKeysPage.form.title	Tạo mã API
+apiKeysPage.form.description	Tạo mã API cá nhân cho các công cụ và quy trình tự động bên ngoài.
+apiKeysPage.form.createFailed	Không thể tạo mã API
+apiKeysPage.table.copyId	Sao chép mã API
+apiKeysPage.table.apiKeyId	Mã API
+apiKeysPage.table.idCopied	Đã sao chép mã API
+apiKeysPage.edit.title	Chi tiết mã API
+apiKeysPage.edit.description	Quản lý mã API này và xem chi tiết tích hợp.
+apiKeysPage.edit.nameUpdated	Đã cập nhật tên mã API
+apiKeysPage.edit.nameUpdateFailed	Không thể cập nhật tên mã API
+apiKeysPage.edit.nameHelp	Nhãn dễ nhận biết để xác định mã API này.
+apiKeysPage.edit.expiresHelp	Ngày UTC mã API ngừng hoạt động. "Chưa bao giờ" nghĩa là mã không tự hết hạn.
+apiKeysPage.edit.createdHelp	Thời điểm mã API được tạo.
+apiKeysPage.edit.lastAuthenticatedHelp	Lần xác thực thành công gần nhất bằng mã API này.
+apiKeysPage.edit.keyHelp	Mã API đầy đủ chỉ hiển thị một lần. Hãy lưu trữ an toàn.
+apiKeysPage.edit.unavailableNotice	Mã API chỉ hiển thị một lần trong hộp thoại tạo. Nếu không còn mã, hãy tạo mã mới và thu hồi mã này.
+apiKeysPage.edit.revokeTitle	Thu hồi mã API này
+apiKeysPage.edit.revokeButton	Thu hồi mã API
+licenseKeysPage.keyTooltip	Mã bản quyền đã ký chỉ hiển thị một lần. Hãy lưu trữ an toàn.
+contextsPage.whatIsContextDescription	Ngữ cảnh là nhãn theo miền nghiệp vụ (ví dụ: Tiếp thị, Tài chính) mà bạn có thể gắn vào Data Mart, kho lưu trữ, điểm đến và thành viên. Thành viên không phải quản trị viên có phạm vi "Các ngữ cảnh đã chọn" chỉ có thể truy cập tài nguyên chia sẻ ít nhất một ngữ cảnh với họ.
+contextsPage.lockedMembersAnswer	Quản trị viên và thành viên có phạm vi toàn dự án đã nhìn thấy mọi tài nguyên, bất kể gán ngữ cảnh. Họ xuất hiện ở đây để nhắc bạn, nhưng không thể thay đổi thành viên ngữ cảnh từ màn hình này — hãy điều chỉnh phạm vi vai trò trong Cài đặt dự án → Thành viên.
+contextsPage.blockedSuffix	Hãy ngắt liên kết khỏi tất cả Data Mart, kho lưu trữ, điểm đến, thành viên và giá trị mặc định cấp quyền người dùng trước khi xóa.
+membersPage.adminAccessDescription	Quản trị viên dự án có quyền truy cập toàn dự án. Phạm vi và gán ngữ cảnh không áp dụng.
+membersPage.roleHelp.businessUser	có thể xem Data Mart và báo cáo được chia sẻ, tạo báo cáo cho Data Mart được chia sẻ để báo cáo, quản lý báo cáo do mình sở hữu (chỉnh sửa, xóa, đổi người phụ trách), quản lý lịch chạy báo cáo của mình và dùng điểm đến được chia sẻ. Không thể tạo, chỉnh sửa hoặc xóa Data Mart, lịch chạy Data Mart hay kho lưu trữ.
+membersPage.roleHelp.technicalUser	có mọi quyền của Người dùng nghiệp vụ, đồng thời có thể tạo, chỉnh sửa và xóa Data Mart, lịch chạy Data Mart và kho lưu trữ; chỉnh sửa và xóa báo cáo trong toàn dự án; đổi người phụ trách báo cáo; quản lý lịch chạy báo cáo trong toàn dự án.
+membersPage.roleHelp.projectAdmin	có mọi quyền của Người dùng kỹ thuật, đồng thời quản lý thành viên dự án, thanh toán và các cài đặt chung của dự án như tiêu đề dự án.
+membersPage.contextHelp.description	Ngữ cảnh là các miền nghiệp vụ (ví dụ: Tiếp thị, Tài chính, Bán hàng) dùng để nhóm kho lưu trữ, điểm đến và Data Mart. Khi phạm vi vai trò của thành viên này là Các ngữ cảnh đã chọn, họ chỉ thấy tài nguyên được gán ít nhất một ngữ cảnh đã chọn (quyền sở hữu vẫn được ưu tiên). Với phạm vi Toàn bộ dự án, các gán này không có tác dụng.
+pluginsPage.installDialog.accessFact	Tiện ích hoạt động với quyền truy cập của bạn vào P2PDigital Data Marts.
+pluginsPage.emptySubtitle	Mở rộng P2PDigital Data Marts bằng các tiện ích từ kho GitHub. Đăng tiện ích sẽ hiển thị tiện ích ở đây; mỗi thành viên vẫn tự cài đặt.
+pluginsPage.publishForm.repositoryAccess	Kho công khai hoạt động ngay. Với kho riêng tư, trước tiên phải cài P2PDigital Data Marts GitHub App vào kho — hãy đăng một lần và P2PDigital sẽ hiển thị liên kết chính xác để cấp quyền.
+pluginsPage.publishForm.grantAccess	Cấp quyền P2PDigital Data Marts truy cập kho này
+pluginsPage.runtime.suspendedDescription	Quản trị viên đã tạm dừng tiện ích trên toàn bộ bản triển khai. Cài đặt của bạn vẫn nguyên vẹn và sẽ hoạt động lại khi tiện ích được tiếp tục.
+googleOAuth.errors.startFailed	Không thể bắt đầu kết nối OAuth. Vui lòng thử lại.
+googleSheetsConnectPage.oauthUnavailable	P2PDigital chưa cấu hình Google OAuth nên không thể dùng trang kết nối nhanh này. Hãy nhờ quản trị viên cấu hình Google OAuth hoặc tự tạo điểm đến Google Sheets trong ứng dụng web P2PDigital (Điểm đến → Thêm điểm đến) bằng khóa tài khoản dịch vụ.
+googleSheetsConnectPage.connectOAuth	Kết nối bằng Google OAuth
+legacyStorageNotice.title	Hoàn tất thiết lập kho BigQuery để xuất bản Data Mart
+legacyStorageNotice.createdWith	Các Data Mart được tạo bằng
+legacyStorageNotice.instructions	Để quản lý Data Mart tại một nơi, nhận phân tích chuyên sâu và đồng bộ dữ liệu tới nhiều điểm đến, hãy hoàn tất các bước sau:
+projectOverview.dataMarts	Data Mart
+projectOverview.legacyTooltip	Mở toàn bộ cài đặt dự án trên platform.p2pdigital.vn
+variablesPage.description	Lưu giá trị an toàn hoặc tham chiếu đến thông tin xác thực trình kết nối hiện có. Dữ liệu bí mật không bao giờ được trả về trình duyệt.
+variablesPage.credentialReference	Tham chiếu thông tin xác thực OAuth
+emptyStates.triggers.description	Các lịch chạy được tạo trong Data Mart sẽ xuất hiện ở đây cùng lịch trình, mục tiêu và trạng thái.
+emptyStates.reports.description	Các báo cáo được cấu hình trong Data Mart sẽ xuất hiện ở đây cùng điểm đến, trạng thái chạy và thao tác.
+emptyStates.insights.description	Các phân tích chuyên sâu được tạo từ dữ liệu Data Mart sẽ xuất hiện ở đây cùng thông tin cập nhật và thao tác.
+emptyStates.runs.description	Lịch sử các lượt chạy Data Mart trong dự án sẽ xuất hiện ở đây khi bắt đầu và hoàn thành.
+emptyStates.chooseDataMart	Chọn một Data Mart
+dataMartDetailsPage.dataMartIdRequired	Cần có mã Data Mart
+dataMartDetails.noRunsFound	Chưa có lượt chạy nào cho Data Mart này
+dataMartDetails.backToList	Quay lại danh sách Data Mart
+dataMartDetails.publishAndRun	Xuất bản và chạy Data Mart
+dataMartDetails.publishDataMart	Xuất bản Data Mart
+dataMartDetails.deleteDataMart	Xóa Data Mart
+dataMartDetails.deleteConfirm	Bạn có chắc chắn muốn xóa Data Mart này? Thao tác này không thể hoàn tác.
+dataMartDetails.publishedReadyForScheduledRuns	Data Mart đã xuất bản đã sẵn sàng cho lịch chạy
+dataMartDetails.draftNotAvailableForScheduledRuns	Data Mart nháp chưa thể chạy theo lịch. Hãy xuất bản để bật lịch chạy.
+dataMartDetails.manualRunPublishedOnly	Chỉ Data Mart đã xuất bản mới có thể chạy thủ công.
+schemaSettings.notFound	Lỗi: Không tìm thấy Data Mart
+schemaSettings.fixCalculated	Hãy sửa các trường tính toán này rồi lưu lại:
+schemaSettings.addCalculatedField	Thêm trường tính toán
+inputSourceChange.title	Đổi nguồn dữ liệu từ {{from}} sang {{to}}?
+inputSourceChange.description	Data Mart này vẫn giữ các mối quan hệ, báo cáo và metadata trường. Các trường không có trong nguồn mới sẽ được đánh dấu là mất kết nối và những nội dung dùng chúng cần được kiểm tra.
+inputSourceChange.checking	Đang kiểm tra các thành phần phụ thuộc Data Mart này…
+inputSourceChange.failed	Không thể kiểm tra các thành phần phụ thuộc Data Mart này. Bạn vẫn có thể tiếp tục hoặc
+inputSourceChange.dependants	{{dependants}} đang phụ thuộc Data Mart này.
+inputSourceChange.none	Chưa có thành phần nào khác phụ thuộc Data Mart này.
+inputSourceChange.types.view	View
+scheduledTriggers.timeTooltip	Lịch chạy theo thời gian cho phép bạn lên lịch chạy Data Mart vào các thời điểm cụ thể
+generatedSql.dataMartCreated	Đã tạo Data Mart từ báo cáo
+generatedSql.createFailed	Không thể tạo Data Mart từ báo cáo
+generatedSql.copyAsDataMart	Sao chép thành Data Mart
+dataMartBulkActions.canvasActionsTitle	Thao tác cho toàn bộ Data Mart đang hiển thị theo bộ lọc canvas
+dataMartBulkActions.selectionActionsTitle	Thao tác hàng loạt cho Data Mart đã chọn
+dataMartBulkActions.deleteSuccess	Đã xóa {{count}} Data Mart
+dataMartBulkActions.deleteFailed	Không thể xóa {{count}} Data Mart. Vui lòng thử lại.
+dataMartBulkActions.publishSuccess	Đã xuất bản {{count}} Data Mart
+dataMartBulkActions.publishFailed	Không thể xuất bản {{count}} Data Mart. Vui lòng kiểm tra riêng.
+dataMartBulkActions.deleteCanvasDescription	Bạn sắp xóa {{count}} Data Mart đang hiển thị theo bộ lọc canvas hiện tại.
+dataMartBulkActions.deleteSelectionDescription	Bạn sắp xóa {{count}} Data Mart đã chọn.
+dataMartBulkActions.legacyBigQueryWarning	Một số Data Mart này cũng sẽ không còn khả dụng trong tiện ích Google Sheets vì đang dùng kho BigQuery cũ.
+dataMartBulkActions.publishConfirmTitle	Xuất bản Data Mart nháp?
+dataMartBulkActions.publishCanvasDescription	Bạn sắp xuất bản {{count}} Data Mart nháp đang hiển thị theo bộ lọc canvas hiện tại.
+dataMartBulkActions.publishSelectionDescription	Bạn sắp xuất bản {{count}} Data Mart nháp đã chọn.
+dataMartBulkActions.publishDescription	Lược đồ sẽ được cập nhật và các Data Mart sẽ chuyển sang trạng thái Đã xuất bản.
+projectDataMartPages.noInsightsForAccessible	Không có phân tích chuyên sâu nào trong các Data Mart bạn được truy cập
+projectDataMartPages.noTriggersForAccessible	Không có lịch chạy nào trong các Data Mart bạn được truy cập
+projectDataMartPages.loadTriggersFailed	Không thể tải các lịch chạy Data Mart
+projectDataMartPages.loadRunsFailed	Không thể tải các lượt chạy Data Mart
+projectDataMartPages.cancelRunFailed	Không thể hủy lượt chạy Data Mart
+projectDataMartPages.loadReportsFailed	Không thể tải các báo cáo Data Mart
+projectDataMartPages.tableAriaLabel	Bảng báo cáo Data Mart của dự án
+projectDataMartPages.noReportsForAccessible	Không tìm thấy báo cáo trong các Data Mart bạn được truy cập

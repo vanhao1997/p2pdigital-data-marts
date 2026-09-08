@@ -1,9 +1,11 @@
 import { useState, useCallback, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
 import { apiKeysService } from '../services/api-keys.service';
 import type { ProjectMemberApiKey } from '../types';
 
 export function useApiKeys() {
+  const { t } = useTranslation();
   const [keys, setKeys] = useState<ProjectMemberApiKey[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -12,11 +14,11 @@ export function useApiKeys() {
       const data = await apiKeysService.getKeys();
       setKeys(data);
     } catch {
-      toast.error('Failed to load API keys');
+      toast.error(t('uiFeedback.apiKeysLoadFailed'));
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [t]);
 
   useEffect(() => {
     void fetchKeys();
@@ -26,14 +28,14 @@ export function useApiKeys() {
     async (apiKeyId: string) => {
       try {
         await apiKeysService.revokeKey(apiKeyId);
-        toast.success('API key revoked');
+        toast.success(t('uiFeedback.apiKeyRevoked'));
         void fetchKeys();
       } catch {
-        toast.error('Failed to revoke API key');
+        toast.error(t('uiFeedback.apiKeyRevokeFailed'));
         void fetchKeys();
       }
     },
-    [fetchKeys]
+    [fetchKeys, t]
   );
 
   return { keys, loading, fetchKeys, revokeKey };

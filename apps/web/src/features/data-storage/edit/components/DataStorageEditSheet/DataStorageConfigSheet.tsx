@@ -100,10 +100,13 @@ export function DataStorageConfigSheet({
           <SheetTitle>{t('configDialogs.storageTitle', 'Configure Storage Provider')}</SheetTitle>
           <div className='flex w-full items-center gap-4'>
             <SheetDescription>
-              {t('configDialogs.storageDescription', 'Customize settings for your storage provider')}
+              {t(
+                'configDialogs.storageDescription',
+                'Customize settings for your storage provider'
+              )}
             </SheetDescription>
             {storageLink && (
-              <CopyLinkButton link={storageLink} ariaLabel='Copy link to this storage' />
+              <CopyLinkButton link={storageLink} ariaLabel={t('configDialogs.copyLinkToStorage')} />
             )}
           </div>
         </SheetHeader>

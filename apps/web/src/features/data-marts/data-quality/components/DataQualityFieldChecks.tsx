@@ -147,7 +147,9 @@ function DataQualityFieldGroup({
               {fieldType ?? selectableField?.type}
             </span>
           )}
-          <span className='bg-muted rounded px-2 py-0.5 text-xs'>{t('dataQualityUi.enabledCount', { count: enabledCount })}</span>
+          <span className='bg-muted rounded px-2 py-0.5 text-xs'>
+            {t('dataQualityUi.enabledCount', { count: enabledCount })}
+          </span>
         </button>
         {selectableField && (
           <DataQualityFieldPicker

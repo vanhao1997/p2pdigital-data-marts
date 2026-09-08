@@ -83,7 +83,12 @@ export function AppBootstrap({ children }: { children: React.ReactNode }) {
   }, [status, user?.projectId, hasEmptyProjectRoles, flagsStatus, dispatch]);
 
   const loader = useMemo(
-    () => <LoadingSpinner fullScreen message={i18n.t('common.loadingApplication', 'Loading application...')} />,
+    () => (
+      <LoadingSpinner
+        fullScreen
+        message={i18n.t('common.loadingApplication', 'Loading application...')}
+      />
+    ),
     []
   );
 

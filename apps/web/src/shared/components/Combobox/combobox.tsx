@@ -13,6 +13,7 @@ import {
 } from '@owox/ui/components/command';
 import { Popover, PopoverContent, PopoverTrigger } from '@owox/ui/components/popover';
 import { cn } from '@owox/ui/lib/utils';
+import { useTranslation } from 'react-i18next';
 
 export interface ComboboxOption {
   value: string;
@@ -43,13 +44,16 @@ export function Combobox({
   options,
   value,
   onValueChange,
-  placeholder = 'Select an option',
-  emptyMessage = 'No results found.',
+  placeholder,
+  emptyMessage,
   className,
   disabled = false,
   'aria-label': ariaLabel,
   renderLabel,
 }: ComboboxProps) {
+  const { t } = useTranslation();
+  const resolvedPlaceholder = placeholder ?? t('common.selectAnOption', 'Select an option');
+  const resolvedEmptyMessage = emptyMessage ?? t('common.noResultsFound', 'No results found.');
   const [open, setOpen] = React.useState(false);
   const [searchQuery, setSearchQuery] = React.useState('');
   const [activeValue, setActiveValue] = React.useState(value);
@@ -110,7 +114,7 @@ export function Combobox({
               <span className='min-w-0 flex-1 truncate text-left'>{selectedOption.label}</span>
             )
           ) : (
-            <span className='min-w-0 flex-1 truncate text-left'>{placeholder}</span>
+            <span className='min-w-0 flex-1 truncate text-left'>{resolvedPlaceholder}</span>
           )}
           <ChevronsUpDown className='ml-2 h-4 w-4 shrink-0 opacity-50' />
         </Button>
@@ -127,12 +131,12 @@ export function Combobox({
           className='[&_[data-slot=command-input-wrapper]]:gap-3 [&_[data-slot=command-input-wrapper]]:px-4'
         >
           <CommandInput
-            placeholder='Search...'
+            placeholder={t('common.searchPlaceholder', 'Search...')}
             value={searchQuery}
             onValueChange={setSearchQuery}
           />
           <CommandList className='max-h-[200px] overflow-auto'>
-            <CommandEmpty>{emptyMessage}</CommandEmpty>
+            <CommandEmpty>{resolvedEmptyMessage}</CommandEmpty>
             {Object.entries(groupedOptions).map(([groupName, groupOptions]) => {
               return (
                 <CommandGroup key={groupName || 'default'} heading={groupName}>

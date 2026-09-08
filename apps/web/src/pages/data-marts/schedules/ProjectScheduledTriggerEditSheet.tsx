@@ -107,7 +107,10 @@ export function ProjectScheduledTriggerEditSheet({
         <SheetHeader>
           <SheetTitle>{t('scheduledTriggers.editTitle', 'Edit scheduled trigger')}</SheetTitle>
           <SheetDescription>
-            {t('scheduledTriggers.editDescription', 'Configure automatic runs for reports, connectors, or Data Quality checks.')}
+            {t(
+              'scheduledTriggers.editDescription',
+              'Configure automatic runs for reports, connectors, or Data Quality checks.'
+            )}
           </SheetDescription>
         </SheetHeader>
 

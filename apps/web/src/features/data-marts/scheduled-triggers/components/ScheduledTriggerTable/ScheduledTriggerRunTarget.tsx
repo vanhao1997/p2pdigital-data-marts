@@ -17,7 +17,10 @@ import { useTranslation } from 'react-i18next';
 /**
  * Renders the target for a report run trigger
  */
-function renderReportRunTarget(trigger: ScheduledTrigger, t: (key: string, fallback: string) => string) {
+function renderReportRunTarget(
+  trigger: ScheduledTrigger,
+  t: (key: string, fallback: string) => string
+) {
   const config = trigger.triggerConfig as ScheduledReportRunConfig | undefined;
   if (!config?.report) {
     return (
@@ -47,13 +50,19 @@ function renderReportRunTarget(trigger: ScheduledTrigger, t: (key: string, fallb
 /**
  * Renders the target for a connector run trigger
  */
-function renderConnectorRunTarget(trigger: ScheduledTrigger, connectors: ConnectorListItem[], t: (key: string, fallback: string) => string) {
+function renderConnectorRunTarget(
+  trigger: ScheduledTrigger,
+  connectors: ConnectorListItem[],
+  t: (key: string, fallback: string) => string
+) {
   const triggerConfig = trigger.triggerConfig as ScheduledConnectorRunConfig | undefined;
   if (!triggerConfig?.connector) {
     return (
       <div className='text-muted-foreground inline-flex max-w-full min-w-0 items-center gap-2 overflow-hidden text-sm whitespace-nowrap'>
         <Database className='h-4 w-4 shrink-0' size={16} />
-        <span className='max-w-full flex-1 truncate'>{t('scheduledTriggerUi.connector', 'Connector')}</span>
+        <span className='max-w-full flex-1 truncate'>
+          {t('scheduledTriggerUi.connector', 'Connector')}
+        </span>
       </div>
     );
   }
@@ -83,7 +92,9 @@ function renderDataQualityRunTarget(t: (key: string, fallback: string) => string
   return (
     <div className='text-muted-foreground inline-flex max-w-full min-w-0 items-center gap-2 overflow-hidden text-sm whitespace-nowrap'>
       <ShieldCheck className='h-4 w-4 shrink-0' size={16} />
-      <span className='max-w-full flex-1 truncate'>{t('scheduledTriggerUi.qualityChecks', 'Data Quality checks')}</span>
+      <span className='max-w-full flex-1 truncate'>
+        {t('scheduledTriggerUi.qualityChecks', 'Data Quality checks')}
+      </span>
     </div>
   );
 }

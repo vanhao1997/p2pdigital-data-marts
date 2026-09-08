@@ -2,6 +2,7 @@ import { lazy, Suspense, type ReactNode } from 'react';
 import type { RouteObject } from 'react-router';
 import { LayoutErrorBoundary } from '../../components/errors';
 import { InsightsV2Redirect } from './InsightsV2Redirect';
+import { RouteLoading } from '../RouteLoading';
 
 const DataMartOverviewContent = lazy(
   () => import('../../pages/data-marts/edit/DataMartOverviewContent')
@@ -41,11 +42,7 @@ const InsightDetailsView = lazy(
 );
 
 function lazyElement(element: ReactNode) {
-  return (
-    <Suspense fallback={<div className='text-muted-foreground p-6 text-sm'>Loading...</div>}>
-      {element}
-    </Suspense>
-  );
+  return <Suspense fallback={<RouteLoading />}>{element}</Suspense>;
 }
 
 export const dataMartDetailsRoutes: RouteObject[] = [

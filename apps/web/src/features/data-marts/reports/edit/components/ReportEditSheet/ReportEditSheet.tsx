@@ -57,14 +57,8 @@ export function ReportEditSheet({
           </SheetTitle>
           <ReportSheetDescription mode={mode} report={initialReport}>
             {mode === ReportFormMode.CREATE
-              ? t(
-                  'reportsUi.createReportSheetDescription',
-                  'Điền thông tin để tạo báo cáo mới'
-                )
-              : t(
-                  'reportsUi.editReportSheetDescription',
-                  'Cập nhật thông tin của báo cáo hiện có'
-                )}
+              ? t('reportsUi.createReportSheetDescription', 'Điền thông tin để tạo báo cáo mới')
+              : t('reportsUi.editReportSheetDescription', 'Cập nhật thông tin của báo cáo hiện có')}
           </ReportSheetDescription>
         </SheetHeader>
 

@@ -10,6 +10,7 @@ import {
 } from '../../shared/utils/data-quality-status';
 import type { DataQualityStatusTone } from '../../shared/utils/data-quality-status';
 import type { DataQualitySummary } from '../model/types';
+import { useTranslation } from 'react-i18next';
 
 interface DataQualitySummaryPanelProps {
   summary: DataQualitySummary;
@@ -41,6 +42,7 @@ export function DataQualitySummaryPanel({
   checkedAt,
   actions,
 }: DataQualitySummaryPanelProps) {
+  const { t } = useTranslation();
   const presentation = getDataQualityStatusPresentation(summary);
   const visual = getDataQualityStatusVisual(summary);
   const Icon = visual.icon;
@@ -66,7 +68,7 @@ export function DataQualitySummaryPanel({
           )}
           {checkedAt && (
             <p className='text-muted-foreground mt-2 text-xs'>
-              Last checked {formatDateShort(checkedAt)}
+              {t('dataQualityUi.lastCheckedWithDate', { date: formatDateShort(checkedAt) })}
             </p>
           )}
         </div>
@@ -80,22 +82,27 @@ export function DataQualitySummaryPanel({
 }
 
 export function DataQualitySummaryChips({ summary }: { summary: DataQualitySummary }) {
+  const { t } = useTranslation();
   const chips = [
-    counter(summary.enabledChecks, 'enabled'),
-    counter(summary.passedChecks, 'passed', 'success'),
-    counter(summary.notApplicableChecks, 'not applicable'),
+    counter(summary.enabledChecks, t('dataQualityUi.chips.enabled')),
+    counter(summary.passedChecks, t('dataQualityUi.chips.passed'), 'success'),
+    counter(summary.notApplicableChecks, t('dataQualityUi.chips.notApplicable')),
     counter(
       summary.errorChecks,
-      summary.errorChecks === 1 ? 'execution error' : 'execution errors',
+      t(
+        summary.errorChecks === 1
+          ? 'dataQualityUi.chips.executionError'
+          : 'dataQualityUi.chips.executionErrors'
+      ),
       'error'
     ),
-    counter(summary.errorFindings, 'error', 'error'),
-    counter(summary.warningFindings, 'warning', 'warning'),
-    counter(summary.noticeFindings, 'notice', 'notice'),
+    counter(summary.errorFindings, t('dataQualityUi.chips.error'), 'error'),
+    counter(summary.warningFindings, t('dataQualityUi.chips.warning'), 'warning'),
+    counter(summary.noticeFindings, t('dataQualityUi.chips.notice'), 'notice'),
   ].filter((chip): chip is NonNullable<typeof chip> => chip !== null);
 
   if (summary.state === 'PASSED' && summary.failedChecks === 0 && summary.errorChecks === 0) {
-    chips.push({ label: 'No findings', tone: 'neutral' });
+    chips.push({ label: t('dataQualityUi.chips.noFindings'), tone: 'neutral' });
   }
 
   if (chips.length === 0) return null;

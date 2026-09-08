@@ -120,8 +120,12 @@ export function InsightReportsList({
       {reports.length === 0 ? (
         <div className='bg-muted/30 flex flex-col items-center justify-center rounded-lg border border-dashed py-10 text-center'>
           <div className='mb-4 flex flex-col'>
-            <p className='text-sm font-medium'>{t('insightsUi.scheduleTitle', 'Schedule your insights')}</p>
-            <p className='text-muted-foreground text-xs'>{t('insightsUi.scheduleDescription', 'Automate delivery to your destinations')}</p>
+            <p className='text-sm font-medium'>
+              {t('insightsUi.scheduleTitle', 'Schedule your insights')}
+            </p>
+            <p className='text-muted-foreground text-xs'>
+              {t('insightsUi.scheduleDescription', 'Automate delivery to your destinations')}
+            </p>
           </div>
           <TooltipProvider>
             <Tooltip>
@@ -131,7 +135,9 @@ export function InsightReportsList({
                   {t('insightsUi.newReport', 'New Report')}
                 </Button>
               </TooltipTrigger>
-              <TooltipContent side='top'>{t('insightsUi.createReportTooltip', 'Create a new report for this insight')}</TooltipContent>
+              <TooltipContent side='top'>
+                {t('insightsUi.createReportTooltip', 'Create a new report for this insight')}
+              </TooltipContent>
             </Tooltip>
           </TooltipProvider>
         </div>
@@ -143,7 +149,9 @@ export function InsightReportsList({
                 <Calendar className='text-primary h-5 w-5' />
               </div>
               <div className='flex flex-col'>
-                <p className='text-sm font-medium'>{t('insightsUi.scheduleTitle', 'Schedule your insights')}</p>
+                <p className='text-sm font-medium'>
+                  {t('insightsUi.scheduleTitle', 'Schedule your insights')}
+                </p>
                 <p className='text-muted-foreground text-xs'>
                   {t('insightsUi.scheduleDescription', 'Automate delivery to your destinations')}
                 </p>
@@ -162,7 +170,9 @@ export function InsightReportsList({
                     {t('insightsUi.newReport', 'New Report')}
                   </Button>
                 </TooltipTrigger>
-                <TooltipContent side='top'>{t('insightsUi.createReportTooltip', 'Create a new report for this insight')}</TooltipContent>
+                <TooltipContent side='top'>
+                  {t('insightsUi.createReportTooltip', 'Create a new report for this insight')}
+                </TooltipContent>
               </Tooltip>
             </TooltipProvider>
           </div>
@@ -238,7 +248,9 @@ export function InsightReportsList({
                             <Play className='h-4 w-4' />
                           </Button>
                         </TooltipTrigger>
-                        <TooltipContent side='top'>{t('insightsUi.runReport', 'Run report')}</TooltipContent>
+                        <TooltipContent side='top'>
+                          {t('insightsUi.runReport', 'Run report')}
+                        </TooltipContent>
                       </Tooltip>
                     </TooltipProvider>
                     <DropdownMenu>
@@ -294,7 +306,9 @@ export function InsightReportsList({
                       <Clock className='text-muted-foreground h-4 w-4' />
                     </div>
                     <div className='flex items-center gap-1.5'>
-                      <span className='text-muted-foreground'>{t('insightsUi.lastRun', 'Last run:')}</span>
+                      <span className='text-muted-foreground'>
+                        {t('insightsUi.lastRun', 'Last run:')}
+                      </span>
                       <span className='font-medium'>
                         {report.lastRunDate ? (
                           <RelativeTime date={new Date(report.lastRunDate)} />
@@ -317,7 +331,10 @@ export function InsightReportsList({
           if (!open) setReportToDelete(null);
         }}
         title={t('insightsUi.deleteReportTitle', 'Delete Report')}
-        description={t('insightsUi.deleteReportDescription', 'Are you sure you want to delete this report? This action cannot be undone.')}
+        description={t(
+          'insightsUi.deleteReportDescription',
+          'Are you sure you want to delete this report? This action cannot be undone.'
+        )}
         confirmLabel={t('common.delete', 'Delete')}
         cancelLabel={t('common.cancel', 'Cancel')}
         onConfirm={() => void handleDelete()}

@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { notificationSettingsService } from '../services';
+import { useTranslation } from 'react-i18next';
 import type {
   NotificationSettingsItem,
   UpdateNotificationSettingsRequest,
@@ -19,6 +20,7 @@ interface UseNotificationSettingsReturn {
 }
 
 export function useNotificationSettings(projectId: string | null): UseNotificationSettingsReturn {
+  const { t } = useTranslation();
   const [settings, setSettings] = useState<NotificationSettingsItem[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -36,11 +38,11 @@ export function useNotificationSettings(projectId: string | null): UseNotificati
       const response = await notificationSettingsService.getSettings();
       setSettings(response.settings);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to load notification settings');
+      setError(err instanceof Error ? err.message : t('notificationsPage.loadSettingsFailed'));
     } finally {
       setIsLoading(false);
     }
-  }, [projectId]);
+  }, [projectId, t]);
 
   const updateSetting = useCallback(
     async (notificationType: NotificationType, data: UpdateNotificationSettingsRequest) => {
@@ -78,6 +80,7 @@ interface UseProjectMembersReturn {
 }
 
 export function useProjectMembers(projectId: string | null): UseProjectMembersReturn {
+  const { t } = useTranslation();
   const [members, setMembers] = useState<ProjectMember[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -95,11 +98,11 @@ export function useProjectMembers(projectId: string | null): UseProjectMembersRe
       const response = await notificationSettingsService.getProjectMembers();
       setMembers(response.members);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to load project members');
+      setError(err instanceof Error ? err.message : t('notificationsPage.loadMembersFailed'));
     } finally {
       setIsLoading(false);
     }
-  }, [projectId]);
+  }, [projectId, t]);
 
   useEffect(() => {
     void fetchMembers();

@@ -25,6 +25,7 @@ import type { ConnectorRunFormData } from '../../../shared/model/types/connector
 import { RequiredType } from '../../../shared/api';
 import { useDataMartContext } from '../../../../data-marts/edit/model';
 import { ConnectorStateSection } from './ConnectorStateSection';
+import { localizeConnectorSpecification } from '../../../shared/utils/connector-metadata';
 
 interface ConnectorRunFormProps {
   configuration: ConnectorDefinitionConfig | null;
@@ -107,7 +108,7 @@ export function ConnectorRunForm({ configuration, onClose, onSubmit }: Connector
               name='runType'
               render={({ field }) => (
                 <FormItem>
-                <FormLabel tooltip={t('connectorRun.runTypeTooltip')}>
+                  <FormLabel tooltip={t('connectorRun.runTypeTooltip')}>
                     {t('connectorRun.runType')}
                   </FormLabel>
                   <FormControl>
@@ -115,7 +116,10 @@ export function ConnectorRunForm({ configuration, onClose, onSubmit }: Connector
                       <FormRadioGroup
                         options={[
                           { value: RunType.INCREMENTAL, label: t('connectorRun.incrementalLoad') },
-                          { value: RunType.MANUAL_BACKFILL, label: t('connectorRun.manualBackfill') },
+                          {
+                            value: RunType.MANUAL_BACKFILL,
+                            label: t('connectorRun.manualBackfill'),
+                          },
                         ]}
                         value={field.value}
                         onChange={field.onChange}
@@ -145,37 +149,40 @@ export function ConnectorRunForm({ configuration, onClose, onSubmit }: Connector
                 .filter(field =>
                   field.attributes?.includes(ConnectorSpecificationAttribute.MANUAL_BACKFILL)
                 )
-                .map(connectorField => (
-                  <FormField
-                    key={connectorField.name}
-                    control={form.control}
-                    name={`data.${connectorField.name}`}
-                    render={() => (
-                      <FormItem>
-                        <FormLabel tooltip={connectorField.description}>
-                          {connectorField.title ?? connectorField.name}
-                        </FormLabel>
-                        <FormControl>
-                          <Input
-                            id={connectorField.name}
-                            placeholder={connectorField.description}
-                            type={getInputType(connectorField.requiredType)}
-                            defaultValue={
-                              typeof connectorField.default === 'string' ||
-                              typeof connectorField.default === 'number'
-                                ? connectorField.default.toString()
-                                : undefined
-                            }
-                            {...form.register(`data.${connectorField.name}`, {
-                              required: true,
-                            })}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                ))}
+                .map(rawConnectorField => {
+                  const connectorField = localizeConnectorSpecification(rawConnectorField);
+                  return (
+                    <FormField
+                      key={connectorField.name}
+                      control={form.control}
+                      name={`data.${connectorField.name}`}
+                      render={() => (
+                        <FormItem>
+                          <FormLabel tooltip={connectorField.description}>
+                            {connectorField.title ?? connectorField.name}
+                          </FormLabel>
+                          <FormControl>
+                            <Input
+                              id={connectorField.name}
+                              placeholder={connectorField.description}
+                              type={getInputType(connectorField.requiredType)}
+                              defaultValue={
+                                typeof connectorField.default === 'string' ||
+                                typeof connectorField.default === 'number'
+                                  ? connectorField.default.toString()
+                                  : undefined
+                              }
+                              {...form.register(`data.${connectorField.name}`, {
+                                required: true,
+                              })}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  );
+                })}
             </FormSection>
           )}
         </FormLayout>

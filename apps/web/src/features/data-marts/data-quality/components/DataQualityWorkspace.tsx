@@ -27,7 +27,7 @@ import {
 import { formatDateShort } from '../../../../utils/date-formatters';
 import {
   areDataQualityConfigsEqual,
-  DATA_QUALITY_CATEGORY_LABELS,
+  getDataQualityCategoryLabel,
   getDataQualityRelationshipPresentation,
   getDisplayedDataQualityFieldRuleKeys,
   getSelectableDataQualityFields,
@@ -226,7 +226,9 @@ export function DataQualityWorkspace({
       <Alert variant='destructive' data-testid='datamartTabQuality'>
         <AlertCircle />
         <AlertTitle>{t('dataQualityUi.loadFailed', 'Unable to load Data Quality')}</AlertTitle>
-        <AlertDescription>{t('dataQualityUi.refreshLater', 'Refresh the page or try again later.')}</AlertDescription>
+        <AlertDescription>
+          {t('dataQualityUi.refreshLater', 'Refresh the page or try again later.')}
+        </AlertDescription>
       </Alert>
     );
   }
@@ -291,12 +293,14 @@ export function DataQualityWorkspace({
     ? t('dataQualityWorkspace.queuing', 'Queuing')
     : t('dataQualityWorkspace.run', 'Run');
   const savedRunUnavailableReason = getRunUnavailableReason({
+    t,
     canRun,
     isMutationBusy,
     isRunActive,
     eligibilityCode,
   });
   const draftRunUnavailableReason = getDraftRunUnavailableReason({
+    t,
     canEdit,
     canStartDraftConfig,
     draftApplicableEnabledChecks,
@@ -414,7 +418,10 @@ export function DataQualityWorkspace({
               {t('runHistory.cancelRun', 'Cancel run')}
             </Button>
           ) : (
-            <DisabledActionReason label='Run' reason={savedRunUnavailableReason}>
+            <DisabledActionReason
+              label={t('dataQualityWorkspace.run', 'Run')}
+              reason={savedRunUnavailableReason}
+            >
               <Button
                 disabled={isMutationBusy || !canRun}
                 onClick={() => {
@@ -488,7 +495,10 @@ export function DataQualityWorkspace({
                     : current
                 );
                 toast.success(
-                  `${DATA_QUALITY_CATEGORY_LABELS[addedRule.category]} added to ${addedRule.scope.fieldPath.join('.')} — not saved yet`
+                  t('dataQualityWorkspace.checkAdded', {
+                    check: getDataQualityCategoryLabel(addedRule.category),
+                    field: addedRule.scope.fieldPath.join('.'),
+                  })
                 );
               }}
               onChange={updateRule}
@@ -560,8 +570,10 @@ export function DataQualityWorkspace({
             <CollapsibleCardHeader>
               <CollapsibleCardHeaderTitle
                 icon={FileCheck2}
-                tooltip='Review the latest Data Quality check results'
-                subtitle={`Last checked ${formatDateShort(latestRun.finishedAt ?? latestRun.createdAt)}`}
+                tooltip={t('dataQualityWorkspace.latestReportTooltip')}
+                subtitle={t('dataQualityUi.lastCheckedWithDate', {
+                  date: formatDateShort(latestRun.finishedAt ?? latestRun.createdAt),
+                })}
               >
                 <h2 id='quality-results-title'>
                   {t('dataQualityWorkspace.latestReport', 'Latest report')}
@@ -572,7 +584,10 @@ export function DataQualityWorkspace({
               <div className='space-y-3'>
                 <header className='flex flex-wrap items-center gap-3'>
                   <p className='text-muted-foreground text-xs'>
-                    From the run on {formatDateShort(latestRun.finishedAt ?? latestRun.createdAt)} ·{' '}
+                    {t('dataQualityWorkspace.fromRunOn', {
+                      date: formatDateShort(latestRun.finishedAt ?? latestRun.createdAt),
+                    })}{' '}
+                    ·{' '}
                     <Link
                       className='hover:text-foreground font-medium hover:underline'
                       to={`/ui/${projectId}/data-marts/${dataMartId}/run-history`}
@@ -631,7 +646,9 @@ export function DataQualityWorkspace({
       {resultsError && (
         <Alert variant='destructive'>
           <AlertCircle />
-          <AlertTitle>{t('dataQualityUi.resultsLoadFailed', 'Unable to load check results')}</AlertTitle>
+          <AlertTitle>
+            {t('dataQualityUi.resultsLoadFailed', 'Unable to load check results')}
+          </AlertTitle>
           <AlertDescription>
             {t(
               'dataQualityUi.resultsLoadDescription',
@@ -649,36 +666,39 @@ function getDataQualityErrorMessage(error: unknown, fallback: string): string {
   return apiError?.message ?? (error instanceof Error ? error.message : fallback);
 }
 
-const RUN_ELIGIBILITY_MESSAGES: Record<
+const RUN_ELIGIBILITY_MESSAGE_KEYS: Record<
   Exclude<DataQualityConfigResponse['runEligibility']['code'], null>,
   string
 > = {
-  NOT_PUBLISHED: 'Publish this Data Mart before running Data Quality checks',
-  OUTPUT_SCHEMA_REQUIRED: 'Configure an Output Schema before running Data Quality checks',
-  DEFINITION_REQUIRED: 'Configure a Data Mart definition before running Data Quality checks',
-  NO_APPLICABLE_CHECKS: 'Enable at least one applicable Data Quality check',
-  ACTIVE_RUN: 'A Data Quality run is already active',
+  NOT_PUBLISHED: 'dataQualityWorkspace.runEligibility.notPublished',
+  OUTPUT_SCHEMA_REQUIRED: 'dataQualityWorkspace.runEligibility.outputSchemaRequired',
+  DEFINITION_REQUIRED: 'dataQualityWorkspace.runEligibility.definitionRequired',
+  NO_APPLICABLE_CHECKS: 'dataQualityWorkspace.runEligibility.noApplicableChecks',
+  ACTIVE_RUN: 'dataQualityWorkspace.runEligibility.activeRun',
 };
 
 function getRunUnavailableReason({
+  t,
   canRun,
   isMutationBusy,
   isRunActive,
   eligibilityCode,
 }: {
+  t: ReturnType<typeof useTranslation>['t'];
   canRun: boolean;
   isMutationBusy: boolean;
   isRunActive: boolean;
   eligibilityCode: DataQualityConfigResponse['runEligibility']['code'];
 }): string | null {
-  if (isMutationBusy) return 'Another Data Quality action is in progress';
-  if (isRunActive) return RUN_ELIGIBILITY_MESSAGES.ACTIVE_RUN;
-  if (eligibilityCode) return RUN_ELIGIBILITY_MESSAGES[eligibilityCode];
-  if (!canRun) return 'Editor access is required to run Data Quality checks';
+  if (isMutationBusy) return t('dataQualityWorkspace.runEligibility.actionInProgress');
+  if (isRunActive) return t(RUN_ELIGIBILITY_MESSAGE_KEYS.ACTIVE_RUN);
+  if (eligibilityCode) return t(RUN_ELIGIBILITY_MESSAGE_KEYS[eligibilityCode]);
+  if (!canRun) return t('dataQualityWorkspace.runEligibility.editorRequiredToRun');
   return null;
 }
 
 function getDraftRunUnavailableReason({
+  t,
   canEdit,
   canStartDraftConfig,
   draftApplicableEnabledChecks,
@@ -686,6 +706,7 @@ function getDraftRunUnavailableReason({
   isRunActive,
   eligibilityCode,
 }: {
+  t: ReturnType<typeof useTranslation>['t'];
   canEdit: boolean;
   canStartDraftConfig: boolean;
   draftApplicableEnabledChecks: number;
@@ -693,11 +714,15 @@ function getDraftRunUnavailableReason({
   isRunActive: boolean;
   eligibilityCode: DataQualityConfigResponse['runEligibility']['code'];
 }): string | null {
-  if (isMutationBusy) return 'Another Data Quality action is in progress';
-  if (isRunActive) return RUN_ELIGIBILITY_MESSAGES.ACTIVE_RUN;
-  if (!canEdit) return 'Editor access is required to save and run Data Quality checks';
-  if (draftApplicableEnabledChecks === 0) return RUN_ELIGIBILITY_MESSAGES.NO_APPLICABLE_CHECKS;
-  if (!canStartDraftConfig && eligibilityCode) return RUN_ELIGIBILITY_MESSAGES[eligibilityCode];
+  if (isMutationBusy) return t('dataQualityWorkspace.runEligibility.actionInProgress');
+  if (isRunActive) return t(RUN_ELIGIBILITY_MESSAGE_KEYS.ACTIVE_RUN);
+  if (!canEdit) return t('dataQualityWorkspace.runEligibility.editorRequiredToSave');
+  if (draftApplicableEnabledChecks === 0) {
+    return t(RUN_ELIGIBILITY_MESSAGE_KEYS.NO_APPLICABLE_CHECKS);
+  }
+  if (!canStartDraftConfig && eligibilityCode) {
+    return t(RUN_ELIGIBILITY_MESSAGE_KEYS[eligibilityCode]);
+  }
   return null;
 }
 

@@ -1,6 +1,7 @@
 import { useState, useEffect, type KeyboardEvent, type ReactNode, useRef } from 'react';
 import { cn } from '@owox/ui/lib/utils';
 import { Textarea } from '@owox/ui/components/textarea';
+import { useTranslation } from 'react-i18next';
 
 export interface InlineEditDescriptionAiContext {
   /** Replace the current value in the open textarea. Does not persist on its own. */
@@ -37,6 +38,7 @@ export function InlineEditDescription({
   readOnly = false,
   aiButton,
 }: InlineEditDescriptionProps) {
+  const { t } = useTranslation();
   const [editedDescription, setEditedDescription] = useState(description ?? '');
   const [isEditing, setIsEditing] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -177,19 +179,19 @@ export function InlineEditDescription({
         {editor}
         <div className='mt-2 text-xs text-neutral-500'>
           <span>
-            Press{' '}
+            {t('inlineEditDescription.pressToSave')}{' '}
             <kbd className='rounded border border-neutral-200 bg-neutral-100 px-1 py-0.5 font-sans dark:border-neutral-900 dark:bg-neutral-900'>
               Ctrl+Enter
             </kbd>{' '}
-            to save •{' '}
+            {t('inlineEditDescription.toSave')} •{' '}
           </span>
           <span>
             <kbd className='rounded border border-neutral-200 bg-neutral-100 px-1 py-0.5 font-sans dark:border-neutral-900 dark:bg-neutral-900'>
               Esc
             </kbd>{' '}
-            to cancel •{' '}
+            {t('inlineEditDescription.toCancel')} •{' '}
           </span>
-          <span>Changes are also saved when you click outside</span>
+          <span>{t('inlineEditDescription.savedOnOutsideClick')}</span>
         </div>
       </div>
     );

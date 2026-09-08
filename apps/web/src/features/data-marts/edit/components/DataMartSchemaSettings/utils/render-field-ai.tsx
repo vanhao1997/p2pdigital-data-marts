@@ -1,4 +1,5 @@
 import type { EditableTextAction } from '@owox/ui/components/common/editable-text';
+import i18n from '../../../../../../i18n';
 import { DataMartMetadataScope } from '../../../../shared';
 import { AiHelperButton } from '../../AiHelperButton';
 import type { SchemaAiHelper } from '../types/ai-helper';
@@ -33,7 +34,7 @@ export function renderFieldAliasAi(
         }}
         isLoading={isLoading}
         disabled={pending !== null && !isLoading}
-        tooltip='Generate alias with AI'
+        tooltip={i18n.t('schemaUi.generateAliasWithAi')}
       />
     );
   };
@@ -66,7 +67,7 @@ export function renderFieldDescriptionAi(
         }}
         isLoading={isLoading}
         disabled={pending !== null && !isLoading}
-        tooltip='Generate description with AI'
+        tooltip={i18n.t('schemaUi.generateDescriptionWithAi')}
       />
     );
   };

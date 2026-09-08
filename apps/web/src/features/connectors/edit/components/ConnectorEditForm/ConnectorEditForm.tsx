@@ -21,6 +21,7 @@ import {
 import { trackEvent } from '../../../../../utils';
 import { resolveEffectiveDataLevel } from '../../../shared/constants/connector-config';
 import { toast } from 'sonner';
+import { useTranslation } from 'react-i18next';
 import { Button } from '@owox/ui/components/button';
 import { RefreshCw } from 'lucide-react';
 import { extractApiError } from '../../../../../app/api/extract-api-error.util';
@@ -65,6 +66,7 @@ export function ConnectorEditForm({
   onDirtyChange,
   isOpen = true,
 }: ConnectorEditFormProps) {
+  const { t } = useTranslation();
   const [isDirty, setIsDirty] = useState(false);
   const [selectedConnector, setSelectedConnector] = useState<ConnectorListItem | null>(null);
   const [selectedNode, setSelectedNode] = useState<string>('');
@@ -112,38 +114,94 @@ export function ConnectorEditForm({
     if (configurationOnly) {
       if (isDynamicPreviewConnector) {
         return [
-          { id: 1, title: 'Configuration', description: 'Set up connector parameters' },
+          {
+            id: 1,
+            title: t('connectorWizard.steps.configuration'),
+            description: t('connectorWizard.steps.configurationDescription'),
+          },
           {
             id: 2,
-            title: isGoogleSheetsConnector ? 'Select Columns' : 'Select Fields',
-            description: isGoogleSheetsConnector ? 'Pick sheet columns' : 'Pick Admicro fields',
+            title: isGoogleSheetsConnector
+              ? t('connectorWizard.steps.selectColumns')
+              : t('connectorWizard.steps.selectFields'),
+            description: isGoogleSheetsConnector
+              ? t('connectorWizard.steps.selectColumnsDescription')
+              : t('connectorWizard.steps.selectAdmicroFieldsDescription'),
           },
         ];
       }
-      return [{ id: 1, title: 'Configuration', description: 'Set up connector parameters' }];
+      return [
+        {
+          id: 1,
+          title: t('connectorWizard.steps.configuration'),
+          description: t('connectorWizard.steps.configurationDescription'),
+        },
+      ];
     }
 
     if (mode === 'fields-only') {
-      return [{ id: 1, title: 'Select Fields', description: 'Pick specific fields' }];
+      return [
+        {
+          id: 1,
+          title: t('connectorWizard.steps.selectFields'),
+          description: t('connectorWizard.steps.selectFieldsDescription'),
+        },
+      ];
     }
 
     if (isGoogleSheetsConnector) {
       return [
-        { id: 1, title: 'Select Connector', description: 'Choose a data source' },
-        { id: 2, title: 'Configuration', description: 'Set up connector parameters' },
-        { id: 3, title: 'Select Columns', description: 'Pick sheet columns' },
-        { id: 4, title: 'Target Setup', description: 'Configure destination' },
+        {
+          id: 1,
+          title: t('connectorWizard.steps.selectConnector'),
+          description: t('connectorWizard.steps.selectConnectorDescription'),
+        },
+        {
+          id: 2,
+          title: t('connectorWizard.steps.configuration'),
+          description: t('connectorWizard.steps.configurationDescription'),
+        },
+        {
+          id: 3,
+          title: t('connectorWizard.steps.selectColumns'),
+          description: t('connectorWizard.steps.selectColumnsDescription'),
+        },
+        {
+          id: 4,
+          title: t('connectorWizard.steps.targetSetup'),
+          description: t('connectorWizard.steps.targetSetupDescription'),
+        },
       ];
     }
 
     return [
-      { id: 1, title: 'Select Connector', description: 'Choose a data source' },
-      { id: 2, title: 'Configuration', description: 'Set up connector parameters' },
-      { id: 3, title: 'Select Nodes', description: 'Choose data nodes' },
-      { id: 4, title: 'Select Fields', description: 'Pick specific fields' },
-      { id: 5, title: 'Target Setup', description: 'Configure destination' },
+      {
+        id: 1,
+        title: t('connectorWizard.steps.selectConnector'),
+        description: t('connectorWizard.steps.selectConnectorDescription'),
+      },
+      {
+        id: 2,
+        title: t('connectorWizard.steps.configuration'),
+        description: t('connectorWizard.steps.configurationDescription'),
+      },
+      {
+        id: 3,
+        title: t('connectorWizard.steps.selectNodes'),
+        description: t('connectorWizard.steps.selectNodesDescription'),
+      },
+      {
+        id: 4,
+        title: t('connectorWizard.steps.selectFields'),
+        description: t('connectorWizard.steps.selectFieldsDescription'),
+      },
+      {
+        id: 5,
+        title: t('connectorWizard.steps.targetSetup'),
+        description: t('connectorWizard.steps.targetSetupDescription'),
+      },
     ];
-  }, [configurationOnly, isDynamicPreviewConnector, isGoogleSheetsConnector, mode]);
+  }, [configurationOnly, isDynamicPreviewConnector, isGoogleSheetsConnector, mode, t]);
 
   const totalSteps = steps.length;
 
@@ -412,12 +470,12 @@ export function ConnectorEditForm({
         const previewFields = await previewConnectorFields(connectorName, configuration);
         if (!previewFields) {
           if (mode === 'fields-only') {
-            setFieldsOnlyPreviewError('Failed to load Google Sheets columns');
+            setFieldsOnlyPreviewError(t('connectorWizard.previewErrors.loadGoogleSheetsColumns'));
           }
           return false;
         }
         if (previewFields.length === 0) {
-          throw new Error('No columns were found in the selected Google Sheets tab');
+          throw new Error(t('connectorWizard.previewErrors.noGoogleSheetsColumns'));
         }
 
         const sheetNode = previewFields[0];
@@ -428,7 +486,7 @@ export function ConnectorEditForm({
         ).filter(fieldName => availableFieldNames.includes(fieldName));
 
         if (availableUserFieldNames.length === 0) {
-          throw new Error('No columns were found in the selected Google Sheets tab');
+          throw new Error(t('connectorWizard.previewErrors.noGoogleSheetsColumns'));
         }
 
         const selectedFieldsToPreserve = options?.selectedFields ?? selectedFields;
@@ -450,7 +508,9 @@ export function ConnectorEditForm({
         const apiError = extractApiError(error) as { message?: string } | undefined;
         const message =
           apiError?.message ??
-          (error instanceof Error ? error.message : 'Failed to load Google Sheets columns');
+          (error instanceof Error
+            ? error.message
+            : t('connectorWizard.previewErrors.loadGoogleSheetsColumns'));
         if (mode === 'fields-only') {
           setFieldsOnlyPreviewError(message);
         }
@@ -462,7 +522,14 @@ export function ConnectorEditForm({
         return false;
       }
     },
-    [connectorConfiguration, mode, previewConnectorFields, selectedConnector?.name, selectedFields]
+    [
+      connectorConfiguration,
+      mode,
+      previewConnectorFields,
+      selectedConnector?.name,
+      selectedFields,
+      t,
+    ]
   );
 
   const loadAdmicroPreviewFields = useCallback(
@@ -484,7 +551,7 @@ export function ConnectorEditForm({
       try {
         const previewFields = await previewConnectorFields(connectorName, configuration);
         if (!previewFields?.length) {
-          throw new Error('No Admicro fields were returned');
+          throw new Error(t('connectorWizard.previewErrors.noAdmicroFields'));
         }
 
         let nodeToPreserve = options?.selectedNode ?? selectedNode;
@@ -494,7 +561,9 @@ export function ConnectorEditForm({
         if (nodeToPreserve) {
           const node = previewFields.find(field => field.name === nodeToPreserve);
           if (!node) {
-            throw new Error(`Admicro report node '${nodeToPreserve}' is no longer available`);
+            throw new Error(
+              t('connectorWizard.previewErrors.admicroNodeUnavailable', { node: nodeToPreserve })
+            );
           }
           const availableFields = new Set(node.fields?.map(field => field.name) ?? []);
           const fieldsToPreserve = options?.selectedFields ?? selectedFields;
@@ -522,7 +591,9 @@ export function ConnectorEditForm({
         const apiError = extractApiError(error) as { message?: string } | undefined;
         const message =
           apiError?.message ??
-          (error instanceof Error ? error.message : 'Failed to load Admicro fields');
+          (error instanceof Error
+            ? error.message
+            : t('connectorWizard.previewErrors.loadAdmicroFields'));
         if (mode === 'fields-only') {
           setFieldsOnlyPreviewError(message);
         }
@@ -542,6 +613,7 @@ export function ConnectorEditForm({
       selectedConnector?.name,
       selectedFields,
       selectedNode,
+      t,
     ]
   );
 
@@ -730,8 +802,12 @@ export function ConnectorEditForm({
           selectedFields={selectedFields}
           onFieldToggle={handleFieldToggle}
           onSelectAllFields={handleSelectAllFields}
-          itemLabel={isGoogleSheetsConnector ? 'columns' : 'fields'}
-          searchPlaceholder={isGoogleSheetsConnector ? 'Search column' : 'Search field'}
+          itemLabel={t(
+            isGoogleSheetsConnector ? 'connectorWizard.columns' : 'connectorWizard.fields'
+          )}
+          searchPlaceholder={t(
+            isGoogleSheetsConnector ? 'connectorWizard.searchColumn' : 'connectorWizard.searchField'
+          )}
           autoSelectDefaultFields={isGoogleSheetsConnector ? autoSelectPreviewDefaults : undefined}
         />
       ) : null;
@@ -753,14 +829,16 @@ export function ConnectorEditForm({
               configuration={connectorConfiguration}
               onFieldToggle={handleFieldToggle}
               onSelectAllFields={handleSelectAllFields}
-              itemLabel={
-                selectedConnector.name === GOOGLE_SHEETS_CONNECTOR_NAME ? 'columns' : 'fields'
-              }
-              searchPlaceholder={
+              itemLabel={t(
                 selectedConnector.name === GOOGLE_SHEETS_CONNECTOR_NAME
-                  ? 'Search column'
-                  : 'Search field'
-              }
+                  ? 'connectorWizard.columns'
+                  : 'connectorWizard.fields'
+              )}
+              searchPlaceholder={t(
+                selectedConnector.name === GOOGLE_SHEETS_CONNECTOR_NAME
+                  ? 'connectorWizard.searchColumn'
+                  : 'connectorWizard.searchField'
+              )}
               autoSelectDefaultFields={
                 selectedConnector.name === GOOGLE_SHEETS_CONNECTOR_NAME
                   ? autoSelectPreviewDefaults
@@ -779,7 +857,13 @@ export function ConnectorEditForm({
                 type='button'
                 size='sm'
                 variant='outline'
-                aria-label={`Retry loading ${isGoogleSheetsConnector ? 'Google Sheets columns' : 'Admicro fields'}`}
+                aria-label={t('connectorWizard.retryLoadingFields', 'Retry loading {{item}}', {
+                  item: t(
+                    isGoogleSheetsConnector
+                      ? 'connectorWizard.googleSheetsColumns'
+                      : 'connectorWizard.admicroFields'
+                  ),
+                })}
                 onClick={() => {
                   fieldsOnlyPreviewStartedForOpenRef.current = true;
                   if (isGoogleSheetsConnector) {
@@ -799,7 +883,7 @@ export function ConnectorEditForm({
                 }}
               >
                 <RefreshCw className='h-4 w-4' />
-                Retry
+                {t('common.retry', 'Retry')}
               </Button>
             </div>
           ) : null;
@@ -845,8 +929,8 @@ export function ConnectorEditForm({
               selectedFields={selectedFields}
               onFieldToggle={handleFieldToggle}
               onSelectAllFields={handleSelectAllFields}
-              itemLabel='columns'
-              searchPlaceholder='Search column'
+              itemLabel={t('connectorWizard.columns')}
+              searchPlaceholder={t('connectorWizard.searchColumn')}
               autoSelectDefaultFields={autoSelectPreviewDefaults}
             />
           ) : null;

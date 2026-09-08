@@ -1,6 +1,7 @@
 import { ExternalAnchor } from '@owox/ui/components/common/external-anchor';
 import { Blocks, KeyRound, RotateCcw, Share2 } from 'lucide-react';
 import type { ReactNode } from 'react';
+import { useTranslation } from 'react-i18next';
 import { ConfirmationDialog } from '../../../shared/components/ConfirmationDialog/ConfirmationDialog';
 import { GitHubIcon } from '../../../shared/icons';
 import { repositoryPath } from '../repository';
@@ -33,6 +34,7 @@ export function InstallPluginDialog({
   onConfirm,
   isInstalling,
 }: InstallPluginDialogProps) {
+  const { t } = useTranslation();
   // Source URLs are untrusted strings on the wire. Only absolute https becomes an href.
   const ownerHref = safeHttpsUrl(plugin.source.ownerUrl);
   const repositoryHref = safeHttpsUrl(plugin.source.repositoryUrl);
@@ -42,9 +44,13 @@ export function InstallPluginDialog({
     <ConfirmationDialog
       open={open}
       onOpenChange={onOpenChange}
-      title='Install this plugin?'
-      description='Installing is personal. It does not change who else can find this plugin.'
-      confirmLabel={isInstalling ? 'Installing…' : 'Install'}
+      title={t('pluginsPage.installDialog.title')}
+      description={t('pluginsPage.installDialog.description')}
+      confirmLabel={
+        isInstalling
+          ? t('pluginsPage.installDialog.installing')
+          : t('pluginsPage.installDialog.install')
+      }
       confirmDisabled={isInstalling}
       variant='outline'
       onConfirm={onConfirm}
@@ -74,7 +80,9 @@ export function InstallPluginDialog({
               */}
               <span className='text-muted-foreground flex min-w-0 items-center gap-1.5 overflow-hidden text-xs'>
                 <span className='shrink-0' data-testid='install-version'>
-                  {plugin.currentSemver ? `v${plugin.currentSemver}` : 'No version'}
+                  {plugin.currentSemver
+                    ? `v${plugin.currentSemver}`
+                    : t('pluginsPage.installDialog.noVersion')}
                 </span>
 
                 {/* §16: the owner is always disclosed. */}
@@ -128,13 +136,13 @@ export function InstallPluginDialog({
           data-testid='install-data-notice'
         >
           <Fact icon={<KeyRound className='size-4 shrink-0' aria-hidden />}>
-            Acts with your access to P2PDigital Data Marts.
+            {t('pluginsPage.installDialog.accessFact')}
           </Fact>
           <Fact icon={<Share2 className='size-4 shrink-0' aria-hidden />}>
-            Anything it reads can leave P2PDigital and reach the plugin publisher.
+            {t('pluginsPage.installDialog.dataFact')}
           </Fact>
           <Fact icon={<RotateCcw className='size-4 shrink-0' aria-hidden />}>
-            Reinstalling restores nothing the plugin kept on its own side.
+            {t('pluginsPage.installDialog.reinstallFact')}
           </Fact>
         </div>
       </div>

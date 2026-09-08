@@ -14,9 +14,11 @@ import { isCancellableDataMartRunStatus } from '../utils/data-mart-run-cancellat
 import { BaseRunTriggerHandlerService } from './base-run-trigger-handler.service';
 import { DataMartRunService } from './data-mart-run.service';
 import {
+  DATA_QUALITY_RUN_EXECUTION_ERROR_CODE,
   DATA_QUALITY_RUN_EXECUTION_ERROR_MESSAGE,
   DataQualityRunService,
 } from './data-quality-run.service';
+import { serializeOperationalError } from '../utils/run-error-message';
 
 const DATA_QUALITY_TRIGGER_HEARTBEAT_INTERVAL_MS = 5 * 60 * 1000;
 
@@ -137,7 +139,13 @@ export class DataQualityRunTriggerHandlerService extends BaseRunTriggerHandlerSe
 
   protected override async failOrphanedRun(run: DataMartRun): Promise<void> {
     run.status = DataMartRunStatus.FAILED;
-    run.errors = [DATA_QUALITY_RUN_EXECUTION_ERROR_MESSAGE];
+    run.errors = [
+      serializeOperationalError(DATA_QUALITY_RUN_EXECUTION_ERROR_MESSAGE, {
+        code: DATA_QUALITY_RUN_EXECUTION_ERROR_CODE,
+        message: DATA_QUALITY_RUN_EXECUTION_ERROR_MESSAGE,
+        at: this.systemClock.now(),
+      }),
+    ];
     run.finishedAt = this.systemClock.now();
     if (run.dataQualitySummary) {
       run.dataQualitySummary = {

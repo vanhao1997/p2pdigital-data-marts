@@ -174,7 +174,12 @@ export function SecureJsonInput({
               </div>
             </TooltipTrigger>
             <TooltipContent>
-              <p>{t('secureJson.lockedContent', 'Content is locked in masked mode. Click the eye icon to enable editing.')}</p>
+              <p>
+                {t(
+                  'secureJson.lockedContent',
+                  'Content is locked in masked mode. Click the eye icon to enable editing.'
+                )}
+              </p>
             </TooltipContent>
           </Tooltip>
         </TooltipProvider>

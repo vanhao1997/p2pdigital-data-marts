@@ -34,7 +34,12 @@ export function WebhookSection({
   return (
     <FormSection title={t('notificationsPage.webhook', 'Webhook')}>
       <FieldItem>
-        <FieldLabel tooltip={t('notificationsPage.webhookTooltip', 'Enter the URL where webhook notifications should be sent')}>
+        <FieldLabel
+          tooltip={t(
+            'notificationsPage.webhookTooltip',
+            'Enter the URL where webhook notifications should be sent'
+          )}
+        >
           {t('notificationsPage.webhookUrl', 'Webhook URL')}
         </FieldLabel>
         <div className='flex gap-2'>
@@ -53,7 +58,11 @@ export function WebhookSection({
             onClick={onTest}
             disabled={(disabled ?? false) || (isTesting ?? false) || !webhookUrl}
           >
-            {isTesting ? <Loader2 className='h-4 w-4 animate-spin' /> : t('notificationsPage.test', 'Test')}
+            {isTesting ? (
+              <Loader2 className='h-4 w-4 animate-spin' />
+            ) : (
+              t('notificationsPage.test', 'Test')
+            )}
           </Button>
         </div>
         {testError && (
@@ -71,9 +80,14 @@ export function WebhookSection({
         <FieldDescription>
           <Accordion variant='common' type='single' collapsible>
             <AccordionItem value='webhook-info'>
-              <AccordionTrigger>{t('notificationsPage.howWebhooksWork', 'How webhooks work?')}</AccordionTrigger>
+              <AccordionTrigger>
+                {t('notificationsPage.howWebhooksWork', 'How webhooks work?')}
+              </AccordionTrigger>
               <AccordionContent>
-                {t('notificationsPage.webhookDescription', 'Webhooks send real-time notifications directly to your endpoint. The request payload contains event details in JSON format.')}
+                {t(
+                  'notificationsPage.webhookDescription',
+                  'Webhooks send real-time notifications directly to your endpoint. The request payload contains event details in JSON format.'
+                )}
               </AccordionContent>
             </AccordionItem>
           </Accordion>

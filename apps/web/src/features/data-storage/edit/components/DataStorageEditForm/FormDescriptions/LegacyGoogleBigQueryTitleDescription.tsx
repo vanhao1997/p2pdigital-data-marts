@@ -26,9 +26,7 @@ export default function LegacyGoogleBigQueryTitleDescription() {
             </ExternalAnchor>
             {t('storageHelp.legacyBigQuery.separateStorageSuffix')}
           </p>
-          <p className='mb-2'>
-            {t('storageHelp.legacyBigQuery.contactSupport')}
-          </p>
+          <p className='mb-2'>{t('storageHelp.legacyBigQuery.contactSupport')}</p>
         </AccordionContent>
       </AccordionItem>
     </Accordion>

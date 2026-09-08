@@ -15,13 +15,16 @@ export function RoleHelpAccordion() {
         <AccordionTrigger>{t('membersPage.roleHelp.question')}</AccordionTrigger>
         <AccordionContent>
           <p className='mb-2'>
-            <strong>{t('requestAccessPage.roles.viewer')}</strong> — {t('membersPage.roleHelp.businessUser')}
+            <strong>{t('requestAccessPage.roles.viewer')}</strong> —{' '}
+            {t('membersPage.roleHelp.businessUser')}
           </p>
           <p className='mb-2'>
-            <strong>{t('requestAccessPage.roles.editor')}</strong> — {t('membersPage.roleHelp.technicalUser')}
+            <strong>{t('requestAccessPage.roles.editor')}</strong> —{' '}
+            {t('membersPage.roleHelp.technicalUser')}
           </p>
           <p className='mb-2'>
-            <strong>{t('requestAccessPage.roles.admin')}</strong> — {t('membersPage.roleHelp.projectAdmin')}
+            <strong>{t('requestAccessPage.roles.admin')}</strong> —{' '}
+            {t('membersPage.roleHelp.projectAdmin')}
           </p>
         </AccordionContent>
       </AccordionItem>
@@ -38,10 +41,12 @@ export function ScopeHelpAccordion() {
         <AccordionTrigger>{t('membersPage.scopeHelp.question')}</AccordionTrigger>
         <AccordionContent>
           <p className='mb-2'>
-            <strong>{t('membersPage.entireProject')}</strong> — {t('membersPage.scopeHelp.entireProject')}
+            <strong>{t('membersPage.entireProject')}</strong> —{' '}
+            {t('membersPage.scopeHelp.entireProject')}
           </p>
           <p className='mb-2'>
-            <strong>{t('membersPage.scopeHelp.selectedContextsLabel')}</strong> — {t('membersPage.scopeHelp.selectedContexts')}
+            <strong>{t('membersPage.scopeHelp.selectedContextsLabel')}</strong> —{' '}
+            {t('membersPage.scopeHelp.selectedContexts')}
           </p>
         </AccordionContent>
       </AccordionItem>

@@ -298,7 +298,8 @@ function processDocumentLinks(fileContent, filePaths) {
   return fileContent.replace(linkRegex, (fullMatch, linkText, originalLinkPath) => {
     let normalizedLinkPath;
     if (filePaths.destinationPath === rootContentIndexFile && linkText === 'Source Code') {
-      normalizedLinkPath = 'https://github.com/vanhao1997/p2pdigital-data-marts/tree/main/' + originalLinkPath;
+      normalizedLinkPath =
+        'https://github.com/vanhao1997/p2pdigital-data-marts/tree/main/' + originalLinkPath;
     } else if (originalLinkPath.startsWith('#')) {
       normalizedLinkPath = originalLinkPath;
     } else {

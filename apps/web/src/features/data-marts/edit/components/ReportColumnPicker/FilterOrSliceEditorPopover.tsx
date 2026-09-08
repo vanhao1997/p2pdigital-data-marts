@@ -300,6 +300,7 @@ interface TabToggleProps {
 }
 
 function TabToggle({ tab, onChange }: TabToggleProps) {
+  const { t } = useTranslation();
   return (
     <div className='flex gap-1 rounded-md border p-0.5'>
       <button
@@ -313,7 +314,7 @@ function TabToggle({ tab, onChange }: TabToggleProps) {
           onChange('filter');
         }}
       >
-        Filter
+        {t('reportColumnPicker.filterTab')}
       </button>
       <button
         type='button'
@@ -326,19 +327,18 @@ function TabToggle({ tab, onChange }: TabToggleProps) {
           onChange('slice');
         }}
       >
-        Slice
+        {t('reportColumnPicker.sliceTab')}
       </button>
     </div>
   );
 }
 
 function SliceBanner() {
+  const { t } = useTranslation();
   return (
     <div className='bg-muted/40 flex items-start gap-2 rounded p-2 text-[11px]'>
       <Layers className='h-4 w-4 shrink-0 text-blue-600' />
-      <div>
-        Slices filter the <b>joined data mart</b> before it is joined — reducing rows pulled in.
-      </div>
+      <div>{t('reportColumnPicker.slicesBanner')}</div>
     </div>
   );
 }

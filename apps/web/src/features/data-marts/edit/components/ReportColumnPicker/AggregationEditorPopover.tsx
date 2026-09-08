@@ -188,7 +188,10 @@ export function AggregationEditorPopover(props: AggregationEditorPopoverProps) {
                 chooseBucket(value as DateTruncUnit);
               }}
             >
-              <SelectTrigger className='w-full' aria-label={t('reportColumnPicker.groupByBucket', 'Group by bucket')}>
+              <SelectTrigger
+                className='w-full'
+                aria-label={t('reportColumnPicker.groupByBucket', 'Group by bucket')}
+              >
                 <SelectValue placeholder={t('reportColumnPicker.noBucket', 'No bucket')} />
               </SelectTrigger>
               <SelectContent>
@@ -219,11 +222,18 @@ export function AggregationEditorPopover(props: AggregationEditorPopoverProps) {
                     setTimeZone(value === NO_TIME_ZONE_VALUE ? null : value);
                   }}
                 >
-                  <SelectTrigger className='w-full' aria-label={t('reportColumnPicker.timeZone', 'Time zone')}>
-                    <SelectValue placeholder={t('reportColumnPicker.noConversion', 'No conversion')} />
+                  <SelectTrigger
+                    className='w-full'
+                    aria-label={t('reportColumnPicker.timeZone', 'Time zone')}
+                  >
+                    <SelectValue
+                      placeholder={t('reportColumnPicker.noConversion', 'No conversion')}
+                    />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value={NO_TIME_ZONE_VALUE}>{t('reportColumnPicker.noConversion', 'No conversion')}</SelectItem>
+                    <SelectItem value={NO_TIME_ZONE_VALUE}>
+                      {t('reportColumnPicker.noConversion', 'No conversion')}
+                    </SelectItem>
                     {DATE_TRUNC_TIME_ZONES.map(tz => (
                       <SelectItem key={tz} value={tz}>
                         {tz}

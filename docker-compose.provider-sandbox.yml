@@ -1,0 +1,55 @@
+services:
+  redis:
+    profiles: [provider-sandbox]
+    image: redis:7.4-alpine
+    command: ['redis-server', '--appendonly', 'no', '--save', '']
+    expose:
+      - '6379'
+    networks:
+      - provider-private
+
+  provider-sandbox:
+    profiles: [provider-sandbox]
+    build:
+      context: .
+      dockerfile: test/provider-sandbox/Dockerfile
+    expose:
+      - '8099'
+    networks:
+      - provider-private
+
+  provider-sandbox-contract:
+    profiles: [provider-sandbox]
+    image: node:22-alpine
+    working_dir: /repo
+    volumes:
+      - .:/repo:ro
+    depends_on:
+      provider-sandbox:
+        condition: service_healthy
+    environment:
+      PROVIDER_SANDBOX_URL: http://provider-sandbox:8099
+    command: ['node', 'test/provider-sandbox/adapter-roundtrip.mjs']
+
+  admicro-extractor:
+    profiles: [provider-sandbox]
+    build:
+      context: ./apps/admicro-extractor
+    environment:
+      NODE_ENV: production
+      PORT: 8091
+      ADMICRO_EXTRACTOR_ENABLED: 'true'
+      ADMICRO_EXTRACTOR_SHARED_SECRET: sandbox-secret
+      ADMICRO_EXTRACTOR_NONCE_STORE: redis
+      ADMICRO_EXTRACTOR_REDIS_URL: redis://redis:6379
+    depends_on:
+      redis:
+        condition: service_started
+    expose:
+      - '8091'
+    networks:
+      - provider-private
+
+networks:
+  provider-private:
+    name: owox-provider-private

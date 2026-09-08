@@ -112,7 +112,7 @@ describe('DataQualityRunHistoryDetails', () => {
     fireEvent.click(screen.getByRole('button', { name: 'SQL' }));
 
     expect(screen.getByText('SELECT * FROM source WHERE amount < 0')).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: 'Copy to Clipboard' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Copy to clipboard' })).toBeInTheDocument();
 
     expect(screen.getByText('Run snapshot')).toBeInTheDocument();
     expect(screen.getAllByText('SQL')).toHaveLength(2);
@@ -242,7 +242,7 @@ describe('DataQualityRunHistoryDetails', () => {
     const resultCard = screen.getByTestId('quality-result-relationship-result');
     expect(screen.getByText('Relationship integrity · orders')).toBeInTheDocument();
     expect(screen.getByText('customer_id → id, region_id → region_id')).toBeInTheDocument();
-    expect(screen.getByText('Relationship ID: rel-1')).toBeInTheDocument();
+    expect(screen.getByText('Relationship rel-1')).toBeInTheDocument();
     expect(resultCard).toContainElement(screen.getByText('Relationship integrity · orders'));
   });
 

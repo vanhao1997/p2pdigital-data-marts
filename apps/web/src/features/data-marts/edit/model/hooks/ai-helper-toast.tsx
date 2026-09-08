@@ -1,4 +1,5 @@
 import { toast } from 'sonner';
+import i18n from '../../../../../i18n';
 
 /**
  * BigQuery access errors arrive as raw API strings like
@@ -127,11 +128,14 @@ function renderErrorToast(
                   opacity: 0.85,
                 }}
               >
-                Show technical details
+                {i18n.t('uiFeedback.showTechnicalDetails')}
               </button>
             ))}
         </span>
-        <DismissButton toastId={`ai-helper-error-${dataMartId}`} label='Dismiss error' />
+        <DismissButton
+          toastId={`ai-helper-error-${dataMartId}`}
+          label={i18n.t('uiFeedback.dismissError')}
+        />
       </span>
     ),
     { duration: Infinity, id: `ai-helper-error-${dataMartId}` }
@@ -156,11 +160,11 @@ export function showAiHelperCancelledToast(dataMartId: string): void {
   toast.custom(
     () => (
       <span style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-        <span>
-          AI suggestion generation was cancelled because you left the page. Run it again when you
-          are ready.
-        </span>
-        <DismissButton toastId={`ai-helper-cancelled-${dataMartId}`} label='Dismiss notice' />
+        <span>{i18n.t('uiFeedback.aiRunCanceled')}</span>
+        <DismissButton
+          toastId={`ai-helper-cancelled-${dataMartId}`}
+          label={i18n.t('uiFeedback.dismissNotice')}
+        />
       </span>
     ),
     { duration: Infinity, id: `ai-helper-cancelled-${dataMartId}` }

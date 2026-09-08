@@ -419,7 +419,9 @@ export function InsightEditor({
                 onValueChange={setQuery}
               />
               <CommandList className='flex-1 overflow-auto'>
-                {insightsLoading && <div className='p-2 text-sm opacity-60'>{t('common.loading')}</div>}
+                {insightsLoading && (
+                  <div className='p-2 text-sm opacity-60'>{t('common.loading')}</div>
+                )}
                 {!insightsLoading &&
                   insights
                     .filter(i => (excludeInsightId ? i.id !== excludeInsightId : true))
@@ -444,9 +446,7 @@ export function InsightEditor({
                     .length === 0 && (
                     <div className='flex items-start gap-2 p-2 text-sm opacity-60'>
                       <Lightbulb className='mt-0.5 h-4 w-4 shrink-0' aria-hidden='true' />
-                      <span>
-                        {t('insightsUi.noInsightsYet')}
-                      </span>
+                      <span>{t('insightsUi.noInsightsYet')}</span>
                     </div>
                   )}
               </CommandList>

@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Sigma } from 'lucide-react';
 import { cn } from '@owox/ui/lib/utils';
 import type { DateTruncUnit } from '../../../shared/types/output-config';
@@ -53,6 +54,7 @@ export function RowAggregationIcon({
   onClose,
   onApplyDraft,
 }: RowAggregationIconProps) {
+  const { t } = useTranslation();
   const [open, setOpen] = useState(autoOpen);
   const count = activeFunctions.length + (activeBucket !== null ? 1 : 0);
   const isActive = count > 0;
@@ -65,7 +67,10 @@ export function RowAggregationIcon({
   const trigger = (
     <button
       type='button'
-      aria-label={isActive ? 'Manage aggregations' : 'Add aggregation'}
+      aria-label={t(
+        isActive ? 'reportColumnPicker.manageAggregations' : 'reportColumnPicker.addAggregation',
+        isActive ? 'Manage aggregations' : 'Add aggregation'
+      )}
       className={cn(
         'flex h-6 w-6 items-center justify-center gap-0.5 rounded transition-opacity',
         isActive

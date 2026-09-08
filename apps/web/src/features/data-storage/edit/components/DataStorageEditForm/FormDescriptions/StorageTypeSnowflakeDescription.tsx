@@ -15,9 +15,7 @@ const StorageTypeSnowflakeDescription: React.FC = () => {
       <AccordionItem value='snowflake-setup'>
         <AccordionTrigger>{t('storageHelp.snowflake.title')}</AccordionTrigger>
         <AccordionContent>
-          <p className='mb-2'>
-            {t('storageHelp.snowflake.intro')}
-          </p>
+          <p className='mb-2'>{t('storageHelp.snowflake.intro')}</p>
           <p className='mb-2'>{t('storageHelp.snowflake.stepsIntro')}</p>
           <ol className='list-inside list-decimal space-y-2 text-sm'>
             <li>
@@ -27,16 +25,10 @@ const StorageTypeSnowflakeDescription: React.FC = () => {
               </ExternalAnchor>{' '}
               {t('storageHelp.snowflake.accountSuffix')}
             </li>
-            <li>
-              {t('storageHelp.snowflake.privileges')}
-            </li>
-            <li>
-              {t('storageHelp.snowflake.auth')}
-            </li>
+            <li>{t('storageHelp.snowflake.privileges')}</li>
+            <li>{t('storageHelp.snowflake.auth')}</li>
             <li>{t('storageHelp.snowflake.connection')}</li>
-            <li>
-              {t('storageHelp.snowflake.path')}
-            </li>
+            <li>{t('storageHelp.snowflake.path')}</li>
           </ol>
         </AccordionContent>
       </AccordionItem>

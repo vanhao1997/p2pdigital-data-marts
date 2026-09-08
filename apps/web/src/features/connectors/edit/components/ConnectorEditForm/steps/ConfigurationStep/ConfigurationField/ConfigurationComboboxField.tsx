@@ -1,5 +1,6 @@
 import type { ConnectorSpecificationResponseApiDto } from '../../../../../../shared/api/types/index.ts';
 import { Combobox } from '../../../../../../../../shared/components/Combobox/combobox.tsx';
+import { useTranslation } from 'react-i18next';
 
 interface ConfigurationComboboxFieldProps {
   specification: ConnectorSpecificationResponseApiDto;
@@ -14,6 +15,7 @@ export function ConfigurationComboboxField({
   onValueChange,
   specOptions,
 }: ConfigurationComboboxFieldProps) {
+  const { t } = useTranslation();
   const { name, placeholder, default: defaultValue } = specification;
   const displayName = specification.title ?? specification.name;
 
@@ -29,8 +31,8 @@ export function ConfigurationComboboxField({
       onValueChange={(value: string) => {
         onValueChange(name, value);
       }}
-      placeholder={placeholder ?? `Select ${displayName.toLowerCase()}`}
-      emptyMessage='No options available'
+      placeholder={placeholder ?? t('connectorWizard.selectValue', { name: displayName })}
+      emptyMessage={t('connectorWizard.noOptionsAvailable')}
       className='w-full'
     />
   );

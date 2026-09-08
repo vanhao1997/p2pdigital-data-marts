@@ -101,7 +101,9 @@ export function EditApiKeySheet({ apiKey, onClose, onUpdated, onRevoke }: EditAp
 
   const { control, handleSubmit, reset } = form;
 
-  const createdAt = apiKey?.createdAt ? formatDateShort(apiKey.createdAt) : t('common.unknown', 'Unknown');
+  const createdAt = apiKey?.createdAt
+    ? formatDateShort(apiKey.createdAt)
+    : t('common.unknown', 'Unknown');
   const lastAuthenticatedAt = apiKey?.lastAuthenticatedAt
     ? formatDateShort(apiKey.lastAuthenticatedAt)
     : t('apiKeysPage.table.never', 'Never');
@@ -148,7 +150,12 @@ export function EditApiKeySheet({ apiKey, onClose, onUpdated, onRevoke }: EditAp
           <SheetTitle ref={titleRef} tabIndex={-1} className='focus:outline-none'>
             {t('apiKeysPage.edit.title', 'API Key Details')}
           </SheetTitle>
-          <SheetDescription>{t('apiKeysPage.edit.description', 'Manage this API key and review integration details.')}</SheetDescription>
+          <SheetDescription>
+            {t(
+              'apiKeysPage.edit.description',
+              'Manage this API key and review integration details.'
+            )}
+          </SheetDescription>
         </SheetHeader>
 
         <Form {...form}>
@@ -160,7 +167,12 @@ export function EditApiKeySheet({ apiKey, onClose, onUpdated, onRevoke }: EditAp
                   name='name'
                   render={({ field }) => (
                     <FormItem>
-                      <ApiKeyFormLabel description={t('apiKeysPage.edit.nameHelp', 'Friendly label used to identify this API key.')}>
+                      <ApiKeyFormLabel
+                        description={t(
+                          'apiKeysPage.edit.nameHelp',
+                          'Friendly label used to identify this API key.'
+                        )}
+                      >
                         {t('common.name', 'Name')}
                       </ApiKeyFormLabel>
                       <FormControl>
@@ -171,7 +183,12 @@ export function EditApiKeySheet({ apiKey, onClose, onUpdated, onRevoke }: EditAp
                   )}
                 />
                 <FormItem>
-                  <ApiKeyFormLabel description={t('apiKeysPage.edit.idHelp', 'Non-secret identifier used in status output, logs, support, and debugging.')}>
+                  <ApiKeyFormLabel
+                    description={t(
+                      'apiKeysPage.edit.idHelp',
+                      'Non-secret identifier used in status output, logs, support, and debugging.'
+                    )}
+                  >
                     API Key ID
                   </ApiKeyFormLabel>
                   <div className='bg-muted flex items-center justify-between gap-2 rounded-md px-3 py-2'>
@@ -184,7 +201,10 @@ export function EditApiKeySheet({ apiKey, onClose, onUpdated, onRevoke }: EditAp
                       aria-label={t('apiKeysPage.table.copyId', 'Copy API Key ID')}
                       onClick={() => {
                         if (apiKey)
-                          void copyToClipboard(apiKey.apiKeyId, t('apiKeysPage.table.idCopied', 'API Key ID copied'));
+                          void copyToClipboard(
+                            apiKey.apiKeyId,
+                            t('apiKeysPage.table.idCopied', 'API Key ID copied')
+                          );
                       }}
                     >
                       <Copy className='size-3.5' />
@@ -194,7 +214,10 @@ export function EditApiKeySheet({ apiKey, onClose, onUpdated, onRevoke }: EditAp
                 <MetadataItem
                   label={t('apiKeysPage.table.expires', 'Expires')}
                   value={<ApiKeyExpirationValue expiresAt={apiKey?.expiresAt} focusable />}
-                  description={t('apiKeysPage.edit.expiresHelp', 'UTC date when this API key stops working. Never means it does not expire automatically.')}
+                  description={t(
+                    'apiKeysPage.edit.expiresHelp',
+                    'UTC date when this API key stops working. Never means it does not expire automatically.'
+                  )}
                 />
                 <MetadataItem
                   label={t('apiKeysPage.edit.created', 'Created')}
@@ -204,28 +227,53 @@ export function EditApiKeySheet({ apiKey, onClose, onUpdated, onRevoke }: EditAp
                 <MetadataItem
                   label={t('apiKeysPage.table.lastAuthenticated', 'Last authenticated')}
                   value={lastAuthenticatedAt}
-                  description={t('apiKeysPage.edit.lastAuthenticatedHelp', 'Most recent successful authentication with this API key.')}
+                  description={t(
+                    'apiKeysPage.edit.lastAuthenticatedHelp',
+                    'Most recent successful authentication with this API key.'
+                  )}
                 />
               </FormSection>
 
-              <FormSection title={t('apiKeysPage.edit.credentials', 'Credentials')} name='api-key-credentials'>
+              <FormSection
+                title={t('apiKeysPage.edit.credentials', 'Credentials')}
+                name='api-key-credentials'
+              >
                 <FormItem>
-                  <ApiKeyFormLabel description={t('apiKeysPage.edit.keyHelp', 'Full encoded API Key shown only once. Store it securely.')}>
+                  <ApiKeyFormLabel
+                    description={t(
+                      'apiKeysPage.edit.keyHelp',
+                      'Full encoded API Key shown only once. Store it securely.'
+                    )}
+                  >
                     API Key
                   </ApiKeyFormLabel>
-                  <p className='text-muted-foreground text-sm'>{t('apiKeysPage.edit.unavailableNotice', 'The API Key is only shown once in the creation dialog. If you no longer have it, create a new API key and revoke this one.')}</p>
+                  <p className='text-muted-foreground text-sm'>
+                    {t(
+                      'apiKeysPage.edit.unavailableNotice',
+                      'The API Key is only shown once in the creation dialog. If you no longer have it, create a new API key and revoke this one.'
+                    )}
+                  </p>
                 </FormItem>
               </FormSection>
 
               <ApiKeyDocumentationSection name='api-key-documentation' />
 
-              <FormSection title={t('apiKeysPage.edit.dangerZone', 'Danger zone')} name='api-key-danger-zone' defaultOpen={false}>
+              <FormSection
+                title={t('apiKeysPage.edit.dangerZone', 'Danger zone')}
+                name='api-key-danger-zone'
+                defaultOpen={false}
+              >
                 <FormItem>
                   <div className='flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between'>
                     <div className='space-y-1'>
-                      <p className='text-sm font-medium'>{t('apiKeysPage.edit.revokeTitle', 'Revoke this API key')}</p>
+                      <p className='text-sm font-medium'>
+                        {t('apiKeysPage.edit.revokeTitle', 'Revoke this API key')}
+                      </p>
                       <p className='text-muted-foreground text-sm'>
-                        {t('apiKeysPage.edit.revokeDescription', 'Stop future authentications for this key. This action cannot be undone.')}
+                        {t(
+                          'apiKeysPage.edit.revokeDescription',
+                          'Stop future authentications for this key. This action cannot be undone.'
+                        )}
                       </p>
                     </div>
                     <Button

@@ -86,7 +86,10 @@ export function ScheduledTriggerActionsCell({
         open={isDeleteDialogOpen}
         onOpenChange={setIsDeleteDialogOpen}
         title={t('triggerForm.deleteTitle', 'Delete Scheduled Trigger')}
-        description={t('triggerForm.deleteDescription', 'Are you sure you want to delete this scheduled trigger? This action cannot be undone.')}
+        description={t(
+          'triggerForm.deleteDescription',
+          'Are you sure you want to delete this scheduled trigger? This action cannot be undone.'
+        )}
         confirmLabel={t('common.delete', 'Delete')}
         cancelLabel={t('triggerForm.cancel', 'Cancel')}
         onConfirm={handleDelete}

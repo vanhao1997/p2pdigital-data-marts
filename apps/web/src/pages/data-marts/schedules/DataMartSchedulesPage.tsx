@@ -272,7 +272,9 @@ function DataMartSchedulesPageContent() {
           getScheduledTriggerTypeLabel(trigger.type),
           getScheduledTriggerRunTargetTitle(trigger, connectors, t),
           trigger.cronExpression,
-          trigger.isActive ? t('common.active', 'Active') : t('projectDataMartPages.disabled', 'Disabled'),
+          trigger.isActive
+            ? t('common.active', 'Active')
+            : t('projectDataMartPages.disabled', 'Disabled'),
           trigger.createdByUser?.fullName,
           trigger.createdByUser?.email,
         ])

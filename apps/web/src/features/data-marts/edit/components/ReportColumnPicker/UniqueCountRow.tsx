@@ -1,4 +1,6 @@
 import { useId } from 'react';
+import { useTranslation } from 'react-i18next';
+import type { TFunction } from 'i18next';
 import { cn } from '@owox/ui/lib/utils';
 import { Checkbox } from '@owox/ui/components/checkbox';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@owox/ui/components/tooltip';
@@ -13,41 +15,70 @@ import type {
 // reasons either of them can give. The Data Mart is named in every one: the row itself no longer
 // does, and a hint about "this Data Mart" beside a joined row is ambiguous with the report's own.
 // The name never opens a sentence, so the nameless fallback needs no separate casing.
-const UNIQUE_COUNT_HINT_CAUSES: Record<UniqueCountUnavailableReason, (name: string) => string> = {
+const UNIQUE_COUNT_HINT_CAUSES: Record<
+  UniqueCountUnavailableReason,
+  (name: string, t: TFunction) => string
+> = {
   // One reason, not two: the main mart's payload has already had its hidden fields stripped, so the
   // client cannot tell an absent key from a hidden one — and a wrong cause is worse than a broad one.
-  'primary-key-unavailable': name =>
-    `No Primary Key is available for reporting in ${name}, so unique values can't be counted`,
-  'no-primary-key': name => `Primary Key is not set for ${name}`,
-  'disconnected-primary-key': name =>
-    `Part of the Primary Key of ${name} is disconnected, so unique values can't be counted`,
-  'nested-primary-key': name => `Unique Count doesn't support the nested Primary Key of ${name}`,
+  'primary-key-unavailable': (name, t) =>
+    t(
+      'reportColumnPicker.uniqueCountPrimaryKeyUnavailable',
+      "No Primary Key is available for reporting in {{name}}, so unique values can't be counted",
+      { name }
+    ),
+  'no-primary-key': (name, t) =>
+    t('reportColumnPicker.uniqueCountNoPrimaryKey', 'Primary Key is not set for {{name}}', {
+      name,
+    }),
+  'disconnected-primary-key': (name, t) =>
+    t(
+      'reportColumnPicker.uniqueCountDisconnectedPrimaryKey',
+      "Part of the Primary Key of {{name}} is disconnected, so unique values can't be counted",
+      { name }
+    ),
+  'nested-primary-key': (name, t) =>
+    t(
+      'reportColumnPicker.uniqueCountNestedPrimaryKey',
+      "Unique Count doesn't support the nested Primary Key of {{name}}",
+      { name }
+    ),
   // Both causes in one sentence: naming only the nesting sent the user to fix that and left the
   // metric just as unavailable, for a reason they were never shown.
-  'nested-and-disconnected-primary-key': name =>
-    `The Primary Key of ${name} is a nested field, which Unique Count doesn't support, and part of it is disconnected`,
+  'nested-and-disconnected-primary-key': (name, t) =>
+    t(
+      'reportColumnPicker.uniqueCountNestedAndDisconnectedPrimaryKey',
+      "The Primary Key of {{name}} is a nested field, which Unique Count doesn't support, and part of it is disconnected",
+      { name }
+    ),
 };
-
-const REACH_ANALYST = 'Reach your analyst to handle it';
 
 // A separate line, so the cause and what to do about it do not run together in one paragraph.
-const UNIQUE_COUNT_HINT_ACTIONS: Partial<Record<UniqueCountUnavailableReason, string>> = {
-  'nested-and-disconnected-primary-key': `Both need fixing — reach your analyst to handle it`,
+const UNIQUE_COUNT_HINT_ACTIONS: Partial<
+  Record<UniqueCountUnavailableReason, (t: TFunction) => string>
+> = {
+  'nested-and-disconnected-primary-key': t =>
+    t(
+      'reportColumnPicker.uniqueCountBothNeedFixing',
+      'Both need fixing — reach your analyst to handle it'
+    ),
 };
 
-function uniqueCountHint(reason: UniqueCountUnavailableReason, dataMartName?: string): string {
+function uniqueCountHint(
+  t: TFunction,
+  reason: UniqueCountUnavailableReason,
+  dataMartName?: string
+): string {
   const name = dataMartName?.trim() ?? '';
-  const cause = UNIQUE_COUNT_HINT_CAUSES[reason](name.length > 0 ? name : 'this Data Mart');
-  return `${cause}.\n${UNIQUE_COUNT_HINT_ACTIONS[reason] ?? REACH_ANALYST}`;
+  const cause = UNIQUE_COUNT_HINT_CAUSES[reason](
+    name.length > 0 ? name : t('reportColumnPicker.thisDataMart', 'this Data Mart'),
+    t
+  );
+  const action =
+    UNIQUE_COUNT_HINT_ACTIONS[reason]?.(t) ??
+    t('reportColumnPicker.uniqueCountReachAnalyst', 'Reach your analyst to handle it');
+  return `${cause}.\n${action}`;
 }
-
-const NOT_EMITTED_NOTE =
-  'This Data Mart is not allowed for reporting, so this column is not generated. Allow it for reporting again, or clear this row.';
-
-// A verdict this bundle cannot read (version skew) keeps the selection, but the row must not read
-// as a confirmed one — the report may already be failing server-side and nothing else would say so.
-const UNVERIFIED_NOTE =
-  "This app can't confirm whether this Data Mart can still be counted, so the column may be missing from the report. Your selection is kept — reload the page, and reach your analyst if it stays this way.";
 
 const TRIGGER_BASE_CLASS =
   'min-w-0 truncate text-left font-mono text-xs underline decoration-dotted underline-offset-4 outline-none focus-visible:ring-ring/50 focus-visible:ring-[3px] rounded';
@@ -95,6 +126,7 @@ export function UniqueCountRow({
   onCheckedChange,
   hoverClassName = 'hover:bg-muted/50',
 }: UniqueCountRowProps) {
+  const { t } = useTranslation();
   const noteId = useId();
   // 'unknown' (and an absent state) gets no hint: the client cannot say why a state it does not
   // recognise would block the metric, and inventing one ("no primary key") is a lie the user would
@@ -103,10 +135,22 @@ export function UniqueCountRow({
   const hint =
     availability === undefined || availability === 'available' || availability === 'unknown'
       ? undefined
-      : uniqueCountHint(availability, dataMartName);
+      : uniqueCountHint(t, availability, dataMartName);
   const notEmitted = checked && !isEmitted;
   const unverified = checked && isEmitted && availability === 'unknown';
-  const note = hint ?? (notEmitted ? NOT_EMITTED_NOTE : unverified ? UNVERIFIED_NOTE : undefined);
+  const note =
+    hint ??
+    (notEmitted
+      ? t(
+          'reportColumnPicker.uniqueCountNotEmitted',
+          'This Data Mart is not allowed for reporting, so this column is not generated. Allow it for reporting again, or clear this row.'
+        )
+      : unverified
+        ? t(
+            'reportColumnPicker.uniqueCountUnverifiedNote',
+            "This app can't confirm whether this Data Mart can still be counted, so the column may be missing from the report. Your selection is kept — reload the page, and reach your analyst if it stays this way."
+          )
+        : undefined);
   // Every row's visible label is the bare `Unique Count`; only the group heading above it says
   // which Data Mart. A heading is not part of a checkbox's accessible name, so without this every
   // Unique Count in the picker announces identically and none can be told from the others.
@@ -216,8 +260,14 @@ export function UniqueCountRow({
                   </TooltipTrigger>
                   <TooltipContent side='top' className='max-w-xs'>
                     {unverified
-                      ? 'Auto-generated column — unconfirmed, see the note on the row.'
-                      : 'Auto-generated column — counts the distinct values of the primary key.'}
+                      ? t(
+                          'reportColumnPicker.uniqueCountUnverified',
+                          'Auto-generated column — unconfirmed, see the note on the row.'
+                        )
+                      : t(
+                          'reportColumnPicker.uniqueCountDescription',
+                          'Auto-generated column — counts the distinct values of the primary key.'
+                        )}
                   </TooltipContent>
                 </Tooltip>
               ))}

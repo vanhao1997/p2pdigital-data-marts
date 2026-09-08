@@ -38,8 +38,10 @@ export const getApiKeysColumns = ({
   {
     accessorKey: 'apiKeyId',
     size: 240,
-    meta: { title: 'API Key ID' },
-    header: ({ column }) => <SortableHeader column={column}>API Key ID</SortableHeader>,
+    meta: { title: t('apiKeysPage.table.apiKeyId') },
+    header: ({ column }) => (
+      <SortableHeader column={column}>{t('apiKeysPage.table.apiKeyId')}</SortableHeader>
+    ),
     cell: ({ row }) => (
       <div className='flex items-center gap-1.5'>
         <code className='text-muted-foreground text-xs'>{row.original.apiKeyId}</code>
@@ -66,14 +68,18 @@ export const getApiKeysColumns = ({
     size: 200,
     meta: { title: t('apiKeysPage.table.expires') },
     sortingFn: 'basic',
-    header: ({ column }) => <SortableHeader column={column}>{t('apiKeysPage.table.expires')}</SortableHeader>,
+    header: ({ column }) => (
+      <SortableHeader column={column}>{t('apiKeysPage.table.expires')}</SortableHeader>
+    ),
     cell: ({ row }) => <ApiKeyExpirationValue expiresAt={row.original.expiresAt} />,
   },
   {
     accessorKey: 'createdAt',
     size: 130,
     meta: { title: t('common.createdAt') },
-    header: ({ column }) => <SortableHeader column={column}>{t('common.createdAt')}</SortableHeader>,
+    header: ({ column }) => (
+      <SortableHeader column={column}>{t('common.createdAt')}</SortableHeader>
+    ),
     cell: ({ row }) => (
       <RelativeTime date={new Date(row.original.createdAt)} className={relativeTimeCellClassName} />
     ),
@@ -82,10 +88,13 @@ export const getApiKeysColumns = ({
     accessorKey: 'lastAuthenticatedAt',
     size: 150,
     meta: { title: t('apiKeysPage.table.lastAuthenticated') },
-    header: ({ column }) => <SortableHeader column={column}>{t('apiKeysPage.table.lastAuthenticated')}</SortableHeader>,
+    header: ({ column }) => (
+      <SortableHeader column={column}>{t('apiKeysPage.table.lastAuthenticated')}</SortableHeader>
+    ),
     cell: ({ row }) => {
       const { lastAuthenticatedAt } = row.original;
-      if (!lastAuthenticatedAt) return <span className='text-muted-foreground'>{t('apiKeysPage.table.never')}</span>;
+      if (!lastAuthenticatedAt)
+        return <span className='text-muted-foreground'>{t('apiKeysPage.table.never')}</span>;
       return (
         <RelativeTime date={new Date(lastAuthenticatedAt)} className={relativeTimeCellClassName} />
       );

@@ -24,6 +24,22 @@ const permissionError = (accountId = '') =>
     { isWarning: true }
   );
 
+const globalAuthError = () =>
+  Object.assign(
+    new Error(
+      'Error validating access token: Session has expired on Tuesday, 01-Jan-80 00:00:00 PST.'
+    ),
+    {
+      isWarning: true,
+      payload: {
+        error: {
+          code: 190,
+          type: 'OAuthException',
+        },
+      },
+    }
+  );
+
 const buildConnector = ({ fetchData, saveData = async () => undefined } = {}) => {
   const warnings = [];
   const logs = [];
@@ -161,10 +177,9 @@ describe('time-series import: every account skipped', () => {
     const leakedToken = 'EA' + 'A'.repeat(40);
     const { self } = buildConnector({
       fetchData: async () => {
-        throw Object.assign(
-          new Error(`(#200) access_token=${leakedToken} act_225706552450149`),
-          { isWarning: true }
-        );
+        throw Object.assign(new Error(`(#200) access_token=${leakedToken} act_225706552450149`), {
+          isWarning: true,
+        });
       },
     });
 
@@ -194,9 +209,30 @@ describe('time-series import: every account skipped', () => {
         new Date('2026-08-05T00:00:00Z'),
         2
       )
-    ).rejects.toThrow(/Facebook authorization failed: all 1 configured account was inaccessible for 2026-08-06/);
+    ).rejects.toThrow(
+      /Facebook authorization failed: all 1 configured account was inaccessible for 2026-08-06/
+    );
 
     expect(cursorMovedTo).toEqual(['2026-08-05']);
+  });
+
+  it('fails immediately when a global auth error appears after a partial success', async () => {
+    const saved = [];
+    const { self, cursorMovedTo } = buildConnector({
+      fetchData: async (_node, accountId) => {
+        if (accountId === 'working') return [{ account_id: accountId, spend: 1 }];
+        throw globalAuthError();
+      },
+      saveData: async rows => saved.push(...rows),
+    });
+
+    const error = await importOneDay(self, ['working', 'broken']).catch(e => e);
+
+    expect(error.name).toBe('FacebookAuthorizationError');
+    expect(error.isWarning).toBe(true);
+    expect(error.message).toContain('Reconnect Facebook');
+    expect(saved).toEqual([{ account_id: 'working', spend: 1 }]);
+    expect(cursorMovedTo).toEqual([]);
   });
 });
 

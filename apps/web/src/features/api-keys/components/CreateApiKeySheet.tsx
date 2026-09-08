@@ -104,9 +104,7 @@ export function CreateApiKeySheet({ isOpen, onClose, onCreated }: CreateApiKeySh
       <SheetContent>
         <SheetHeader>
           <SheetTitle>{t('apiKeysPage.form.title')}</SheetTitle>
-          <SheetDescription>
-            {t('apiKeysPage.form.description')}
-          </SheetDescription>
+          <SheetDescription>{t('apiKeysPage.form.description')}</SheetDescription>
         </SheetHeader>
 
         <Form {...form}>
@@ -127,10 +125,10 @@ export function CreateApiKeySheet({ isOpen, onClose, onCreated }: CreateApiKeySh
                       <FormDescription>
                         <Accordion variant='common' type='single' collapsible>
                           <AccordionItem value='name-help'>
-                            <AccordionTrigger>{t('apiKeysPage.form.nameQuestion')}</AccordionTrigger>
-                            <AccordionContent>
-                              {t('apiKeysPage.form.nameAnswer')}
-                            </AccordionContent>
+                            <AccordionTrigger>
+                              {t('apiKeysPage.form.nameQuestion')}
+                            </AccordionTrigger>
+                            <AccordionContent>{t('apiKeysPage.form.nameAnswer')}</AccordionContent>
                           </AccordionItem>
                         </Accordion>
                       </FormDescription>
@@ -158,7 +156,9 @@ export function CreateApiKeySheet({ isOpen, onClose, onCreated }: CreateApiKeySh
                       <FormDescription>
                         <Accordion variant='common' type='single' collapsible>
                           <AccordionItem value='expires-help'>
-                            <AccordionTrigger>{t('apiKeysPage.form.expiresQuestion')}</AccordionTrigger>
+                            <AccordionTrigger>
+                              {t('apiKeysPage.form.expiresQuestion')}
+                            </AccordionTrigger>
                             <AccordionContent>
                               {t('apiKeysPage.form.expiresAnswer')}
                             </AccordionContent>

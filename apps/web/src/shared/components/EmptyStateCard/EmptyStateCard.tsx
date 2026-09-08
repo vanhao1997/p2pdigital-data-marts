@@ -4,6 +4,7 @@ import * as React from 'react';
 import { cn } from '@owox/ui/lib/utils';
 import { Button } from '@owox/ui/components/button';
 import { Link } from 'react-router';
+import i18n from '../../../i18n';
 
 /* --------------------------------------------------------------------------
  * Main wrapper: EmptyStateCard
@@ -127,7 +128,7 @@ export function EmptyStateCardIllustration({
 
       <div className='animate-glow-burst' />
 
-      <div className='animate-icon-entrance' aria-label='Illustration'>
+      <div className='animate-icon-entrance' aria-label={i18n.t('uiFeedback.illustration')}>
         {children}
       </div>
     </div>

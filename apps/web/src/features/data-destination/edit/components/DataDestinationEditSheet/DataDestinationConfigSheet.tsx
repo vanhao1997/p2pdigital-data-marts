@@ -200,7 +200,10 @@ export function DataDestinationConfigSheet({
               {t('configDialogs.destinationDescription', 'Customize settings for your destination')}
             </SheetDescription>
             {destinationLink && (
-              <CopyLinkButton link={destinationLink} ariaLabel='Copy link to this destination' />
+              <CopyLinkButton
+                link={destinationLink}
+                ariaLabel={t('configDialogs.copyLinkToDestination')}
+              />
             )}
           </div>
         </SheetHeader>

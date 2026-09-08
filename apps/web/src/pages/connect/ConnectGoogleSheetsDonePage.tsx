@@ -20,10 +20,16 @@ export function ConnectGoogleSheetsDonePage() {
         <CheckCircle2 className='h-7 w-7 text-green-600 dark:text-green-400' aria-hidden='true' />
       </div>
       <p className='text-sm'>
-        {t('googleSheetsConnectPage.createdSuccess', 'Your Google Sheets destination was created successfully.')}
+        {t(
+          'googleSheetsConnectPage.createdSuccess',
+          'Your Google Sheets destination was created successfully.'
+        )}
       </p>
       <p className='text-muted-foreground mt-1 text-sm'>
-        {t('googleSheetsConnectPage.closeAndReturn', 'You can close this tab now and return to your conversation to continue.')}
+        {t(
+          'googleSheetsConnectPage.closeAndReturn',
+          'You can close this tab now and return to your conversation to continue.'
+        )}
       </p>
     </div>
   );

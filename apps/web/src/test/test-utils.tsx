@@ -24,22 +24,13 @@ export function createTestQueryClient(): QueryClient {
   });
 }
 
-export function renderWithProviders(
-  ui: React.ReactElement,
-  options: CustomRenderOptions = {}
-) {
-  const {
-    initialRoute = '/',
-    queryClient = createTestQueryClient(),
-    ...renderOptions
-  } = options;
+export function renderWithProviders(ui: React.ReactElement, options: CustomRenderOptions = {}) {
+  const { initialRoute = '/', queryClient = createTestQueryClient(), ...renderOptions } = options;
 
   function Wrapper({ children }: WrapperProps) {
     return (
       <QueryClientProvider client={queryClient}>
-        <MemoryRouter initialEntries={[initialRoute]}>
-          {children}
-        </MemoryRouter>
+        <MemoryRouter initialEntries={[initialRoute]}>{children}</MemoryRouter>
       </QueryClientProvider>
     );
   }

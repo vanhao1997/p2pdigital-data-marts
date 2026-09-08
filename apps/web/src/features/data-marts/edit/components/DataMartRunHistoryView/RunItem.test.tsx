@@ -26,7 +26,8 @@ vi.mock('../../../shared', async importOriginal => {
 vi.mock('sonner', () => ({
   default: {
     error: vi.fn(),
-  }, toast: {
+  },
+  toast: {
     error: vi.fn(),
   },
 }));

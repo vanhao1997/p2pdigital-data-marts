@@ -18,9 +18,7 @@ export default function StorageTypeAthenaDescription() {
       <AccordionItem value='athena-api-details'>
         <AccordionTrigger>{t('storageHelp.athena.title')}</AccordionTrigger>
         <AccordionContent>
-          <p className='mb-2'>
-            {t('storageHelp.athena.intro')}
-          </p>
+          <p className='mb-2'>{t('storageHelp.athena.intro')}</p>
           <p className='mb-2'>{t('storageHelp.athena.stepsIntro')}</p>
           <ol className='list-inside list-decimal space-y-2 text-sm'>
             <li>
@@ -30,9 +28,7 @@ export default function StorageTypeAthenaDescription() {
               </ExternalAnchor>{' '}
               {t('storageHelp.athena.signIn')}
             </li>
-            <li>
-              {t('storageHelp.athena.resultLocation')}
-            </li>
+            <li>{t('storageHelp.athena.resultLocation')}</li>
             <li>{t('storageHelp.athena.ready')}</li>
           </ol>
         </AccordionContent>

@@ -21,6 +21,7 @@ import { OpenIssueLink, StepperHeroBlock } from '../components';
 import type { ConnectorListItem } from '../../../../shared/model/types/connector';
 import { Unplug } from 'lucide-react';
 import { DATA_LEVEL_CONFIG_KEY } from '../../../../shared/constants/connector-config';
+import { localizeConnectorField } from '../../../../shared/utils/connector-metadata';
 
 interface FieldsSelectionStepProps {
   connector: ConnectorListItem;
@@ -64,7 +65,7 @@ export function FieldsSelectionStep({
 
   const selectedFieldData = connectorFields?.find(field => field.name === selectedField);
   const availableFields = useMemo(
-    () => selectedFieldData?.fields ?? [],
+    () => selectedFieldData?.fields?.map(localizeConnectorField) ?? [],
     [selectedFieldData?.fields]
   );
   const dataLevel = configuration?.[DATA_LEVEL_CONFIG_KEY];

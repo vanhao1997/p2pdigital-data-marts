@@ -5,6 +5,7 @@ import { Input } from '@owox/ui/components/input';
 import { FormItem, FormLabel } from '@owox/ui/components/form';
 import { Search, X } from 'lucide-react';
 import { MembersCheckboxList, type CheckableMember } from './MembersCheckboxList';
+import { useTranslation } from 'react-i18next';
 
 interface MembersAssignmentFieldProps {
   label: ReactNode;
@@ -46,6 +47,7 @@ export function MembersAssignmentField({
   emptyText,
   footer,
 }: MembersAssignmentFieldProps) {
+  const { t } = useTranslation();
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
 
@@ -109,7 +111,11 @@ export function MembersAssignmentField({
           size='icon'
           className='ml-auto h-7 w-7 shrink-0'
           onClick={handleToggleSearch}
-          aria-label={searchOpen ? 'Hide search' : 'Search members'}
+          aria-label={
+            searchOpen
+              ? t('membersAssignment.hideSearch', 'Hide search')
+              : t('membersAssignment.searchMembers', 'Search members')
+          }
           aria-pressed={searchOpen}
           disabled={disabled}
         >
@@ -128,10 +134,10 @@ export function MembersAssignmentField({
             onChange={e => {
               setSearchQuery(e.target.value);
             }}
-            placeholder='Search by name or email'
+            placeholder={t('membersAssignment.searchByNameOrEmail', 'Search by name or email')}
             disabled={disabled}
             className='h-8 pl-8'
-            aria-label='Search members'
+            aria-label={t('membersAssignment.searchMembers', 'Search members')}
             autoFocus
           />
         </div>
@@ -143,15 +149,18 @@ export function MembersAssignmentField({
             checked={masterState}
             onCheckedChange={handleMasterChange}
             disabled={disabled === true}
-            aria-label='Select all members'
+            aria-label={t('membersAssignment.selectAllMembers', 'Select all members')}
           />
           <label
             htmlFor={`${idPrefix}-master`}
             className='cursor-pointer text-sm font-medium select-none'
           >
             {selectedSelectableCount > 0
-              ? `${selectedSelectableCount} of ${selectableIds.length} selected`
-              : 'Select all'}
+              ? t('membersAssignment.selectedCount', '{{selected}} of {{total}} selected', {
+                  selected: selectedSelectableCount,
+                  total: selectableIds.length,
+                })
+              : t('membersAssignment.selectAll', 'Select all')}
           </label>
           {selectedSelectableCount > 0 && (
             <button
@@ -160,7 +169,7 @@ export function MembersAssignmentField({
               disabled={disabled === true}
               className='text-muted-foreground hover:text-foreground ml-auto text-xs underline-offset-2 hover:underline disabled:cursor-not-allowed disabled:no-underline disabled:opacity-50'
             >
-              Reset
+              {t('membersAssignment.reset', 'Reset')}
             </button>
           )}
         </div>

@@ -294,7 +294,9 @@ export function RelationshipAccordionItem({
                   <WarningBadge>{t('dataMartRelationships.draft', 'Draft')}</WarningBadge>
                 )}
                 {rel.joinConditions.length === 0 && (
-                  <WarningBadge>{t('dataMartRelationships.joinNotConfigured', 'Join not configured')}</WarningBadge>
+                  <WarningBadge>
+                    {t('dataMartRelationships.joinNotConfigured', 'Join not configured')}
+                  </WarningBadge>
                 )}
                 {row.isBlocked && rel.targetDataMart.status !== 'DRAFT' && (
                   <WarningBadge>{t('dataMartRelationships.blocked', 'Blocked')}</WarningBadge>
@@ -308,10 +310,12 @@ export function RelationshipAccordionItem({
                   !row.isCycleStub && (
                     <Tooltip>
                       <TooltipTrigger asChild>
-                        <AttentionBadge>{t('dataMartRelationships.noPrimaryKey', 'No primary key')}</AttentionBadge>
+                        <AttentionBadge>
+                          {t('dataMartRelationships.noPrimaryKey', 'No primary key')}
+                        </AttentionBadge>
                       </TooltipTrigger>
                       <TooltipContent side='top' className='max-w-xs'>
-                        {MISSING_PRIMARY_KEY_TOOLTIP}
+                        {t(MISSING_PRIMARY_KEY_TOOLTIP)}
                       </TooltipContent>
                     </Tooltip>
                   )}
@@ -321,7 +325,7 @@ export function RelationshipAccordionItem({
                       <WarningBadge>{t('dataMartRelationships.loop', 'Loop')}</WarningBadge>
                     </TooltipTrigger>
                     <TooltipContent side='top' className='max-w-xs'>
-                      {CYCLE_STUB_TOOLTIP}
+                      {t(CYCLE_STUB_TOOLTIP)}
                     </TooltipContent>
                   </Tooltip>
                 )}
@@ -384,7 +388,7 @@ export function RelationshipAccordionItem({
                         }}
                       >
                         <ExternalLink className='h-4 w-4' />
-                        Open in new tab
+                        {t('dataMartRelationships.openInNewTab', 'Open in new tab')}
                       </DropdownMenuItem>
                       {/* Delete is disabled for transient rows — removing an inherited relationship must happen on its source data mart. */}
                       {isTransient ? (
@@ -399,13 +403,18 @@ export function RelationshipAccordionItem({
                                 }}
                               >
                                 <Trash2 className='h-4 w-4' />
-                                Delete relationship
+                                {t(
+                                  'dataMartRelationships.deleteRelationship',
+                                  'Delete relationship'
+                                )}
                               </DropdownMenuItem>
                             </span>
                           </TooltipTrigger>
                           <TooltipContent side='left' className='max-w-xs'>
-                            This relationship is inherited. Remove it from the source data mart
-                            instead.
+                            {t(
+                              'dataMartRelationships.inheritedRelationshipTooltip',
+                              'This relationship is inherited. Remove it from the source data mart instead.'
+                            )}
                           </TooltipContent>
                         </Tooltip>
                       ) : (
@@ -416,7 +425,7 @@ export function RelationshipAccordionItem({
                           }}
                         >
                           <Trash2 className='h-4 w-4' />
-                          Delete relationship
+                          {t('dataMartRelationships.deleteRelationship', 'Delete relationship')}
                         </DropdownMenuItem>
                       )}
                     </DropdownMenuContent>
@@ -439,15 +448,15 @@ export function RelationshipAccordionItem({
                       <TabsList className='shrink-0'>
                         <TabsTrigger value='fields'>
                           <Columns3 className='h-4 w-4' />
-                          Report Fields
+                          {t('dataMartRelationships.reportFields', 'Report fields')}
                         </TabsTrigger>
                         <TabsTrigger value='join-settings'>
                           <GitMerge className='h-4 w-4' />
-                          Join Settings
+                          {t('dataMartRelationships.joinSettings', 'Join settings')}
                         </TabsTrigger>
                         <TabsTrigger value='description'>
                           <Text className='h-4 w-4' />
-                          Description
+                          {t('dataMartRelationships.description', 'Description')}
                         </TabsTrigger>
                       </TabsList>
                     </div>
@@ -467,7 +476,7 @@ export function RelationshipAccordionItem({
                               }}
                             >
                               <label className='flex items-center gap-1.5 text-sm font-medium'>
-                                Output Alias
+                                {t('dataMartRelationships.outputAlias', 'Output alias')}
                                 <Tooltip>
                                   <TooltipTrigger asChild>
                                     <span className='text-muted-foreground/50 hover:text-muted-foreground shrink-0 transition-colors'>
@@ -475,8 +484,10 @@ export function RelationshipAccordionItem({
                                     </span>
                                   </TooltipTrigger>
                                   <TooltipContent side='top' className='max-w-xs'>
-                                    Short name that appears in the output data schema for fields
-                                    from this data mart.
+                                    {t(
+                                      'dataMartRelationships.outputAliasTooltip',
+                                      'Short name that appears in the output data schema for fields from this data mart.'
+                                    )}
                                   </TooltipContent>
                                 </Tooltip>
                               </label>
@@ -486,7 +497,10 @@ export function RelationshipAccordionItem({
                                   handleAliasInput(e.target.value);
                                 }}
                                 onBlur={handleAliasBlur}
-                                placeholder='e.g. campaign_performance'
+                                placeholder={t(
+                                  'dataMartRelationships.outputAliasPlaceholder',
+                                  'e.g. campaign_performance'
+                                )}
                                 className='bg-background h-8 text-sm dark:bg-white/5'
                               />
                             </div>
@@ -494,7 +508,7 @@ export function RelationshipAccordionItem({
                         />
                       ) : (
                         <p className='text-muted-foreground py-4 text-sm'>
-                          Fields will appear after configuring join conditions.
+                          {t('dataMartRelationships.joinConditionsEmpty')}
                         </p>
                       )}
                     </TabsContent>
@@ -549,7 +563,9 @@ export function RelationshipAccordionItem({
           'dataMartRelationships.deleteDescription',
           'Are you sure you want to delete this relationship? This action cannot be undone.'
         )}
-        confirmLabel={isDeleting ? 'Deleting...' : t('common.delete', 'Delete')}
+        confirmLabel={
+          isDeleting ? t('dataMartRelationships.deleting') : t('common.delete', 'Delete')
+        }
         cancelLabel={t('common.cancel', 'Cancel')}
         variant='destructive'
         onConfirm={() => {

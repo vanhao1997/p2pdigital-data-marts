@@ -480,10 +480,10 @@ describe('DataQualityCanvasStatusIcon', () => {
     );
 
     expect(
-      screen.queryByRole('button', { name: 'Run Quality for Orders' })
+      screen.queryByRole('button', { name: 'Run Data Quality for Orders' })
     ).not.toBeInTheDocument();
     await openDetails(screen.getByRole('button', { name: /Open Data Quality for Orders/ }));
-    const runAction = screen.getByRole('button', { name: 'Run Quality for Orders' });
+    const runAction = screen.getByRole('button', { name: 'Run Data Quality for Orders' });
     fireEvent.pointerDown(runAction);
     fireEvent.click(runAction);
 
@@ -508,7 +508,7 @@ describe('DataQualityCanvasStatusIcon', () => {
 
       await openDetails(screen.getByRole('button', { name: /Open Data Quality for Orders/ }));
 
-      expect(screen.getByRole('button', { name: 'Run Quality for Orders' })).toBeDisabled();
+      expect(screen.getByRole('button', { name: 'Run Data Quality for Orders' })).toBeDisabled();
     }
   );
 });

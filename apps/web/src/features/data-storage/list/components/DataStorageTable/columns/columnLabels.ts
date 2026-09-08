@@ -21,8 +21,14 @@ export function getDataStorageColumnLabels(t: TFunction): Record<DataStorageColu
     [DataStorageColumnKey.CREATED_AT]: t('common.createdAt'),
     [DataStorageColumnKey.CREATED_BY]: t('common.createdBy'),
     [DataStorageColumnKey.OWNERS]: t('storageTableColumns.owners', 'Owners'),
-    [DataStorageColumnKey.DATA_MARTS_COUNT]: t('storageTableColumns.publishedDataMarts', 'Published Data Marts'),
-    [DataStorageColumnKey.DRAFTS_COUNT]: t('storageTableColumns.draftDataMarts', 'Draft Data Marts'),
+    [DataStorageColumnKey.DATA_MARTS_COUNT]: t(
+      'storageTableColumns.publishedDataMarts',
+      'Published Data Marts'
+    ),
+    [DataStorageColumnKey.DRAFTS_COUNT]: t(
+      'storageTableColumns.draftDataMarts',
+      'Draft Data Marts'
+    ),
     [DataStorageColumnKey.CONTEXTS]: t('dataMartTableColumns.contexts', 'Contexts'),
   };
 }

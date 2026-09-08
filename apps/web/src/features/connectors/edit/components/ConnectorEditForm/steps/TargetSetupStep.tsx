@@ -2,6 +2,7 @@ import { DataStorageType } from '../../../../../data-storage';
 import { Input } from '@owox/ui/components/input';
 import { TimeTriggerAnnouncement } from '../../../../../data-marts/scheduled-triggers';
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   AppWizardStepItem,
   AppWizardStepLabel,
@@ -34,6 +35,7 @@ export function TargetSetupStep({
   connectorName,
   onTargetChange,
 }: TargetSetupStepProps) {
+  const { t } = useTranslation();
   const sanitizedDestinationName = destinationName.replace(/[^a-zA-Z0-9_]/g, '_');
   const sanitizedConnectorName = connectorName.replace(/[^a-zA-Z0-9_]/g, '_').toLowerCase();
 
@@ -49,28 +51,28 @@ export function TargetSetupStep({
   // Track if user has manually edited any of the fields
   const editedByUser = useRef(false);
 
-  const validate = (name: string, allowQuoted = false): string | null => {
-    if (!name.trim()) return 'This field is required';
+  const validate = useCallback(
+    (name: string, allowQuoted = false): string | null => {
+      if (!name.trim()) return t('connectorTargetSetup.fieldRequired');
 
-    // For Snowflake, allow quoted identifiers (e.g., "SCHEMA_NAME")
-    // But also allow unquoted identifiers - quotes will be added automatically when saving
-    if (allowQuoted && name.startsWith('"') && name.endsWith('"')) {
-      const unquoted = name.slice(1, -1);
-      if (!unquoted) return 'Quoted identifier cannot be empty';
-      // Validate the content inside quotes - can be anything except empty
+      // For Snowflake, allow quoted identifiers (e.g., "SCHEMA_NAME")
+      // But also allow unquoted identifiers - quotes will be added automatically when saving
+      if (allowQuoted && name.startsWith('"') && name.endsWith('"')) {
+        const unquoted = name.slice(1, -1);
+        if (!unquoted) return t('connectorTargetSetup.quotedIdentifierEmpty');
+        // Validate the content inside quotes - can be anything except empty
+        return null;
+      }
+
+      // Validate unquoted identifiers
+      const allowed = /^[A-Za-z][A-Za-z0-9_]*$/;
+      if (!allowed.test(name)) {
+        return t('connectorTargetSetup.identifierFormat');
+      }
       return null;
-    }
-
-    // Validate unquoted identifiers
-    const allowed = /^[A-Za-z][A-Za-z0-9_]*$/;
-    if (!allowed.test(name)) {
-      const message = allowQuoted
-        ? 'Use letters, numbers, and underscores; start with a letter'
-        : 'Use letters, numbers, and underscores; start with a letter';
-      return message;
-    }
-    return null;
-  };
+    },
+    [t]
+  );
 
   const updateTarget = useCallback(
     (
@@ -316,7 +318,14 @@ export function TargetSetupStep({
         newCatalogError
       );
     }
-  }, [target, sanitizedDestinationName, sanitizedConnectorName, dataStorageType, updateTarget]);
+  }, [
+    target,
+    sanitizedDestinationName,
+    sanitizedConnectorName,
+    dataStorageType,
+    updateTarget,
+    validate,
+  ]);
 
   const handleDatasetNameChange = (name: string) => {
     editedByUser.current = true;
@@ -402,19 +411,19 @@ export function TargetSetupStep({
             docUrl='https://docs.p2pdigital.io.vn/docs/storages/supported-storages/google-bigquery/'
             variant='compact'
           />
-          <AppWizardStepSection title='Choose where to store your data'>
+          <AppWizardStepSection title={t('connectorTargetSetup.chooseStorage')}>
             <AppWizardStepItem>
               <AppWizardStepLabel
                 required={true}
                 htmlFor='dataset-name'
-                tooltip='Enter dataset name for Google BigQuery where the connector data will be stored.'
+                tooltip={t('connectorTargetSetup.datasetTooltip', { provider: 'Google BigQuery' })}
               >
-                Dataset name
+                {t('connectorTargetSetup.datasetName')}
               </AppWizardStepLabel>
               <Input
                 type='text'
                 id='dataset-name'
-                placeholder='Enter dataset name'
+                placeholder={t('connectorTargetSetup.datasetPlaceholder')}
                 autoComplete='off'
                 className='box-border w-full'
                 value={datasetName}
@@ -426,7 +435,7 @@ export function TargetSetupStep({
                 required
               />
               <p className='text-muted-foreground text-sm'>
-                Dataset is auto-created on first run if it doesn’t exist
+                {t('connectorTargetSetup.datasetAutoCreated')}
               </p>
               {datasetError && (
                 <p id='dataset-name-error' className='text-destructive text-sm'>
@@ -439,14 +448,14 @@ export function TargetSetupStep({
               <AppWizardStepLabel
                 required={true}
                 htmlFor='table-name'
-                tooltip='Enter table name where the connector data will be stored.'
+                tooltip={t('connectorTargetSetup.tableTooltip')}
               >
-                Table name
+                {t('connectorTargetSetup.tableName')}
               </AppWizardStepLabel>
               <Input
                 type='text'
                 id='table-name'
-                placeholder='Enter table name'
+                placeholder={t('connectorTargetSetup.tablePlaceholder')}
                 autoComplete='off'
                 className='box-border w-full'
                 value={tableName}
@@ -458,7 +467,7 @@ export function TargetSetupStep({
                 required
               />
               <p className='text-muted-foreground text-sm'>
-                Table is auto-created on first run if it doesn’t exist
+                {t('connectorTargetSetup.tableAutoCreated')}
               </p>
               {tableError && (
                 <p id='table-name-error' className='text-destructive text-sm'>
@@ -477,19 +486,19 @@ export function TargetSetupStep({
             docUrl='https://docs.p2pdigital.io.vn/docs/storages/supported-storages/aws-athena/'
             variant='compact'
           />
-          <AppWizardStepSection title='Choose where to store your data'>
+          <AppWizardStepSection title={t('connectorTargetSetup.chooseStorage')}>
             <AppWizardStepItem>
               <AppWizardStepLabel
                 required={true}
                 htmlFor='database-name'
-                tooltip='Enter database name for Amazon Athena where the connector data will be stored.'
+                tooltip={t('connectorTargetSetup.databaseTooltip', { provider: 'Amazon Athena' })}
               >
-                Database name
+                {t('connectorTargetSetup.databaseName')}
               </AppWizardStepLabel>
               <Input
                 type='text'
                 id='database-name'
-                placeholder='Enter database name'
+                placeholder={t('connectorTargetSetup.databasePlaceholder')}
                 autoComplete='off'
                 className='box-border w-full'
                 value={datasetName}
@@ -501,7 +510,7 @@ export function TargetSetupStep({
                 required
               />
               <p className='text-muted-foreground text-sm'>
-                Database is auto-created on first run if it doesn’t exist
+                {t('connectorTargetSetup.databaseAutoCreated')}
               </p>
               {datasetError && (
                 <p id='database-name-error' className='text-destructive text-sm'>
@@ -514,14 +523,14 @@ export function TargetSetupStep({
               <AppWizardStepLabel
                 required={true}
                 htmlFor='athena-table-name'
-                tooltip='Enter table name where the connector data will be stored.'
+                tooltip={t('connectorTargetSetup.tableTooltip')}
               >
-                Table name
+                {t('connectorTargetSetup.tableName')}
               </AppWizardStepLabel>
               <Input
                 type='text'
                 id='athena-table-name'
-                placeholder='Enter table name'
+                placeholder={t('connectorTargetSetup.tablePlaceholder')}
                 autoComplete='off'
                 className='box-border w-full'
                 value={tableName}
@@ -533,7 +542,7 @@ export function TargetSetupStep({
                 required
               />
               <p className='text-muted-foreground text-sm'>
-                Table is auto-created on first run if it doesn’t exist
+                {t('connectorTargetSetup.tableAutoCreated')}
               </p>
               {tableError && (
                 <p id='athena-table-name-error' className='text-destructive text-sm'>
@@ -552,19 +561,19 @@ export function TargetSetupStep({
             docUrl='https://docs.p2pdigital.io.vn/docs/storages/supported-storages/snowflake/'
             variant='compact'
           />
-          <AppWizardStepSection title='Choose where to store your data'>
+          <AppWizardStepSection title={t('connectorTargetSetup.chooseStorage')}>
             <AppWizardStepItem>
               <AppWizardStepLabel
                 required={true}
                 htmlFor='snowflake-database-name'
-                tooltip='Enter database name for Snowflake where the connector data will be stored.'
+                tooltip={t('connectorTargetSetup.databaseTooltip', { provider: 'Snowflake' })}
               >
-                Database name
+                {t('connectorTargetSetup.databaseName')}
               </AppWizardStepLabel>
               <Input
                 type='text'
                 id='snowflake-database-name'
-                placeholder='Enter database name'
+                placeholder={t('connectorTargetSetup.databasePlaceholder')}
                 autoComplete='off'
                 className='box-border w-full'
                 value={datasetName}
@@ -576,7 +585,7 @@ export function TargetSetupStep({
                 required
               />
               <p className='text-muted-foreground text-sm'>
-                Database is auto-created on first run if it doesn't exist
+                {t('connectorTargetSetup.databaseAutoCreated')}
               </p>
               {datasetError && (
                 <p id='snowflake-database-name-error' className='text-destructive text-sm'>
@@ -589,14 +598,14 @@ export function TargetSetupStep({
               <AppWizardStepLabel
                 required={true}
                 htmlFor='snowflake-schema-name'
-                tooltip='Enter schema name for Snowflake where the connector data will be stored. Identifiers will be quoted automatically to preserve case sensitivity.'
+                tooltip={t('connectorTargetSetup.schemaTooltipQuoted', { provider: 'Snowflake' })}
               >
-                Schema name
+                {t('connectorTargetSetup.schemaName')}
               </AppWizardStepLabel>
               <Input
                 type='text'
                 id='snowflake-schema-name'
-                placeholder='PUBLIC'
+                placeholder={t('connectorTargetSetup.publicPlaceholder')}
                 autoComplete='off'
                 className='box-border w-full'
                 value={schemaName}
@@ -608,7 +617,7 @@ export function TargetSetupStep({
                 required
               />
               <p className='text-muted-foreground text-sm'>
-                Schema is auto-created on first run if it doesn't exist
+                {t('connectorTargetSetup.schemaAutoCreated')}
               </p>
               {schemaError && (
                 <p id='snowflake-schema-name-error' className='text-destructive text-sm'>
@@ -621,14 +630,14 @@ export function TargetSetupStep({
               <AppWizardStepLabel
                 required={true}
                 htmlFor='snowflake-table-name'
-                tooltip='Enter table name where the connector data will be stored. Identifiers will be quoted automatically to preserve case sensitivity.'
+                tooltip={t('connectorTargetSetup.tableTooltipQuoted')}
               >
-                Table name
+                {t('connectorTargetSetup.tableName')}
               </AppWizardStepLabel>
               <Input
                 type='text'
                 id='snowflake-table-name'
-                placeholder='my_table'
+                placeholder={t('connectorTargetSetup.tableExamplePlaceholder')}
                 autoComplete='off'
                 className='box-border w-full'
                 value={tableName}
@@ -640,7 +649,7 @@ export function TargetSetupStep({
                 required
               />
               <p className='text-muted-foreground text-sm'>
-                Table is auto-created on first run if it doesn't exist
+                {t('connectorTargetSetup.tableAutoCreated')}
               </p>
               {tableError && (
                 <p id='snowflake-table-name-error' className='text-destructive text-sm'>
@@ -659,19 +668,19 @@ export function TargetSetupStep({
             docUrl='https://docs.p2pdigital.io.vn/docs/storages/supported-storages/aws-redshift/'
             variant='compact'
           />
-          <AppWizardStepSection title='Choose where to store your data'>
+          <AppWizardStepSection title={t('connectorTargetSetup.chooseStorage')}>
             <AppWizardStepItem>
               <AppWizardStepLabel
                 required={true}
                 htmlFor='redshift-schema-name'
-                tooltip='Enter schema name for Redshift where the connector data will be stored. Identifiers will be quoted automatically to preserve case sensitivity.'
+                tooltip={t('connectorTargetSetup.schemaTooltipQuoted', { provider: 'Redshift' })}
               >
-                Schema name
+                {t('connectorTargetSetup.schemaName')}
               </AppWizardStepLabel>
               <Input
                 type='text'
                 id='redshift-schema-name'
-                placeholder='public'
+                placeholder={t('connectorTargetSetup.publicPlaceholderLower')}
                 autoComplete='off'
                 className='box-border w-full'
                 value={schemaName}
@@ -683,7 +692,7 @@ export function TargetSetupStep({
                 required
               />
               <p className='text-muted-foreground text-sm'>
-                Schema is auto-created on first run if it doesn't exist.
+                {t('connectorTargetSetup.schemaAutoCreated')}
               </p>
               <RedshiftSchemaPermissionsDescription />
               {schemaError && (
@@ -697,14 +706,14 @@ export function TargetSetupStep({
               <AppWizardStepLabel
                 required={true}
                 htmlFor='redshift-table-name'
-                tooltip='Enter table name where the connector data will be stored. Identifiers will be quoted automatically to preserve case sensitivity.'
+                tooltip={t('connectorTargetSetup.tableTooltipQuoted')}
               >
-                Table name
+                {t('connectorTargetSetup.tableName')}
               </AppWizardStepLabel>
               <Input
                 type='text'
                 id='redshift-table-name'
-                placeholder='my_table'
+                placeholder={t('connectorTargetSetup.tableExamplePlaceholder')}
                 autoComplete='off'
                 className='box-border w-full'
                 value={tableName}
@@ -716,8 +725,7 @@ export function TargetSetupStep({
                 required
               />
               <p className='text-muted-foreground text-sm'>
-                Table is auto-created on first run if it doesn't exist. Identifiers will be quoted
-                automatically to preserve case sensitivity.
+                {t('connectorTargetSetup.tableAutoCreatedQuoted')}
               </p>
               {tableError && (
                 <p id='redshift-table-name-error' className='text-destructive text-sm'>
@@ -736,19 +744,19 @@ export function TargetSetupStep({
             docUrl='https://docs.p2pdigital.io.vn/docs/storages/supported-storages/databricks/'
             variant='compact'
           />
-          <AppWizardStepSection title='Choose where to store your data'>
+          <AppWizardStepSection title={t('connectorTargetSetup.chooseStorage')}>
             <AppWizardStepItem>
               <AppWizardStepLabel
                 required={true}
                 htmlFor='databricks-catalog-name'
-                tooltip='Enter catalog name for Databricks where the connector data will be stored. Use "main" for the default catalog or your Unity Catalog name.'
+                tooltip={t('connectorTargetSetup.catalogTooltip')}
               >
-                Catalog name
+                {t('connectorTargetSetup.catalogName')}
               </AppWizardStepLabel>
               <Input
                 type='text'
                 id='databricks-catalog-name'
-                placeholder='main'
+                placeholder={t('connectorTargetSetup.mainPlaceholder')}
                 autoComplete='off'
                 className='box-border w-full'
                 value={catalogName}
@@ -760,7 +768,7 @@ export function TargetSetupStep({
                 required
               />
               <p className='text-muted-foreground text-sm'>
-                Catalog is auto-created on first run if it doesn't exist
+                {t('connectorTargetSetup.catalogAutoCreated')}
               </p>
               {catalogError && (
                 <p id='databricks-catalog-name-error' className='text-destructive text-sm'>
@@ -773,14 +781,14 @@ export function TargetSetupStep({
               <AppWizardStepLabel
                 required={true}
                 htmlFor='databricks-schema-name'
-                tooltip='Enter schema name for Databricks where the connector data will be stored.'
+                tooltip={t('connectorTargetSetup.schemaTooltip', { provider: 'Databricks' })}
               >
-                Schema name
+                {t('connectorTargetSetup.schemaName')}
               </AppWizardStepLabel>
               <Input
                 type='text'
                 id='databricks-schema-name'
-                placeholder='Enter schema name'
+                placeholder={t('connectorTargetSetup.schemaPlaceholder')}
                 autoComplete='off'
                 className='box-border w-full'
                 value={schemaName}
@@ -792,7 +800,7 @@ export function TargetSetupStep({
                 required
               />
               <p className='text-muted-foreground text-sm'>
-                Schema is auto-created on first run if it doesn't exist
+                {t('connectorTargetSetup.schemaAutoCreated')}
               </p>
               {schemaError && (
                 <p id='databricks-schema-name-error' className='text-destructive text-sm'>
@@ -805,14 +813,14 @@ export function TargetSetupStep({
               <AppWizardStepLabel
                 required={true}
                 htmlFor='databricks-table-name'
-                tooltip='Enter table name where the connector data will be stored.'
+                tooltip={t('connectorTargetSetup.tableTooltip')}
               >
-                Table name
+                {t('connectorTargetSetup.tableName')}
               </AppWizardStepLabel>
               <Input
                 type='text'
                 id='databricks-table-name'
-                placeholder='my_table'
+                placeholder={t('connectorTargetSetup.tableExamplePlaceholder')}
                 autoComplete='off'
                 className='box-border w-full'
                 value={tableName}
@@ -824,7 +832,7 @@ export function TargetSetupStep({
                 required
               />
               <p className='text-muted-foreground text-sm'>
-                Table is auto-created on first run if it doesn't exist
+                {t('connectorTargetSetup.tableAutoCreated')}
               </p>
               {tableError && (
                 <p id='databricks-table-name-error' className='text-destructive text-sm'>
@@ -835,7 +843,7 @@ export function TargetSetupStep({
           </AppWizardStepSection>
         </>
       )}
-      <AppWizardStepSection title='Schedule updates'>
+      <AppWizardStepSection title={t('connectorTargetSetup.scheduleUpdates')}>
         <TimeTriggerAnnouncement />
       </AppWizardStepSection>
     </AppWizardStep>

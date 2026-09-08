@@ -1,19 +1,27 @@
 import { ChevronDown, ChevronRight, KeyRound } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { OWOX_YELLOW_BASE } from './owox-palette';
 import { collapsedRowCount, orderFields, type ErdCardField } from './erd-fields';
 
 function FieldRow({ field }: { field: ErdCardField }) {
+  const { t } = useTranslation();
   return (
     <div
       className='border-border/50 flex items-center gap-2 border-b px-3.5 py-1.5 text-[11.5px] last:border-b-0'
       style={{ opacity: field.isHidden ? 0.5 : 1 }}
-      title={field.isHidden ? `${field.alias} (hidden from reporting)` : field.alias}
+      title={
+        field.isHidden
+          ? t('canvasSettings.hiddenFromReportingTitle', '{{alias}} (hidden from reporting)', {
+              alias: field.alias,
+            })
+          : field.alias
+      }
     >
       {field.isPrimaryKey ? (
         <KeyRound
           className='h-3 w-3 shrink-0'
           style={{ color: OWOX_YELLOW_BASE }}
-          aria-label='Primary key'
+          aria-label={t('canvasSettings.primaryKey', 'Primary key')}
         />
       ) : (
         <span className='w-3 shrink-0' />
@@ -47,6 +55,7 @@ export function ErdCardFieldsSection({
   expanded,
   onToggleExpanded,
 }: ErdCardFieldsSectionProps) {
+  const { t } = useTranslation();
   const ordered = orderFields(fields);
   const collapsed = collapsedRowCount(fields);
   const visible = expanded ? ordered : ordered.slice(0, collapsed);
@@ -74,12 +83,16 @@ export function ErdCardFieldsSection({
         >
           {expanded ? (
             <>
-              <ChevronDown className='h-3 w-3' /> Show less
+              <ChevronDown className='h-3 w-3' />
+              {t('canvasSettings.showLess', 'Show less')}
             </>
           ) : (
             <>
-              <ChevronRight className='h-3 w-3' /> +{hiddenCount} more field
-              {hiddenCount !== 1 ? 's' : ''}
+              <ChevronRight className='h-3 w-3' />
+              {t('canvasSettings.moreFields', '+{{count}} more {{fieldWord}}', {
+                count: hiddenCount,
+                fieldWord: t(hiddenCount === 1 ? 'canvasSettings.field' : 'canvasSettings.fields'),
+              })}
             </>
           )}
         </button>

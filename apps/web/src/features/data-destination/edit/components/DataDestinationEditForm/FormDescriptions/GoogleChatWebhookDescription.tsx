@@ -12,29 +12,21 @@ export default function GoogleChatWebhookDescription() {
   return (
     <Accordion variant='common' type='single' collapsible>
       <AccordionItem value='google-chat-webhook-details'>
-        <AccordionTrigger>{t('googleChat.webhookDescription.title', 'How do I get an incoming webhook URL?')}</AccordionTrigger>
+        <AccordionTrigger>{t('googleChat.webhookDescription.title')}</AccordionTrigger>
         <AccordionContent>
           <ol className='list-inside list-decimal space-y-2 text-sm'>
-            <li>{t('googleChat.webhookDescription.openSpace', 'Open the target space in Google Chat on a computer.')}</li>
-            <li>
-              {t('googleChat.webhookDescription.appsIntegrations', 'Click the space name, then select Apps & integrations.')}
-            </li>
-            <li>
-              {t('googleChat.webhookDescription.addWebhooks', 'Click Add webhooks, enter a name, and save the webhook.')}
-            </li>
-            <li>
-              {t('googleChat.webhookDescription.copyLink', "Open the webhook's menu, select Copy link, and paste the URL above.")}
-            </li>
+            <li>{t('googleChat.webhookDescription.openSpace')}</li>
+            <li>{t('googleChat.webhookDescription.appsIntegrations')}</li>
+            <li>{t('googleChat.webhookDescription.addWebhooks')}</li>
+            <li>{t('googleChat.webhookDescription.copyLink')}</li>
           </ol>
+          <p className='mt-2 text-sm'>{t('googleChat.webhookDescription.warning')}</p>
           <p className='mt-2 text-sm'>
-            {t('googleChat.webhookDescription.warning', 'If you cannot add a webhook, your Google Workspace administrator might have disabled this option. Keep the webhook URL secret.')}
-          </p>
-          <p className='mt-2 text-sm'>
-            {t('googleChat.webhookDescription.seeGuide', 'See the')} {' '}
+            {t('googleChat.webhookDescription.seeGuide')}{' '}
             <ExternalAnchor href='https://developers.google.com/workspace/chat/quickstart/webhooks'>
-              {t('googleChat.webhookDescription.guide', 'Google Chat webhook guide')}
+              {t('googleChat.webhookDescription.guide')}
             </ExternalAnchor>{' '}
-            {t('googleChat.webhookDescription.forDetails', 'for more details.')}
+            {t('googleChat.webhookDescription.forDetails')}
           </p>
         </AccordionContent>
       </AccordionItem>

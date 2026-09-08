@@ -360,9 +360,7 @@ export function BaseSchemaTable<T extends BaseSchemaField>({
         header: () => (
           <Tooltip>
             <TooltipTrigger className='cursor-default'>PK</TooltipTrigger>
-            <TooltipContent>
-              Is field must be considered as a part of the output Primary Key
-            </TooltipContent>
+            <TooltipContent>{t('schemaUi.primaryKeyHelp')}</TooltipContent>
           </Tooltip>
         ),
         size: 36,
@@ -391,15 +389,12 @@ export function BaseSchemaTable<T extends BaseSchemaField>({
           <Tooltip>
             <TooltipTrigger
               className='flex cursor-default items-center gap-1'
-              aria-label='Available aggregations'
+              aria-label={t('schemaUi.availableAggregationsAria')}
             >
               <Sigma className='h-3.5 w-3.5' />
-                    {t('schemaUi.available')}
+              {t('schemaUi.available')}
             </TooltipTrigger>
-            <TooltipContent>
-              Available aggregations — functions a report may apply to this field. Defaults by type;
-              clear all to disallow aggregating it.
-            </TooltipContent>
+            <TooltipContent>{t('schemaUi.availableAggregationsHelp')}</TooltipContent>
           </Tooltip>
         ),
         size: 120,
@@ -446,8 +441,8 @@ export function BaseSchemaTable<T extends BaseSchemaField>({
                 )}
               >
                 <SchemaHeaderAiButton
-                  tooltip='Generate aliases for all fields'
-                  ariaLabel='Generate field aliases'
+                  tooltip={t('schemaUi.generateAliases')}
+                  ariaLabel={t('schemaUi.generateFieldAliases')}
                   disabled={schemaToolbar.ai.disabled}
                   isLoading={schemaToolbar.ai.loading.aliases}
                   onClick={schemaToolbar.ai.onGenerateAliases}
@@ -491,8 +486,8 @@ export function BaseSchemaTable<T extends BaseSchemaField>({
                 )}
               >
                 <SchemaHeaderAiButton
-                  tooltip='Generate descriptions for all fields'
-                  ariaLabel='Generate field descriptions'
+                  tooltip={t('schemaUi.generateDescriptions')}
+                  ariaLabel={t('schemaUi.generateFieldDescriptions')}
                   disabled={schemaToolbar.ai.disabled}
                   isLoading={schemaToolbar.ai.loading.descriptions}
                   onClick={schemaToolbar.ai.onGenerateDescriptions}

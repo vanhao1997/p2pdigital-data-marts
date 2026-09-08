@@ -1,5 +1,6 @@
 import { Textarea } from '@owox/ui/components/textarea';
 import { type ConnectorSpecificationResponseApiDto } from '../../../../../../shared/api/types';
+import { useTranslation } from 'react-i18next';
 
 interface ConfigurationObjectFieldProps {
   specification: ConnectorSpecificationResponseApiDto;
@@ -12,6 +13,7 @@ export function ConfigurationObjectField({
   configuration,
   onValueChange,
 }: ConfigurationObjectFieldProps) {
+  const { t } = useTranslation();
   const displayName = specification.title ?? specification.name;
   const { name, placeholder, default: defaultValue } = specification;
 
@@ -26,7 +28,7 @@ export function ConfigurationObjectField({
             ? JSON.stringify(defaultValue, null, 2)
             : ''
       }
-      placeholder={placeholder ?? `Enter ${displayName.toLowerCase()} as JSON`}
+      placeholder={placeholder ?? t('connectorWizard.enterJson', { name: displayName })}
       rows={6}
       className='font-mono'
       onChange={e => {

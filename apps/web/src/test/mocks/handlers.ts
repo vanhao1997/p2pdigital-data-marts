@@ -22,9 +22,7 @@ export const handlers = [
   }),
 
   http.get('/api/connectors', () => {
-    return HttpResponse.json([
-      { name: 'google-analytics', displayName: 'Google Analytics' },
-    ]);
+    return HttpResponse.json([{ name: 'google-analytics', displayName: 'Google Analytics' }]);
   }),
 
   http.get('/api/data-storages', () => {

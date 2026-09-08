@@ -19,14 +19,14 @@ export default function GoogleChatDeliveryMethodDescription({
       <AccordionItem value='google-chat-delivery-method-details'>
         <AccordionTrigger>
           {isWebhook
-            ? t('googleChat.deliveryMethodDescription.webhookTitle', 'How does Incoming Webhook delivery work?')
-            : t('googleChat.deliveryMethodDescription.emailTitle', 'How does Channel Email delivery work?')}
+            ? t('googleChat.deliveryMethodDescription.webhookTitle')
+            : t('googleChat.deliveryMethodDescription.emailTitle')}
         </AccordionTrigger>
         <AccordionContent>
           <p className='text-sm'>
             {isWebhook
-              ? t('googleChat.deliveryMethodDescription.webhookText', 'Sends the report directly to the space as formatted Google Chat messages.')
-              : t('googleChat.deliveryMethodDescription.emailText', 'Sends the report by email to the Google Chat space address. The report appears as an email card in the space.')}
+              ? t('googleChat.deliveryMethodDescription.webhookText')
+              : t('googleChat.deliveryMethodDescription.emailText')}
           </p>
         </AccordionContent>
       </AccordionItem>

@@ -4,13 +4,14 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "build": "node --check src/server.js && node --check src/extractor.js && node --check src/parser.js && node --check src/security.js && node --check src/operational-log.js",
+    "build": "node --check src/server.js && node --check src/extractor.js && node --check src/parser.js && node --check src/security.js && node --check src/replay-store.js && node --check src/operational-log.js",
     "start": "node src/server.js",
     "dev": "node --watch src/server.js",
     "test": "vitest run"
   },
   "dependencies": {
     "express": "^5.2.1",
+    "ioredis": "^5.11.1",
     "playwright": "1.62.1"
   },
   "devDependencies": {

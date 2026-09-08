@@ -4,6 +4,7 @@ import { Label } from '@owox/ui/components/label';
 import { Button } from '@owox/ui/components/button';
 import { Plus } from 'lucide-react';
 import type { ContextDto } from '../types/context.types';
+import { useTranslation } from 'react-i18next';
 
 interface ContextsCheckboxListProps {
   idPrefix: string;
@@ -24,17 +25,21 @@ export function ContextsCheckboxList({
   emptyText,
   onRequestCreate,
 }: ContextsCheckboxListProps) {
+  const { t } = useTranslation();
   const createButton = onRequestCreate ? (
     <Button type='button' variant='outline' size='sm' onClick={onRequestCreate} disabled={disabled}>
       <Plus className='size-4' />
-      New context
+      {t('contextsPage.newContext', 'New context')}
     </Button>
   ) : null;
 
   if (contexts.length === 0) {
     const fallback = onRequestCreate
-      ? 'No contexts yet.'
-      : 'No contexts available. Create one in the Contexts tab.';
+      ? t('contextsPage.noContextsYet', 'No contexts yet.')
+      : t(
+          'contextsPage.noContextsAvailable',
+          'No contexts available. Create one in the Contexts tab.'
+        );
     return (
       <div className='flex flex-col gap-1'>
         <div className='border-border flex flex-col gap-2 rounded-md border px-4 py-8'>

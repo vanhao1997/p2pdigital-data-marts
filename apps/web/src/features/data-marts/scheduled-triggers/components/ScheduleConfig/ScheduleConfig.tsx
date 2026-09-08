@@ -236,10 +236,7 @@ const WeekdaysField: FC<WeekdaysFieldProps> = ({ value, onChange, disabled }) =>
         <MultiSelect
           options={WEEKDAYS.map(day => ({
             ...day,
-            label: t(
-              `scheduleConfig.weekday${day.value}`,
-              day.label
-            ),
+            label: t(`scheduleConfig.weekday${day.value}`, day.label),
           }))}
           selected={value}
           onSelectionChange={onChange}
@@ -337,7 +334,10 @@ const IntervalField: FC<IntervalFieldProps> = ({
           <SelectContent>
             {(intervalType === 'minutes' ? MINUTE_INTERVALS : HOUR_INTERVALS).map(interval => (
               <SelectItem key={interval} value={interval.toString()}>
-                {interval} {intervalType === 'minutes' ? t('scheduleConfig.minAbbr', 'min') : t('scheduleConfig.hrAbbr', 'hr')}
+                {interval}{' '}
+                {intervalType === 'minutes'
+                  ? t('scheduleConfig.minAbbr', 'min')
+                  : t('scheduleConfig.hrAbbr', 'hr')}
               </SelectItem>
             ))}
           </SelectContent>
@@ -651,7 +651,9 @@ export function ScheduleConfig({
               >
                 <div className='flex items-center gap-2'>
                   <Settings className='h-4 w-4' />
-                  <span className='text-sm font-medium'>{t('scheduleConfig.preview', 'Preview')}</span>
+                  <span className='text-sm font-medium'>
+                    {t('scheduleConfig.preview', 'Preview')}
+                  </span>
                 </div>
                 {isPreviewExpanded ? (
                   <ChevronUp className='text-muted-foreground h-4 w-4' />
@@ -664,7 +666,9 @@ export function ScheduleConfig({
                 <>
                   <div className='grid gap-4'>
                     <div className='flex items-center justify-between'>
-                      <span className='text-muted-foreground text-xs'>{t('scheduleConfig.status', 'Status:')}</span>
+                      <span className='text-muted-foreground text-xs'>
+                        {t('scheduleConfig.status', 'Status:')}
+                      </span>
                       <Badge variant={isEnabled ? 'default' : 'secondary'} className='text-xs'>
                         {isEnabled
                           ? t('scheduleConfig.enabled', 'Enabled')
@@ -673,21 +677,27 @@ export function ScheduleConfig({
                     </div>
 
                     <div className='flex items-center justify-between'>
-                      <span className='text-muted-foreground text-xs'>{t('scheduleConfig.cron', 'Cron:')}</span>
+                      <span className='text-muted-foreground text-xs'>
+                        {t('scheduleConfig.cron', 'Cron:')}
+                      </span>
                       <Badge variant='secondary' className='font-mono text-xs'>
                         {cronExpression}
                       </Badge>
                     </div>
 
                     <div className='flex items-center justify-between'>
-                      <span className='text-muted-foreground text-xs'>{t('scheduleConfig.timezone', 'Timezone:')}</span>
+                      <span className='text-muted-foreground text-xs'>
+                        {t('scheduleConfig.timezone', 'Timezone:')}
+                      </span>
                       <Badge variant='outline' className='text-xs'>
                         {currentTimezone}
                       </Badge>
                     </div>
 
                     <div className='flex items-start justify-between gap-2'>
-                      <span className='text-muted-foreground text-xs'>{t('scheduleConfig.schedule', 'Schedule:')}</span>
+                      <span className='text-muted-foreground text-xs'>
+                        {t('scheduleConfig.schedule', 'Schedule:')}
+                      </span>
                       <span className='flex-1 text-right text-xs'>{nextRun}</span>
                     </div>
                   </div>

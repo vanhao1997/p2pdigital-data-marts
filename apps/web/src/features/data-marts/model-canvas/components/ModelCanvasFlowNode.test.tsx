@@ -260,7 +260,7 @@ describe('ModelCanvasFlowNode', () => {
     fireEvent.click(
       screen.getByRole('button', { name: /^Open Data Quality for Orders: Issues found/ })
     );
-    const runAction = await screen.findByRole('button', { name: 'Run Quality for Orders' });
+    const runAction = await screen.findByRole('button', { name: 'Run Data Quality for Orders' });
     fireEvent.click(runAction);
 
     await waitFor(() => {

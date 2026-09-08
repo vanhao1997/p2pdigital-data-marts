@@ -77,12 +77,18 @@ export function EditNotificationSheet({
         groupingDelayCron,
       });
       toast.success(t('notificationsPage.settingsSaved', 'Settings saved'), {
-        description: t('notificationsPage.settingsUpdated', 'Notification settings have been updated.'),
+        description: t(
+          'notificationsPage.settingsUpdated',
+          'Notification settings have been updated.'
+        ),
       });
       onClose();
     } catch (error) {
       toast.error(t('common.error', 'Error'), {
-        description: error instanceof Error ? error.message : t('notificationsPage.saveFailed', 'Failed to save settings'),
+        description:
+          error instanceof Error
+            ? error.message
+            : t('notificationsPage.saveFailed', 'Failed to save settings'),
       });
     } finally {
       setIsSaving(false);
@@ -106,7 +112,10 @@ export function EditNotificationSheet({
       const serverMessage = (error as { response?: { data?: { message?: string } } }).response?.data
         ?.message;
       setWebhookTestError(
-        serverMessage ?? (error instanceof Error ? error.message : t('notificationsPage.testWebhookFailed', 'Failed to send test webhook'))
+        serverMessage ??
+          (error instanceof Error
+            ? error.message
+            : t('notificationsPage.testWebhookFailed', 'Failed to send test webhook'))
       );
     }
   }, [setting, webhookUrl, testWebhook, t]);
@@ -123,7 +132,9 @@ export function EditNotificationSheet({
       <SheetContent data-testid='notifEditSheet'>
         <SheetHeader>
           <SheetTitle>{t('notificationsPage.editTitle', 'Edit notification')}</SheetTitle>
-          <SheetDescription>{t('notificationsPage.editDescription', 'Update the notification settings')}</SheetDescription>
+          <SheetDescription>
+            {t('notificationsPage.editDescription', 'Update the notification settings')}
+          </SheetDescription>
         </SheetHeader>
 
         <AppForm

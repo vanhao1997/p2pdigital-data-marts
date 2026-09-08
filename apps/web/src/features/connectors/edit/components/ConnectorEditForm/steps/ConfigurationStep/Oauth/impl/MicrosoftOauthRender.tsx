@@ -1,6 +1,7 @@
 import { MicrosoftLoginButton } from '../../../../../../../shared/components/MicrosoftLoginButton';
 import type { MicrosoftLoginResponse } from '../../../../../../../shared/components/MicrosoftLoginButton';
 import type { OauthRenderComponentProps } from '../OauthRenderFactory';
+import { useTranslation } from 'react-i18next';
 
 export function MicrosoftOauthRender({
   isLoading,
@@ -8,6 +9,7 @@ export function MicrosoftOauthRender({
   settings,
   onOAuthSuccess,
 }: Pick<OauthRenderComponentProps, 'isLoading' | 'status' | 'settings' | 'onOAuthSuccess'>) {
+  const { t } = useTranslation();
   const handleMicrosoftLogin = (response: MicrosoftLoginResponse) => {
     void onOAuthSuccess({
       code: response.code,
@@ -24,10 +26,11 @@ export function MicrosoftOauthRender({
       >
         {status?.user ? (
           <>
-            Connected as <strong>{status.user.name ?? status.user.id}</strong>
+            {t('connectorWizard.oauth.connectedAs')}{' '}
+            <strong>{status.user.name ?? status.user.id}</strong>
           </>
         ) : (
-          'Sign in with Microsoft'
+          t('connectorWizard.oauth.signInWithMicrosoft')
         )}
       </MicrosoftLoginButton>
     </div>

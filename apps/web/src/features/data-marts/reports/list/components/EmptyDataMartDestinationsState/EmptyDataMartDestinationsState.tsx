@@ -26,7 +26,10 @@ export function EmptyDataMartDestinationsState({
           icon={GoogleSheetsIcon}
           title={t('reportsEmptyDestinations.analyzeTitle', 'Analyze your data in Google Sheets')}
           subtitle={t('reportsEmptyDestinations.ready', 'Ready to start reporting?')}
-          description={t('reportsEmptyDestinations.description', 'Access live data directly in Sheets — choose columns and build reports without SQL or CSV exports.')}
+          description={t(
+            'reportsEmptyDestinations.description',
+            'Access live data directly in Sheets — choose columns and build reports without SQL or CSV exports.'
+          )}
           primaryAction={{
             label: t('reportsEmptyDestinations.connectSheets', 'Connect Google Sheets'),
             ...(onOpenCreateDestination
@@ -43,8 +46,11 @@ export function EmptyDataMartDestinationsState({
           }}
         />
         <InviteTeammatesCard
-          hint='— Ask colleagues to configure Google Sheets destination'
-          docsLabel={t('reportsEmptyDestinations.learnMore', 'Learn more about Google Sheets destination')}
+          hint={t('destinationsPage.inviteHint')}
+          docsLabel={t(
+            'reportsEmptyDestinations.learnMore',
+            'Learn more about Google Sheets destination'
+          )}
           docsHref='https://docs.p2pdigital.io.vn/docs/destinations/supported-destinations/google-sheets/?utm_source=owox_data_marts&utm_medium=dm_page_destinations_tab&utm_campaign=empty_state'
         />
       </div>
@@ -58,10 +64,18 @@ export function EmptyDataMartDestinationsState({
         <div className='dm-empty-state'>
           <ArchiveRestore className='dm-empty-state-ico' strokeWidth={1} />
 
-          <h2 className='dm-empty-state-title'>{t('reportsEmptyDestinations.headline', 'Google Sheets, Data Studio, Email… and friends!')}</h2>
+          <h2 className='dm-empty-state-title'>
+            {t(
+              'reportsEmptyDestinations.headline',
+              'Google Sheets, Data Studio, Email… and friends!'
+            )}
+          </h2>
 
           <p className='dm-empty-state-subtitle'>
-            {t('reportsEmptyDestinations.createDestination', 'To turn data into reports using your favorite tools, create a Destination first.')}
+            {t(
+              'reportsEmptyDestinations.createDestination',
+              'To turn data into reports using your favorite tools, create a Destination first.'
+            )}
           </p>
 
           <Button variant='outline' asChild>
@@ -73,8 +87,11 @@ export function EmptyDataMartDestinationsState({
         </div>
       </div>
       <InviteTeammatesCard
-        hint='— Not sure which destination to connect? Ask someone with access to help you'
-        docsLabel={t('reportsEmptyDestinations.learnMore', 'Learn more about Google Sheets destination')}
+        hint={t('destinationsPage.inviteHint')}
+        docsLabel={t(
+          'reportsEmptyDestinations.learnMore',
+          'Learn more about Google Sheets destination'
+        )}
         docsHref='https://docs.p2pdigital.io.vn/docs/destinations/supported-destinations/google-sheets/?utm_source=owox_data_marts&utm_medium=dm_page_destinations_tab&utm_campaign=empty_state'
       />
     </div>

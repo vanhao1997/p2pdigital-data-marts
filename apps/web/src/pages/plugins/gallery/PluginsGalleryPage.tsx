@@ -159,7 +159,7 @@ export default function PluginsGalleryPage() {
                   update({ filter: value as PluginFilter });
                 }}
               >
-              <SelectTrigger className='ml-auto w-40' aria-label={t('pluginsPage.filterLabel')}>
+                <SelectTrigger className='ml-auto w-40' aria-label={t('pluginsPage.filterLabel')}>
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -195,9 +195,7 @@ export default function PluginsGalleryPage() {
             <div className='dm-empty-state'>
               <Puzzle className='dm-empty-state-ico' strokeWidth={1} aria-hidden />
               <h2 className='dm-empty-state-title'>{t('pluginsPage.emptyTitle')}</h2>
-              <p className='dm-empty-state-subtitle'>
-                {t('pluginsPage.emptySubtitle')}
-              </p>
+              <p className='dm-empty-state-subtitle'>{t('pluginsPage.emptySubtitle')}</p>
             </div>
           )}
 

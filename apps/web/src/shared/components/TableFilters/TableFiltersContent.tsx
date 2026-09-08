@@ -20,11 +20,7 @@ interface TableFiltersContentProps {
   description?: string;
 }
 
-export function TableFiltersContent({
-  config,
-  title,
-  description,
-}: TableFiltersContentProps) {
+export function TableFiltersContent({ config, title, description }: TableFiltersContentProps) {
   const { t } = useTranslation();
   const { open, setOpen, appliedState, onApply, onClear } = useTableFilters();
 
@@ -73,7 +69,8 @@ export function TableFiltersContent({
       <PopoverHeader>
         <PopoverTitle>{title ?? t('tableFilters.title', 'Filters')}</PopoverTitle>
         <PopoverDescription>
-          {description ?? t('tableFilters.description', 'Filter your table to narrow down your data')}
+          {description ??
+            t('tableFilters.description', 'Filter your table to narrow down your data')}
         </PopoverDescription>
       </PopoverHeader>
 

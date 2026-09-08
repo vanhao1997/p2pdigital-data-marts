@@ -1,4 +1,6 @@
 import { Inject, Injectable, Logger, Optional } from '@nestjs/common';
+import { rm } from 'node:fs/promises';
+import path from 'node:path';
 import { ADVANCED_SEARCH_CONFIG, AdvancedSearchConfig } from '../config/advanced-search.config';
 import {
   EMBEDDING_DIMENSIONS,
@@ -25,12 +27,16 @@ const esmImport = new Function('specifier', 'return import(specifier)') as Trans
 
 export const TRANSFORMERS_IMPORTER = Symbol('TRANSFORMERS_IMPORTER');
 const LOCAL_PIPELINE_INIT_WARN_AFTER_MS = 10_000;
+const CORRUPT_MODEL_RETRY_DELAY_MS = 60_000;
 
 @Injectable()
 export class LocalTransformersEmbeddingProvider implements EmbeddingProvider {
   private readonly logger = new Logger(LocalTransformersEmbeddingProvider.name);
 
   private pipelinePromise: Promise<Pipe | null> | null = null;
+
+  // A broken cache should not trigger a download and an error log for every reindex event.
+  private retryAfter = 0;
 
   constructor(
     @Inject(ADVANCED_SEARCH_CONFIG)
@@ -90,6 +96,10 @@ export class LocalTransformersEmbeddingProvider implements EmbeddingProvider {
   }
 
   private resolvePipeline(): Promise<Pipe | null> {
+    if (this.retryAfter > Date.now()) {
+      return Promise.resolve(null);
+    }
+
     if (this.pipelinePromise === null) {
       this.pipelinePromise = this.initPipeline().then(pipe => {
         if (pipe === null) {
@@ -113,9 +123,26 @@ export class LocalTransformersEmbeddingProvider implements EmbeddingProvider {
       if (this.config.modelCacheDir) {
         transformers.env.cacheDir = this.config.modelCacheDir;
       }
-      return await transformers.pipeline('feature-extraction', EMBEDDING_MODEL, {
-        dtype: EMBEDDING_DTYPE,
-      });
+
+      try {
+        return await this.createPipeline(transformers);
+      } catch (err) {
+        if (!this.isCorruptModelError(err)) {
+          throw err;
+        }
+
+        this.logger.warn(
+          `Local embedding model cache is invalid; clearing the cached model and retrying once: ${this.formatError(err)}`
+        );
+        await this.clearModelCache(transformers.env.cacheDir);
+
+        try {
+          return await this.createPipeline(transformers);
+        } catch (retryError) {
+          this.retryAfter = Date.now() + CORRUPT_MODEL_RETRY_DELAY_MS;
+          throw retryError;
+        }
+      }
     } catch (err) {
       this.logger.warn(
         `@huggingface/transformers failed to load — embedding unavailable, search and indexing will fail closed: ${this.formatError(err)}`
@@ -124,6 +151,29 @@ export class LocalTransformersEmbeddingProvider implements EmbeddingProvider {
     } finally {
       clearTimeout(warnTimer);
     }
+  }
+
+  private createPipeline(transformers: TransformersModule): Promise<Pipe> {
+    return transformers.pipeline('feature-extraction', EMBEDDING_MODEL, {
+      dtype: EMBEDDING_DTYPE,
+    });
+  }
+
+  private isCorruptModelError(err: unknown): boolean {
+    const message = this.formatError(err).toLowerCase();
+    return (
+      message.includes('protobuf parsing failed') ||
+      message.includes('invalid onnx') ||
+      message.includes('onnx model is invalid')
+    );
+  }
+
+  private async clearModelCache(cacheDir: string | undefined): Promise<void> {
+    if (!cacheDir) {
+      return;
+    }
+
+    await rm(path.join(cacheDir, EMBEDDING_MODEL), { recursive: true, force: true });
   }
 
   private formatError(err: unknown): string {

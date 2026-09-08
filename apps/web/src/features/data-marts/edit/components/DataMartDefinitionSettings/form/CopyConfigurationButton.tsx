@@ -20,6 +20,7 @@ import {
 import { dataMartService } from '../../../../shared';
 import type { DataMartResponseDto } from '../../../../shared/types/api';
 import type { ConnectorDefinitionConfig, CopiedConfiguration } from '../../../model/types';
+import { useTranslation } from 'react-i18next';
 
 interface CopyConfigurationButtonProps {
   currentConnectorName: string;
@@ -32,6 +33,7 @@ export function CopyConfigurationButton({
   onCopyConfiguration,
   connectorSpecification,
 }: CopyConfigurationButtonProps) {
+  const { t } = useTranslation();
   const [dataMarts, setDataMarts] = useState<DataMartResponseDto[]>([]);
   const [loading, setLoading] = useState(false);
   const [open, setOpen] = useState(false);
@@ -138,7 +140,7 @@ export function CopyConfigurationButton({
         <DropdownMenuTrigger asChild>
           <Button type='button' variant='ghost' size='sm' className='cursor-pointer'>
             <span className='text-muted-foreground/75 text-xs font-semibold tracking-wide uppercase'>
-              Copy from&hellip;
+              {t('copyConfiguration.copyFrom')}
             </span>
             <ChevronRight
               className={cn(
@@ -150,25 +152,23 @@ export function CopyConfigurationButton({
         </DropdownMenuTrigger>
         <DropdownMenuContent side='bottom' align='end' className='w-72'>
           {loading ? (
-            <DropdownMenuItem disabled>Loading&hellip;</DropdownMenuItem>
+            <DropdownMenuItem disabled>{t('copyConfiguration.loading')}</DropdownMenuItem>
           ) : dataMarts.length === 0 ? (
             <div className='flex flex-col items-center justify-center gap-2 p-4 text-center'>
               <div className='bg-muted/70 rounded-full p-3'>
                 <PackageSearch className='text-muted-foreground h-6 w-6' strokeWidth={1.5} />
               </div>
               <span className='text-foreground text-sm font-medium'>
-                No matching Data&nbsp;Marts
+                {t('copyConfiguration.noMatching')}
               </span>
               <span className='text-muted-foreground text-sm'>
-                You can reuse configuration settings only from connector-based Data&nbsp;Marts that
-                use the same source.
+                {t('copyConfiguration.noOther')}
               </span>
             </div>
           ) : (
             <div className='flex flex-col gap-2'>
               <div className='text-muted-foreground border-b p-2 text-sm'>
-                Select one of your existing Data&nbsp;Marts to&nbsp;reuse its configuration
-                settings.
+                {t('copyConfiguration.selectToReuse')}
               </div>
               <div>
                 {dataMarts.map(dataMart => {
@@ -211,7 +211,7 @@ export function CopyConfigurationButton({
                                   handleSelect(dataMart, config);
                                 }}
                               >
-                                Configuration {index + 1}
+                                {t('copyConfiguration.configuration', { index: index + 1 })}
                               </DropdownMenuItem>
                             </TooltipTrigger>
                             <TooltipContent side='right' className='max-w-sm'>

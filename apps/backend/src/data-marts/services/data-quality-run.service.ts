@@ -11,6 +11,7 @@ import {
 import {
   DataQualityRelationshipSnapshot,
   DataQualityRelationshipTargetSnapshot,
+  DataQualityStoredCheckResult,
   DataQualitySummary,
 } from '../dto/schemas/data-quality/data-quality-run.schema';
 import { DataMart } from '../entities/data-mart.entity';
@@ -26,8 +27,10 @@ import { resolveEffectiveDataQualityConfig } from './data-quality-config-resolve
 import { DataQualityRunTriggerService } from './data-quality-run-trigger.service';
 import { aggregateDataQualitySummary } from '../data-quality/data-quality-result-parser';
 import { createDataQualityConfigRevision } from '../data-quality/data-quality-config-revision';
+import { serializeOperationalError } from '../utils/run-error-message';
 
 export const DATA_QUALITY_RUN_EXECUTION_ERROR_MESSAGE = 'Data Quality run failed during execution';
+export const DATA_QUALITY_RUN_EXECUTION_ERROR_CODE = 'DATA_QUALITY_EXECUTION_FAILED';
 
 interface EnqueueDataQualityRunCommand {
   dataMartId: string;
@@ -335,7 +338,7 @@ export class DataQualityRunService {
   async markRunAndSummaryAsExecutionFailed(
     dataMartRunId: string,
     expectedProjectId: string,
-    _error: unknown,
+    error: unknown,
     finishedAt: Date
   ): Promise<void> {
     await this.dataSource.transaction(async manager => {
@@ -360,7 +363,13 @@ export class DataQualityRunService {
       }
 
       run.status = DataMartRunStatus.FAILED;
-      run.errors = [DATA_QUALITY_RUN_EXECUTION_ERROR_MESSAGE];
+      run.errors = [
+        serializeOperationalError(error, {
+          code: DATA_QUALITY_RUN_EXECUTION_ERROR_CODE,
+          message: DATA_QUALITY_RUN_EXECUTION_ERROR_MESSAGE,
+          at: finishedAt,
+        }),
+      ];
       run.finishedAt = finishedAt;
       await runRepository.save(run);
     });
@@ -483,9 +492,25 @@ function cloneJson<T>(value: T): T {
 }
 
 function createDataQualityRunErrors(
-  results: readonly { status: DataQualityCheckStatus }[]
+  results: readonly Pick<DataQualityStoredCheckResult, 'status' | 'error'>[]
 ): string[] {
-  return results.some(result => result.status === DataQualityCheckStatus.ERROR)
-    ? [DATA_QUALITY_RUN_EXECUTION_ERROR_MESSAGE]
-    : [];
+  const failed = results.filter(result => result.status === DataQualityCheckStatus.ERROR);
+  if (failed.length === 0) return [];
+
+  const firstError = failed.find(result => result.error)?.error;
+  const dataQualityCode = firstError?.details?.['dataQualityCode'];
+  return [
+    serializeOperationalError(firstError ?? DATA_QUALITY_RUN_EXECUTION_ERROR_MESSAGE, {
+      code:
+        firstError?.code ??
+        (typeof dataQualityCode === 'string'
+          ? dataQualityCode
+          : DATA_QUALITY_RUN_EXECUTION_ERROR_CODE),
+      message: DATA_QUALITY_RUN_EXECUTION_ERROR_MESSAGE,
+      params: {
+        errorChecks: failed.length,
+        ...(typeof dataQualityCode === 'string' ? { dataQualityCode } : {}),
+      },
+    }),
+  ];
 }

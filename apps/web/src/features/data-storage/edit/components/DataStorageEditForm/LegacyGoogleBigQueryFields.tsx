@@ -14,6 +14,7 @@ import { Tabs, TabsList, TabsTrigger } from '@owox/ui/components/tabs';
 import { FileDropTextarea } from '@owox/ui/components/file-drop-textarea';
 import { toast } from 'sonner';
 import { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import type { UseFormReturn } from 'react-hook-form';
 import { Combobox } from '../../../../../shared/components/Combobox/combobox.tsx';
 import { getServiceAccountLink } from '../../../../../utils/google-cloud-utils';
@@ -34,16 +35,16 @@ interface LegacyGoogleBigQueryFieldsProps {
 
 const LEGACY_AUTODETECT_LOCATION = 'AUTODETECT';
 
-const legacyGoogleBigQueryLocationOptions = [
-  {
-    value: LEGACY_AUTODETECT_LOCATION,
-    label: 'Tự phát hiện vị trí',
-    group: 'Chung',
-  },
-  ...googleBigQueryLocationOptions,
-];
-
 export const LegacyGoogleBigQueryFields = ({ form }: LegacyGoogleBigQueryFieldsProps) => {
+  const { t } = useTranslation();
+  const legacyGoogleBigQueryLocationOptions = [
+    {
+      value: LEGACY_AUTODETECT_LOCATION,
+      label: t('storageForm.legacyAutodetect'),
+      group: t('storageForm.legacyCommonGroup'),
+    },
+    ...googleBigQueryLocationOptions,
+  ];
   const {
     entityId: storageId,
     onSourceSelect: onSourceStorageSelect,
@@ -134,14 +135,14 @@ export const LegacyGoogleBigQueryFields = ({ form }: LegacyGoogleBigQueryFieldsP
   return (
     <>
       {/* Connection Settings */}
-      <FormSection title='Cài đặt kết nối'>
+      <FormSection title={t('formCommon.connectionSettings')}>
         <FormField
           control={form.control}
           name='config.projectId'
           render={({ field }) => (
             <FormItem>
-              <FormLabel tooltip='Mã dự án Google Cloud gắn với kho lưu trữ này'>
-                Mã dự án
+              <FormLabel tooltip={t('storageForm.legacyProjectTooltip')}>
+                {t('storageForm.projectId')}
               </FormLabel>
               <FormControl>
                 <Input {...field} disabled />
@@ -158,16 +159,16 @@ export const LegacyGoogleBigQueryFields = ({ form }: LegacyGoogleBigQueryFieldsP
           name='config.location'
           render={({ field }) => (
             <FormItem>
-              <FormLabel tooltip='Chọn cùng khu vực nơi dữ liệu BigQuery đang được lưu để truy vấn hoạt động đúng, hoặc dùng tùy chọn tự phát hiện'>
-                Vị trí
+              <FormLabel tooltip={t('storageForm.legacyLocationTooltip')}>
+                {t('storageForm.location')}
               </FormLabel>
               <FormControl>
                 <Combobox
                   options={legacyGoogleBigQueryLocationOptions}
                   value={field.value}
                   onValueChange={field.onChange}
-                  placeholder='Chọn vị trí'
-                  emptyMessage='Không tìm thấy vị trí nào'
+                  placeholder={t('storageForm.legacyLocationPlaceholder')}
+                  emptyMessage={t('storageForm.legacyLocationEmpty')}
                   className='w-full'
                 />
               </FormControl>
@@ -199,7 +200,7 @@ export const LegacyGoogleBigQueryFields = ({ form }: LegacyGoogleBigQueryFieldsP
             {isOAuthAvailable && (
               <FormItem>
                 <div className='flex items-center justify-between'>
-                  <FormLabel>Phương thức xác thực</FormLabel>
+                  <FormLabel>{t('storageForm.authMethod')}</FormLabel>
                   <Tabs
                     value={authMethod}
                     onValueChange={v => {
@@ -207,8 +208,10 @@ export const LegacyGoogleBigQueryFields = ({ form }: LegacyGoogleBigQueryFieldsP
                     }}
                   >
                     <TabsList>
-                      <TabsTrigger value='oauth'>Kết nối với Google</TabsTrigger>
-                      <TabsTrigger value='service-account'>JSON tài khoản dịch vụ</TabsTrigger>
+                      <TabsTrigger value='oauth'>{t('storageForm.oauthMethod')}</TabsTrigger>
+                      <TabsTrigger value='service-account'>
+                        {t('storageForm.serviceAccountMethod')}
+                      </TabsTrigger>
                     </TabsList>
                   </Tabs>
                 </div>
@@ -222,8 +225,8 @@ export const LegacyGoogleBigQueryFields = ({ form }: LegacyGoogleBigQueryFieldsP
                 render={() => (
                   <FormItem>
                     <div className='mb-4 flex items-center justify-between'>
-                      <FormLabel tooltip='Cho phép Owox truy cập các tập dữ liệu BigQuery của bạn'>
-                        Kết nối bằng Google OAuth
+                      <FormLabel tooltip={t('storageForm.oauthTooltip')}>
+                        {t('storageForm.oauthMethod')}
                       </FormLabel>
                     </div>
                     <GoogleOAuthConnectButton
@@ -249,17 +252,17 @@ export const LegacyGoogleBigQueryFields = ({ form }: LegacyGoogleBigQueryFieldsP
                 render={({ field }) => (
                   <FormItem>
                     <div className='flex items-center justify-between'>
-                      <FormLabel tooltip='Dán khóa JSON từ tài khoản dịch vụ có quyền truy cập vào nhà cung cấp kho lưu trữ đã chọn'>
-                        Tài khoản dịch vụ
+                      <FormLabel tooltip={t('storageForm.serviceAccountTooltip')}>
+                        {t('storageForm.serviceAccount')}
                       </FormLabel>
                       {!isEditing && serviceAccountValue && (
-                          <Button variant='ghost' size='sm' onClick={handleEdit} type='button'>
-                          Sửa
+                        <Button variant='ghost' size='sm' onClick={handleEdit} type='button'>
+                          {t('storageForm.edit')}
                         </Button>
                       )}
                       {isEditing && (
-                          <Button variant='ghost' size='sm' onClick={handleCancel} type='button'>
-                          Hủy
+                        <Button variant='ghost' size='sm' onClick={handleCancel} type='button'>
+                          {t('storageForm.cancelEdit')}
                         </Button>
                       )}
                     </div>
@@ -268,11 +271,14 @@ export const LegacyGoogleBigQueryFields = ({ form }: LegacyGoogleBigQueryFieldsP
                         <FieldWithActions
                           value={serviceAccountLink.email}
                           actions={[
-                            { type: 'copy', tooltip: 'Sao chép email' },
+                            {
+                              type: 'copy',
+                              tooltip: t('storageForm.serviceAccountCopyEmail'),
+                            },
                             {
                               type: 'external-link',
                               href: serviceAccountLink.url,
-                              tooltip: 'Mở chi tiết',
+                              tooltip: t('storageForm.serviceAccountOpenDetails'),
                             },
                           ]}
                         />
@@ -281,7 +287,19 @@ export const LegacyGoogleBigQueryFields = ({ form }: LegacyGoogleBigQueryFieldsP
                           {...field}
                           className='min-h-[150px] font-mono'
                           rows={8}
-                          placeholder='Dán JSON tài khoản dịch vụ vào đây hoặc kéo thả tệp'
+                          placeholder={t('storageForm.serviceAccountPlaceholder')}
+                          messages={{
+                            multipleFiles: t('fileDrop.multipleFiles'),
+                            fileTooLarge: t('fileDrop.fileTooLarge'),
+                            invalidServiceAccountJson: t('fileDrop.invalidServiceAccountJson'),
+                            invalidJson: t('fileDrop.invalidJson'),
+                            readFailed: t('fileDrop.readFailed'),
+                            invalidFileType: allowedExtensions =>
+                              t('fileDrop.invalidFileType', {
+                                extensions: allowedExtensions.join(', '),
+                              }),
+                            dropFile: t('fileDrop.dropJsonFile'),
+                          }}
                           onFileRead={content => {
                             form.setValue('credentials.serviceAccount', content, {
                               shouldDirty: true,

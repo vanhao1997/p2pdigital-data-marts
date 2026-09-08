@@ -439,13 +439,19 @@ export const AiAssistantPanel = forwardRef<AiAssistantPanelHandle, AiAssistantPa
 
                 {resolvedContext?.contextResolution === 'explicit_not_found' && (
                   <div className='mt-3 rounded-md border border-amber-200 bg-amber-50 px-2 py-1.5 text-xs text-amber-900'>
-                    {t('insightsUi.sourceNotFound', 'Please specify an existing source key from this template.')}
+                    {t(
+                      'insightsUi.sourceNotFound',
+                      'Please specify an existing source key from this template.'
+                    )}
                   </div>
                 )}
 
                 {resolvedContext?.contextResolution === 'ambiguous_implicit' && (
                   <div className='mt-3 rounded-md border border-slate-200 bg-slate-50 px-2 py-1.5 text-xs text-slate-900'>
-                    {t('insightsUi.ambiguousSource', 'No clear source match was found. Use Create source and attach to continue.')}
+                    {t(
+                      'insightsUi.ambiguousSource',
+                      'No clear source match was found. Use Create source and attach to continue.'
+                    )}
                   </div>
                 )}
 
@@ -527,7 +533,10 @@ export const AiAssistantPanel = forwardRef<AiAssistantPanelHandle, AiAssistantPa
             }
           }}
           title={t('insightsUi.deleteChatTitle', 'Delete Chat')}
-          description={t('insightsUi.deleteChatDescription', 'Are you sure you want to delete this chat session? This action cannot be undone.')}
+          description={t(
+            'insightsUi.deleteChatDescription',
+            'Are you sure you want to delete this chat session? This action cannot be undone.'
+          )}
           confirmLabel={t('common.delete', 'Delete')}
           variant='destructive'
         />

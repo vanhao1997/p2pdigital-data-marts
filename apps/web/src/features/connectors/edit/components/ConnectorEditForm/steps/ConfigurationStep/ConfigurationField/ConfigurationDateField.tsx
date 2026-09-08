@@ -1,5 +1,6 @@
 import { Input } from '@owox/ui/components/input';
 import type { ConnectorSpecificationResponseApiDto } from '../../../../../../shared/api/types';
+import { useTranslation } from 'react-i18next';
 
 interface ConfigurationDateFieldProps {
   specification: ConnectorSpecificationResponseApiDto;
@@ -12,6 +13,7 @@ export function ConfigurationDateField({
   configuration,
   onValueChange,
 }: ConfigurationDateFieldProps) {
+  const { t } = useTranslation();
   const { name, placeholder, default: defaultValue } = specification;
   const displayName = specification.title ?? specification.name;
 
@@ -34,7 +36,7 @@ export function ConfigurationDateField({
       name={name}
       type='date'
       value={(configuration[name] as string) || parseDateValue(defaultValue) || ''}
-      placeholder={placeholder ?? `Enter ${displayName.toLowerCase()}`}
+      placeholder={placeholder ?? t('connectorWizard.enterValue', { name: displayName })}
       onChange={e => {
         onValueChange(name, e.target.value);
       }}

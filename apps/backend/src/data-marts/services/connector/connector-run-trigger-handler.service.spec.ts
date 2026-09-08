@@ -115,7 +115,7 @@ describe('ConnectorRunTriggerHandlerService', () => {
         expect.objectContaining({ id: 'run-1', status: expect.any(Object) }),
         expect.objectContaining({
           status: DataMartRunStatus.CANCELLED,
-          errors: ['Project is archived and read-only; scheduled run was skipped.'],
+          errors: [expect.stringContaining('"code":"PROJECT_ARCHIVED_READ_ONLY"')],
           finishedAt: expect.any(Date),
         })
       );

@@ -41,7 +41,8 @@ vi.mock('../../../../../../utils', () => ({
 }));
 
 vi.mock('sonner', () => ({
-  default: { success: vi.fn() }, toast: { success: vi.fn() },
+  default: { success: vi.fn() },
+  toast: { success: vi.fn() },
 }));
 
 const wrapper = ({ children }: PropsWithChildren) => <ReportsProvider>{children}</ReportsProvider>;

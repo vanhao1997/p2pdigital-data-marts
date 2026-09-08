@@ -34,7 +34,8 @@ vi.mock('@owox/ui/components/dropdown-menu', () => {
 });
 
 vi.mock('sonner', () => ({
-  default: { success: (...args: unknown[]) => toastSuccess(...args) }, toast: { success: (...args: unknown[]) => toastSuccess(...args) },
+  default: { success: (...args: unknown[]) => toastSuccess(...args) },
+  toast: { success: (...args: unknown[]) => toastSuccess(...args) },
 }));
 
 vi.mock('../../../../../../shared/utils/showApiErrorToast', () => ({

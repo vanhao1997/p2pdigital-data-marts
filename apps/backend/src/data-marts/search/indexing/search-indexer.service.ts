@@ -18,6 +18,13 @@ export interface TypeProjectSyncStats {
   deletedOrphans: number;
 }
 
+export class SearchEmbeddingUnavailableError extends Error {
+  constructor() {
+    super('Search embedding could not be generated');
+    this.name = 'SearchEmbeddingUnavailableError';
+  }
+}
+
 @Injectable()
 export class SearchIndexerService {
   private readonly logger = new Logger(SearchIndexerService.name);
@@ -202,9 +209,7 @@ export class SearchIndexerService {
         docHash: hash,
         updatedAt: new Date(),
       });
-      throw new Error(
-        `reindexEntity: ${entityType} ${descriptor.entityId} embedding could not be generated`
-      );
+      throw new SearchEmbeddingUnavailableError();
     }
 
     await this.repository.upsert(entityType, {

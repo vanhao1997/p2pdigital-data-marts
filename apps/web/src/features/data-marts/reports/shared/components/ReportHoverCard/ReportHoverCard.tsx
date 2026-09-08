@@ -26,6 +26,7 @@ import { StatusLabel } from '../../../../../../shared/components/StatusLabel';
 import { mapReportStatusToStatusType } from '../../../../shared';
 import { ReportStatusEnum } from '../../enums';
 import { useTranslation } from 'react-i18next';
+import { getOperationalErrorDisplayMessage } from '../../../../../../shared/utils/localize-operational-error';
 
 interface ReportHoverCardProps {
   report: DataMartReport;
@@ -125,9 +126,12 @@ export const ReportHoverCard = React.memo(
               <DestinationIcon size={20} />
             </HoverCardHeaderIcon>
             <HoverCardHeaderText>
-              <HoverCardHeaderTitle>{report.title || t('reportsUi.unnamedReport', 'Unnamed Report')}</HoverCardHeaderTitle>
+              <HoverCardHeaderTitle>
+                {report.title || t('reportsUi.unnamedReport', 'Unnamed Report')}
+              </HoverCardHeaderTitle>
               <HoverCardHeaderDescription>
-                {t('reportsUi.lastModified', 'Last modified')} <RelativeTime date={new Date(report.modifiedAt)} />
+                {t('reportsUi.lastModified', 'Last modified')}{' '}
+                <RelativeTime date={new Date(report.modifiedAt)} />
               </HoverCardHeaderDescription>
             </HoverCardHeaderText>
           </HoverCardHeader>
@@ -135,7 +139,9 @@ export const ReportHoverCard = React.memo(
           <HoverCardBody>
             {statusInfo && (
               <HoverCardItem>
-                <HoverCardItemLabel>{t('reportActions.lastRunStatus', 'Last run status:')}</HoverCardItemLabel>
+                <HoverCardItemLabel>
+                  {t('reportActions.lastRunStatus', 'Last run status:')}
+                </HoverCardItemLabel>
                 <HoverCardItemValue>
                   <StatusLabel type={statusInfo.statusType} variant='ghost'>
                     {statusInfo.statusText}
@@ -145,25 +151,41 @@ export const ReportHoverCard = React.memo(
             )}
             {report.lastRunDate && (
               <HoverCardItem>
-                <HoverCardItemLabel>{t('reportActions.lastRunDate', 'Last run date:')}</HoverCardItemLabel>
+                <HoverCardItemLabel>
+                  {t('reportActions.lastRunDate', 'Last run date:')}
+                </HoverCardItemLabel>
                 <HoverCardItemValue>
                   <RelativeTime date={report.lastRunDate} />
                 </HoverCardItemValue>
               </HoverCardItem>
             )}
-            {report.lastRunError && (
+            {report.lastRunError && getOperationalErrorDisplayMessage(report.lastRunError) && (
               <HoverCardItem>
-                <HoverCardItemLabel>{t('reportActions.errorMessage', 'Error message:')}</HoverCardItemLabel>
-                <HoverCardItemValue>{report.lastRunError}</HoverCardItemValue>
+                <HoverCardItemLabel>
+                  {t('reportActions.errorMessage', 'Error message:')}
+                </HoverCardItemLabel>
+                <HoverCardItemValue>
+                  {getOperationalErrorDisplayMessage(report.lastRunError)}
+                </HoverCardItemValue>
               </HoverCardItem>
             )}
             <HoverCardItem>
-              {report.runsCount > 0 ? <HoverCardItemLabel>{t('reportActions.totalRuns', 'Total runs:')}</HoverCardItemLabel> : ''}
+              {report.runsCount > 0 ? (
+                <HoverCardItemLabel>
+                  {t('reportActions.totalRuns', 'Total runs:')}
+                </HoverCardItemLabel>
+              ) : (
+                ''
+              )}
               <HoverCardItemValue>
                 {report.runsCount === 0
                   ? t('reportsUi.noRuns', 'No runs')
                   : `${report.runsCount.toString()} ${report.runsCount > 1 ? t('reportsUi.runPlural', 'runs') : t('reportsUi.runSingular', 'run')}`}
-                {formattedDates.createdAt && <>, {t('reportsUi.since', 'since')} {formattedDates.createdAt}</>}
+                {formattedDates.createdAt && (
+                  <>
+                    , {t('reportsUi.since', 'since')} {formattedDates.createdAt}
+                  </>
+                )}
               </HoverCardItemValue>
             </HoverCardItem>
           </HoverCardBody>

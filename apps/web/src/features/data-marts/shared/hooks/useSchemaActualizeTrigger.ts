@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { toast } from 'sonner';
+import i18n from '../../../../i18n';
 import { TaskStatus } from '../../../../shared/types/task-status.enum.ts';
 import { extractApiError, type ApiError } from '../../../../app/api';
 import { dataMartService } from '../services/data-mart.service';
@@ -87,7 +88,7 @@ export function useSchemaActualizeTrigger(
 
   const handleError = useCallback(
     (e: unknown, triggerId: string) => {
-      const error = extractSchemaActualizeError(e, 'Schema actualization failed');
+      const error = extractSchemaActualizeError(e, i18n.t('schemaActualization.failed'));
       invalidateStorageHealthForError(error, storageId);
       toast.dismiss(triggerId);
       setSafeError(error.message);
@@ -148,7 +149,7 @@ export function useSchemaActualizeTrigger(
                 toast.success(message, { duration: undefined, id: triggerId });
               } else {
                 const error = {
-                  message: response.error ?? 'Schema actualization failed',
+                  message: response.error ?? i18n.t('schemaActualization.failed'),
                   code: response.code,
                 };
                 invalidateStorageHealthForError(error, storageId);
@@ -156,7 +157,7 @@ export function useSchemaActualizeTrigger(
                 toast.error(error.message, { duration: undefined, id: triggerId });
               }
             } catch (e) {
-              const error = extractSchemaActualizeError(e, 'Schema actualization failed');
+              const error = extractSchemaActualizeError(e, i18n.t('schemaActualization.failed'));
               invalidateStorageHealthForError(error, storageId);
               toast.dismiss(triggerId);
               setSafeError(error.message);
@@ -187,7 +188,7 @@ export function useSchemaActualizeTrigger(
     try {
       const { triggerId } = await dataMartService.createSchemaActualizeTrigger(dataMartId);
 
-      toast.loading('Synchronizing output schema with the storage state. Please wait...', {
+      toast.loading(i18n.t('schemaActualization.syncing'), {
         duration: Infinity,
         id: triggerId,
       });
@@ -203,7 +204,7 @@ export function useSchemaActualizeTrigger(
       }
     } catch (e) {
       setSafeLoading(false);
-      const error = extractSchemaActualizeError(e, 'Failed to start schema actualization');
+      const error = extractSchemaActualizeError(e, i18n.t('schemaActualization.startFailed'));
       invalidateStorageHealthForError(error, storageId);
       setSafeError(error.message);
     }

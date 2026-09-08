@@ -10,11 +10,12 @@ export default defineConfig(({ mode }) => ({
     react(),
     tailwindcss(),
     basicSsl(),
-    mode === 'analyze' && visualizer({
-      open: true,
-      filename: 'dist/bundle-report.html',
-      gzipSize: true,
-    }),
+    mode === 'analyze' &&
+      visualizer({
+        open: true,
+        filename: 'dist/bundle-report.html',
+        gzipSize: true,
+      }),
   ].filter(Boolean),
   // esbuild >=0.28 errors when lowering some destructuring patterns (styled-components, @base-ui/react,
   // lucide-react, ...) for the Safari 14 target workaround. The target browsers all support destructuring

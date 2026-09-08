@@ -86,7 +86,7 @@ export function ConnectorDefinitionField({
   const handleManualRun = async (payload: Record<string, unknown>) => {
     if (!dataMart) return;
     if (dataMart.status.code !== DataMartStatus.PUBLISHED) {
-      toast.error('Manual run is only available for published data marts');
+      toast.error(t('uiFeedback.manualRunPublishedOnly'));
       return;
     }
     await runDataMart({
@@ -327,8 +327,8 @@ export function ConnectorDefinitionField({
 
                                 <TooltipContent>
                                   {hasActiveRuns
-                                    ? 'Please wait for the current run to complete.'
-                                    : 'Manual run is available only for published Data Marts.'}
+                                    ? t('dataMartDetails.waitCurrentRun')
+                                    : t('dataMartDetails.manualRunPublishedOnly')}
                                 </TooltipContent>
                               </Tooltip>
                             ) : (
@@ -413,10 +413,10 @@ export function ConnectorDefinitionField({
       <ConfirmationDialog
         open={isDeleteDialogOpen}
         onOpenChange={setIsDeleteDialogOpen}
-        title='Delete Configuration'
-        description='Are you sure you want to delete this configuration? This action cannot be undone.'
-        confirmLabel='Delete'
-        cancelLabel='Cancel'
+        title={t('dataMartDefinitionSettings.deleteConfigurationTitle')}
+        description={t('dataMartDefinitionSettings.deleteConfigurationDescription')}
+        confirmLabel={t('common.delete')}
+        cancelLabel={t('common.cancel')}
         onConfirm={() => {
           void handleConfirmDelete();
         }}

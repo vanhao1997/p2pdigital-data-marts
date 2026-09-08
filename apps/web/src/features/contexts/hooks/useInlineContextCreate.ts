@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { toast } from 'sonner';
 import { projectMembersService } from '../../project-members/services/project-members.service';
 import type { ContextDto, MemberWithScopeDto } from '../types/context.types';
+import i18n from '../../../i18n';
 
 interface UseInlineContextCreateOptions {
   /**
@@ -45,7 +46,7 @@ export function useInlineContextCreate({ enabled, onCreated }: UseInlineContextC
       .catch((err: unknown) => {
         if (cancelled) return;
         setMembers([]);
-        toast.error(err instanceof Error ? err.message : 'Failed to load members');
+        toast.error(err instanceof Error ? err.message : i18n.t('contextsPage.loadMembersFailed'));
       });
     return () => {
       cancelled = true;

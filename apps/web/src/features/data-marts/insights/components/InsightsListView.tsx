@@ -97,7 +97,9 @@ export default function InsightsListView() {
         accessorKey: 'title',
         size: 320,
         meta: { title: t('common.title', 'Title') },
-        header: ({ column }) => <SortableHeader column={column}>{t('common.title', 'Title')}</SortableHeader>,
+        header: ({ column }) => (
+          <SortableHeader column={column}>{t('common.title', 'Title')}</SortableHeader>
+        ),
         cell: ({ row }) => (
           <div className='overflow-hidden text-ellipsis'>{row.original.title}</div>
         ),
@@ -107,7 +109,9 @@ export default function InsightsListView() {
         size: 170,
         sortDescFirst: true,
         meta: { title: t('insightsUi.updated', 'Updated') },
-        header: ({ column }) => <SortableHeader column={column}>{t('insightsUi.updated', 'Updated')}</SortableHeader>,
+        header: ({ column }) => (
+          <SortableHeader column={column}>{t('insightsUi.updated', 'Updated')}</SortableHeader>
+        ),
         cell: ({ row }) => (
           <div className='text-muted-foreground'>{formatDateShort(row.original.modifiedAt)}</div>
         ),
@@ -224,7 +228,10 @@ export default function InsightsListView() {
   return (
     <CollapsibleCard>
       <CollapsibleCardHeader>
-        <CollapsibleCardHeaderTitle icon={Bookmark} tooltip={t('insightsUi.manageTooltip', 'Manage and review your insights')}>
+        <CollapsibleCardHeaderTitle
+          icon={Bookmark}
+          tooltip={t('insightsUi.manageTooltip', 'Manage and review your insights')}
+        >
           {t('sidebar.insights', 'Insights')}
         </CollapsibleCardHeaderTitle>
         <CollapsibleCardHeaderActions>
@@ -248,16 +255,23 @@ export default function InsightsListView() {
 
       <CollapsibleCardContent>
         {loading && items.length === 0 ? (
-          <div className='text-muted-foreground p-4 text-sm'>{t('insightsUi.loadingInsights', 'Loading insights…')}</div>
+          <div className='text-muted-foreground p-4 text-sm'>
+            {t('insightsUi.loadingInsights', 'Loading insights…')}
+          </div>
         ) : items.length === 0 ? (
           <Empty>
             <EmptyHeader>
               <EmptyMedia variant='icon'>
                 <Bookmark />
               </EmptyMedia>
-              <EmptyTitle>{t('insightsUi.firstInsightTitle', 'Create your first Insight')}</EmptyTitle>
+              <EmptyTitle>
+                {t('insightsUi.firstInsightTitle', 'Create your first Insight')}
+              </EmptyTitle>
               <EmptyDescription>
-                {t('insightsUi.firstInsightDescription', 'Create insights to build scheduled reports and deliver them to your preferred channels (Email, Slack, etc.)')}
+                {t(
+                  'insightsUi.firstInsightDescription',
+                  'Create insights to build scheduled reports and deliver them to your preferred channels (Email, Slack, etc.)'
+                )}
               </EmptyDescription>
             </EmptyHeader>
 
@@ -297,7 +311,10 @@ export default function InsightsListView() {
             }
           }}
           title={t('insightsUi.deleteInsightTitle', 'Delete insight')}
-          description={t('insightsUi.deleteInsightConfirm', 'Are you sure you want to delete this insight? This action cannot be undone.')}
+          description={t(
+            'insightsUi.deleteInsightConfirm',
+            'Are you sure you want to delete this insight? This action cannot be undone.'
+          )}
           confirmLabel={t('common.delete', 'Delete')}
           cancelLabel={t('common.cancel', 'Cancel')}
           variant='destructive'

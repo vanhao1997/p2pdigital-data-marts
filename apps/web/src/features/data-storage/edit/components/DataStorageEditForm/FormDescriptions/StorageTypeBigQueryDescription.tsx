@@ -32,7 +32,8 @@ export default function StorageTypeBigQueryDescription() {
           <ol className='list-inside list-decimal space-y-2 text-sm'>
             <li>{t('storageHelp.bigQuery.openLink')}</li>
             <li>
-              {t('storageHelp.bigQuery.enablePrefix')} <strong>{t('storageHelp.bigQuery.enable')}</strong>.
+              {t('storageHelp.bigQuery.enablePrefix')}{' '}
+              <strong>{t('storageHelp.bigQuery.enable')}</strong>.
             </li>
             <li>{t('storageHelp.bigQuery.alreadyEnabled')}</li>
           </ol>

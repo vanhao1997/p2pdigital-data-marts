@@ -36,6 +36,7 @@ import {
 import { AccessDecisionService, EntityType, Action } from '../services/access-decision';
 import { hasMainUniqueCount } from '../dto/schemas/unique-count-sources';
 import { columnFilterWithoutCalculatedFields } from '../calculated-fields/calculated-field.utils';
+import { serializeOperationalError } from '../utils/run-error-message';
 
 export class QueryDataMartCommand {
   constructor(public readonly request: McpQueryDataMartRequest) {}
@@ -169,7 +170,12 @@ export class QueryDataMartService {
             truncated: false,
             query: queryMetadata,
           },
-          errors: [error instanceof Error ? error.message : String(error)],
+          errors: [
+            serializeOperationalError(error, {
+              code: 'MCP_QUERY_AUTHORIZATION_FAILED',
+              message: 'The MCP query could not be authorized.',
+            }),
+          ],
         });
       } catch (auditError) {
         this.logger.warn(

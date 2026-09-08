@@ -23,7 +23,9 @@ export function PageNotificationLegacyStorageSetup() {
             {t('legacyStorageNotice.title')}
           </CollapsibleCardHeaderTitle>
           <CollapsibleCardHeaderActions>
-            <p className='text-muted-foreground/75 text-sm'>{t('legacyStorageNotice.actionRequired')}</p>
+            <p className='text-muted-foreground/75 text-sm'>
+              {t('legacyStorageNotice.actionRequired')}
+            </p>
           </CollapsibleCardHeaderActions>
         </CollapsibleCardHeader>
         <CollapsibleCardContent>
@@ -41,20 +43,22 @@ export function PageNotificationLegacyStorageSetup() {
                     P2PDigital Reports
                   </a>{' '}
                   {t('legacyStorageNotice.extensionSuffix')}{' '}
-                  <span className='font-semibold'>{t('common.draft')}</span> {t('legacyStorageNotice.statusSuffix')}
+                  <span className='font-semibold'>{t('common.draft')}</span>{' '}
+                  {t('legacyStorageNotice.statusSuffix')}
                 </p>
-                <p>
-                  {t('legacyStorageNotice.instructions')}
-                </p>
+                <p>{t('legacyStorageNotice.instructions')}</p>
                 <ol className='ml-4 flex list-inside list-decimal flex-col gap-1 text-left'>
                   <li>
-                    <span className='font-semibold'>{t('common.select')}</span> {t('legacyStorageNotice.storage')}
+                    <span className='font-semibold'>{t('common.select')}</span>{' '}
+                    {t('legacyStorageNotice.storage')}
                   </li>
                   <li>
-                    <span className='font-semibold'>{t('legacyStorageNotice.grantAccess')}</span> {t('legacyStorageNotice.bigQuerySuffix')}
+                    <span className='font-semibold'>{t('legacyStorageNotice.grantAccess')}</span>{' '}
+                    {t('legacyStorageNotice.bigQuerySuffix')}
                   </li>
                   <li>
-                    <span className='font-semibold'>{t('common.publish')}</span> {t('legacyStorageNotice.publishSuffix')}
+                    <span className='font-semibold'>{t('common.publish')}</span>{' '}
+                    {t('legacyStorageNotice.publishSuffix')}
                   </li>
                 </ol>
               </div>
@@ -64,7 +68,7 @@ export function PageNotificationLegacyStorageSetup() {
                     open('video-4-legacy-storage-setup');
                   }}
                 >
-                    <Airplay className='size-4' /> {t('legacyStorageNotice.watchVideo')}
+                  <Airplay className='size-4' /> {t('legacyStorageNotice.watchVideo')}
                 </Button>
                 <Button variant='outline' asChild>
                   <Link

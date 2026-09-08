@@ -116,13 +116,19 @@ export function ReportsTable({ destination, onEditReport, onAddReport }: Reports
           {canCreateReportInApp(destination.type) ? (
             <>
               <p className='text-muted-foreground text-sm font-medium'>
-                {t('reportsUi.createFirstForDestination', 'Create your first report for this destination')}
+                {t(
+                  'reportsUi.createFirstForDestination',
+                  'Create your first report for this destination'
+                )}
               </p>
               <AddReportButton onAddReport={onAddReport} />
             </>
           ) : (
             <p className='text-muted-foreground text-sm font-medium'>
-              {t('reportsUi.createFirstFromExcelAddin', 'Create your first report from the P2PDigital add-in in Excel')}
+              {t(
+                'reportsUi.createFirstFromExcelAddin',
+                'Create your first report from the P2PDigital add-in in Excel'
+              )}
             </p>
           )}
         </div>

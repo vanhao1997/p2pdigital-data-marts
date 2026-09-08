@@ -8,6 +8,7 @@ import { CircleCheck, XCircle, Loader2, CircleDashed } from 'lucide-react';
 import { cn } from '@owox/ui/lib/utils';
 import { ReportStatusEnum } from '../../../shared/enums/report-status.enum';
 import { useTranslation } from 'react-i18next';
+import { getOperationalErrorDisplayMessage } from '../../../../../../shared/utils/localize-operational-error';
 
 interface StatusIconProps {
   status: ReportStatusEnum | null;
@@ -71,7 +72,8 @@ export function StatusIcon({ status, error, className }: StatusIconProps) {
   // the red icon already carries the status. The accessible name keeps it: the
   // ERROR/CANCELLED/RESTRICTED glyphs differ only by color, so without the word a
   // screen reader would hear the message but never that the run failed.
-  const errorMessage = status === ReportStatusEnum.ERROR ? error : null;
+  const errorMessage =
+    status === ReportStatusEnum.ERROR ? getOperationalErrorDisplayMessage(error) : null;
 
   return (
     <TooltipProvider>

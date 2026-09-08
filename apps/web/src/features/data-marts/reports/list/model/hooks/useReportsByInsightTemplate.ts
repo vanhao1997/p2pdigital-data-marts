@@ -1,4 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useTranslation } from 'react-i18next';
 import { reportService } from '../../../shared';
 import { mapReportDtoToEntity } from '../../../shared/model/mappers';
 import { ReportStatusEnum } from '../../../shared/enums';
@@ -40,6 +41,7 @@ export const useDeleteReport = () => {
 };
 
 export const useRunReport = () => {
+  const { t } = useTranslation();
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -48,7 +50,7 @@ export const useRunReport = () => {
       return reportId;
     },
     onSuccess: () => {
-      toast.success('Report run started');
+      toast.success(t('uiFeedback.reportRunStarted'));
       void queryClient.invalidateQueries({ queryKey: ['reports'] });
       void queryClient.invalidateQueries({
         queryKey: [REPORTS_BY_INSIGHT_TEMPLATE_QUERY_KEY],
@@ -56,7 +58,7 @@ export const useRunReport = () => {
       });
     },
     onError: () => {
-      toast.error('Failed to run report');
+      toast.error(t('uiFeedback.reportRunFailed'));
     },
   });
 };

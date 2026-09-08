@@ -20,13 +20,17 @@ import { isDateType } from './output-controls-operators';
 import { useTranslation } from 'react-i18next';
 
 function SectionHeader({ title, info }: { title: string; info: string }) {
+  const { t } = useTranslation();
   return (
     <div className='text-muted-foreground mb-2 flex items-center gap-1.5 text-xs font-semibold tracking-wide uppercase'>
       <span>{title}</span>
       <Tooltip>
         <TooltipTrigger asChild>
           <span className='text-muted-foreground/60 hover:text-muted-foreground inline-flex'>
-            <Info className='size-3.5' aria-label={`About ${title}`} />
+            <Info
+              className='size-3.5'
+              aria-label={t('reportColumnPicker.aboutColumn', { title })}
+            />
           </span>
         </TooltipTrigger>
         <TooltipContent
@@ -40,13 +44,6 @@ function SectionHeader({ title, info }: { title: string; info: string }) {
     </div>
   );
 }
-
-const SECTION_INFO = {
-  aggregate:
-    'Aggregate a column with one or more functions (SUM, AVG, COUNT…). Each function adds its ' +
-    'own output column. Grouping is implied: every selected column without an aggregation ' +
-    "becomes a grouping key. The available functions depend on the column's type and governance.",
-} as const;
 
 export interface AggregationDropdownColumn {
   name: string;
@@ -158,7 +155,10 @@ function AggregationSection({
 
   return (
     <div data-slot='aggregation-settings-panel'>
-      <SectionHeader title={t('reportColumnPicker.aggregations', 'Aggregations')} info={t('reportColumnPicker.aggregationsHelp', SECTION_INFO.aggregate)} />
+      <SectionHeader
+        title={t('reportColumnPicker.aggregations', 'Aggregations')}
+        info={t('reportColumnPicker.aggregationInfo')}
+      />
       <div className='space-y-1'>
         {aggregations.map((rule, index) => {
           const col = columnByName.get(rule.column);
@@ -247,7 +247,9 @@ function AggregationSection({
             }}
           />
         ) : addableColumns.length === 0 ? (
-          <span className='text-muted-foreground text-xs'>{t('reportColumnPicker.noAggregatableColumns', 'No aggregatable columns.')}</span>
+          <span className='text-muted-foreground text-xs'>
+            {t('reportColumnPicker.noAggregatableColumns', 'No aggregatable columns.')}
+          </span>
         ) : (
           <FieldSearchPicker
             items={addableColumns.map(columnToPickerItem)}

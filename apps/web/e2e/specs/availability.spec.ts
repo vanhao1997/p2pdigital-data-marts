@@ -4,11 +4,14 @@ import { TESTIDS } from '../selectors/testids';
 
 /** Ensure a collapsible FormSection is expanded (handles localStorage state). */
 async function ensureSectionExpanded(container: Locator, sectionName: string): Promise<void> {
-  const trigger = container.getByRole('button', { name: sectionName });
-  await trigger.scrollIntoViewIfNeeded();
-  const state = await trigger.getAttribute('data-state');
+  // The edit sheet fetches details after opening and can replace the trigger
+  // node. Resolve a fresh locator for each operation instead of retaining a
+  // detached element handle during that re-render.
+  const trigger = () => container.getByRole('button', { name: sectionName });
+  await expect(trigger()).toBeVisible();
+  const state = await trigger().getAttribute('data-state');
   if (state !== 'open') {
-    await trigger.click();
+    await trigger().click();
   }
 }
 
@@ -35,9 +38,9 @@ test.describe('Storage Availability', () => {
     await page.goto('/ui/0/data-storages');
     await expect(page.getByTestId(TESTIDS.storageListPage)).toBeVisible();
 
-    // Open edit sheet
-    await page.getByRole('button', { name: 'Open menu' }).first().click();
-    await page.getByRole('menuitem', { name: 'Edit' }).click();
+    // Clicking a row opens its edit sheet directly and avoids relying on an
+    // opacity-only action button in the virtualized table.
+    await page.getByText('Google BigQuery', { exact: true }).first().click();
     await expect(page.getByTestId(TESTIDS.storageConfigSheet)).toBeVisible();
 
     const sheet = page.getByTestId(TESTIDS.storageConfigSheet);
@@ -58,9 +61,7 @@ test.describe('Storage Availability', () => {
     await page.goto('/ui/0/data-storages');
     await expect(page.getByTestId(TESTIDS.storageListPage)).toBeVisible();
 
-    // Open edit sheet
-    await page.getByRole('button', { name: 'Open menu' }).first().click();
-    await page.getByRole('menuitem', { name: 'Edit' }).click();
+    await page.getByText('Google BigQuery', { exact: true }).first().click();
     const sheet = page.getByTestId(TESTIDS.storageConfigSheet);
     await expect(sheet).toBeVisible();
 
@@ -82,10 +83,7 @@ test.describe('Storage Availability', () => {
     await page.goto('/ui/0/data-storages');
     await expect(page.getByTestId(TESTIDS.storageListPage)).toBeVisible();
 
-    // Open edit sheet
-    await page.getByRole('button', { name: 'Open menu' }).first().click();
-    await page.getByRole('menuitem', { name: 'Edit' }).waitFor({ state: 'visible' });
-    await page.getByRole('menuitem', { name: 'Edit' }).click();
+    await page.getByText('Google BigQuery', { exact: true }).first().click();
     const sheet = page.getByTestId(TESTIDS.storageConfigSheet);
     await expect(sheet).toBeVisible();
 
@@ -109,7 +107,7 @@ test.describe('Destination Availability', () => {
     await expect(page.getByTestId(TESTIDS.destTab)).toBeVisible();
 
     // Open edit sheet by clicking title
-    await page.getByText('Avail Dest').click();
+    await page.getByText('Avail Dest', { exact: true }).first().click();
     const sheet = page.getByTestId(TESTIDS.destEditSheet);
     await expect(sheet).toBeVisible();
 
@@ -132,7 +130,7 @@ test.describe('Destination Availability', () => {
     await expect(page.getByTestId(TESTIDS.destTab)).toBeVisible();
 
     // Open edit sheet
-    await page.getByText('Persist Dest').click();
+    await page.getByText('Persist Dest', { exact: true }).first().click();
     const sheet = page.getByTestId(TESTIDS.destEditSheet);
     await expect(sheet).toBeVisible();
 

@@ -184,9 +184,15 @@ export function SourceFieldsTable({
           }}
         >
           <TabsList>
-            <TabsTrigger value='all'>{t('schemaUi.all')} ({totalCount})</TabsTrigger>
-            <TabsTrigger value='visible'>{t('schemaUi.visible')} ({visibleCount})</TabsTrigger>
-            <TabsTrigger value='hidden'>{t('schemaUi.hidden')} ({hiddenCount})</TabsTrigger>
+            <TabsTrigger value='all'>
+              {t('schemaUi.all')} ({totalCount})
+            </TabsTrigger>
+            <TabsTrigger value='visible'>
+              {t('schemaUi.visible')} ({visibleCount})
+            </TabsTrigger>
+            <TabsTrigger value='hidden'>
+              {t('schemaUi.hidden')} ({hiddenCount})
+            </TabsTrigger>
           </TabsList>
         </Tabs>
       </div>
@@ -229,9 +235,7 @@ export function SourceFieldsTable({
               <TableHead className={`${headCellClass} w-[18%]`}>
                 <Tooltip>
                   <TooltipTrigger className='cursor-default'>{t('schemaUi.dedup')}</TooltipTrigger>
-                  <TooltipContent>
-                    {t('schemaUi.dedupHelp')}
-                  </TooltipContent>
+                  <TooltipContent>{t('schemaUi.dedupHelp')}</TooltipContent>
                 </Tooltip>
               </TableHead>
               <TableHead className={`${headCellClass} w-[23%]`}>
@@ -243,9 +247,7 @@ export function SourceFieldsTable({
                     <Sigma className='h-3.5 w-3.5' />
                     {t('schemaUi.available')}
                   </TooltipTrigger>
-                  <TooltipContent>
-                    {t('schemaUi.availableAfterJoin')}
-                  </TooltipContent>
+                  <TooltipContent>{t('schemaUi.availableAfterJoin')}</TooltipContent>
                 </Tooltip>
               </TableHead>
               <TableHead className={`${headCellClass} w-[5%]`} />
@@ -352,7 +354,9 @@ export function SourceFieldsTable({
                           postJoinAggregations: next,
                         });
                       }}
-                      ariaLabel={`Available aggregations for ${field.originalFieldName}`}
+                      ariaLabel={t('schemaUi.availableAggregationsFor', {
+                        name: field.originalFieldName,
+                      })}
                     />
                   </TableCell>
                   <TableCell className='text-right' style={{ paddingTop: 8, paddingBottom: 8 }}>
@@ -362,7 +366,7 @@ export function SourceFieldsTable({
                           variant='ghost'
                           size='sm'
                           className='h-8 w-8 p-0 opacity-0 transition-opacity group-hover:opacity-100 data-[state=open]:opacity-100'
-                          aria-label='Row actions'
+                          aria-label={t('schemaUi.rowActions')}
                         >
                           <MoreHorizontal className='h-4 w-4' />
                         </Button>

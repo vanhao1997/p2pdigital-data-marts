@@ -1,5 +1,6 @@
 import { DataDestinationActionType, useDataDestinationContext } from '../context';
 import { useCallback } from 'react';
+import { useTranslation } from 'react-i18next';
 import type { DataDestination } from '../types';
 import { dataDestinationService } from '../../services';
 import { mapDataDestinationFromDto } from '../mappers/data-destination.mapper';
@@ -13,6 +14,7 @@ import { trackEvent } from '../../../../../utils/data-layer';
 import { useRefreshSetupProgress } from '../../../../../components/AppSidebar/SetupChecklist/useSetupProgress';
 
 export function useDataDestination() {
+  const { t } = useTranslation();
   const { state, dispatch, detailRequestGenerationRef } = useDataDestinationContext();
   const refreshSetupProgress = useRefreshSetupProgress();
 
@@ -90,7 +92,7 @@ export function useDataDestination() {
           action: 'Create',
           label: mappedDestination.type,
         });
-        toast.success('Destination created');
+        toast.success(t('uiFeedback.destinationCreated'));
         refreshSetupProgress();
         return mappedDestination;
       } catch (error) {
@@ -109,7 +111,7 @@ export function useDataDestination() {
         return null;
       }
     },
-    [dispatch, refreshSetupProgress]
+    [dispatch, refreshSetupProgress, t]
   );
 
   const updateDataDestination = useCallback(
@@ -137,8 +139,8 @@ export function useDataDestination() {
           label: mappedDestination.type,
         });
         const toastMessage = source
-          ? `Destination updated. Credentials copied from ${source.title}.`
-          : 'Destination updated';
+          ? t('uiFeedback.destinationUpdatedWithCredentials', { title: source.title })
+          : t('uiFeedback.destinationUpdated');
         toast.success(toastMessage);
         return mappedDestination;
       } catch (error) {
@@ -156,7 +158,7 @@ export function useDataDestination() {
         return null;
       }
     },
-    [dispatch]
+    [dispatch, t]
   );
 
   const deleteDataDestination = useCallback(
@@ -170,7 +172,7 @@ export function useDataDestination() {
           category: 'DataDestination',
           action: 'Delete',
         });
-        toast.success('Destination deleted');
+        toast.success(t('uiFeedback.destinationDeleted'));
       } catch (error) {
         const message = error instanceof Error ? error.message : 'Failed to delete destination';
         dispatch({
@@ -186,7 +188,7 @@ export function useDataDestination() {
         throw error;
       }
     },
-    [dispatch]
+    [dispatch, t]
   );
 
   const clearCurrentDataDestination = useCallback(() => {

@@ -41,348 +41,356 @@ export const getDataMartColumns = ({
   refreshList,
 }: DataMartTableColumnsProps): ColumnDef<DataMartListItem>[] => {
   // Keep the English labels as a standalone fallback for non-React callers and tests.
-  const dataMartColumnLabels = t
-    ? getDataMartColumnLabels(t)
-    : defaultDataMartColumnLabels;
+  const dataMartColumnLabels = t ? getDataMartColumnLabels(t) : defaultDataMartColumnLabels;
 
   return [
-  {
-    id: DataMartColumnKey.HEALTH_STATUS,
-    size: 40,
-    enableResizing: false,
-    meta: {
-      title: dataMartColumnLabels[DataMartColumnKey.HEALTH_STATUS],
-      showHeaderTitle: false,
+    {
+      id: DataMartColumnKey.HEALTH_STATUS,
+      size: 40,
+      enableResizing: false,
+      meta: {
+        title: dataMartColumnLabels[DataMartColumnKey.HEALTH_STATUS],
+        showHeaderTitle: false,
+      },
+      enableSorting: false,
+      header: () => null,
+      cell: ({ row }) => <DataMartHealthStatusCell row={row} />,
     },
-    enableSorting: false,
-    header: () => null,
-    cell: ({ row }) => <DataMartHealthStatusCell row={row} />,
-  },
-  {
-    accessorKey: DataMartColumnKey.TITLE,
-    size: 320,
-    minSize: 200,
-    meta: {
-      title: dataMartColumnLabels[DataMartColumnKey.TITLE],
+    {
+      accessorKey: DataMartColumnKey.TITLE,
+      size: 320,
+      minSize: 200,
+      meta: {
+        title: dataMartColumnLabels[DataMartColumnKey.TITLE],
+      },
+      header: ({ column }) => (
+        <SortableHeader column={column}>
+          {dataMartColumnLabels[DataMartColumnKey.TITLE]}
+        </SortableHeader>
+      ),
+      cell: ({ row }) => <div className='w-full'>{row.getValue('title')}</div>,
     },
-    header: ({ column }) => (
-      <SortableHeader column={column}>
-        {dataMartColumnLabels[DataMartColumnKey.TITLE]}
-      </SortableHeader>
-    ),
-    cell: ({ row }) => <div className='w-full'>{row.getValue('title')}</div>,
-  },
-  {
-    accessorFn: row => {
-      const type = row.definitionType;
-      if (type === DataMartDefinitionType.CONNECTOR) {
-        const connectorSourceName = row.connectorSourceName;
-        const connector = connectors.find(c => c.name === connectorSourceName);
-        return connector?.displayName ?? connector?.name ?? 'Unknown';
-      } else {
-        const { displayName } = DataMartDefinitionTypeModel.getInfo(type, t);
-        return displayName;
-      }
-    },
-    id: DataMartColumnKey.DEFINITION_TYPE,
-    size: 220,
-    meta: {
-      title: dataMartColumnLabels[DataMartColumnKey.DEFINITION_TYPE],
-    },
-    header: ({ column }) => (
-      <SortableHeader column={column}>
-        {dataMartColumnLabels[DataMartColumnKey.DEFINITION_TYPE]}
-      </SortableHeader>
-    ),
-    cell: ({ row }) => {
-      const type = row.original.definitionType;
-      switch (type) {
-        case DataMartDefinitionType.CONNECTOR: {
-          const connectorSourceName = row.original.connectorSourceName;
+    {
+      accessorFn: row => {
+        const type = row.definitionType;
+        if (type === DataMartDefinitionType.CONNECTOR) {
+          const connectorSourceName = row.connectorSourceName;
           const connector = connectors.find(c => c.name === connectorSourceName);
-          return (
-            <div className='text-muted-foreground flex items-center gap-2'>
-              {connector?.logoBase64 && <RawBase64Icon base64={connector.logoBase64} size={18} />}
-              {connector?.displayName ?? 'Unknown'}
-            </div>
-          );
+          return connector?.displayName ?? connector?.name ?? 'Unknown';
+        } else {
+          const { displayName } = DataMartDefinitionTypeModel.getInfo(type, t);
+          return displayName;
         }
-        default: {
-          const { displayName, icon: Icon } = DataMartDefinitionTypeModel.getInfo(type, t);
-          return (
-            <div className='text-muted-foreground flex items-center gap-2'>
-              <Icon className='h-4 w-4' />
-              {displayName}
-            </div>
-          );
+      },
+      id: DataMartColumnKey.DEFINITION_TYPE,
+      size: 220,
+      meta: {
+        title: dataMartColumnLabels[DataMartColumnKey.DEFINITION_TYPE],
+      },
+      header: ({ column }) => (
+        <SortableHeader column={column}>
+          {dataMartColumnLabels[DataMartColumnKey.DEFINITION_TYPE]}
+        </SortableHeader>
+      ),
+      cell: ({ row }) => {
+        const type = row.original.definitionType;
+        switch (type) {
+          case DataMartDefinitionType.CONNECTOR: {
+            const connectorSourceName = row.original.connectorSourceName;
+            const connector = connectors.find(c => c.name === connectorSourceName);
+            return (
+              <div className='text-muted-foreground flex items-center gap-2'>
+                {connector?.logoBase64 && <RawBase64Icon base64={connector.logoBase64} size={18} />}
+                {connector?.displayName ?? 'Unknown'}
+              </div>
+            );
+          }
+          default: {
+            const { displayName, icon: Icon } = DataMartDefinitionTypeModel.getInfo(type, t);
+            return (
+              <div className='text-muted-foreground flex items-center gap-2'>
+                <Icon className='h-4 w-4' />
+                {displayName}
+              </div>
+            );
+          }
         }
-      }
+      },
     },
-  },
-  {
-    accessorKey: DataMartColumnKey.STORAGE_TYPE,
-    size: 220,
-    meta: {
-      title: dataMartColumnLabels[DataMartColumnKey.STORAGE_TYPE],
-    },
-    sortingFn: (rowA, rowB) => {
-      const labelA =
-        rowA.original.storageTitle ??
-        DataStorageTypeModel.getInfo(rowA.original.storageType).displayName;
-      const labelB =
-        rowB.original.storageTitle ??
-        DataStorageTypeModel.getInfo(rowB.original.storageType).displayName;
-      return labelA.localeCompare(labelB);
-    },
-    header: ({ column }) => (
-      <SortableHeader column={column}>
-        {dataMartColumnLabels[DataMartColumnKey.STORAGE_TYPE]}
-      </SortableHeader>
-    ),
-    cell: ({ row }) => {
-      const type = row.getValue<DataStorageType>('storageType');
-      const storageTitle = row.original.storageTitle;
-      const { displayName, icon: Icon } = DataStorageTypeModel.getInfo(type);
+    {
+      accessorKey: DataMartColumnKey.STORAGE_TYPE,
+      size: 220,
+      meta: {
+        title: dataMartColumnLabels[DataMartColumnKey.STORAGE_TYPE],
+      },
+      sortingFn: (rowA, rowB) => {
+        const labelA =
+          rowA.original.storageTitle ??
+          DataStorageTypeModel.getInfo(rowA.original.storageType).displayName;
+        const labelB =
+          rowB.original.storageTitle ??
+          DataStorageTypeModel.getInfo(rowB.original.storageType).displayName;
+        return labelA.localeCompare(labelB);
+      },
+      header: ({ column }) => (
+        <SortableHeader column={column}>
+          {dataMartColumnLabels[DataMartColumnKey.STORAGE_TYPE]}
+        </SortableHeader>
+      ),
+      cell: ({ row }) => {
+        const type = row.getValue<DataStorageType>('storageType');
+        const storageTitle = row.original.storageTitle;
+        const { displayName, icon: Icon } = DataStorageTypeModel.getInfo(type);
 
-      const label = storageTitle ?? displayName;
+        const label = storageTitle ?? displayName;
 
-      return (
-        <div className='text-muted-foreground flex items-center gap-2'>
-          <Icon size={18} />
-          {label}
+        return (
+          <div className='text-muted-foreground flex items-center gap-2'>
+            <Icon size={18} />
+            {label}
+          </div>
+        );
+      },
+    },
+    {
+      accessorKey: DataMartColumnKey.CREATED_AT,
+      size: 140,
+      meta: {
+        title: dataMartColumnLabels[DataMartColumnKey.CREATED_AT],
+      },
+      header: ({ column }) => (
+        <SortableHeader column={column}>
+          {dataMartColumnLabels[DataMartColumnKey.CREATED_AT]}
+        </SortableHeader>
+      ),
+      cell: ({ row }) => {
+        const date = row.getValue<Date>('createdAt');
+        const formatted = formatDateOnly(date);
+
+        return <div className='text-muted-foreground'>{formatted}</div>;
+      },
+    },
+    {
+      id: DataMartColumnKey.DATA_LAST_UPDATED,
+      // ISO-8601 strings sort lexicographically in chronological order; never-computed rows
+      // yield '' so they group together at one end instead of interleaving.
+      accessorFn: row => row.dataLastUpdated?.dataLastUpdatedAt ?? '',
+      size: 160,
+      meta: {
+        title: dataMartColumnLabels[DataMartColumnKey.DATA_LAST_UPDATED],
+      },
+      header: ({ column }) => (
+        <SortableHeader column={column}>
+          {dataMartColumnLabels[DataMartColumnKey.DATA_LAST_UPDATED]}
+        </SortableHeader>
+      ),
+      cell: ({ row }) => (
+        <div className='text-muted-foreground'>
+          <DataLastUpdatedValue block={row.original.dataLastUpdated} compact />
         </div>
-      );
-    },
-  },
-  {
-    accessorKey: DataMartColumnKey.CREATED_AT,
-    size: 140,
-    meta: {
-      title: dataMartColumnLabels[DataMartColumnKey.CREATED_AT],
-    },
-    header: ({ column }) => (
-      <SortableHeader column={column}>
-        {dataMartColumnLabels[DataMartColumnKey.CREATED_AT]}
-      </SortableHeader>
-    ),
-    cell: ({ row }) => {
-      const date = row.getValue<Date>('createdAt');
-      const formatted = formatDateOnly(date);
-
-      return <div className='text-muted-foreground'>{formatted}</div>;
-    },
-  },
-  {
-    id: DataMartColumnKey.DATA_LAST_UPDATED,
-    // ISO-8601 strings sort lexicographically in chronological order; never-computed rows
-    // yield '' so they group together at one end instead of interleaving.
-    accessorFn: row => row.dataLastUpdated?.dataLastUpdatedAt ?? '',
-    size: 160,
-    meta: {
-      title: dataMartColumnLabels[DataMartColumnKey.DATA_LAST_UPDATED],
-    },
-    header: ({ column }) => (
-      <SortableHeader column={column}>
-        {dataMartColumnLabels[DataMartColumnKey.DATA_LAST_UPDATED]}
-      </SortableHeader>
-    ),
-    cell: ({ row }) => (
-      <div className='text-muted-foreground'>
-        <DataLastUpdatedValue block={row.original.dataLastUpdated} compact />
-      </div>
-    ),
-  },
-  {
-    id: DataMartColumnKey.CREATED_BY_USER,
-    size: 220,
-    accessorFn: row => {
-      const u = row.createdByUser;
-      return u?.fullName ?? u?.email;
-    },
-    meta: {
-      title: dataMartColumnLabels[DataMartColumnKey.CREATED_BY_USER],
-    },
-    header: ({ column }) => (
-      <SortableHeader column={column}>
-        {dataMartColumnLabels[DataMartColumnKey.CREATED_BY_USER]}
-      </SortableHeader>
-    ),
-    cell: ({ row }) => {
-      const userProjection = row.original.createdByUser;
-      if (userProjection) {
-        return <UserReference userProjection={userProjection} />;
-      }
-      return <div className='text-muted-foreground'>—</div>;
-    },
-  },
-  {
-    accessorKey: DataMartColumnKey.STATUS,
-    size: 120,
-    meta: {
-      title: dataMartColumnLabels[DataMartColumnKey.STATUS],
-    },
-    header: ({ column }) => (
-      <SortableHeader column={column}>
-        {dataMartColumnLabels[DataMartColumnKey.STATUS]}
-      </SortableHeader>
-    ),
-    cell: ({ row }) => {
-      const statusInfo = row.getValue<DataMartStatusInfo>('status');
-      const localizedStatusInfo = DataMartStatusModel.getInfo(statusInfo.code, t);
-
-      return (
-        <StatusLabel type={getDataMartStatusType(statusInfo.code)} variant='ghost' showIcon={false}>
-          {localizedStatusInfo.displayName}
-        </StatusLabel>
-      );
-    },
-  },
-  {
-    accessorKey: DataMartColumnKey.TRIGGERS_COUNT,
-    size: 100,
-    meta: {
-      title: dataMartColumnLabels[DataMartColumnKey.TRIGGERS_COUNT],
-    },
-    header: ({ column }) => (
-      <SortableHeader column={column}>
-        {dataMartColumnLabels[DataMartColumnKey.TRIGGERS_COUNT]}
-      </SortableHeader>
-    ),
-    cell: ({ row }) => {
-      const triggersCountValue =
-        row.getValue<number>('triggersCount') > 0 ? row.getValue<string>('triggersCount') : '—';
-      return <div className='text-muted-foreground'>{triggersCountValue}</div>;
-    },
-  },
-  {
-    accessorKey: DataMartColumnKey.REPORTS_COUNT,
-    size: 100,
-    meta: {
-      title: dataMartColumnLabels[DataMartColumnKey.REPORTS_COUNT],
-    },
-    header: ({ column }) => (
-      <SortableHeader column={column}>
-        {dataMartColumnLabels[DataMartColumnKey.REPORTS_COUNT]}
-      </SortableHeader>
-    ),
-    cell: ({ row }) => {
-      const reportsCountValue =
-        row.getValue<number>('reportsCount') > 0 ? row.getValue<string>('reportsCount') : '—';
-      return <div className='text-muted-foreground'>{reportsCountValue}</div>;
-    },
-  },
-  {
-    id: DataMartColumnKey.BUSINESS_OWNERS,
-    size: 200,
-    accessorFn: row => row.businessOwnerUsers.map(u => u.fullName ?? u.email).join(', '),
-    meta: {
-      title: dataMartColumnLabels[DataMartColumnKey.BUSINESS_OWNERS],
-    },
-    header: ({ column }) => (
-      <SortableHeader column={column}>
-        {dataMartColumnLabels[DataMartColumnKey.BUSINESS_OWNERS]}
-      </SortableHeader>
-    ),
-    cell: ({ row }) => {
-      const users = row.original.businessOwnerUsers;
-      if (users.length === 1) {
-        return <UserReference userProjection={users[0]} />;
-      }
-      if (users.length > 1) {
-        return <UserAvatarGroup users={users} />;
-      }
-      return <div className='text-muted-foreground'>—</div>;
-    },
-  },
-  {
-    id: DataMartColumnKey.TECHNICAL_OWNERS,
-    size: 200,
-    accessorFn: row => row.technicalOwnerUsers.map(u => u.fullName ?? u.email).join(', '),
-    meta: {
-      title: dataMartColumnLabels[DataMartColumnKey.TECHNICAL_OWNERS],
-    },
-    header: ({ column }) => (
-      <SortableHeader column={column}>
-        {dataMartColumnLabels[DataMartColumnKey.TECHNICAL_OWNERS]}
-      </SortableHeader>
-    ),
-    cell: ({ row }) => {
-      const users = row.original.technicalOwnerUsers;
-      if (users.length === 1) {
-        return <UserReference userProjection={users[0]} />;
-      }
-      if (users.length > 1) {
-        return <UserAvatarGroup users={users} />;
-      }
-      return <div className='text-muted-foreground'>—</div>;
-    },
-  },
-  {
-    accessorKey: DataMartColumnKey.AVAILABLE_FOR_REPORTING,
-    size: 110,
-    meta: {
-      title: dataMartColumnLabels[DataMartColumnKey.AVAILABLE_FOR_REPORTING],
-    },
-    sortingFn: (rowA, rowB) =>
-      Number(rowA.original.availableForReporting === true) -
-      Number(rowB.original.availableForReporting === true),
-    header: ({ column }) => (
-      <SortableHeader column={column}>
-        {dataMartColumnLabels[DataMartColumnKey.AVAILABLE_FOR_REPORTING]}
-      </SortableHeader>
-    ),
-    cell: ({ row }) =>
-      row.original.availableForReporting === true ? (
-        <Check className='text-muted-foreground h-4 w-4' aria-label='Shared for reporting' />
-      ) : (
-        <div className='text-muted-foreground'>—</div>
       ),
-  },
-  {
-    accessorKey: DataMartColumnKey.AVAILABLE_FOR_MAINTENANCE,
-    size: 130,
-    meta: {
-      title: dataMartColumnLabels[DataMartColumnKey.AVAILABLE_FOR_MAINTENANCE],
     },
-    sortingFn: (rowA, rowB) =>
-      Number(rowA.original.availableForMaintenance === true) -
-      Number(rowB.original.availableForMaintenance === true),
-    header: ({ column }) => (
-      <SortableHeader column={column}>
-        {dataMartColumnLabels[DataMartColumnKey.AVAILABLE_FOR_MAINTENANCE]}
-      </SortableHeader>
-    ),
-    cell: ({ row }) =>
-      row.original.availableForMaintenance === true ? (
-        <Check className='text-muted-foreground h-4 w-4' aria-label='Shared for maintenance' />
-      ) : (
-        <div className='text-muted-foreground'>—</div>
+    {
+      id: DataMartColumnKey.CREATED_BY_USER,
+      size: 220,
+      accessorFn: row => {
+        const u = row.createdByUser;
+        return u?.fullName ?? u?.email;
+      },
+      meta: {
+        title: dataMartColumnLabels[DataMartColumnKey.CREATED_BY_USER],
+      },
+      header: ({ column }) => (
+        <SortableHeader column={column}>
+          {dataMartColumnLabels[DataMartColumnKey.CREATED_BY_USER]}
+        </SortableHeader>
       ),
-  },
-  {
-    id: DataMartColumnKey.CONTEXTS,
-    accessorKey: 'contexts',
-    accessorFn: row => row.contexts.map(c => c.name).join(', '),
-    meta: {
-      title: dataMartColumnLabels[DataMartColumnKey.CONTEXTS],
+      cell: ({ row }) => {
+        const userProjection = row.original.createdByUser;
+        if (userProjection) {
+          return <UserReference userProjection={userProjection} />;
+        }
+        return <div className='text-muted-foreground'>—</div>;
+      },
     },
-    header: ({ column }) => (
-      <SortableHeader column={column}>
-        {dataMartColumnLabels[DataMartColumnKey.CONTEXTS]}
-      </SortableHeader>
-    ),
-    cell: ({ row }) => {
-      return <ContextBadges contexts={row.original.contexts} />;
+    {
+      accessorKey: DataMartColumnKey.STATUS,
+      size: 120,
+      meta: {
+        title: dataMartColumnLabels[DataMartColumnKey.STATUS],
+      },
+      header: ({ column }) => (
+        <SortableHeader column={column}>
+          {dataMartColumnLabels[DataMartColumnKey.STATUS]}
+        </SortableHeader>
+      ),
+      cell: ({ row }) => {
+        const statusInfo = row.getValue<DataMartStatusInfo>('status');
+        const localizedStatusInfo = DataMartStatusModel.getInfo(statusInfo.code, t);
+
+        return (
+          <StatusLabel
+            type={getDataMartStatusType(statusInfo.code)}
+            variant='ghost'
+            showIcon={false}
+          >
+            {localizedStatusInfo.displayName}
+          </StatusLabel>
+        );
+      },
     },
-  },
-  {
-    id: 'actions',
-    size: 50,
-    enableResizing: false,
-    header: ({ table }) => <ToggleColumnsHeader table={table} />,
-    cell: ({ row }) => (
-      <DataMartActionsCell row={row} deleteDataMart={deleteDataMart} refreshList={refreshList} />
-    ),
-  },
+    {
+      accessorKey: DataMartColumnKey.TRIGGERS_COUNT,
+      size: 100,
+      meta: {
+        title: dataMartColumnLabels[DataMartColumnKey.TRIGGERS_COUNT],
+      },
+      header: ({ column }) => (
+        <SortableHeader column={column}>
+          {dataMartColumnLabels[DataMartColumnKey.TRIGGERS_COUNT]}
+        </SortableHeader>
+      ),
+      cell: ({ row }) => {
+        const triggersCountValue =
+          row.getValue<number>('triggersCount') > 0 ? row.getValue<string>('triggersCount') : '—';
+        return <div className='text-muted-foreground'>{triggersCountValue}</div>;
+      },
+    },
+    {
+      accessorKey: DataMartColumnKey.REPORTS_COUNT,
+      size: 100,
+      meta: {
+        title: dataMartColumnLabels[DataMartColumnKey.REPORTS_COUNT],
+      },
+      header: ({ column }) => (
+        <SortableHeader column={column}>
+          {dataMartColumnLabels[DataMartColumnKey.REPORTS_COUNT]}
+        </SortableHeader>
+      ),
+      cell: ({ row }) => {
+        const reportsCountValue =
+          row.getValue<number>('reportsCount') > 0 ? row.getValue<string>('reportsCount') : '—';
+        return <div className='text-muted-foreground'>{reportsCountValue}</div>;
+      },
+    },
+    {
+      id: DataMartColumnKey.BUSINESS_OWNERS,
+      size: 200,
+      accessorFn: row => row.businessOwnerUsers.map(u => u.fullName ?? u.email).join(', '),
+      meta: {
+        title: dataMartColumnLabels[DataMartColumnKey.BUSINESS_OWNERS],
+      },
+      header: ({ column }) => (
+        <SortableHeader column={column}>
+          {dataMartColumnLabels[DataMartColumnKey.BUSINESS_OWNERS]}
+        </SortableHeader>
+      ),
+      cell: ({ row }) => {
+        const users = row.original.businessOwnerUsers;
+        if (users.length === 1) {
+          return <UserReference userProjection={users[0]} />;
+        }
+        if (users.length > 1) {
+          return <UserAvatarGroup users={users} />;
+        }
+        return <div className='text-muted-foreground'>—</div>;
+      },
+    },
+    {
+      id: DataMartColumnKey.TECHNICAL_OWNERS,
+      size: 200,
+      accessorFn: row => row.technicalOwnerUsers.map(u => u.fullName ?? u.email).join(', '),
+      meta: {
+        title: dataMartColumnLabels[DataMartColumnKey.TECHNICAL_OWNERS],
+      },
+      header: ({ column }) => (
+        <SortableHeader column={column}>
+          {dataMartColumnLabels[DataMartColumnKey.TECHNICAL_OWNERS]}
+        </SortableHeader>
+      ),
+      cell: ({ row }) => {
+        const users = row.original.technicalOwnerUsers;
+        if (users.length === 1) {
+          return <UserReference userProjection={users[0]} />;
+        }
+        if (users.length > 1) {
+          return <UserAvatarGroup users={users} />;
+        }
+        return <div className='text-muted-foreground'>—</div>;
+      },
+    },
+    {
+      accessorKey: DataMartColumnKey.AVAILABLE_FOR_REPORTING,
+      size: 110,
+      meta: {
+        title: dataMartColumnLabels[DataMartColumnKey.AVAILABLE_FOR_REPORTING],
+      },
+      sortingFn: (rowA, rowB) =>
+        Number(rowA.original.availableForReporting === true) -
+        Number(rowB.original.availableForReporting === true),
+      header: ({ column }) => (
+        <SortableHeader column={column}>
+          {dataMartColumnLabels[DataMartColumnKey.AVAILABLE_FOR_REPORTING]}
+        </SortableHeader>
+      ),
+      cell: ({ row }) =>
+        row.original.availableForReporting === true ? (
+          <Check
+            className='text-muted-foreground h-4 w-4'
+            aria-label={t?.('dataMartTableColumns.sharedForReporting', 'Shared for reporting')}
+          />
+        ) : (
+          <div className='text-muted-foreground'>—</div>
+        ),
+    },
+    {
+      accessorKey: DataMartColumnKey.AVAILABLE_FOR_MAINTENANCE,
+      size: 130,
+      meta: {
+        title: dataMartColumnLabels[DataMartColumnKey.AVAILABLE_FOR_MAINTENANCE],
+      },
+      sortingFn: (rowA, rowB) =>
+        Number(rowA.original.availableForMaintenance === true) -
+        Number(rowB.original.availableForMaintenance === true),
+      header: ({ column }) => (
+        <SortableHeader column={column}>
+          {dataMartColumnLabels[DataMartColumnKey.AVAILABLE_FOR_MAINTENANCE]}
+        </SortableHeader>
+      ),
+      cell: ({ row }) =>
+        row.original.availableForMaintenance === true ? (
+          <Check
+            className='text-muted-foreground h-4 w-4'
+            aria-label={t?.('dataMartTableColumns.sharedForMaintenance', 'Shared for maintenance')}
+          />
+        ) : (
+          <div className='text-muted-foreground'>—</div>
+        ),
+    },
+    {
+      id: DataMartColumnKey.CONTEXTS,
+      accessorKey: 'contexts',
+      accessorFn: row => row.contexts.map(c => c.name).join(', '),
+      meta: {
+        title: dataMartColumnLabels[DataMartColumnKey.CONTEXTS],
+      },
+      header: ({ column }) => (
+        <SortableHeader column={column}>
+          {dataMartColumnLabels[DataMartColumnKey.CONTEXTS]}
+        </SortableHeader>
+      ),
+      cell: ({ row }) => {
+        return <ContextBadges contexts={row.original.contexts} />;
+      },
+    },
+    {
+      id: 'actions',
+      size: 50,
+      enableResizing: false,
+      header: ({ table }) => <ToggleColumnsHeader table={table} />,
+      cell: ({ row }) => (
+        <DataMartActionsCell row={row} deleteDataMart={deleteDataMart} refreshList={refreshList} />
+      ),
+    },
   ];
 };

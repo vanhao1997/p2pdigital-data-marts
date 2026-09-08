@@ -7,71 +7,74 @@ import type {
   EffectiveDataQualityConfig,
   EffectiveDataQualityRuleConfig,
 } from './types';
+import i18n from '../../../../i18n';
 
-export const DATA_QUALITY_CATEGORY_LABELS: Record<DataQualityCategory, string> = {
-  empty_table: 'Empty table',
-  pk_uniqueness: 'Primary key uniqueness',
-  duplicate_rows: 'Duplicate rows',
-  null_rate: 'Null rate',
-  column_uniqueness: 'Column uniqueness',
-  constant_column: 'Constant column',
-  type_mismatch: 'Type mismatch',
-  data_freshness: 'Data freshness',
-  negative_values: 'Negative values',
-  relationship_integrity: 'Relationship integrity',
-  reverse_relationship: 'Reverse relationship',
+const DATA_QUALITY_CATEGORY_LABEL_KEYS: Record<DataQualityCategory, string> = {
+  empty_table: 'dataQualityUi.categoryLabels.emptyTable',
+  pk_uniqueness: 'dataQualityUi.categoryLabels.primaryKeyUniqueness',
+  duplicate_rows: 'dataQualityUi.categoryLabels.duplicateRows',
+  null_rate: 'dataQualityUi.categoryLabels.nullRate',
+  column_uniqueness: 'dataQualityUi.categoryLabels.columnUniqueness',
+  constant_column: 'dataQualityUi.categoryLabels.constantColumn',
+  type_mismatch: 'dataQualityUi.categoryLabels.typeMismatch',
+  data_freshness: 'dataQualityUi.categoryLabels.dataFreshness',
+  negative_values: 'dataQualityUi.categoryLabels.negativeValues',
+  relationship_integrity: 'dataQualityUi.categoryLabels.relationshipIntegrity',
+  reverse_relationship: 'dataQualityUi.categoryLabels.reverseRelationship',
 };
 
-export const DATA_QUALITY_CATEGORY_DESCRIPTIONS: Record<DataQualityCategory, string> = {
-  empty_table: 'Finds a problem when the Data Mart contains no rows.',
-  pk_uniqueness: 'Checks that the Output Schema primary key identifies each row once.',
-  duplicate_rows: 'Finds duplicate rows across all materialized Output Schema fields.',
-  null_rate: 'Checks whether the share of null values exceeds the configured threshold.',
-  column_uniqueness: 'Finds repeated non-null values in this field.',
-  constant_column: 'Finds fields that contain only one distinct value.',
-  type_mismatch: 'Compares the stored column type with the saved Output Schema type.',
-  data_freshness: 'Checks whether the latest instant timestamp is within the configured threshold.',
-  negative_values: 'Finds numeric values below zero.',
-  relationship_integrity: 'Finds source join values missing from the target Data Mart.',
-  reverse_relationship: 'Finds target join values unused by the source Data Mart.',
+const DATA_QUALITY_CATEGORY_DESCRIPTION_KEYS: Record<DataQualityCategory, string> = {
+  empty_table: 'dataQualityUi.categoryDescriptions.emptyTable',
+  pk_uniqueness: 'dataQualityUi.categoryDescriptions.primaryKeyUniqueness',
+  duplicate_rows: 'dataQualityUi.categoryDescriptions.duplicateRows',
+  null_rate: 'dataQualityUi.categoryDescriptions.nullRate',
+  column_uniqueness: 'dataQualityUi.categoryDescriptions.columnUniqueness',
+  constant_column: 'dataQualityUi.categoryDescriptions.constantColumn',
+  type_mismatch: 'dataQualityUi.categoryDescriptions.typeMismatch',
+  data_freshness: 'dataQualityUi.categoryDescriptions.dataFreshness',
+  negative_values: 'dataQualityUi.categoryDescriptions.negativeValues',
+  relationship_integrity: 'dataQualityUi.categoryDescriptions.relationshipIntegrity',
+  reverse_relationship: 'dataQualityUi.categoryDescriptions.reverseRelationship',
 };
 
-const STATUS_PRESENTATIONS: Record<DataQualitySummaryState, DataQualityStatusPresentation> = {
+const STATUS_PRESENTATION_KEYS: Record<
+  DataQualitySummaryState,
+  { title: string; description?: string }
+> = {
   NEVER_RUN: {
-    title: 'No runs yet',
-    description: 'Run the enabled checks to create the first quality report.',
+    title: 'dataQualityUi.statusPresentations.neverRunTitle',
+    description: 'dataQualityUi.statusPresentations.neverRunDescription',
   },
   QUEUED: {
-    title: 'Run queued…',
-    description: 'The run will start as soon as a worker is available.',
+    title: 'dataQualityUi.statusPresentations.queuedTitle',
+    description: 'dataQualityUi.statusPresentations.queuedDescription',
   },
   RUNNING: {
-    title: 'Running checks…',
+    title: 'dataQualityUi.statusPresentations.runningTitle',
   },
   PASSED: {
-    title: 'All checks passed',
-    description: 'No data quality findings were detected.',
+    title: 'dataQualityUi.statusPresentations.passedTitle',
+    description: 'dataQualityUi.statusPresentations.passedDescription',
   },
   ISSUES: {
-    title: 'Issues found',
-    description: 'Settings and the detailed report are available below.',
+    title: 'dataQualityUi.statusPresentations.issuesTitle',
+    description: 'dataQualityUi.statusPresentations.issuesDescription',
   },
   EXECUTION_FAILED: {
-    title: 'Execution failed',
-    description: 'Some checks could not execute. Completed results are still available below.',
+    title: 'dataQualityUi.statusPresentations.executionFailedTitle',
+    description: 'dataQualityUi.statusPresentations.executionFailedDescription',
   },
   RESTRICTED: {
-    title: 'Run restricted',
-    description:
-      'Project operations are currently restricted. Check the project status or available credits and try again.',
+    title: 'dataQualityUi.statusPresentations.restrictedTitle',
+    description: 'dataQualityUi.statusPresentations.restrictedDescription',
   },
   CANCELLED: {
-    title: 'Run cancelled',
-    description: 'Results completed before cancellation are preserved.',
+    title: 'dataQualityUi.statusPresentations.cancelledTitle',
+    description: 'dataQualityUi.statusPresentations.cancelledDescription',
   },
   ALL_DISABLED: {
-    title: 'All checks are disabled',
-    description: 'Enable at least one applicable check before running Data Quality.',
+    title: 'dataQualityUi.statusPresentations.allDisabledTitle',
+    description: 'dataQualityUi.statusPresentations.allDisabledDescription',
   },
 };
 
@@ -107,11 +110,23 @@ export function getDataQualityStatusPresentation(summary: {
 }): DataQualityStatusPresentation {
   if ((summary.totalChecks ?? 0) > 0 && summary.notApplicableChecks === summary.totalChecks) {
     return {
-      title: 'No checks are applicable',
-      description: 'The configured checks do not apply to the current schema or relationships.',
+      title: i18n.t('dataQualityUi.statusPresentations.noApplicableTitle'),
+      description: i18n.t('dataQualityUi.statusPresentations.noApplicableDescription'),
     };
   }
-  return STATUS_PRESENTATIONS[summary.state];
+  const keys = STATUS_PRESENTATION_KEYS[summary.state];
+  return {
+    title: i18n.t(keys.title),
+    ...(keys.description ? { description: i18n.t(keys.description) } : {}),
+  };
+}
+
+export function getDataQualityCategoryLabel(category: DataQualityCategory): string {
+  return i18n.t(DATA_QUALITY_CATEGORY_LABEL_KEYS[category]);
+}
+
+export function getDataQualityCategoryDescription(category: DataQualityCategory): string {
+  return i18n.t(DATA_QUALITY_CATEGORY_DESCRIPTION_KEYS[category]);
 }
 
 export function dataQualityPollingInterval(
@@ -123,7 +138,7 @@ export function dataQualityPollingInterval(
 export function dataQualityScopeLabel(scope: DataQualityConfig['rules'][number]['scope']): string {
   if (scope.type === 'FIELD') return scope.fieldPath.join('.');
   if (scope.type === 'RELATIONSHIP') return scope.relationshipId;
-  return 'Data Mart';
+  return i18n.t('dataQualityUi.dataMartScope');
 }
 
 export interface DataQualityRelationshipPresentation {
@@ -137,7 +152,7 @@ export function getDataQualityRelationshipPresentation(
   relationshipId: string,
   relationships: readonly unknown[]
 ): DataQualityRelationshipPresentation {
-  const relationshipIdLabel = `Relationship ID: ${relationshipId}`;
+  const relationshipIdLabel = i18n.t('dataQualityUi.relationshipId', { id: relationshipId });
   const relationship = relationships.find(item => isRecord(item) && item.id === relationshipId);
   if (!isRecord(relationship)) {
     return { scopeLabel: relationshipIdLabel, scopeDetails: [] };
@@ -257,8 +272,8 @@ export function getSelectableDataQualityFields(
         .filter(rule => rule.isApplicable)
         .map(rule => ({
           key: rule.key,
-          label: DATA_QUALITY_CATEGORY_LABELS[rule.category],
-          description: DATA_QUALITY_CATEGORY_DESCRIPTIONS[rule.category],
+          label: getDataQualityCategoryLabel(rule.category),
+          description: getDataQualityCategoryDescription(rule.category),
           isAdded: displayed.has(rule.key),
         })),
     }))

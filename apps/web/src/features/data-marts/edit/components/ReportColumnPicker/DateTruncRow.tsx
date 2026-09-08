@@ -50,7 +50,10 @@ export function DateTruncRow({
           {isOrphaned && (
             <span
               className='inline-flex items-center text-red-600'
-              title={t('reportColumnPicker.dateColumnUnavailable', 'This column is no longer a date/timestamp column. Remove this rule or restore the column.')}
+              title={t(
+                'reportColumnPicker.dateColumnUnavailable',
+                'This column is no longer a date/timestamp column. Remove this rule or restore the column.'
+              )}
               aria-label={t('reportColumnPicker.columnNotFound', 'Column not found in schema')}
             >
               <AlertTriangle className='h-3 w-3' />
@@ -64,7 +67,9 @@ export function DateTruncRow({
           <div className='text-muted-foreground truncate text-[11px]'>{dataMartName}</div>
         )}
         <div className='truncate font-mono text-[11px]'>
-          <span className='text-muted-foreground'>{t('reportColumnPicker.groupedBy', 'grouped by')} </span>
+          <span className='text-muted-foreground'>
+            {t('reportColumnPicker.groupedBy', 'grouped by')}{' '}
+          </span>
           <span className='text-foreground/70 font-medium'>{rule.unit}</span>
           {rule.timeZone && <span className='text-muted-foreground'> · {rule.timeZone}</span>}
         </div>
@@ -75,8 +80,14 @@ export function DateTruncRow({
           size='sm'
           disabled
           className='text-muted-foreground h-6 w-6 p-0 opacity-40'
-          aria-label={t('reportColumnPicker.editDisabledColumnMissing', 'Edit disabled — column missing from schema')}
-          title={t('reportColumnPicker.editDisabledColumnMissing', 'Edit disabled — column missing from schema')}
+          aria-label={t(
+            'reportColumnPicker.editDisabledColumnMissing',
+            'Edit disabled — column missing from schema'
+          )}
+          title={t(
+            'reportColumnPicker.editDisabledColumnMissing',
+            'Edit disabled — column missing from schema'
+          )}
         >
           <Pencil className='h-4 w-4' />
         </Button>
@@ -113,7 +124,7 @@ export function DateTruncRow({
         size='sm'
         className='text-muted-foreground hover:text-foreground h-6 w-6 p-0'
         onClick={onRemove}
-        aria-label='Remove date bucket'
+        aria-label={t('reportColumnPicker.removeDateBucket')}
       >
         <X className='h-4 w-4' />
       </Button>

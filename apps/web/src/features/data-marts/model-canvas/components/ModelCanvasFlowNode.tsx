@@ -20,6 +20,7 @@ import type { DataQualityCompactSummary } from '../../shared/types';
 import { DataQualityCanvasStatusIcon } from './DataQualityCanvasStatusIcon';
 import { DataLastUpdatedCanvasIcon } from './DataLastUpdatedCanvasIcon';
 import type { DataLastUpdatedDto } from '../../shared/types/api/response/data-mart-data-last-updated.dto';
+import { useTranslation } from 'react-i18next';
 
 export interface ModelCanvasFlowNodeData {
   title: string;
@@ -56,6 +57,7 @@ export default function ModelCanvasFlowNode({
   // Owned here (not in the section) so expansion survives Compact↔Detailed
   // round-trips — the node stays mounted while the section unmounts.
   const [expanded, setExpanded] = useState(false);
+  const { t } = useTranslation();
   const updateNodeInternals = useUpdateNodeInternals();
   // Expansion grows the card past its layout height, moving the handles —
   // re-measure so edges stay attached to the handle dots.
@@ -80,7 +82,7 @@ export default function ModelCanvasFlowNode({
 
   const targetPosition = data.direction === 'vertical' ? Position.Top : Position.Left;
   const sourcePosition = data.direction === 'vertical' ? Position.Bottom : Position.Right;
-  const openExternalLabel = `Open ${data.title} in new tab`;
+  const openExternalLabel = t('canvasSettings.openInNewTab', { title: data.title });
 
   function handleExtClick(e: React.MouseEvent) {
     e.stopPropagation();
@@ -136,7 +138,7 @@ export default function ModelCanvasFlowNode({
               <button
                 type='button'
                 className='text-muted-foreground hover:text-foreground nodrag inline-flex cursor-default rounded p-0.5 transition-colors'
-                aria-label={`Description for ${data.title}`}
+                aria-label={t('canvasSettings.descriptionFor', { title: data.title })}
                 onPointerDown={e => {
                   e.stopPropagation();
                 }}
@@ -185,7 +187,8 @@ export default function ModelCanvasFlowNode({
           />
           {withFieldCount && (
             <span className='ml-auto shrink-0'>
-              {data.fieldCount} field{data.fieldCount !== 1 ? 's' : ''}
+              {data.fieldCount}{' '}
+              {t(data.fieldCount === 1 ? 'canvasSettings.field' : 'canvasSettings.fields')}
             </span>
           )}
         </div>

@@ -48,9 +48,7 @@ export const getMembersColumns = ({
     accessorKey: MembersColumnKey.NAME,
     size: 220,
     meta: { title: t('common.name') },
-    header: ({ column }) => (
-      <SortableHeader column={column}>{t('common.name')}</SortableHeader>
-    ),
+    header: ({ column }) => <SortableHeader column={column}>{t('common.name')}</SortableHeader>,
     cell: ({ row }) => {
       const { displayName, email, avatarUrl } = row.original;
       const name = displayName ?? email;

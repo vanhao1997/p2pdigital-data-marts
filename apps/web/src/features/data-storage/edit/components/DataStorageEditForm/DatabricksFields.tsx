@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Input } from '@owox/ui/components/input';
 import { DataStorageType } from '../../../shared';
 import type { DataStorageFormData } from '../../../shared/types/data-storage.schema.ts';
@@ -24,6 +25,7 @@ interface DatabricksFieldsProps {
 }
 
 export const DatabricksFields = ({ form }: DatabricksFieldsProps) => {
+  const { t } = useTranslation();
   const {
     entityId: storageId,
     onSourceSelect: onSourceStorageSelect,
@@ -49,15 +51,17 @@ export const DatabricksFields = ({ form }: DatabricksFieldsProps) => {
   return (
     <>
       {/* Connection Settings */}
-      <FormSection title='Cài đặt kết nối'>
+      <FormSection title={t('formCommon.connectionSettings')}>
         <FormField
           control={form.control}
           name='config.host'
           render={({ field }) => (
             <FormItem>
-              <FormLabel tooltip='Nhập URL workspace Databricks của bạn'>Máy chủ</FormLabel>
+              <FormLabel tooltip={t('storageForm.databricksHostTooltip')}>
+                {t('storageForm.databricksHost')}
+              </FormLabel>
               <FormControl>
-                <Input {...field} placeholder='e.g., adb-123456.7.azuredatabricks.net' />
+                <Input {...field} placeholder={t('storageForm.databricksHostPlaceholder')} />
               </FormControl>
               <FormDescription>
                 <DatabricksHostDescription />
@@ -71,9 +75,11 @@ export const DatabricksFields = ({ form }: DatabricksFieldsProps) => {
           name='config.httpPath'
           render={({ field }) => (
             <FormItem>
-              <FormLabel tooltip='Chỉ định HTTP path của SQL warehouse'>HTTP Path</FormLabel>
+              <FormLabel tooltip={t('storageForm.httpPathTooltip')}>
+                {t('storageForm.httpPath')}
+              </FormLabel>
               <FormControl>
-                <Input {...field} placeholder='e.g., /sql/1.0/warehouses/abc123def456' />
+                <Input {...field} placeholder={t('storageForm.httpPathPlaceholder')} />
               </FormControl>
               <FormDescription>
                 <DatabricksHttpPathDescription />
@@ -105,14 +111,16 @@ export const DatabricksFields = ({ form }: DatabricksFieldsProps) => {
               name='credentials.token'
               render={({ field }) => (
                 <FormItem>
-              <FormLabel tooltip='Databricks Personal Access Token của bạn'>
-                    Mã truy cập cá nhân
+                  <FormLabel tooltip={t('storageForm.personalAccessTokenTooltip')}>
+                    {t('storageForm.personalAccessToken')}
                   </FormLabel>
                   <FormControl>
                     <Input
                       {...field}
                       type='password'
-                      placeholder={maskedTokenValue || 'Nhập mã truy cập'}
+                      placeholder={
+                        maskedTokenValue || t('storageForm.personalAccessTokenPlaceholder')
+                      }
                     />
                   </FormControl>
                   <FormDescription>

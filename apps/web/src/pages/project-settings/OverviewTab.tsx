@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router';
 import {
   BookOpenIcon,
@@ -79,6 +80,7 @@ function humaniseDestinationType(type: string): string {
 }
 
 export function OverviewTab() {
+  const { t } = useTranslation();
   const user = useUser();
   const { projects, callState, loadProjects } = useProjects();
   const { flags } = useFlags();
@@ -164,9 +166,9 @@ export function OverviewTab() {
   const editorCount = members.filter(m => m.role === 'editor').length;
   const viewerCount = members.filter(m => m.role === 'viewer').length;
   const memberRoleBreakdown = [
-    adminCount > 0 ? `${String(adminCount)} Project Admin${adminCount === 1 ? '' : 's'}` : null,
-    editorCount > 0 ? `${String(editorCount)} Technical User${editorCount === 1 ? '' : 's'}` : null,
-    viewerCount > 0 ? `${String(viewerCount)} Business User${viewerCount === 1 ? '' : 's'}` : null,
+    adminCount > 0 ? t('projectOverview.projectAdminCount', { count: adminCount }) : null,
+    editorCount > 0 ? t('projectOverview.technicalUserCount', { count: editorCount }) : null,
+    viewerCount > 0 ? t('projectOverview.businessUserCount', { count: viewerCount }) : null,
   ]
     .filter(Boolean)
     .join(' · ');
@@ -176,15 +178,21 @@ export function OverviewTab() {
     <div className='flex flex-col gap-4'>
       <CollapsibleCard collapsible name='project-overview'>
         <CollapsibleCardHeader>
-          <CollapsibleCardHeaderTitle icon={BookOpenIcon} tooltip='About this project'>
-            Overview
+          <CollapsibleCardHeaderTitle
+            icon={BookOpenIcon}
+            tooltip={t('projectOverview.aboutTooltip')}
+          >
+            {t('projectOverview.overview')}
           </CollapsibleCardHeaderTitle>
         </CollapsibleCardHeader>
         <CollapsibleCardContent>
           <div className='grid grid-cols-1 gap-3 sm:grid-cols-3'>
-            <DescriptionCard label='Project name' value={user?.projectTitle ?? '—'} />
             <DescriptionCard
-              label='Project ID'
+              label={t('projectOverview.projectName')}
+              value={user?.projectTitle ?? '—'}
+            />
+            <DescriptionCard
+              label={t('projectOverview.projectId')}
               value={
                 <div className='flex items-center gap-2'>
                   <span className='font-mono text-xs break-all'>{projectId || '—'}</span>
@@ -202,7 +210,7 @@ export function OverviewTab() {
               }
             />
             <DescriptionCard
-              label='Status'
+              label={t('projectOverview.status')}
               value={
                 callState === RequestStatus.LOADED ? (
                   <ProjectStatusBadge status={projectStatus} />
@@ -220,9 +228,9 @@ export function OverviewTab() {
         <CollapsibleCardHeader>
           <CollapsibleCardHeaderTitle
             icon={ChartNoAxesColumn}
-            tooltip='Quick snapshot of what lives inside this project'
+            tooltip={t('projectOverview.atAGlanceTooltip')}
           >
-            At a glance
+            {t('projectOverview.atAGlance')}
           </CollapsibleCardHeaderTitle>
         </CollapsibleCardHeader>
         <CollapsibleCardContent>
@@ -233,34 +241,34 @@ export function OverviewTab() {
           <div className='grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-5'>
             <StatCard
               icon={Box}
-              label='Data Marts'
+              label={t('projectOverview.dataMarts')}
               value={stats.dataMarts}
               to={scope('/data-marts')}
             />
             <StatCard
               icon={Database}
-              label='Storages'
+              label={t('projectOverview.storages')}
               value={stats.storages?.count ?? null}
               hint={stats.storages ? formatTypesList(stats.storages.types) : undefined}
               to={scope('/data-storages')}
             />
             <StatCard
               icon={ArchiveRestore}
-              label='Destinations'
+              label={t('projectOverview.destinations')}
               value={stats.destinations?.count ?? null}
               hint={stats.destinations ? formatTypesList(stats.destinations.types) : undefined}
               to={scope('/data-destinations')}
             />
             <StatCard
               icon={Tags}
-              label='Contexts'
+              label={t('projectOverview.contexts')}
               value={stats.contexts?.count ?? null}
               hint={stats.contexts ? formatTypesList(stats.contexts.names) : undefined}
               to={scope('/project-settings/contexts')}
             />
             <StatCard
               icon={UsersIcon}
-              label='Members'
+              label={t('projectOverview.members')}
               value={members.length}
               hint={memberRoleBreakdown || undefined}
               to={scope('/project-settings/members')}
@@ -274,17 +282,15 @@ export function OverviewTab() {
         <CollapsibleCardHeader>
           <CollapsibleCardHeaderTitle
             icon={FileText}
-            tooltip='Business context shared with connected AI assistants'
+            tooltip={t('projectOverview.businessContextTooltip')}
           >
-            Description
+            {t('projectOverview.description')}
           </CollapsibleCardHeaderTitle>
         </CollapsibleCardHeader>
         <CollapsibleCardContent>
           <div className='flex flex-col gap-2'>
             <p className='text-muted-foreground text-xs'>
-              Describe the project&apos;s business context, goals, terminology, and conventions.
-              This description is shared with connected AI assistants through MCP. Do not include
-              secrets.
+              {t('projectOverview.businessContextDescription')}
             </p>
             {isProjectSettingsLoading ? (
               <Skeleton className='h-64 w-full' />
@@ -292,7 +298,7 @@ export function OverviewTab() {
               <InlineEditDescription
                 description={projectSettings.description}
                 onUpdate={updateDescription}
-                placeholder='Add a description for this project...'
+                placeholder={t('projectOverview.descriptionPlaceholder')}
                 readOnly={!isAdmin || projectSettingsError !== null}
               />
             )}
@@ -309,23 +315,21 @@ export function OverviewTab() {
       {mcpServerUrl && (
         <CollapsibleCard collapsible name='project-mcp-server'>
           <CollapsibleCardHeader>
-            <CollapsibleCardHeaderTitle icon={Plug} tooltip='Project-specific MCP server URL'>
-              MCP server
+            <CollapsibleCardHeaderTitle icon={Plug} tooltip={t('projectOverview.mcpTooltip')}>
+              {t('projectOverview.mcpTitle')}
             </CollapsibleCardHeaderTitle>
           </CollapsibleCardHeader>
           <CollapsibleCardContent>
             <div className='group flex w-full flex-col gap-3 rounded-md border-b border-gray-200 bg-white p-4 transition-shadow duration-200 hover:shadow-xs dark:border-0 dark:bg-white/2'>
               <p className='text-muted-foreground text-sm'>
-                For a single-project setup, use the published P2PDigital MCP server in Claude,
-                Codex, ChatGPT, and similar tools. For multi-project workflows, use this
-                project-specific URL as a custom MCP server. See the{' '}
+                {t('projectOverview.mcpDescription')}{' '}
                 <a
                   href='https://docs.p2pdigital.io.vn/docs/getting-started/setup-guide/mcp/'
                   target='_blank'
                   rel='noopener noreferrer'
                   className='text-primary hover:underline'
                 >
-                  MCP setup guide
+                  {t('projectOverview.mcpGuide')}
                 </a>
                 .
               </p>
@@ -351,16 +355,15 @@ export function OverviewTab() {
           <CollapsibleCardHeader>
             <CollapsibleCardHeaderTitle
               icon={Settings}
-              tooltip='Open the full project settings on platform.p2pdigital.vn'
+              tooltip={t('projectOverview.legacyTooltip')}
             >
-              Legacy platform settings
+              {t('projectOverview.legacyTitle')}
             </CollapsibleCardHeaderTitle>
           </CollapsibleCardHeader>
           <CollapsibleCardContent>
             <div className='group flex w-full flex-col gap-3 rounded-md border-b border-gray-200 bg-white p-4 transition-shadow duration-200 hover:shadow-xs dark:border-0 dark:bg-white/2'>
               <p className='text-muted-foreground text-sm'>
-                Some project-level settings still live on platform.p2pdigital.vn. Open the legacy
-                settings page in a new tab to manage them.
+                {t('projectOverview.legacyDescription')}
               </p>
               <Button asChild variant='outline' size='sm' className='w-fit' disabled={!projectId}>
                 <a
@@ -369,7 +372,7 @@ export function OverviewTab() {
                   rel='noopener noreferrer'
                 >
                   <ExternalLink className='mr-2 h-4 w-4' />
-                  Open legacy settings
+                  {t('projectOverview.openLegacy')}
                 </a>
               </Button>
             </div>

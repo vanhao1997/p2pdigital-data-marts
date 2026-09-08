@@ -195,7 +195,12 @@ export const LookerStudioReportEditForm = forwardRef<
                 name='cacheLifetime'
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel tooltip={t('reportsUi.cacheTooltip', 'Period during which query results are served from storage-side cache, avoiding re-execution')}>
+                    <FormLabel
+                      tooltip={t(
+                        'reportsUi.cacheTooltip',
+                        'Period during which query results are served from storage-side cache, avoiding re-execution'
+                      )}
+                    >
                       {t('reportsUi.cacheLifetime', 'Thời gian lưu bộ nhớ đệm')}
                     </FormLabel>
                     <Select
@@ -234,7 +239,10 @@ export const LookerStudioReportEditForm = forwardRef<
 
             <FormSection
               title={t('reportsUi.reportColumns', 'Report Columns')}
-              tooltip={t('reportsUi.reportColumnsTooltip', 'Select which columns to include in the report')}
+              tooltip={t(
+                'reportsUi.reportColumnsTooltip',
+                'Select which columns to include in the report'
+              )}
               titleAdornment={<ReportColumnsCountBadge count={columnsCount} />}
               fields={[
                 'columnConfig',
@@ -301,7 +309,11 @@ export const LookerStudioReportEditForm = forwardRef<
 
             <FormSection title={t('reportsUi.ownership', 'Ownership')}>
               <FormItem>
-                <FormLabel tooltip={t('reportsUi.ownersTooltip', 'Team members responsible for this report')}>{t('reportsUi.owners', 'Owners')}</FormLabel>
+                <FormLabel
+                  tooltip={t('reportsUi.ownersTooltip', 'Team members responsible for this report')}
+                >
+                  {t('reportsUi.owners', 'Owners')}
+                </FormLabel>
                 <OwnersSection ownerUsers={ownerUsers} onSave={handleOwnersChange} />
               </FormItem>
             </FormSection>
@@ -314,7 +326,9 @@ export const LookerStudioReportEditForm = forwardRef<
                     {initialReport.createdByUser ? (
                       <UserReference userProjection={initialReport.createdByUser} variant='full' />
                     ) : (
-                      <span className='text-muted-foreground'>{t('reportsUi.unknown', 'Unknown')}</span>
+                      <span className='text-muted-foreground'>
+                        {t('reportsUi.unknown', 'Unknown')}
+                      </span>
                     )}
                   </div>
                 </FormItem>
@@ -332,10 +346,10 @@ export const LookerStudioReportEditForm = forwardRef<
             )}
           </FormLayout>
           <FormActions>
-              <Button
-                variant='default'
-                type='submit'
-                className='w-full'
+            <Button
+              variant='default'
+              type='submit'
+              className='w-full'
               aria-label={
                 mode === ReportFormMode.CREATE
                   ? t('reportsUi.createReport', 'Create report')

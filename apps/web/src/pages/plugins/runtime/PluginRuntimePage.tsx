@@ -124,8 +124,14 @@ export default function PluginRuntimePage() {
   if (error || !data) {
     return (
       <PluginRuntimeMessage
-        titleKey={isSuspended(error) ? 'pluginsPage.runtime.suspended' : 'pluginsPage.runtime.openFailed'}
-        descriptionKey={isSuspended(error) ? 'pluginsPage.runtime.suspendedDescription' : 'pluginsPage.runtime.openFailedDescription'}
+        titleKey={
+          isSuspended(error) ? 'pluginsPage.runtime.suspended' : 'pluginsPage.runtime.openFailed'
+        }
+        descriptionKey={
+          isSuspended(error)
+            ? 'pluginsPage.runtime.suspendedDescription'
+            : 'pluginsPage.runtime.openFailedDescription'
+        }
         backHref={scope('/plugins')}
       />
     );
@@ -168,7 +174,9 @@ function PluginRuntimeMessage({
   return (
     <div className='flex h-full flex-col items-center justify-center gap-3 p-8 text-center'>
       <h1 className='text-lg font-medium'>{t(titleKey)}</h1>
-      {descriptionKey && <p className='text-muted-foreground max-w-prose text-sm'>{t(descriptionKey)}</p>}
+      {descriptionKey && (
+        <p className='text-muted-foreground max-w-prose text-sm'>{t(descriptionKey)}</p>
+      )}
       {backHref && (
         <Button asChild variant='outline'>
           <Link to={backHref}>{t('pluginsPage.runtime.back')}</Link>

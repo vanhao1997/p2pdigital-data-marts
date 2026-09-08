@@ -53,8 +53,12 @@ export function GoogleChatFields({ form }: { form: UseFormReturn<DataDestination
           <FormLabel>{t('googleChat.deliveryMethod', 'Delivery Method')}</FormLabel>
           <Tabs value={deliveryMethod} onValueChange={handleDeliveryMethodChange}>
             <TabsList aria-label={t('googleChat.deliveryMethod', 'Delivery Method')}>
-              <TabsTrigger value='webhook'>{t('googleChat.incomingWebhook', 'Incoming Webhook')}</TabsTrigger>
-              <TabsTrigger value='email'>{t('googleChat.channelEmail', 'Channel Email')}</TabsTrigger>
+              <TabsTrigger value='webhook'>
+                {t('googleChat.incomingWebhook', 'Incoming Webhook')}
+              </TabsTrigger>
+              <TabsTrigger value='email'>
+                {t('googleChat.channelEmail', 'Channel Email')}
+              </TabsTrigger>
             </TabsList>
           </Tabs>
         </div>
@@ -69,7 +73,12 @@ export function GoogleChatFields({ form }: { form: UseFormReturn<DataDestination
           name={WEBHOOK_FIELD_PATH}
           render={({ field }) => (
             <FormItem>
-              <FormLabel tooltip={t('googleChat.webhookHelp', 'Paste the incoming webhook URL copied from Apps & integrations in your Google Chat space.')}>
+              <FormLabel
+                tooltip={t(
+                  'googleChat.webhookHelp',
+                  'Paste the incoming webhook URL copied from Apps & integrations in your Google Chat space.'
+                )}
+              >
                 {t('googleChat.webhookUrlLabel', 'Google Chat incoming webhook URL')}
               </FormLabel>
               <FormControl>
@@ -80,8 +89,11 @@ export function GoogleChatFields({ form }: { form: UseFormReturn<DataDestination
                   value={typeof field.value === 'string' ? field.value : ''}
                   placeholder={
                     configured
-                      ? t('googleChat.configuredPlaceholder', 'Webhook configured — paste a new URL to replace it')
-                      : 'https://chat.googleapis.com/v1/spaces/.../messages?key=...&token=...'
+                      ? t(
+                          'googleChat.configuredPlaceholder',
+                          'Webhook configured — paste a new URL to replace it'
+                        )
+                      : t('googleChat.webhookPlaceholder')
                   }
                 />
               </FormControl>
@@ -95,7 +107,10 @@ export function GoogleChatFields({ form }: { form: UseFormReturn<DataDestination
       ) : (
         <EmailFields
           form={form}
-          emailsFieldTitle={t('googleChat.emailFieldTitle', 'Enter Google Chat channel emails list')}
+          emailsFieldTitle={t(
+            'googleChat.emailFieldTitle',
+            'Enter Google Chat channel emails list'
+          )}
           description={<GoogleChatChannelEmailDescription />}
         />
       )}

@@ -14,6 +14,9 @@ config({ path: resolve(rootDir, '.env') });
 config({ path: resolve(rootDir, '.env.tests'), override: true });
 
 function assertPortFree(port: number, label: string): void {
+  // `lsof` is not available on Windows. Playwright's webServer startup still
+  // reports a useful bind error there, so skip only this preflight probe.
+  if (process.platform === 'win32') return;
   try {
     const result = execSync(`lsof -ti:${port}`, { encoding: 'utf-8' }).trim();
     if (result) {
@@ -45,6 +48,9 @@ export default defineConfig({
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 1 : 0,
   workers: 1,
+  // Cold Vite chunks and the first SQLite-backed API request can take longer
+  // than the default five-second assertion window on CI/Windows.
+  expect: { timeout: 30_000 },
   reporter: [['html', { open: 'never' }], ['list']],
   use: {
     baseURL: 'https://localhost:5173',

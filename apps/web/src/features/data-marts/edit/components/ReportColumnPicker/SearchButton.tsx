@@ -19,7 +19,9 @@ export function SearchButton({ open, onClick }: SearchButtonProps) {
           type='button'
           variant={open ? 'secondary' : 'ghost'}
           size='sm'
-          aria-label={open ? t('reportColumnPicker.closeSearch') : t('reportColumnPicker.searchColumns')}
+          aria-label={
+            open ? t('reportColumnPicker.closeSearch') : t('reportColumnPicker.searchColumns')
+          }
           aria-expanded={open}
           onClick={onClick}
           className='h-7 w-7'

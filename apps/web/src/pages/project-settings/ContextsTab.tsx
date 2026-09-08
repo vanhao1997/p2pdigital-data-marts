@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router';
 import { toast } from 'sonner';
 import { ContextsTable } from '../../features/contexts/components/ContextsTable/ContextsTable';
@@ -16,6 +17,7 @@ function buildContextsFilterUrl(basePath: string, contextId: string): string {
 }
 
 export function ContextsTab() {
+  const { t } = useTranslation();
   const { contexts, members, refresh, isAdmin, openAddContextSheet } = useMembersSettings();
   const { scope } = useProjectRoute();
   const [selected, setSelected] = useState<ContextDto | null>(null);
@@ -47,7 +49,7 @@ export function ContextsTab() {
         setPendingDelete(ctx);
       }
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : 'Failed to load impact');
+      toast.error(error instanceof Error ? error.message : t('contextsPage.loadImpactFailed'));
     }
   };
 
@@ -55,11 +57,11 @@ export function ContextsTab() {
     if (!pendingDelete) return;
     try {
       await contextService.deleteContext(pendingDelete.id);
-      toast.success('Context deleted');
+      toast.success(t('contextsPage.deleted'));
       setPendingDelete(null);
       void refresh();
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : 'Failed to delete');
+      toast.error(error instanceof Error ? error.message : t('contextsPage.deleteFailed'));
     }
   };
 
@@ -144,16 +146,16 @@ export function ContextsTab() {
         onOpenChange={open => {
           if (!open) setPendingDelete(null);
         }}
-        title='Delete context'
+        title={t('contextsPage.deleteTitle')}
         description={
           <span>
-            Are you sure you want to delete{' '}
-            <strong>&ldquo;{pendingDelete?.name ?? ''}&rdquo;</strong>? This action cannot be
-            undone.
+            {t('contextsPage.deleteDescription')}{' '}
+            <strong>&ldquo;{pendingDelete?.name ?? ''}&rdquo;</strong>{' '}
+            {t('contextsPage.deleteDescriptionSuffix')}
           </span>
         }
-        confirmLabel='Delete'
-        cancelLabel='Cancel'
+        confirmLabel={t('common.delete', 'Delete')}
+        cancelLabel={t('common.cancel', 'Cancel')}
         variant='destructive'
         onConfirm={() => {
           void confirmDelete();
@@ -165,22 +167,20 @@ export function ContextsTab() {
         onOpenChange={open => {
           if (!open) setBlocked(null);
         }}
-        title='Cannot delete context'
+        title={t('contextsPage.cannotDelete')}
         description={
           blocked ? (
             <span className='block space-y-2'>
               <span className='block'>
-                <strong>&ldquo;{blocked.context.name}&rdquo;</strong> is attached to{' '}
+                <strong>&ldquo;{blocked.context.name}&rdquo;</strong>{' '}
+                {t('contextsPage.blockedPrefix')}{' '}
                 {renderAttachments(blocked.context.id, blocked.impact)}.
               </span>
-              <span className='text-muted-foreground block'>
-                Detach it from all Data Marts, Storages, Destinations, Members and User Provisioning
-                defaults before deleting.
-              </span>
+              <span className='text-muted-foreground block'>{t('contextsPage.blockedSuffix')}</span>
             </span>
           ) : null
         }
-        confirmLabel='Got it'
+        confirmLabel={t('contextsPage.gotIt')}
         variant='default'
         onConfirm={() => {
           setBlocked(null);

@@ -2,6 +2,7 @@ import type { ConnectorListItem } from '../../../../shared/model/types/connector
 import type { ConnectorSpecificationResponseApiDto } from '../../../../shared/api';
 import { StepperHeroBlock } from '../components';
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   AppWizardStepSection,
   AppWizardStep,
@@ -102,6 +103,7 @@ export function ConfigurationStep({
   isEditingExisting = false,
   disabled = false,
 }: ConfigurationStepProps) {
+  const { t } = useTranslation();
   const [configuration, setConfiguration] = useState<Record<string, unknown>>({});
   const initializedRef = useRef(false);
   const updatingFromParentRef = useRef(false);
@@ -322,10 +324,10 @@ export function ConfigurationStep({
         <StepperHeroBlock connector={connector} />
         <AppWizardStepHero
           icon={<Unplug size={56} strokeWidth={1} />}
-          title='No configuration found'
-          subtitle='This connector might not be fully implemented yet or there could be other issues.'
+          title={t('connectorWizard.noConfiguration')}
+          subtitle={t('connectorWizard.incompleteConfiguration')}
         />
-        <OpenIssueLink label='Need configuration?' />
+        <OpenIssueLink label={t('connectorWizard.needConfiguration')} />
       </AppWizardStep>
     );
   }
@@ -382,7 +384,7 @@ export function ConfigurationStep({
             </div>
             <div className='flex items-center justify-between'>
               <h3 className='text-muted-foreground/75 text-xs font-semibold tracking-wide uppercase'>
-                Configure Settings
+                {t('connectorWizard.configureSettings')}
               </h3>
               <CopyConfigurationButton
                 currentConnectorName={connector.name}
@@ -403,7 +405,7 @@ export function ConfigurationStep({
             )}
             {advancedFields.length > 0 && (
               <ConfigurationListRender
-                collapsibleTitle='Advanced Settings'
+                collapsibleTitle={t('connectorWizard.advancedSettings')}
                 items={advancedFields}
                 configuration={configuration}
                 onValueChange={handleValueChange}

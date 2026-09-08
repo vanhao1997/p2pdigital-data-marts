@@ -101,7 +101,7 @@ export function DataMartRunHistory() {
                 {isLoadingMoreRuns ? (
                   <>
                     <RefreshCw className='h-4 w-4 animate-spin' />
-                      {t('projectDataMartPages.loadingMore')}
+                    {t('projectDataMartPages.loadingMore')}
                   </>
                 ) : (
                   t('projectDataMartPages.loadMore')

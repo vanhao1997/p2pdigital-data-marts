@@ -1,5 +1,6 @@
 import { Textarea } from '@owox/ui/components/textarea';
 import type { ConnectorSpecificationResponseApiDto } from '../../../../../../shared/api/types';
+import { useTranslation } from 'react-i18next';
 
 interface ConfigurationArrayFieldProps {
   specification: ConnectorSpecificationResponseApiDto;
@@ -12,6 +13,7 @@ export function ConfigurationArrayField({
   configuration,
   onValueChange,
 }: ConfigurationArrayFieldProps) {
+  const { t } = useTranslation();
   const { name, placeholder, default: defaultValue } = specification;
   const displayName = specification.title ?? specification.name;
   return (
@@ -25,7 +27,7 @@ export function ConfigurationArrayField({
             ? defaultValue.join('\n')
             : ''
       }
-      placeholder={placeholder ?? `Enter ${displayName.toLowerCase()} (one per line)`}
+      placeholder={placeholder ?? t('connectorWizard.enterValueLines', { name: displayName })}
       rows={4}
       onChange={e => {
         const arrayValue = e.target.value.split('\n').filter(line => line.trim());

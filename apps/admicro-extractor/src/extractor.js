@@ -34,7 +34,14 @@ function isoDate(value, name) {
 
 function reportPathForPlatform(reportPath, platform) {
   const path = String(reportPath || '/vn/report/result');
-  if (path.includes('\\')) throw errorWithStatus('ReportPath must not contain backslashes', 400);
+  let decodedPath = path;
+  try {
+    decodedPath = decodeURIComponent(path);
+  } catch {
+    throw errorWithStatus('ReportPath must be URI-decodable', 400);
+  }
+  if (/[?#]/.test(path) || /(^|\/)\.\.(\/|$)/.test(decodedPath) || path.includes('\\'))
+    throw errorWithStatus('ReportPath must be a relative absolute path', 400);
   if (platform !== 'mobile' || path.startsWith('/mobile/')) return path;
   return `/mobile${path.startsWith('/') ? path : `/${path}`}`;
 }
@@ -252,10 +259,11 @@ function canonicalRows(parsed, request, campaignId) {
         normalizeCell(returnedDimension, { identifier: true }) || campaignId || null;
     return result;
   });
+  const deduplicatedRows = uniqueRows(rows);
   const fields = {};
   columns.forEach((id, index) => {
     const name = `admicro_column_${id}`;
-    const values = rows
+    const values = deduplicatedRows
       .map(row => row[name])
       .filter(value => value !== null && value !== undefined);
     const inferredType =
@@ -282,7 +290,17 @@ function canonicalRows(parsed, request, campaignId) {
       lookbackDays: 7,
     };
   });
-  return { fields, rows };
+  return { fields, rows: deduplicatedRows };
+}
+
+function uniqueRows(rows) {
+  const seen = new Set();
+  return rows.filter(row => {
+    const key = JSON.stringify(row);
+    if (seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
 }
 
 export function buildFieldSchema(
@@ -352,11 +370,14 @@ export function validateRequest(input, { requireCredentials = true } = {}) {
   request.endDate = isoDate(request.endDate || request.startDate, 'endDate');
   if (request.endDate < request.startDate)
     throw errorWithStatus('endDate cannot be earlier than startDate', 400);
-  request.columnIds = (
-    Array.isArray(request.columnIds) && request.columnIds.length
-      ? request.columnIds
-      : DEFAULT_COLUMNS[request.platform]
-  ).map(String);
+  request.columnIds = [
+    ...new Set(
+      (Array.isArray(request.columnIds) && request.columnIds.length
+        ? request.columnIds
+        : DEFAULT_COLUMNS[request.platform]
+      ).map(String)
+    ),
+  ];
   if (request.columnIds.length > 100) throw errorWithStatus('columnIds exceeds 100 columns', 400);
   if (request.columnIds.some(id => !/^\d+$/.test(id)))
     throw errorWithStatus('columnIds must contain numeric IDs', 400);
@@ -376,6 +397,11 @@ export function validateRequest(input, { requireCredentials = true } = {}) {
   }
   if (
     baseUrl.protocol !== 'https:' ||
+    baseUrl.username ||
+    baseUrl.password ||
+    baseUrl.pathname !== '/' ||
+    baseUrl.search ||
+    baseUrl.hash ||
     (baseUrl.hostname !== 'admicro.vn' && !baseUrl.hostname.endsWith('.admicro.vn'))
   ) {
     throw errorWithStatus('BaseUrl must be an HTTPS admicro.vn host', 400);
@@ -388,20 +414,44 @@ export function validateRequest(input, { requireCredentials = true } = {}) {
     request.reportPath.includes('\\')
   )
     throw errorWithStatus('ReportPath must be a relative absolute path', 400);
+  reportPathForPlatform(request.reportPath, request.platform);
   if (requireCredentials && (!request.username || !request.password))
     throw errorWithStatus('Admicro username and password are required', 400);
   return request;
 }
 
-export async function extract(request, { signal, log = () => {} } = {}) {
-  const browser = await chromium.launch({
-    headless: true,
-    args: ['--no-sandbox', '--disable-dev-shm-usage'],
-  });
+export async function extract(
+  request,
+  {
+    signal,
+    log = () => {},
+    onBrowserStarted = () => {},
+    onBrowserStartFailed = () => {},
+    onBrowserClosed = () => {},
+  } = {}
+) {
+  signal?.throwIfAborted();
+  let browser;
+  try {
+    browser = await chromium.launch({
+      headless: true,
+      args: ['--no-sandbox', '--disable-dev-shm-usage'],
+    });
+    onBrowserStarted();
+  } catch (error) {
+    onBrowserStartFailed();
+    throw error;
+  }
   let context;
   const results = [];
   const discoveredFields = {};
-  const onAbort = () => void browser.close().catch(() => {});
+  let browserClosed = false;
+  const closeBrowser = async () => {
+    if (browserClosed) return;
+    browserClosed = true;
+    await browser.close().catch(() => {});
+  };
+  const onAbort = () => void closeBrowser();
   signal?.addEventListener('abort', onAbort, { once: true });
   try {
     context = await browser.newContext(
@@ -453,12 +503,13 @@ export async function extract(request, { signal, log = () => {} } = {}) {
       }
     }
     return {
-      rows: results,
+      rows: uniqueRows(results),
       fields: buildFieldSchema(request.columnIds, discoveredFields, request.reportType),
     };
   } finally {
     signal?.removeEventListener('abort', onAbort);
     await context?.close().catch(() => {});
-    await browser.close().catch(() => {});
+    await closeBrowser();
+    onBrowserClosed();
   }
 }

@@ -112,7 +112,9 @@ export function OwnersEditor({ ownerUsers, onSave, projectId }: OwnersEditorProp
               <TooltipTrigger asChild>
                 <AlertTriangle className='h-4 w-4 text-yellow-500' />
               </TooltipTrigger>
-              <TooltipContent>{t('owners.userNoLongerMember', 'This user is no longer a member of the project')}</TooltipContent>
+              <TooltipContent>
+                {t('owners.userNoLongerMember', 'This user is no longer a member of the project')}
+              </TooltipContent>
             </Tooltip>
           )}
         </div>
@@ -131,7 +133,12 @@ export function OwnersEditor({ ownerUsers, onSave, projectId }: OwnersEditorProp
               <TooltipTrigger asChild>
                 <AlertTriangle className='h-4 w-4 text-yellow-500' />
               </TooltipTrigger>
-              <TooltipContent>{t('owners.someNoLongerMembers', 'Some owners are no longer members of the project')}</TooltipContent>
+              <TooltipContent>
+                {t(
+                  'owners.someNoLongerMembers',
+                  'Some owners are no longer members of the project'
+                )}
+              </TooltipContent>
             </Tooltip>
           )}
         </div>
@@ -160,7 +167,9 @@ export function OwnersEditor({ ownerUsers, onSave, projectId }: OwnersEditorProp
           )}
         </PopoverTrigger>
         <PopoverContent align='start' className='w-96 p-4'>
-          <div className='mb-3 border-b pb-3 text-sm font-medium'>{t('owners.title', 'Owners')}</div>
+          <div className='mb-3 border-b pb-3 text-sm font-medium'>
+            {t('owners.title', 'Owners')}
+          </div>
           {isMembersLoading ? (
             <div className='space-y-2'>
               {[1, 2, 3].map(i => (
@@ -193,7 +202,9 @@ export function OwnersEditor({ ownerUsers, onSave, projectId }: OwnersEditorProp
                 ))}
                 {filteredActiveMembers.length === 0 && searchQuery.trim() !== '' && (
                   <div className='text-muted-foreground py-2 text-center text-sm'>
-                    {t('owners.noMembersMatch', 'No members match "{{query}}"', { query: searchQuery })}
+                    {t('owners.noMembersMatch', 'No members match "{{query}}"', {
+                      query: searchQuery,
+                    })}
                   </div>
                 )}
                 {outboundMembers.map((member: ProjectMember) => (
@@ -318,7 +329,9 @@ function OutboundMemberCheckbox({
           </span>
         </div>
       </TooltipTrigger>
-      <TooltipContent>{t('owners.userNoLongerMember', 'This user is no longer a member of the project')}</TooltipContent>
+      <TooltipContent>
+        {t('owners.userNoLongerMember', 'This user is no longer a member of the project')}
+      </TooltipContent>
     </Tooltip>
   );
 }
@@ -358,7 +371,9 @@ function OutboundOwnerRow({
           </span>
         </div>
       </TooltipTrigger>
-      <TooltipContent>{t('owners.userNoLongerMember', 'This user is no longer a member of the project')}</TooltipContent>
+      <TooltipContent>
+        {t('owners.userNoLongerMember', 'This user is no longer a member of the project')}
+      </TooltipContent>
     </Tooltip>
   );
 }

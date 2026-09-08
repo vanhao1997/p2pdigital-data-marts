@@ -115,9 +115,7 @@ export function PublishPluginSheet({ isOpen, onClose }: PublishPluginSheetProps)
       <SheetContent>
         <SheetHeader>
           <SheetTitle>{t('pluginsPage.publishForm.title')}</SheetTitle>
-          <SheetDescription>
-            {t('pluginsPage.publishForm.description')}
-          </SheetDescription>
+          <SheetDescription>{t('pluginsPage.publishForm.description')}</SheetDescription>
         </SheetHeader>
 
         <Form {...form}>
@@ -178,7 +176,10 @@ export function PublishPluginSheet({ isOpen, onClose }: PublishPluginSheetProps)
                       </Select>
                       <FormMessage />
 
-                      <FieldHelp value='scope-help' title={t('pluginsPage.publishForm.scopeQuestion')}>
+                      <FieldHelp
+                        value='scope-help'
+                        title={t('pluginsPage.publishForm.scopeQuestion')}
+                      >
                         <p>{t('pluginsPage.publishForm.scopeOnlyMe')}</p>
                         <p>{t('pluginsPage.publishForm.scopeProject')}</p>
                         <p>{t('pluginsPage.publishForm.scopePublishOnly')}</p>
@@ -220,7 +221,9 @@ export function PublishPluginSheet({ isOpen, onClose }: PublishPluginSheetProps)
               </Button>
               <Button type='submit' disabled={isPublishing}>
                 {isPublishing ? <Loader2 className='size-4 animate-spin' aria-hidden /> : null}
-                {isPublishing ? t('pluginsPage.publishForm.publishing') : t('pluginsPage.publishForm.publish')}
+                {isPublishing
+                  ? t('pluginsPage.publishForm.publishing')
+                  : t('pluginsPage.publishForm.publish')}
               </Button>
             </FormActions>
           </AppForm>

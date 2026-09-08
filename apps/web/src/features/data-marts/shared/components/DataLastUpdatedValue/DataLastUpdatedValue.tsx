@@ -23,9 +23,16 @@ export function DataLastUpdatedDetails({ block }: { block: DataLastUpdatedDto })
           ? t('dataLastUpdated.sourceTablesChanged', 'Source tables last changed: {{date}}', {
               date: formatAbsoluteTime(block.dataLastUpdatedAt),
             })
-          : t('dataLastUpdated.noModificationTime', 'The storage did not report a modification time.')}
+          : t(
+              'dataLastUpdated.noModificationTime',
+              'The storage did not report a modification time.'
+            )}
       </div>
-      <div>{t('dataLastUpdated.checked', 'Checked {{time}}', { time: formatRelativeTime(block.computedAt) })}</div>
+      <div>
+        {t('dataLastUpdated.checked', 'Checked {{time}}', {
+          time: formatRelativeTime(block.computedAt),
+        })}
+      </div>
       <div>{describeCoverage(block.coverage)}</div>
       {block.sources && block.sources.length > 0 && (
         <ul className='mt-1 flex flex-col gap-0.5'>

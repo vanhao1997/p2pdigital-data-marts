@@ -109,7 +109,11 @@ export class RedactingDataSourceLogger extends CustomDataSourceLogger {
 export function createDataSourceOptions(config: ConfigService): DataSourceOptions {
   const logger = createLogger('DataSourceOptions');
 
-  const dbType = config.get<DbType>('DB_TYPE') ?? DbType.sqlite;
+  // Treat an empty value from a local `.env` file like an unset value. This
+  // keeps self-contained SQLite test runs working when `.env.example` has
+  // blank placeholders.
+  const configuredDbType = config.get<string>('DB_TYPE')?.trim();
+  const dbType = (configuredDbType || DbType.sqlite) as DbType;
   logger.log(
     `Using DB_TYPE: ${config.get('DB_TYPE') ? `${dbType} (from env)` : `${dbType} (default)`}`
   );

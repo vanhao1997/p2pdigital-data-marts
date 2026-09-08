@@ -124,9 +124,9 @@ export function EmailFields({
       render={({ field }) => (
         <FormItem>
           <div className='flex items-center justify-between'>
-          <FormLabel tooltip={placeholder}>
-            {emailsFieldTitle ?? t('destinationForm.emailList', 'Emails list')}
-          </FormLabel>
+            <FormLabel tooltip={placeholder}>
+              {emailsFieldTitle ?? t('destinationForm.emailList', 'Emails list')}
+            </FormLabel>
           </div>
           <FormControl>
             <EmailTextarea field={field} form={form} placeholder={placeholder} />

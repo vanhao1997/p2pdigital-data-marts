@@ -33,6 +33,7 @@ interface ContextsColumnsProps {
   onDelete?: (contextId: string) => void;
   isAdmin?: boolean;
   t: TFunction;
+  locale: string;
 }
 
 export const getContextsColumns = ({
@@ -40,16 +41,13 @@ export const getContextsColumns = ({
   onDelete,
   isAdmin = false,
   t,
+  locale,
 }: ContextsColumnsProps): ColumnDef<ContextsTableItem>[] => [
   {
     accessorKey: ContextsColumnKey.NAME,
     size: 240,
     meta: { title: t('common.name') },
-    header: ({ column }) => (
-      <SortableHeader column={column}>
-        {t('common.name')}
-      </SortableHeader>
-    ),
+    header: ({ column }) => <SortableHeader column={column}>{t('common.name')}</SortableHeader>,
     cell: ({ row }) => <div className='font-medium'>{row.original.name}</div>,
   },
   {
@@ -58,9 +56,7 @@ export const getContextsColumns = ({
     sortingFn: (a, b) => a.original.memberCount - b.original.memberCount,
     meta: { title: t('membersPage.title') },
     header: ({ column }) => (
-      <SortableHeader column={column}>
-        {t('membersPage.title')}
-      </SortableHeader>
+      <SortableHeader column={column}>{t('membersPage.title')}</SortableHeader>
     ),
     cell: ({ row }) => <UserAvatarGroup users={row.original.memberUsers} />,
   },
@@ -82,9 +78,7 @@ export const getContextsColumns = ({
     size: 200,
     meta: { title: t('common.createdBy') },
     header: ({ column }) => (
-      <SortableHeader column={column}>
-        {t('common.createdBy')}
-      </SortableHeader>
+      <SortableHeader column={column}>{t('common.createdBy')}</SortableHeader>
     ),
     cell: ({ row }) => {
       const u = row.original.createdByUser;
@@ -107,13 +101,11 @@ export const getContextsColumns = ({
     sortDescFirst: true,
     meta: { title: t('common.createdAt') },
     header: ({ column }) => (
-      <SortableHeader column={column}>
-        {t('common.createdAt')}
-      </SortableHeader>
+      <SortableHeader column={column}>{t('common.createdAt')}</SortableHeader>
     ),
     cell: ({ row }) => {
       const date = new Date(row.original.createdAt);
-      const formatted = new Intl.DateTimeFormat('en-US', {
+      const formatted = new Intl.DateTimeFormat(locale, {
         year: 'numeric',
         month: 'short',
         day: 'numeric',

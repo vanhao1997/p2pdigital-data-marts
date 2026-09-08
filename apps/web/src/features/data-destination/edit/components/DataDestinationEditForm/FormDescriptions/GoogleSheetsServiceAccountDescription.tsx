@@ -15,49 +15,37 @@ export default function GoogleSheetsServiceAccountDescription() {
   return (
     <Accordion variant='common' type='single' collapsible>
       <AccordionItem value='service-account-details'>
-        <AccordionTrigger>
-          {t('destinationHelp.googleSheetsServiceAccount.title', 'How do I get a Service Account JSON key?')}
-        </AccordionTrigger>
+        <AccordionTrigger>{t('destinationHelp.googleSheetsServiceAccount.title')}</AccordionTrigger>
         <AccordionContent>
-          <p className='mb-2'>
-            {t(
-              'destinationHelp.googleSheetsServiceAccount.intro',
-              "To get the JSON key, you'll need to create or use an existing service account in Google Cloud."
-            )}
-          </p>
-          <p className='mb-2'>
-            {t('destinationHelp.googleSheetsServiceAccount.stepsIntro', "Here's what to do:")}
-          </p>
+          <p className='mb-2'>{t('destinationHelp.googleSheetsServiceAccount.intro')}</p>
+          <p className='mb-2'>{t('destinationHelp.googleSheetsServiceAccount.stepsIntro')}</p>
           <ol className='list-inside list-decimal space-y-2 text-sm'>
             <li>
-              {t('destinationHelp.googleSheetsServiceAccount.goTo', 'Go to')}{' '}
+              {t('destinationHelp.googleSheetsServiceAccount.goTo')}{' '}
               <ExternalAnchor href='https://console.cloud.google.com/iam-admin/serviceaccounts'>
-                {t('destinationHelp.googleSheetsServiceAccount.console', 'Google Cloud Console')}
+                {t('destinationHelp.googleSheetsServiceAccount.console')}
               </ExternalAnchor>{' '}
               .
             </li>
             <li>
-              {t('destinationHelp.googleSheetsServiceAccount.openIam', 'Open')}{' '}
-              <strong>{t('destinationHelp.googleSheetsServiceAccount.iamPath', 'IAM & Admin → Service Accounts')}</strong>.
+              {t('destinationHelp.googleSheetsServiceAccount.openIam')}{' '}
+              <strong>{t('destinationHelp.googleSheetsServiceAccount.iamPath')}</strong>.
             </li>
-            <li>{t('destinationHelp.googleSheetsServiceAccount.createOrSelect', 'Create a new service account or select an existing one.')}</li>
+            <li>{t('destinationHelp.googleSheetsServiceAccount.createOrSelect')}</li>
             <li>
-              {t('destinationHelp.googleSheetsServiceAccount.openKeys', 'Open the Service Accounts page, go to the')}{' '}
-              <strong>{t('destinationHelp.googleSheetsServiceAccount.keys', 'Keys')}</strong>{' '}
-              {t('destinationHelp.googleSheetsServiceAccount.click', 'tab, click')}{' '}
-              <strong>{t('destinationHelp.googleSheetsServiceAccount.addKey', 'Add key')}</strong>,{' '}
-              {t('destinationHelp.googleSheetsServiceAccount.selectCreate', 'and select')}{' '}
-              <strong>{t('destinationHelp.googleSheetsServiceAccount.createKey', 'Create new key')}</strong>.
-            </li>
-            <li>
-              {t('destinationHelp.googleSheetsServiceAccount.choose', 'Choose')}{' '}
-              <strong>JSON</strong>{' '}
-              {t('destinationHelp.googleSheetsServiceAccount.formatAndClick', 'format and click')}{' '}
-              <strong>{t('destinationHelp.googleSheetsServiceAccount.create', 'Create')}</strong>.
+              {t('destinationHelp.googleSheetsServiceAccount.openKeys')}{' '}
+              <strong>{t('destinationHelp.googleSheetsServiceAccount.keys')}</strong>{' '}
+              {t('destinationHelp.googleSheetsServiceAccount.click')}{' '}
+              <strong>{t('destinationHelp.googleSheetsServiceAccount.addKey')}</strong>,{' '}
+              {t('destinationHelp.googleSheetsServiceAccount.selectCreate')}{' '}
+              <strong>{t('destinationHelp.googleSheetsServiceAccount.createKey')}</strong>.
             </li>
             <li>
-              {t('destinationHelp.googleSheetsServiceAccount.paste', 'Open the downloaded file, copy its entire content, and paste it into the field above.')}
+              {t('destinationHelp.googleSheetsServiceAccount.choose')} <strong>JSON</strong>{' '}
+              {t('destinationHelp.googleSheetsServiceAccount.formatAndClick')}{' '}
+              <strong>{t('destinationHelp.googleSheetsServiceAccount.create')}</strong>.
             </li>
+            <li>{t('destinationHelp.googleSheetsServiceAccount.paste')}</li>
           </ol>
         </AccordionContent>
       </AccordionItem>

@@ -122,9 +122,7 @@ export function ConnectGoogleSheetsPage() {
     } catch (error) {
       console.error('Failed to create the Google Sheets destination', error);
       setSaveError(
-        error instanceof Error
-          ? error.message
-          : t('googleSheetsConnectPage.createFailed')
+        error instanceof Error ? error.message : t('googleSheetsConnectPage.createFailed')
       );
       setIsSaving(false);
       savingRef.current = false;
@@ -165,7 +163,9 @@ export function ConnectGoogleSheetsPage() {
 
           <FormLayout variant='light' className='px-4 py-4'>
             <FormItem>
-              <FormLabel tooltip={t('googleSheetsConnectPage.titleHelp')}>{t('common.title')}</FormLabel>
+              <FormLabel tooltip={t('googleSheetsConnectPage.titleHelp')}>
+                {t('common.title')}
+              </FormLabel>
               <FormControl>
                 <Input
                   placeholder={DEFAULT_TITLE}

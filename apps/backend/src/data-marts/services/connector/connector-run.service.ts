@@ -17,6 +17,7 @@ import {
   PROJECT_LIFECYCLE_CHECKER,
   ProjectLifecycleChecker,
 } from '../../../common/scheduler/shared/project-lifecycle-checker';
+import { serializeOperationalError } from '../../utils/run-error-message';
 
 @Injectable()
 export class ConnectorRunService {
@@ -111,7 +112,16 @@ export class ConnectorRunService {
             { id: run.id, status: DataMartRunStatus.INTERRUPTED },
             {
               status: DataMartRunStatus.CANCELLED,
-              errors: ['Project is archived and read-only; interrupted run was not resumed.'],
+              errors: [
+                serializeOperationalError(
+                  'Project is archived and read-only; interrupted run was not resumed.',
+                  {
+                    code: 'PROJECT_ARCHIVED_READ_ONLY',
+                    message: 'Project is archived and read-only; interrupted run was not resumed.',
+                    type: 'warning',
+                  }
+                ),
+              ],
               finishedAt: new Date(),
             }
           );

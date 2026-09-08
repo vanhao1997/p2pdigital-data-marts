@@ -1,5 +1,6 @@
 import { Input } from '@owox/ui/components/input';
 import type { ConnectorSpecificationResponseApiDto } from '../../../../../../shared/api/types';
+import { useTranslation } from 'react-i18next';
 
 interface ConfigurationStringFieldProps {
   specification: ConnectorSpecificationResponseApiDto;
@@ -12,6 +13,7 @@ export function ConfigurationStringField({
   configuration,
   onValueChange,
 }: ConfigurationStringFieldProps) {
+  const { t } = useTranslation();
   const { name, placeholder } = specification;
   const displayName = specification.title ?? specification.name;
 
@@ -22,7 +24,7 @@ export function ConfigurationStringField({
       : undefined;
   const displayValue =
     typeof markerValue === 'string'
-      ? '{{saved variable}}'
+      ? t('connectorWizard.savedVariable')
       : typeof marker === 'string'
         ? marker
         : '';
@@ -33,7 +35,7 @@ export function ConfigurationStringField({
       type='text'
       value={displayValue}
       readOnly={Boolean(marker && typeof marker === 'object')}
-      placeholder={placeholder ?? `Enter ${displayName.toLowerCase()}`}
+      placeholder={placeholder ?? t('connectorWizard.enterValue', { name: displayName })}
       onChange={e => {
         onValueChange(name, e.target.value);
       }}

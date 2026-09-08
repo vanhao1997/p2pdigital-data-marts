@@ -16,7 +16,9 @@ export function SqlDefinitionField({ control }: SqlDefinitionFieldProps) {
       name='definition.sqlQuery'
       render={({ field }) => (
         <FormItem className='dm-card-block'>
-          <FormLabel className='text-foreground'>{t('dataMartDefinitionType.sqlQuery', 'SQL query')}</FormLabel>
+          <FormLabel className='text-foreground'>
+            {t('dataMartDefinitionType.sqlQuery', 'SQL query')}
+          </FormLabel>
           <FormControl>
             <DataMartCodeEditor
               value={{ sqlQuery: field.value }}

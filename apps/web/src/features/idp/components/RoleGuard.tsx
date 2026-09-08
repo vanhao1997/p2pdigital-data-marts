@@ -26,7 +26,12 @@ function AccessDeniedFallback() {
     <div className='flex h-64 items-center justify-center'>
       <div className='text-center'>
         <h3 className='mb-4'>{t('authGuard.accessDenied', 'Access denied')}</h3>
-        <p className='text-sm'>{t('authGuard.accessDeniedDescription', "You don't have permission to access this content.")}</p>
+        <p className='text-sm'>
+          {t(
+            'authGuard.accessDeniedDescription',
+            "You don't have permission to access this content."
+          )}
+        </p>
       </div>
     </div>
   );

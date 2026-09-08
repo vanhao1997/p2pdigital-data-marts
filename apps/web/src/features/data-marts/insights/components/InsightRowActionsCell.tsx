@@ -52,7 +52,9 @@ export function InsightRowActionsCell({ id, canDelete, onDelete }: InsightRowAct
                   disabled={!canDelete}
                 >
                   <Trash2 className='h-4 w-4 text-red-600' />
-                  <span className='text-red-600'>{t('insightsUi.deleteInsight', 'Delete insight')}</span>
+                  <span className='text-red-600'>
+                    {t('insightsUi.deleteInsight', 'Delete insight')}
+                  </span>
                 </DropdownMenuItem>
               </div>
             </TooltipTrigger>

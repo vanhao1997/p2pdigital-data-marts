@@ -1,6 +1,7 @@
 'use client';
 import { X } from 'lucide-react';
 import { cn } from '@owox/ui/lib/utils';
+import { useTranslation } from 'react-i18next';
 
 export type FloatingPopoverPosition =
   | 'center'
@@ -57,6 +58,8 @@ interface FloatingPopoverHeaderProps extends React.HTMLAttributes<HTMLDivElement
 }
 
 export function FloatingPopoverHeader({ children, onClose, ...props }: FloatingPopoverHeaderProps) {
+  const { t } = useTranslation();
+
   return (
     <div
       className='relative flex items-center justify-between rounded-tl-2xl rounded-tr-2xl border-b bg-neutral-50 px-4 py-3 dark:bg-neutral-800/40'
@@ -72,7 +75,7 @@ export function FloatingPopoverHeader({ children, onClose, ...props }: FloatingP
             'text-muted-foreground hover:text-foreground hover:bg-neutral-100 dark:hover:bg-neutral-800',
             'focus:ring-brand-blue-500 focus:ring-2 focus:outline-none active:scale-95'
           )}
-          aria-label='Close popover'
+          aria-label={t('common.closePopover')}
           data-testid='floatingPopoverClose'
         >
           <X className='size-4' />

@@ -266,11 +266,20 @@ export const ReportEditForm = forwardRef<HTMLFormElement, ReportEditFormProps>(
                 name='title'
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel tooltip={t('reportsUi.titleTooltip', "Add a title that reflects the report's purpose")}>
-                      Title
+                    <FormLabel
+                      tooltip={t(
+                        'reportsUi.titleTooltip',
+                        "Add a title that reflects the report's purpose"
+                      )}
+                    >
+                      {t('reportsUi.title', 'Title')}
                     </FormLabel>
                     <FormControl>
-                      <Input id={titleInputId} placeholder='Enter a report title' {...field} />
+                      <Input
+                        id={titleInputId}
+                        placeholder={t('reportsUi.reportTitlePlaceholder', 'Enter report title')}
+                        {...field}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -281,8 +290,13 @@ export const ReportEditForm = forwardRef<HTMLFormElement, ReportEditFormProps>(
                 name='dataDestinationId'
                 render={({ field }) => (
                   <FormItem>
-                      <FormLabel tooltip={t('reportsUi.selectDestinationTooltip', 'Select one of your existing destinations')}>
-                      Destination
+                    <FormLabel
+                      tooltip={t(
+                        'reportsUi.selectDestinationTooltip',
+                        'Select one of your existing destinations'
+                      )}
+                    >
+                      {t('reportsUi.destination', 'Destination')}
                     </FormLabel>
                     <Select
                       onValueChange={field.onChange}
@@ -298,7 +312,10 @@ export const ReportEditForm = forwardRef<HTMLFormElement, ReportEditFormProps>(
                           id={dataDestinationSelectId}
                           className='w-full max-w-full overflow-hidden'
                         >
-                          <SelectValue className='truncate' placeholder='Select a destination'>
+                          <SelectValue
+                            className='truncate'
+                            placeholder={t('reportsUi.selectDestination', 'Select destination')}
+                          >
                             {field.value &&
                               filteredDestinations.length > 0 &&
                               (() => {
@@ -352,9 +369,14 @@ export const ReportEditForm = forwardRef<HTMLFormElement, ReportEditFormProps>(
                     {filteredDestinations.length === 0 && !loadingDestinations && (
                       <Alert className='mt-2'>
                         <AlertCircle className='h-4 w-4' />
-                        <AlertTitle>{t('reportsUi.noDestinations', 'No destinations available')}</AlertTitle>
+                        <AlertTitle>
+                          {t('reportsUi.noDestinations', 'No destinations available')}
+                        </AlertTitle>
                         <AlertDescription>
-                          {t('reportsUi.createDestinationFirst', 'You need to create a Destination before you can create a report.')}{' '}
+                          {t(
+                            'reportsUi.createDestinationFirst',
+                            'You need to create a Destination before you can create a report.'
+                          )}{' '}
                           <Link
                             to={scope('/data-destinations')}
                             className='font-medium text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300'
@@ -366,7 +388,12 @@ export const ReportEditForm = forwardRef<HTMLFormElement, ReportEditFormProps>(
                     )}
                     {field.value && selectedDestinationEmail && (
                       <div className='mt-2 flex flex-col gap-1'>
-                        <FormLabel tooltip={t('reportsUi.shareDocumentTooltip', 'Share the Google Sheet with this email to allow writing')}>
+                        <FormLabel
+                          tooltip={t(
+                            'reportsUi.shareDocumentTooltip',
+                            'Share the Google Sheet with this email to allow writing'
+                          )}
+                        >
                           {t('reportsUi.shareDocumentWith', 'Share document with')}
                         </FormLabel>
                         <CopyableField value={selectedDestinationEmail}>
@@ -393,7 +420,10 @@ export const ReportEditForm = forwardRef<HTMLFormElement, ReportEditFormProps>(
             </FormSection>
             <FormSection
               title={t('reportsUi.reportColumns', 'Report Columns')}
-              tooltip={t('reportsUi.reportColumnsTooltip', 'Select which columns to include in the report')}
+              tooltip={t(
+                'reportsUi.reportColumnsTooltip',
+                'Select which columns to include in the report'
+              )}
               titleAdornment={<ReportColumnsCountBadge count={columnsCount} />}
               fields={[
                 'columnConfig',
@@ -461,7 +491,11 @@ export const ReportEditForm = forwardRef<HTMLFormElement, ReportEditFormProps>(
 
             <FormSection title={t('reportsUi.ownership', 'Ownership')}>
               <FormItem>
-                <FormLabel tooltip={t('reportsUi.ownersTooltip', 'Team members responsible for this report')}>{t('reportsUi.owners', 'Owners')}</FormLabel>
+                <FormLabel
+                  tooltip={t('reportsUi.ownersTooltip', 'Team members responsible for this report')}
+                >
+                  {t('reportsUi.owners', 'Owners')}
+                </FormLabel>
                 <OwnersSection ownerUsers={ownerUsers} onSave={handleOwnersChange} />
               </FormItem>
             </FormSection>
@@ -474,7 +508,9 @@ export const ReportEditForm = forwardRef<HTMLFormElement, ReportEditFormProps>(
                     {initialReport.createdByUser ? (
                       <UserReference userProjection={initialReport.createdByUser} variant='full' />
                     ) : (
-                      <span className='text-muted-foreground'>{t('reportsUi.unknown', 'Unknown')}</span>
+                      <span className='text-muted-foreground'>
+                        {t('reportsUi.unknown', 'Unknown')}
+                      </span>
                     )}
                   </div>
                 </FormItem>

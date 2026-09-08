@@ -13,7 +13,17 @@ export default defineConfig({
     // Otherwise happy-dom really fetches any iframe src a test renders, which turns a
     // pure attribute assertion into a network call.
     environmentOptions: {
-      happyDOM: { settings: { disableIframePageLoading: true } },
+      happyDOM: {
+        settings: {
+          disableCSSFileLoading: true,
+          disableIframePageLoading: false,
+          disableJavaScriptFileLoading: true,
+          handleDisabledFileLoadingAsSuccess: true,
+          navigation: {
+            disableChildFrameNavigation: true,
+          },
+        },
+      },
     },
     globals: true,
     setupFiles: [resolve(__dirname, 'src/test/setup.ts')],

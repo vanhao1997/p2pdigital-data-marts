@@ -13,7 +13,8 @@ export class ProjectOperationBlockedException extends BusinessViolationException
   constructor(readonly blockedReasons: ProjectBlockedReason[]) {
     let message = '';
     if (blockedReasons.includes(ProjectBlockedReason.BI_PROJECT_NOT_ACTIVE)) {
-      message += 'This P2PDigital Data Marts project is inactive. Activate the project to continue.';
+      message +=
+        'This P2PDigital Data Marts project is inactive. Activate the project to continue.';
     }
     if (blockedReasons.includes(ProjectBlockedReason.OVERDRAFT_LIMIT_EXCEEDED)) {
       message +=

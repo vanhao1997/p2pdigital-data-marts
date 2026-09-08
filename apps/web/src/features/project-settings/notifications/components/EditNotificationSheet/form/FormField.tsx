@@ -27,7 +27,11 @@ export function FieldLabel({
       {tooltip && (
         <Tooltip>
           <TooltipTrigger asChild>
-            <button type='button' tabIndex={-1} aria-label={t('common.helpInformation', 'Help information')}>
+            <button
+              type='button'
+              tabIndex={-1}
+              aria-label={t('common.helpInformation', 'Help information')}
+            >
               <Info
                 className='text-muted-foreground/50 hover:text-muted-foreground size-4 shrink-0 transition-colors'
                 aria-hidden='true'

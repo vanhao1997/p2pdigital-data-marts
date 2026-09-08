@@ -2,7 +2,7 @@ import { spawnSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
 import { existsSync, mkdirSync, readFileSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
-import { join, resolve } from 'node:path';
+import { dirname, join, resolve } from 'node:path';
 
 const backendTestRoot = __dirname;
 const backendRoot = resolve(backendTestRoot, '../..');
@@ -26,7 +26,12 @@ export function prepareCliManifests(): void {
       }
 
       rmSync(manifestPath, { force: true });
-      const result = spawnSync('npm', ['run', 'prepack'], {
+      // Invoke the npm CLI through the current Node binary. This avoids Windows
+      // .cmd shim resolution failures while remaining portable in CI.
+      const npmCli =
+        process.env.npm_execpath ||
+        join(dirname(process.execPath), 'node_modules', 'npm', 'bin', 'npm-cli.js');
+      const result = spawnSync(process.execPath, [npmCli, 'run', 'prepack'], {
         cwd: packageRoot,
         encoding: 'utf8',
         env: { ...process.env, NODE_ENV: 'test' },

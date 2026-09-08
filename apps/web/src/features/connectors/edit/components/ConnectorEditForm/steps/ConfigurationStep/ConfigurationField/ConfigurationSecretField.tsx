@@ -2,6 +2,7 @@ import { Input } from '@owox/ui/components/input';
 import type { ConnectorSpecificationResponseApiDto } from '../../../../../../shared/api/types';
 import { SECRET_MASK } from '../../../../../../../../shared/constants/secrets';
 import type { ChangeEvent } from 'react';
+import { useTranslation } from 'react-i18next';
 
 interface ConfigurationSecretFieldProps {
   specification: ConnectorSpecificationResponseApiDto;
@@ -18,6 +19,7 @@ export function ConfigurationSecretField({
   isEditingExisting,
   isSecretEditing,
 }: ConfigurationSecretFieldProps) {
+  const { t } = useTranslation();
   const displayName = specification.title ?? specification.name;
   const isReadonly = isEditingExisting && !isSecretEditing;
 
@@ -41,7 +43,10 @@ export function ConfigurationSecretField({
       }
       {...(isReadonly || isVariableReference ? { readOnly: true, disabled: true } : {})}
       {...(!isReadonly
-        ? { placeholder: specification.placeholder ?? `Enter ${displayName.toLowerCase()}` }
+        ? {
+            placeholder:
+              specification.placeholder ?? t('connectorWizard.enterValue', { name: displayName }),
+          }
         : {})}
       {...(!isReadonly
         ? {

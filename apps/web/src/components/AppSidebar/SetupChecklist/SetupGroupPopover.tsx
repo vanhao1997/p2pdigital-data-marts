@@ -64,7 +64,10 @@ export function SetupGroupPopover({ groupProgress, progress }: SetupGroupPopover
               </p>
             ) : (
               <p className='text-muted-foreground text-xs'>
-                {t('setupChecklist.completedCount', { completed: completedCount, total: totalCount })}
+                {t('setupChecklist.completedCount', {
+                  completed: completedCount,
+                  total: totalCount,
+                })}
               </p>
             )}
           </div>

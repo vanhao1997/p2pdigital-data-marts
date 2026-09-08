@@ -6,7 +6,8 @@ import { dataStorageApiService } from '../api';
 import { usePublishDraftsTrigger } from './usePublishDraftsTrigger.ts';
 
 vi.mock('sonner', () => ({
-  default: { error: vi.fn(), success: vi.fn(), loading: vi.fn(), dismiss: vi.fn() }, toast: { error: vi.fn(), success: vi.fn(), loading: vi.fn(), dismiss: vi.fn() },
+  default: { error: vi.fn(), success: vi.fn(), loading: vi.fn(), dismiss: vi.fn() },
+  toast: { error: vi.fn(), success: vi.fn(), loading: vi.fn(), dismiss: vi.fn() },
 }));
 
 vi.mock('../api', () => ({
@@ -96,5 +97,61 @@ describe('usePublishDraftsTrigger — terminal ERROR trigger', () => {
       expect.objectContaining({ id: 't1-error' })
     );
     expect(result.current.error).toBe(SAFE_TRIGGER_ERROR);
+  });
+
+  it('aborts polling and requests server cancellation without showing an error', async () => {
+    vi.mocked(dataStorageApiService.getPublishDraftsTriggerStatus).mockResolvedValue(
+      TaskStatus.PROCESSING
+    );
+    vi.mocked(dataStorageApiService.abortPublishDraftsTrigger).mockResolvedValue(undefined);
+
+    const { result } = renderHook(() => usePublishDraftsTrigger());
+    let runPromise: Promise<void> | undefined;
+
+    await act(async () => {
+      runPromise = result.current.run('storage-1');
+      await Promise.resolve();
+      await Promise.resolve();
+    });
+
+    expect(dataStorageApiService.getPublishDraftsTriggerStatus).toHaveBeenCalledWith(
+      'storage-1',
+      't1',
+      expect.objectContaining({ signal: expect.any(AbortSignal) })
+    );
+
+    await act(async () => {
+      await result.current.cancel();
+      await runPromise;
+    });
+
+    expect(dataStorageApiService.abortPublishDraftsTrigger).toHaveBeenCalledWith('storage-1', 't1');
+    expect(toast.error).not.toHaveBeenCalled();
+    expect(result.current.isLoading).toBe(false);
+  });
+
+  it('removes the wait listener after each polling interval', async () => {
+    vi.useFakeTimers();
+    const removeListener = vi.spyOn(AbortSignal.prototype, 'removeEventListener');
+    vi.mocked(dataStorageApiService.getPublishDraftsTriggerStatus)
+      .mockResolvedValueOnce(TaskStatus.PROCESSING)
+      .mockResolvedValue(TaskStatus.SUCCESS);
+    vi.mocked(dataStorageApiService.getPublishDraftsTriggerResponse).mockResolvedValue({
+      successCount: 1,
+      failedCount: 0,
+    });
+    try {
+      const { result } = renderHook(() => usePublishDraftsTrigger());
+      await act(async () => {
+        const run = result.current.run('storage-1');
+        await vi.advanceTimersByTimeAsync(1000);
+        await run;
+      });
+      expect(removeListener).toHaveBeenCalledWith('abort', expect.any(Function));
+      expect(result.current.isLoading).toBe(false);
+    } finally {
+      removeListener.mockRestore();
+      vi.useRealTimers();
+    }
   });
 });

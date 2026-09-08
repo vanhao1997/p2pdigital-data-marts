@@ -1,4 +1,5 @@
 import { useState, type ChangeEvent } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Button } from '@owox/ui/components/button';
 import { Input } from '@owox/ui/components/input';
 import { FileDropTextarea } from '@owox/ui/components/file-drop-textarea';
@@ -65,6 +66,7 @@ export function GoogleSheetsServiceAccountField({
   onValueChange,
   isEditingExisting,
 }: GoogleSheetsServiceAccountFieldProps) {
+  const { t } = useTranslation();
   const serviceAccountValue = typeof value === 'string' ? value : '';
   const [isEditing, setIsEditing] = useState(false);
   const [stashedValue, setStashedValue] = useState(serviceAccountValue);
@@ -117,21 +119,21 @@ export function GoogleSheetsServiceAccountField({
           tooltip={description}
           className='mb-2 justify-start'
         >
-          {title ?? 'Service Account'}
+          {title ?? t('connectorWizard.serviceAccount')}
         </AppWizardStepLabel>
         {canShowSummary && (
           <div className='flex items-center gap-1'>
             <Button variant='ghost' size='sm' type='button' onClick={handleEdit}>
-              Edit
+              {t('common.edit')}
             </Button>
             <Button variant='ghost' size='sm' type='button' onClick={handleClear}>
-              Clear
+              {t('common.clear', 'Clear')}
             </Button>
           </div>
         )}
         {isEditing && (
           <Button variant='ghost' size='sm' type='button' onClick={handleCancel}>
-            Cancel
+            {t('common.cancel')}
           </Button>
         )}
       </div>
@@ -160,7 +162,7 @@ export function GoogleSheetsServiceAccountField({
               }, 2000);
             }}
             className='text-muted-foreground hover:text-foreground hover:bg-accent shrink-0 rounded-md p-1 transition-colors'
-            aria-label='Copy service account email'
+            aria-label={t('connectorWizard.copyServiceAccountEmail')}
           >
             {isCopied ? <Check className='h-4 w-4 text-green-500' /> : <Copy className='h-4 w-4' />}
           </button>
@@ -172,11 +174,21 @@ export function GoogleSheetsServiceAccountField({
           className='min-h-[150px] font-mono'
           rows={8}
           value={serviceAccountValue === SECRET_MASK ? '' : serviceAccountValue}
-          placeholder='Paste your service account JSON here or drag & drop the file'
+          placeholder={t('connectorWizard.serviceAccountPlaceholder')}
           autoComplete='off'
           autoCorrect='off'
           autoCapitalize='off'
           spellCheck={false}
+          messages={{
+            multipleFiles: t('fileDrop.multipleFiles'),
+            fileTooLarge: t('fileDrop.fileTooLarge'),
+            invalidServiceAccountJson: t('fileDrop.invalidServiceAccountJson'),
+            invalidJson: t('fileDrop.invalidJson'),
+            readFailed: t('fileDrop.readFailed'),
+            invalidFileType: allowedExtensions =>
+              t('fileDrop.invalidFileType', { extensions: allowedExtensions.join(', ') }),
+            dropFile: t('fileDrop.dropJsonFile'),
+          }}
           onChange={(event: ChangeEvent<HTMLTextAreaElement>) => {
             handleServiceAccountChange(event.target.value);
           }}

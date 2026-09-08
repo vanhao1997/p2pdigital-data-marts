@@ -77,18 +77,22 @@ export function DataQualityCanvasStatusIcon({
   const resultIndicatorLabel = resultIndicators
     .map(indicator => pluralize(indicator.count, indicator.singular, i18n.language))
     .join(', ');
-  const actionLabel = t('dataQualityUi.openFor', 'Open Data Quality for {{title}}: {{status}}{{details}}', {
-    title: dataMartTitle,
-    status: presentation.label,
-    details: showResultIndicators ? `, ${resultIndicatorLabel}` : '',
-  });
+  const actionLabel = t(
+    'dataQualityUi.openFor',
+    'Open Data Quality for {{title}}: {{status}}{{details}}',
+    {
+      title: dataMartTitle,
+      status: presentation.label,
+      details: showResultIndicators ? `, ${resultIndicatorLabel}` : '',
+    }
+  );
   const isActive = presentation.isActive;
   const timeLabel =
     summary.state === 'QUEUED'
       ? t('dataQualityUi.queued', 'Queued')
-    : summary.state === 'RUNNING'
-      ? t('dataQualityUi.started', 'Started')
-      : t('dataQualityUi.lastChecked', 'Last checked');
+      : summary.state === 'RUNNING'
+        ? t('dataQualityUi.started', 'Started')
+        : t('dataQualityUi.lastChecked', 'Last checked');
 
   function clearOpenTimer() {
     if (openTimerRef.current === null) return;
@@ -272,7 +276,9 @@ export function DataQualityCanvasStatusIcon({
         side='top'
         align='center'
         role='region'
-        aria-label={t('dataQualityUi.checksFor', 'Data Quality checks for {{title}}', { title: dataMartTitle })}
+        aria-label={t('dataQualityUi.checksFor', 'Data Quality checks for {{title}}', {
+          title: dataMartTitle,
+        })}
         className='w-72 max-w-72 p-3 text-xs sm:w-72 sm:max-w-72'
         onOpenAutoFocus={event => {
           event.preventDefault();
@@ -312,26 +318,71 @@ export function DataQualityCanvasStatusIcon({
           </span>
         </div>
         <div className='text-muted-foreground space-y-1 py-2'>
-          {summary.enabledChecks > 0 && <p>{t('dataQualityUi.enabledCount', '{{count}} enabled', { count: summary.enabledChecks })}</p>}
+          {summary.enabledChecks > 0 && (
+            <p>
+              {t('dataQualityUi.enabledCount', '{{count}} enabled', {
+                count: summary.enabledChecks,
+              })}
+            </p>
+          )}
           {isActive ? (
-            <p>{t('dataQualityUi.terminalResults', 'Terminal results will be available after this run finishes.')}</p>
+            <p>
+              {t(
+                'dataQualityUi.terminalResults',
+                'Terminal results will be available after this run finishes.'
+              )}
+            </p>
           ) : (
             <>
-              {summary.passedChecks > 0 && <p>{t('dataQualityUi.passedCount', '{{count}} passed', { count: summary.passedChecks })}</p>}
+              {summary.passedChecks > 0 && (
+                <p>
+                  {t('dataQualityUi.passedCount', '{{count}} passed', {
+                    count: summary.passedChecks,
+                  })}
+                </p>
+              )}
               {summary.notApplicableChecks > 0 && (
-                <p>{t('dataQualityUi.notApplicableCount', '{{count}} not applicable', { count: summary.notApplicableChecks })}</p>
+                <p>
+                  {t('dataQualityUi.notApplicableCount', '{{count}} not applicable', {
+                    count: summary.notApplicableChecks,
+                  })}
+                </p>
               )}
               {summary.errorChecks > 0 && (
-                <p>{pluralize(summary.errorChecks, 'execution error')}</p>
+                <p>
+                  {pluralize(
+                    summary.errorChecks,
+                    t('dataQualityUi.executionErrorShort', 'execution error'),
+                    i18n.language
+                  )}
+                </p>
               )}
               {summary.errorFindings > 0 && (
-                <p>{pluralize(summary.errorFindings, 'critical finding')}</p>
+                <p>
+                  {pluralize(
+                    summary.errorFindings,
+                    t('dataQualityUi.criticalFinding', 'critical finding'),
+                    i18n.language
+                  )}
+                </p>
               )}
               {summary.warningFindings > 0 && (
-                <p>{pluralize(summary.warningFindings, 'warning finding')}</p>
+                <p>
+                  {pluralize(
+                    summary.warningFindings,
+                    t('dataQualityUi.warningFinding', 'warning finding'),
+                    i18n.language
+                  )}
+                </p>
               )}
               {summary.noticeFindings > 0 && (
-                <p>{pluralize(summary.noticeFindings, 'notice finding')}</p>
+                <p>
+                  {pluralize(
+                    summary.noticeFindings,
+                    t('dataQualityUi.noticeFinding', 'notice finding'),
+                    i18n.language
+                  )}
+                </p>
               )}
             </>
           )}
@@ -346,19 +397,19 @@ export function DataQualityCanvasStatusIcon({
             ref={openActionRef}
             type='button'
             className='border-input bg-background hover:bg-muted inline-flex cursor-pointer items-center justify-center rounded-md border px-3 py-1.5 font-medium transition-colors'
-            aria-label={`Open Data Quality page for ${dataMartTitle}`}
+            aria-label={t('dataQualityUi.openPageFor', { title: dataMartTitle })}
             onPointerDown={event => {
               event.stopPropagation();
             }}
             onClick={handleOpenQualityClick}
           >
-            Open
+            {t('common.open')}
           </button>
           <button
             type='button'
             className='bg-primary text-primary-foreground hover:bg-primary/90 inline-flex cursor-pointer items-center justify-center gap-1.5 rounded-md px-3 py-1.5 font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-50'
-            aria-label={`Run Quality for ${dataMartTitle}`}
-            title={isActive ? 'A Data Quality run is already active' : undefined}
+            aria-label={t('dataQualityUi.runFor', { title: dataMartTitle })}
+            title={isActive ? t('dataQualityUi.activeRunTooltip') : undefined}
             disabled={isActive || isStartingQuality}
             onPointerDown={event => {
               event.stopPropagation();
@@ -372,7 +423,7 @@ export function DataQualityCanvasStatusIcon({
             ) : (
               <Play className='size-3.5' aria-hidden='true' />
             )}
-            {isStartingQuality ? 'Starting…' : 'Run checks'}
+            {isStartingQuality ? t('dataQualityUi.starting') : t('dataQualityUi.runChecks')}
           </button>
         </div>
       </PopoverContent>

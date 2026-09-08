@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import type { UseFormReturn } from 'react-hook-form';
 import { ExternalLink, Loader2, Plus } from 'lucide-react';
 import { toast } from 'sonner';
@@ -50,6 +51,7 @@ export function GoogleSheetsTargetSection({
   dataMartTitle,
   inputId,
 }: GoogleSheetsTargetSectionProps) {
+  const { t } = useTranslation();
   const [isCreatingSheet, setIsCreatingSheet] = useState(false);
 
   const documentUrl = form.watch('documentUrl');
@@ -82,21 +84,20 @@ export function GoogleSheetsTargetSection({
       if (placedInRoot === true || sharedWithRequester === false) {
         const issues: string[] = [];
         if (placedInRoot === true) {
-          issues.push('the selected Drive folder was not used (it was created in your Drive root)');
+          issues.push(t('reportsUi.googleSheetFolderNotUsed'));
         }
         if (sharedWithRequester === false) {
-          issues.push('it was not shared with you');
+          issues.push(t('reportsUi.googleSheetNotShared'));
         }
-        toast(
-          `Google Sheet created, but ${issues.join(', and ')}. Reconnect the destination’s ` +
-            'Google account with Drive access to fix this.',
-          { icon: '⚠️', duration: 8000 }
-        );
+        toast(t('reportsUi.googleSheetCreatedWarning', { issues: issues.join(', ') }), {
+          icon: '⚠️',
+          duration: 8000,
+        });
       } else {
-        toast.success('Google Sheet created');
+        toast.success(t('reportsUi.googleSheetCreated'));
       }
     } catch (error) {
-      showApiErrorToast(error, 'Failed to create Google Sheet');
+      showApiErrorToast(error, t('reportsUi.createGoogleSheetFailed'));
     } finally {
       setIsCreatingSheet(false);
     }
@@ -108,14 +109,14 @@ export function GoogleSheetsTargetSection({
       name='documentUrl'
       render={({ field }) => (
         <FormItem>
-          <FormLabel tooltip='The link must include the Sheet ID to insert data into the correct tab'>
-            Document Link with Sheet ID (GID)
+          <FormLabel tooltip={t('reportsUi.documentLinkTooltip')}>
+            {t('reportsUi.documentLinkLabel')}
           </FormLabel>
           <FormControl>
             <div className='flex items-center gap-2'>
               <Input
                 id={inputId}
-                placeholder='Paste a Google Sheets URL'
+                placeholder={t('reportsUi.documentUrlPlaceholder')}
                 className='flex-1'
                 {...field}
               />
@@ -129,19 +130,19 @@ export function GoogleSheetsTargetSection({
                       onClick={() => {
                         window.open(documentUrl.trim(), '_blank', 'noopener,noreferrer');
                       }}
-                      aria-label='Open document in new tab'
+                      aria-label={t('reportsUi.openDocumentInNewTab')}
                     >
                       <ExternalLink className='h-3.5 w-3.5' strokeWidth={1.5} aria-hidden='true' />
                     </Button>
                   </TooltipTrigger>
                   <TooltipContent side='top' align='center' role='tooltip'>
-                    Open document
+                    {t('reportsUi.openDocument')}
                   </TooltipContent>
                 </Tooltip>
               )}
               {!isValidDocumentUrl && (
                 <>
-                  <span className='text-muted-foreground text-sm'>or</span>
+                  <span className='text-muted-foreground text-sm'>{t('common.or', 'or')}</span>
                   <Tooltip>
                     <TooltipTrigger asChild>
                       <Button
@@ -156,13 +157,13 @@ export function GoogleSheetsTargetSection({
                         ) : (
                           <Plus className='h-4 w-4' aria-hidden='true' />
                         )}
-                        New Sheet
+                        {t('reportsUi.newSheet')}
                       </Button>
                     </TooltipTrigger>
                     <TooltipContent side='top' align='center' role='tooltip'>
                       {destinationId
-                        ? 'Create a new Google Sheet in the selected destination and fill the link above'
-                        : 'Select a destination first'}
+                        ? t('reportsUi.createGoogleSheetTooltip')
+                        : t('reportsUi.selectDestinationFirst')}
                     </TooltipContent>
                   </Tooltip>
                 </>

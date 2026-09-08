@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { AlertCircle, KeyRound, Plus, Trash2 } from 'lucide-react';
 import { Alert, AlertDescription, AlertTitle } from '@owox/ui/components/alert';
@@ -21,6 +22,7 @@ const candidatesKey = (projectId: string) =>
   ['configuration-variable-candidates', projectId] as const;
 
 export function VariablesTab() {
+  const { t } = useTranslation();
   const { projectId } = useProjectRoute();
   const projectKey = projectId ?? '';
   const isAdmin = useIsAdmin();
@@ -68,16 +70,18 @@ export function VariablesTab() {
   const candidates = useMemo(() => candidatesQuery.data ?? [], [candidatesQuery.data]);
 
   if (variablesQuery.isLoading)
-    return <div className='text-muted-foreground p-4 text-sm'>Loading variables...</div>;
+    return <div className='text-muted-foreground p-4 text-sm'>{t('variablesPage.loading')}</div>;
   if (variablesQuery.isError) {
     return (
       <Alert variant='destructive'>
         <AlertCircle className='h-4 w-4' />
-        <AlertTitle>Could not load variables</AlertTitle>
+        <AlertTitle>{t('variablesPage.loadFailed')}</AlertTitle>
         <AlertDescription className='flex items-center gap-3'>
-          {variablesQuery.error instanceof Error ? variablesQuery.error.message : 'Request failed'}
+          {variablesQuery.error instanceof Error
+            ? variablesQuery.error.message
+            : t('variablesPage.requestFailed')}
           <Button size='sm' variant='outline' onClick={() => void variablesQuery.refetch()}>
-            Retry
+            {t('common.retry', 'Retry')}
           </Button>
         </AlertDescription>
       </Alert>
@@ -89,16 +93,13 @@ export function VariablesTab() {
       <div className='bg-card rounded-md border p-4'>
         <div className='mb-1 flex items-center gap-2 font-medium'>
           <KeyRound className='h-4 w-4' />
-          Reusable variables
+          {t('variablesPage.title')}
         </div>
-        <p className='text-muted-foreground mb-4 text-sm'>
-          Store safe values or references to existing connector credentials. Secret payloads are
-          never returned to the browser.
-        </p>
+        <p className='text-muted-foreground mb-4 text-sm'>{t('variablesPage.description')}</p>
         {isAdmin && (
           <div className='grid gap-3 md:grid-cols-2'>
             <Input
-              placeholder='Name (e.g. GoogleAdsCustomerId)'
+              placeholder={t('variablesPage.namePlaceholder')}
               value={name}
               onChange={event => {
                 setName(event.target.value);
@@ -112,17 +113,21 @@ export function VariablesTab() {
               }}
             >
               <SelectTrigger>
-                <SelectValue placeholder='Variable type' />
+                <SelectValue placeholder={t('variablesPage.typePlaceholder')} />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value='value'>Value</SelectItem>
-                <SelectItem value='secret_reference'>Saved secret reference</SelectItem>
-                <SelectItem value='credential_reference'>OAuth credential reference</SelectItem>
+                <SelectItem value='value'>{t('variablesPage.valueType')}</SelectItem>
+                <SelectItem value='secret_reference'>
+                  {t('variablesPage.secretReference')}
+                </SelectItem>
+                <SelectItem value='credential_reference'>
+                  {t('variablesPage.credentialReference')}
+                </SelectItem>
               </SelectContent>
             </Select>
             {kind === 'value' ? (
               <Input
-                placeholder='Value'
+                placeholder={t('variablesPage.valuePlaceholder')}
                 value={value}
                 onChange={event => {
                   setValue(event.target.value);
@@ -131,7 +136,7 @@ export function VariablesTab() {
             ) : (
               <Select value={credentialId} onValueChange={setCredentialId}>
                 <SelectTrigger>
-                  <SelectValue placeholder='Choose an existing credential' />
+                  <SelectValue placeholder={t('variablesPage.credentialPlaceholder')} />
                 </SelectTrigger>
                 <SelectContent>
                   {candidates
@@ -148,7 +153,7 @@ export function VariablesTab() {
               </Select>
             )}
             <Input
-              placeholder='Description (optional)'
+              placeholder={t('variablesPage.descriptionPlaceholder')}
               value={description}
               onChange={event => {
                 setDescription(event.target.value);
@@ -166,7 +171,7 @@ export function VariablesTab() {
               }}
             >
               <Plus className='h-4 w-4' />
-              Save variable
+              {t('variablesPage.save')}
             </Button>
           </div>
         )}
@@ -174,7 +179,7 @@ export function VariablesTab() {
           <p className='text-destructive mt-2 text-sm'>
             {createMutation.error instanceof Error
               ? createMutation.error.message
-              : 'Could not save variable'}
+              : t('variablesPage.saveFailed')}
           </p>
         )}
       </div>
@@ -182,7 +187,7 @@ export function VariablesTab() {
       <div className='overflow-hidden rounded-md border'>
         {(variablesQuery.data ?? []).length === 0 ? (
           <div className='text-muted-foreground p-8 text-center text-sm'>
-            No variables saved for this project.
+            {t('variablesPage.empty')}
           </div>
         ) : (
           <div className='divide-y'>

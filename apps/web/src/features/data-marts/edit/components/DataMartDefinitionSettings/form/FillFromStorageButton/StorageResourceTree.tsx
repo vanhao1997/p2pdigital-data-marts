@@ -1,4 +1,5 @@
 import { memo, useCallback, useMemo, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   AlertCircle,
   ChevronDown,
@@ -72,6 +73,7 @@ export function StorageResourceTree({
   isSelectionFull = false,
   singleSearchMode = false,
 }: StorageResourceTreeProps) {
+  const { t } = useTranslation();
   const [expandedNamespaces, setExpandedNamespaces] = useState<Set<string>>(new Set());
   const [resourcesByNamespace, setResourcesByNamespace] = useState<
     Record<string, ResourcesState | undefined>
@@ -145,36 +147,36 @@ export function StorageResourceTree({
 
   const emptyLabel =
     resourceType === 'VIEW'
-      ? 'No views.'
+      ? t('storageResourceTree.noViews')
       : resourceType === 'TABLE'
-        ? 'No tables.'
+        ? t('storageResourceTree.noTables')
         : resourceType === 'TABLE_PATTERN'
-          ? 'No sharded tables found in this namespace.'
-          : 'No tables or views.';
+          ? t('storageResourceTree.noShardedTables')
+          : t('storageResourceTree.noTablesOrViews');
   const loadingLabel =
     resourceType === 'VIEW'
-      ? 'Loading views…'
+      ? t('storageResourceTree.loadingViews')
       : resourceType === 'TABLE'
-        ? 'Loading tables…'
+        ? t('storageResourceTree.loadingTables')
         : resourceType === 'TABLE_PATTERN'
-          ? 'Loading table patterns…'
-          : 'Loading resources…';
+          ? t('storageResourceTree.loadingTablePatterns')
+          : t('storageResourceTree.loadingResources');
   const resourceSearchPlaceholder =
     resourceType === 'VIEW'
-      ? 'Search views (group or view name)…'
+      ? t('storageResourceTree.searchViews')
       : resourceType === 'TABLE'
-        ? 'Search tables (group or table name)…'
+        ? t('storageResourceTree.searchTables')
         : resourceType === 'TABLE_PATTERN'
-          ? 'Search table patterns (group or prefix)…'
-          : 'Search resources (group or name)…';
+          ? t('storageResourceTree.searchTablePatterns')
+          : t('storageResourceTree.searchResources');
   const resourceSearchAriaLabel =
     resourceType === 'VIEW'
-      ? 'views'
+      ? t('storageResourceTree.views')
       : resourceType === 'TABLE'
-        ? 'tables'
+        ? t('storageResourceTree.tables')
         : resourceType === 'TABLE_PATTERN'
-          ? 'table patterns'
-          : 'resources';
+          ? t('storageResourceTree.tablePatterns')
+          : t('storageResourceTree.resources');
 
   const sortedNamespaces = useMemo(() => {
     if (!namespaces) return null;
@@ -214,15 +216,21 @@ export function StorageResourceTree({
             type='search'
             placeholder={
               singleSearchMode
-                ? 'Search projects, datasets, or tables…'
-                : `Search namespaces (${String(sortedNamespaces?.length ?? 0)})…`
+                ? t('storageResourceTree.searchProjectsDatasetsTables')
+                : t('storageResourceTree.searchNamespacesCount', {
+                    count: sortedNamespaces?.length ?? 0,
+                  })
             }
             value={namespaceFilter}
             onChange={event => {
               setNamespaceFilter(event.target.value);
             }}
             className='pl-8'
-            aria-label={singleSearchMode ? 'Search resources' : 'Search namespaces'}
+            aria-label={
+              singleSearchMode
+                ? t('storageResourceTree.searchResourcesAria')
+                : t('storageResourceTree.searchNamespacesAria')
+            }
           />
         </div>
       )}
@@ -230,7 +238,7 @@ export function StorageResourceTree({
         {namespacesLoading && (
           <div className='text-muted-foreground flex items-center gap-2 p-3'>
             <Loader2 className='size-4 animate-spin' />
-            Loading namespaces…
+            {t('storageResourceTree.loadingNamespaces')}
           </div>
         )}
         {!namespacesLoading && namespacesError && (
@@ -240,13 +248,13 @@ export function StorageResourceTree({
               {namespacesError}
             </div>
             <Button type='button' size='sm' variant='outline' onClick={onRetryNamespaces}>
-              Retry
+              {t('storageResourceTree.retry')}
             </Button>
           </div>
         )}
         {!namespacesLoading && !namespacesError && sortedNamespaces?.length === 0 && (
           <div className='text-muted-foreground p-3'>
-            No namespaces are visible with the storage credentials.
+            {t('storageResourceTree.noNamespacesVisible')}
           </div>
         )}
         {!namespacesLoading &&
@@ -254,7 +262,7 @@ export function StorageResourceTree({
           hasAnyNamespaces &&
           filteredNamespaces?.length === 0 && (
             <div className='text-muted-foreground p-3'>
-              No namespaces match &ldquo;{namespaceFilter.trim()}&rdquo;.
+              {t('storageResourceTree.noNamespacesMatch', { query: namespaceFilter.trim() })}
             </div>
           )}
         {!namespacesLoading &&
@@ -333,7 +341,13 @@ export function StorageResourceTree({
                                     }));
                                   }}
                                   className='h-8 pl-7 text-xs'
-                                  aria-label={`Search ${resourceSearchAriaLabel} in ${ns.id}`}
+                                  aria-label={t(
+                                    'storageResourceTree.searchResourceTypeInNamespace',
+                                    {
+                                      resourceType: resourceSearchAriaLabel,
+                                      namespace: ns.id,
+                                    }
+                                  )}
                                 />
                               </div>
                             )}
@@ -390,6 +404,7 @@ const GroupedResources = memo(function GroupedResources({
   onToggleResource,
   isSelectionFull,
 }: GroupedResourcesProps) {
+  const { t } = useTranslation();
   const normalizedFilter = filter.trim().toLowerCase();
   const isFiltering = normalizedFilter.length > 0;
 
@@ -430,7 +445,7 @@ const GroupedResources = memo(function GroupedResources({
   if (matchedResources.length === 0) {
     return (
       <div className='text-muted-foreground p-1 text-xs'>
-        No matches for &ldquo;{filter.trim()}&rdquo;.
+        {t('storageResourceTree.noResourceMatches', { query: filter.trim() })}
       </div>
     );
   }

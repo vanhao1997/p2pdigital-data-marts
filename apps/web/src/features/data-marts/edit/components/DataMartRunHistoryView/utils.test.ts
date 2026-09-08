@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { getDisplayType, getRunSummaryParts, parseLogEntry } from './utils';
+import { getDisplayType, getRunSummaryParts, isPersistedWarning, parseLogEntry } from './utils';
 import { DataMartRunType } from '../../../shared';
 import { LogLevel } from './types';
 import type { DataMartRunItem } from '../../model';
@@ -47,9 +47,67 @@ describe('parseLogEntry', () => {
   it('labels warnings for display without leaking the raw message type', () => {
     expect(getDisplayType(parseLogEntry(PERSISTED_WARNING, 0, true))).toBe('Warning');
   });
+
+  it('localizes a structured operational error and keeps its code as metadata', () => {
+    const entry = parseLogEntry(
+      JSON.stringify({
+        type: 'error',
+        at: '2026-09-07T00:00:00.000Z',
+        code: 'OVERDRAFT_LIMIT_EXCEEDED',
+        message: 'You have reached the project limit',
+      }),
+      0,
+      true
+    );
+
+    expect(entry.message).toBe('The project credit limit has been reached.');
+    expect(entry.metadata?.code).toBe('OVERDRAFT_LIMIT_EXCEEDED');
+    expect(getDisplayType(entry)).toBe('Error');
+  });
+
+  it('uses a localized generic message for an unknown structured code', () => {
+    const entry = parseLogEntry(
+      JSON.stringify({
+        type: 'error',
+        at: '2026-09-07T00:00:00.000Z',
+        code: 'NEW_PROVIDER_FAILURE',
+        message: 'Raw provider payload in English',
+      }),
+      0,
+      true
+    );
+
+    expect(entry.message).toBe('The run failed. Error code: NEW_PROVIDER_FAILURE.');
+    expect(entry.message).not.toContain('Raw provider payload');
+  });
+
+  it('renders a structured warning as a warning', () => {
+    const raw = JSON.stringify({
+      type: 'warning',
+      at: '2026-09-07T00:00:00.000Z',
+      code: 'PROJECT_ARCHIVED_READ_ONLY',
+      message: 'Project is archived',
+    });
+    const entry = parseLogEntry(raw, 0, true);
+
+    expect(isPersistedWarning(raw)).toBe(true);
+    expect(entry.level).toBe(LogLevel.WARNING);
+    expect(getDisplayType(entry)).toBe('Warning');
+  });
 });
 
 describe('getRunSummaryParts', () => {
+  it('localizes the Data Studio run title', () => {
+    const run = {
+      type: DataMartRunType.LOOKER_STUDIO,
+      triggerType: 'manual',
+    } as unknown as DataMartRunItem;
+
+    const [, title] = getRunSummaryParts(run, null);
+
+    expect(title).toBe('Data Studio data fetching');
+  });
+
   it('labels HTTP_DATA runs as "HTTP Data" with no report title', () => {
     const run = {
       type: DataMartRunType.HTTP_DATA,

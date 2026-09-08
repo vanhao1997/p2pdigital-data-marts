@@ -111,9 +111,7 @@ export function CreateLicenseKeySheet({ isOpen, onClose, onCreated }: CreateLice
       <SheetContent>
         <SheetHeader>
           <SheetTitle>{t('licenseKeysPage.createTitle')}</SheetTitle>
-          <SheetDescription>
-            {t('licenseKeysPage.createDescription')}
-          </SheetDescription>
+          <SheetDescription>{t('licenseKeysPage.createDescription')}</SheetDescription>
         </SheetHeader>
 
         <Form {...form}>
@@ -134,7 +132,9 @@ export function CreateLicenseKeySheet({ isOpen, onClose, onCreated }: CreateLice
                       <FormDescription>
                         <Accordion variant='common' type='single' collapsible>
                           <AccordionItem value='name-help'>
-                            <AccordionTrigger>{t('licenseKeysPage.nameHelpQuestion')}</AccordionTrigger>
+                            <AccordionTrigger>
+                              {t('licenseKeysPage.nameHelpQuestion')}
+                            </AccordionTrigger>
                             <AccordionContent>
                               {t('licenseKeysPage.nameHelpDescription')}
                             </AccordionContent>
@@ -160,7 +160,9 @@ export function CreateLicenseKeySheet({ isOpen, onClose, onCreated }: CreateLice
                       <FormDescription>
                         <Accordion variant='common' type='single' collapsible>
                           <AccordionItem value='origin-help'>
-                            <AccordionTrigger>{t('licenseKeysPage.originHelpQuestion')}</AccordionTrigger>
+                            <AccordionTrigger>
+                              {t('licenseKeysPage.originHelpQuestion')}
+                            </AccordionTrigger>
                             <AccordionContent>
                               {t('licenseKeysPage.originHelpDescription')}
                             </AccordionContent>

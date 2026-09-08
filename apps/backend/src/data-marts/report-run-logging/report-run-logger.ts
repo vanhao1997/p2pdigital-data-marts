@@ -1,4 +1,5 @@
 import { SystemTimeService } from '../../common/scheduler/services/system-time.service';
+import { serializeOperationalError } from '../utils/run-error-message';
 
 export interface ReportRunLogger {
   log(message: Record<string, unknown> | string): void;
@@ -12,8 +13,11 @@ function serializeLog(
   type: 'log' | 'error' = 'log'
 ): string {
   if (type === 'error') {
-    const msg = payload instanceof Error ? payload.message : String(payload);
-    return JSON.stringify({ type, at: clock.now(), error: msg });
+    return serializeOperationalError(payload, {
+      code: 'REPORT_RUN_LOG_ERROR',
+      message: 'Report execution failed',
+      at: clock.now(),
+    });
   }
   if (typeof payload === 'string') {
     return JSON.stringify({ type, at: clock.now(), message: payload });

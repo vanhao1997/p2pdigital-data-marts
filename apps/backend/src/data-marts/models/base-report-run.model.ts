@@ -4,6 +4,7 @@ import { DataMart } from '../entities/data-mart.entity';
 import { Report } from '../entities/report.entity';
 import { DataMartRunStatus } from '../enums/data-mart-run-status.enum';
 import { ReportRunStatus } from '../enums/report-run-status.enum';
+import { serializeOperationalError } from '../utils/run-error-message';
 
 /**
  * Base domain model for report run execution.
@@ -108,14 +109,12 @@ export abstract class BaseReportRun {
       this.dataMartRun.status = DataMartRunStatus.FAILED;
     }
 
-    const errorString = error instanceof Error ? error.message : error;
-    const errorEntry = JSON.stringify({
-      type: 'error',
-      at: new Date().toISOString(),
-      error: errorString,
+    const errorEntry = serializeOperationalError(error, {
+      code: 'REPORT_RUN_FAILED',
+      message: 'Report run failed',
     });
 
-    this.report.lastRunError = errorString;
+    this.report.lastRunError = errorEntry;
     this.dataMartRun.errors = [...(this.dataMartRun.errors || []), errorEntry];
   }
 }

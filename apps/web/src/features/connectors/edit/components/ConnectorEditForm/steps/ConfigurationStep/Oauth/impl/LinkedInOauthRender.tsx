@@ -1,6 +1,7 @@
 import { LinkedInLoginButton } from '../../../../../../../shared/components/LinkedInLoginButton/LinkedInLoginButton';
 import type { LinkedInLoginResponse } from '../../../../../../../shared/components/LinkedInLoginButton/LinkedInLoginButton';
 import type { OauthRenderComponentProps } from '../OauthRenderFactory';
+import { useTranslation } from 'react-i18next';
 
 export function LinkedInOauthRender({
   isLoading,
@@ -8,6 +9,7 @@ export function LinkedInOauthRender({
   settings,
   onOAuthSuccess,
 }: Pick<OauthRenderComponentProps, 'isLoading' | 'status' | 'settings' | 'onOAuthSuccess'>) {
+  const { t } = useTranslation();
   const handleLinkedInLogin = (response: LinkedInLoginResponse) => {
     void onOAuthSuccess({
       code: response.code,
@@ -25,10 +27,11 @@ export function LinkedInOauthRender({
       >
         {status?.user ? (
           <>
-            Connected as <strong>{status.user.name ?? status.user.id}</strong>
+            {t('connectorWizard.oauth.connectedAs')}{' '}
+            <strong>{status.user.name ?? status.user.id}</strong>
           </>
         ) : (
-          'Continue with LinkedIn'
+          t('connectorWizard.oauth.continueWithLinkedIn')
         )}
       </LinkedInLoginButton>
     </div>

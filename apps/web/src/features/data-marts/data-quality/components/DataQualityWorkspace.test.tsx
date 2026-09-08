@@ -114,7 +114,7 @@ describe('DataQualityWorkspace', () => {
     expect(screen.getByText('Target Data Mart is unavailable')).toBeInTheDocument();
     expect(screen.getByText('Relationship integrity · orders')).toBeInTheDocument();
     expect(screen.getByText('customer_id → id')).toBeInTheDocument();
-    expect(screen.getByText('Relationship ID: rel-1')).toBeInTheDocument();
+    expect(screen.getByText('Relationship rel-1')).toBeInTheDocument();
     const tableRule = screen.getByTestId('quality-rule-empty_table:data_mart');
     expect(tableRule.parentElement).toHaveClass('bg-background');
     expect(
@@ -129,7 +129,7 @@ describe('DataQualityWorkspace', () => {
 
     renderWorkspace();
 
-    expect(screen.getByText('Relationship ID: rel-1')).toBeInTheDocument();
+    expect(screen.getByText('Relationship rel-1')).toBeInTheDocument();
     expect(screen.queryByText('orders')).not.toBeInTheDocument();
     expect(screen.queryByText('customer_id → id')).not.toBeInTheDocument();
   });
@@ -783,7 +783,7 @@ describe('DataQualityWorkspace', () => {
     expect(
       within(resultCard).getByText('customer_id → id, region_id → region_id')
     ).toBeInTheDocument();
-    expect(within(resultCard).getByText('Relationship ID: rel-1')).toBeInTheDocument();
+    expect(within(resultCard).getByText('Relationship rel-1')).toBeInTheDocument();
   });
 
   it('remembers whether Checks configuration and Latest report are collapsed', () => {

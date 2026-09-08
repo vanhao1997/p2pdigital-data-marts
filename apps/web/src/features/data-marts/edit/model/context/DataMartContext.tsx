@@ -1,4 +1,5 @@
 import { type ReactNode, useCallback, useReducer } from 'react';
+import { useTranslation } from 'react-i18next';
 import { DataMartContext } from './context.ts';
 import { initialState, reducer } from './reducer.ts';
 import {
@@ -62,6 +63,7 @@ interface DataMartProviderProps {
 
 // Provider component
 export function DataMartProvider({ children }: DataMartProviderProps) {
+  const { t } = useTranslation();
   const [state, dispatch] = useReducer(reducer, initialState);
   const refreshSetupProgress = useRefreshSetupProgress();
 
@@ -121,7 +123,7 @@ export function DataMartProvider({ children }: DataMartProviderProps) {
           label: dataMart.id,
           value: dataMart.title,
         });
-        toast.success('Data Mart created');
+        toast.success(t('uiFeedback.dataMartCreated'));
         refreshSetupProgress();
         return dataMart;
       } catch (error) {
@@ -140,7 +142,7 @@ export function DataMartProvider({ children }: DataMartProviderProps) {
         throw error;
       }
     },
-    [refreshSetupProgress]
+    [refreshSetupProgress, t]
   );
 
   // Update an existing data mart
@@ -174,93 +176,102 @@ export function DataMartProvider({ children }: DataMartProviderProps) {
   }, []);
 
   // Delete a data mart
-  const deleteDataMart = useCallback(async (id: string) => {
-    try {
-      dispatch({ type: 'DELETE_DATA_MART_START' });
-      await dataMartService.deleteDataMart(id);
-      dispatch({ type: 'DELETE_DATA_MART_SUCCESS' });
-      trackEvent({
-        event: 'data_mart_deleted',
-        category: 'DataMart',
-        action: 'Delete',
-        label: id,
-      });
-      toast.success('Data Mart deleted');
-    } catch (error) {
-      const apiError = extractApiError(error);
-      dispatch({
-        type: 'DELETE_DATA_MART_ERROR',
-        payload: apiError,
-      });
-      trackEvent({
-        event: 'data_mart_error',
-        category: 'DataMart',
-        action: 'DeleteError',
-        label: id,
-        error: apiError.message,
-      });
-      throw error;
-    }
-  }, []);
+  const deleteDataMart = useCallback(
+    async (id: string) => {
+      try {
+        dispatch({ type: 'DELETE_DATA_MART_START' });
+        await dataMartService.deleteDataMart(id);
+        dispatch({ type: 'DELETE_DATA_MART_SUCCESS' });
+        trackEvent({
+          event: 'data_mart_deleted',
+          category: 'DataMart',
+          action: 'Delete',
+          label: id,
+        });
+        toast.success(t('uiFeedback.dataMartDeleted'));
+      } catch (error) {
+        const apiError = extractApiError(error);
+        dispatch({
+          type: 'DELETE_DATA_MART_ERROR',
+          payload: apiError,
+        });
+        trackEvent({
+          event: 'data_mart_error',
+          category: 'DataMart',
+          action: 'DeleteError',
+          label: id,
+          error: apiError.message,
+        });
+        throw error;
+      }
+    },
+    [t]
+  );
 
   // Update data mart title
-  const updateDataMartTitle = useCallback(async (id: string, title: string) => {
-    try {
-      dispatch({ type: 'UPDATE_DATA_MART_TITLE_START' });
-      await dataMartService.updateDataMartTitle(id, title);
-      dispatch({ type: 'UPDATE_DATA_MART_TITLE_SUCCESS', payload: title });
-      trackEvent({
-        event: 'data_mart_updated',
-        category: 'DataMart',
-        action: 'UpdateTitle',
-        label: id,
-        value: title,
-      });
-      toast.success('Title updated');
-    } catch (error) {
-      const apiError = extractApiError(error);
-      dispatch({
-        type: 'UPDATE_DATA_MART_TITLE_ERROR',
-        payload: apiError,
-      });
-      trackEvent({
-        event: 'data_mart_error',
-        category: 'DataMart',
-        action: 'UpdateTitleError',
-        label: id,
-        error: apiError.message,
-      });
-    }
-  }, []);
+  const updateDataMartTitle = useCallback(
+    async (id: string, title: string) => {
+      try {
+        dispatch({ type: 'UPDATE_DATA_MART_TITLE_START' });
+        await dataMartService.updateDataMartTitle(id, title);
+        dispatch({ type: 'UPDATE_DATA_MART_TITLE_SUCCESS', payload: title });
+        trackEvent({
+          event: 'data_mart_updated',
+          category: 'DataMart',
+          action: 'UpdateTitle',
+          label: id,
+          value: title,
+        });
+        toast.success(t('uiFeedback.dataMartTitleUpdated'));
+      } catch (error) {
+        const apiError = extractApiError(error);
+        dispatch({
+          type: 'UPDATE_DATA_MART_TITLE_ERROR',
+          payload: apiError,
+        });
+        trackEvent({
+          event: 'data_mart_error',
+          category: 'DataMart',
+          action: 'UpdateTitleError',
+          label: id,
+          error: apiError.message,
+        });
+      }
+    },
+    [t]
+  );
 
   // Update data mart description
-  const updateDataMartDescription = useCallback(async (id: string, description: string | null) => {
-    try {
-      dispatch({ type: 'UPDATE_DATA_MART_DESCRIPTION_START' });
-      await dataMartService.updateDataMartDescription(id, description);
-      dispatch({ type: 'UPDATE_DATA_MART_DESCRIPTION_SUCCESS', payload: description ?? '' });
-      trackEvent({
-        event: 'data_mart_updated',
-        category: 'DataMart',
-        action: 'UpdateDescription',
-        label: id,
-      });
-      toast.success('Description updated');
-    } catch (error) {
-      const apiError = extractApiError(error);
-      dispatch({
-        type: 'UPDATE_DATA_MART_DESCRIPTION_ERROR',
-        payload: apiError,
-      });
-      trackEvent({
-        event: 'data_mart_error',
-        category: 'DataMart',
-        action: 'UpdateDescriptionError',
-        label: id,
-        error: apiError.message,
-      });
-    }
-  }, []);
+  const updateDataMartDescription = useCallback(
+    async (id: string, description: string | null) => {
+      try {
+        dispatch({ type: 'UPDATE_DATA_MART_DESCRIPTION_START' });
+        await dataMartService.updateDataMartDescription(id, description);
+        dispatch({ type: 'UPDATE_DATA_MART_DESCRIPTION_SUCCESS', payload: description ?? '' });
+        trackEvent({
+          event: 'data_mart_updated',
+          category: 'DataMart',
+          action: 'UpdateDescription',
+          label: id,
+        });
+        toast.success(t('uiFeedback.dataMartDescriptionUpdated'));
+      } catch (error) {
+        const apiError = extractApiError(error);
+        dispatch({
+          type: 'UPDATE_DATA_MART_DESCRIPTION_ERROR',
+          payload: apiError,
+        });
+        trackEvent({
+          event: 'data_mart_error',
+          category: 'DataMart',
+          action: 'UpdateDescriptionError',
+          label: id,
+          error: apiError.message,
+        });
+      }
+    },
+    [t]
+  );
 
   // Update data mart owners
   const updateDataMartOwners = useCallback(
@@ -273,7 +284,7 @@ export function DataMartProvider({ children }: DataMartProviderProps) {
         });
         const dataMart = await mapDataMartFromDto(response);
         dispatch({ type: 'UPDATE_DATA_MART_OWNERS_SUCCESS', payload: dataMart });
-        toast.success('Owners updated');
+        toast.success(t('uiFeedback.dataMartOwnersUpdated'));
       } catch (error) {
         const apiError = extractApiError(error);
         dispatch({
@@ -282,7 +293,7 @@ export function DataMartProvider({ children }: DataMartProviderProps) {
         });
       }
     },
-    []
+    [t]
   );
 
   // Update data mart storage
@@ -410,7 +421,7 @@ export function DataMartProvider({ children }: DataMartProviderProps) {
         const response = await dataMartService.publishDataMart(id);
         const dataMart = await mapDataMartFromDto(response);
         dispatch({ type: 'PUBLISH_DATA_MART_SUCCESS', payload: dataMart });
-        toast.success('Data Mart published');
+        toast.success(t('uiFeedback.dataMartPublished'));
         refreshSetupProgress();
         trackEvent({
           event: 'data_mart_published',
@@ -438,7 +449,7 @@ export function DataMartProvider({ children }: DataMartProviderProps) {
         throw error;
       }
     },
-    [refreshSetupProgress, state.dataMart?.storage.id]
+    [refreshSetupProgress, state.dataMart?.storage.id, t]
   );
 
   /**
@@ -518,7 +529,7 @@ export function DataMartProvider({ children }: DataMartProviderProps) {
   // Run a data mart
   const runDataMart = useCallback(
     async (request: RunDataMartRequestDto) => {
-      const toastId = toast.loading('Manual run started');
+      const toastId = toast.loading(t('dataMartRunHistory.manualRunStarted'));
       try {
         dispatch({ type: 'RUN_DATA_MART_START' });
         trackEvent({
@@ -551,7 +562,7 @@ export function DataMartProvider({ children }: DataMartProviderProps) {
         return null;
       }
     },
-    [state.dataMart?.storage.id]
+    [state.dataMart?.storage.id, t]
   );
 
   const cancelDataMartRun = useCallback(
@@ -573,7 +584,7 @@ export function DataMartProvider({ children }: DataMartProviderProps) {
         throw error;
       }
 
-      toast.success('Data Mart run canceled');
+      toast.success(t('uiFeedback.dataMartRunCanceled'));
       trackEvent({
         event: 'data_mart_run_canceled',
         category: 'DataMart',
@@ -589,11 +600,11 @@ export function DataMartProvider({ children }: DataMartProviderProps) {
           event: 'data_mart_error',
           category: 'DataMart',
           action: 'CancelRunRefreshError',
-          error: apiError?.message ?? 'Failed to refresh Data Mart runs after cancellation',
+          error: apiError?.message ?? t('dataMartRunHistory.refreshAfterCancellationFailed'),
         });
       }
     },
-    [getDataMartRuns]
+    [getDataMartRuns, t]
   );
 
   // Actualize data mart schema
@@ -635,7 +646,7 @@ export function DataMartProvider({ children }: DataMartProviderProps) {
         const response = await dataMartService.updateDataMartSchema(id, { schema }, config);
         const dataMart = await mapDataMartFromDto(response);
         dispatch({ type: 'UPDATE_DATA_MART_SCHEMA_SUCCESS', payload: dataMart });
-        toast.success('Output schema updated');
+        toast.success(t('uiFeedback.outputSchemaUpdated'));
         trackEvent({
           event: 'data_mart_schema_updated',
           category: 'DataMart',
@@ -658,7 +669,7 @@ export function DataMartProvider({ children }: DataMartProviderProps) {
         throw error;
       }
     },
-    []
+    [t]
   );
 
   // Reset state

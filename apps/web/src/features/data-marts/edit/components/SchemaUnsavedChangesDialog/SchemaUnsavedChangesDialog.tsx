@@ -9,6 +9,7 @@ import {
 } from '@owox/ui/components/alert-dialog';
 import { Button } from '@owox/ui/components/button';
 import type { SchemaGuardIntent } from '../../model';
+import { useTranslation } from 'react-i18next';
 
 interface SchemaUnsavedChangesDialogProps {
   open: boolean;
@@ -21,16 +22,12 @@ interface SchemaUnsavedChangesDialogProps {
   onCancel: () => void;
 }
 
-const DESCRIPTIONS: Record<SchemaGuardIntent, string> = {
-  ai: 'AI metadata is generated from the saved schema. Save to include your changes, or discard to ignore them.',
-  refresh:
-    'Refreshing reloads the schema from the source. Save to keep your changes, or discard to lose them.',
-  publish:
-    'Publishing refreshes the schema from the source. Save to keep your changes, or discard to lose them.',
-  definition:
-    'Saving the input source refreshes the schema. Save to keep your schema changes, or discard to lose them.',
-  navigation:
-    'You have unsaved schema changes. Save to keep them, or discard them to leave this page.',
+const DESCRIPTION_KEYS: Record<SchemaGuardIntent, string> = {
+  ai: 'schemaUnsavedChanges.ai',
+  refresh: 'schemaUnsavedChanges.refresh',
+  publish: 'schemaUnsavedChanges.publish',
+  definition: 'schemaUnsavedChanges.definition',
+  navigation: 'schemaUnsavedChanges.navigation',
 };
 
 export function SchemaUnsavedChangesDialog({
@@ -43,14 +40,16 @@ export function SchemaUnsavedChangesDialog({
   onDiscardAndContinue,
   onCancel,
 }: SchemaUnsavedChangesDialogProps) {
-  const verb = intent === 'navigation' ? 'leave' : 'continue';
+  const { t } = useTranslation();
+  const verb =
+    intent === 'navigation' ? t('schemaUnsavedChanges.leave') : t('schemaUnsavedChanges.continue');
   const isSchemaChange = changeLabel === 'schema';
   const description =
     intent === 'navigation'
-      ? `You have unsaved ${changeLabel} changes. Save to keep them, or discard them to leave this page.`
+      ? t('schemaUnsavedChanges.navigation', { changeLabel })
       : isSchemaChange
-        ? DESCRIPTIONS[intent]
-        : `You have unsaved ${changeLabel} changes. Save to keep them, or discard them to continue.`;
+        ? t(DESCRIPTION_KEYS[intent])
+        : t('schemaUnsavedChanges.continueDescription', { changeLabel });
   return (
     <AlertDialog
       open={open}
@@ -65,7 +64,7 @@ export function SchemaUnsavedChangesDialog({
     >
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>Unsaved {changeLabel} changes</AlertDialogTitle>
+          <AlertDialogTitle>{t('schemaUnsavedChanges.title', { changeLabel })}</AlertDialogTitle>
           <AlertDialogDescription>{description}</AlertDialogDescription>
         </AlertDialogHeader>
         {errorMessage && (
@@ -77,17 +76,17 @@ export function SchemaUnsavedChangesDialog({
           </p>
         )}
         <AlertDialogFooter>
-          <AlertDialogCancel disabled={isSaving}>Cancel</AlertDialogCancel>
+          <AlertDialogCancel disabled={isSaving}>{t('common.cancel')}</AlertDialogCancel>
           <Button
             type='button'
             variant='outline'
             onClick={onDiscardAndContinue}
             disabled={isSaving}
           >
-            Discard &amp; {verb}
+            {t('schemaUnsavedChanges.discardAnd', { verb })}
           </Button>
           <Button type='button' onClick={onSaveAndContinue} disabled={isSaving}>
-            Save &amp; {verb}
+            {t('schemaUnsavedChanges.saveAnd', { verb })}
           </Button>
         </AlertDialogFooter>
       </AlertDialogContent>

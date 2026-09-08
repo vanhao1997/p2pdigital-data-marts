@@ -157,7 +157,9 @@ export function MembersHoverCard({
           );
         })}
         {overflow > 0 && (
-          <span className='text-muted-foreground pt-0.5 text-xs'>{t('membersPage.andMore', { count: overflow })}</span>
+          <span className='text-muted-foreground pt-0.5 text-xs'>
+            {t('membersPage.andMore', { count: overflow })}
+          </span>
         )}
       </div>
     );

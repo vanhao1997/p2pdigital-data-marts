@@ -11,10 +11,7 @@ interface TableFiltersTriggerProps {
   icon?: React.ElementType;
 }
 
-export function TableFiltersTrigger({
-  label,
-  icon: Icon = Filter,
-}: TableFiltersTriggerProps) {
+export function TableFiltersTrigger({ label, icon: Icon = Filter }: TableFiltersTriggerProps) {
   const { open, appliedState } = useTableFilters();
   const { t } = useTranslation();
 

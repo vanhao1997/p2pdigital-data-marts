@@ -33,7 +33,8 @@ const KNOWN_AUTH_ERROR_MESSAGES: Record<string, string> = {
 
   // Better Auth callback errors
   signup_disabled: 'Tính năng đăng ký hiện đang bị tắt.',
-  account_already_linked_to_different_user: 'Tài khoản mạng xã hội này đã liên kết với người dùng khác.',
+  account_already_linked_to_different_user:
+    'Tài khoản mạng xã hội này đã liên kết với người dùng khác.',
   unable_to_link_account: 'Không thể liên kết tài khoản mạng xã hội. Vui lòng thử lại.',
   unable_to_get_user_info: 'Không thể lấy dữ liệu tài khoản từ nhà cung cấp danh tính.',
   email_doesnt_match: 'Email trả về không khớp với tài khoản dự kiến.',

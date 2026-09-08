@@ -3,6 +3,7 @@ import type { StorageResourceLeafDto } from '../../../../data-storage/shared/api
 import { dataMartService } from '../../../shared';
 import { trackEvent } from '../../../../../utils/data-layer';
 import { deriveDefinition, extractDataMartTitle } from './bulk-create.utils';
+import i18n from '../../../../../i18n';
 
 export interface BulkCreateFailure {
   fullyQualifiedName: string;
@@ -27,7 +28,7 @@ function extractErrorMessage(error: unknown): string {
     if (response?.data?.message) return response.data.message;
   }
   if (error instanceof Error) return error.message;
-  return 'Failed to create data mart';
+  return i18n.t('bulkCreateFromStorage.errors.createDataMart');
 }
 
 /**

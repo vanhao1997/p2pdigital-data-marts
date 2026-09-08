@@ -9,6 +9,8 @@ services:
       ADMICRO_EXTRACTOR_ENABLED: 'true'
       ADMICRO_EXTRACTOR_SHARED_SECRET: ${ADMICRO_EXTRACTOR_SHARED_SECRET:?Set ADMICRO_EXTRACTOR_SHARED_SECRET}
       ADMICRO_EXTRACTOR_MAX_CONCURRENCY: ${ADMICRO_EXTRACTOR_MAX_CONCURRENCY:-2}
+      ADMICRO_EXTRACTOR_NONCE_STORE: ${ADMICRO_EXTRACTOR_NONCE_STORE:-memory}
+      ADMICRO_EXTRACTOR_REDIS_URL: ${ADMICRO_EXTRACTOR_REDIS_URL:-redis://admicro-redis:6379}
     expose:
       - '8091'
     ports:
@@ -26,6 +28,14 @@ services:
       retries: 3
       start_period: 15s
     restart: unless-stopped
+    networks:
+      - owox-private
+  admicro-redis:
+    profiles: [admicro-redis]
+    image: redis:7.4-alpine
+    command: ['redis-server', '--appendonly', 'no', '--save', '']
+    expose:
+      - '6379'
     networks:
       - owox-private
 

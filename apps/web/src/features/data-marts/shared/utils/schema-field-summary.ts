@@ -1,4 +1,5 @@
 import { DataMartSchemaFieldStatus, type DataMartSchema } from '../types/data-mart-schema.types';
+import i18n from '../../../../i18n';
 
 export interface SchemaFieldSummary {
   connected: number;
@@ -62,22 +63,31 @@ export function summarizeSchemaFields(
  */
 export function describeSchemaFieldSummary(summary: SchemaFieldSummary): string {
   if (summary.total === 0) {
-    return 'Output schema actualized';
+    return i18n.t('schemaFieldSummary.actualized');
   }
 
   const problems: string[] = [];
   if (summary.disconnected > 0) {
-    problems.push(`${String(summary.disconnected)} disconnected`);
+    problems.push(i18n.t('schemaFieldSummary.disconnected', { count: summary.disconnected }));
   }
   if (summary.mismatched > 0) {
-    problems.push(`${String(summary.mismatched)} with a type mismatch`);
+    problems.push(i18n.t('schemaFieldSummary.typeMismatch', { count: summary.mismatched }));
   }
-
-  const fieldWord = summary.total === 1 ? 'field' : 'fields';
 
   if (problems.length === 0) {
-    return `Output schema actualized: ${String(summary.total)} ${fieldWord} connected`;
+    return i18n.t('schemaFieldSummary.actualizedConnected', {
+      count: summary.total,
+      fieldWord: i18n.t(
+        summary.total === 1 ? 'schemaFieldSummary.field' : 'schemaFieldSummary.fields'
+      ),
+    });
   }
 
-  return `Output schema actualized: ${String(summary.total)} ${fieldWord}, ${problems.join(', ')}`;
+  return i18n.t('schemaFieldSummary.actualizedWithProblems', {
+    count: summary.total,
+    fieldWord: i18n.t(
+      summary.total === 1 ? 'schemaFieldSummary.field' : 'schemaFieldSummary.fields'
+    ),
+    problems: problems.join(', '),
+  });
 }

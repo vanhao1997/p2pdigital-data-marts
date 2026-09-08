@@ -4,6 +4,7 @@ import { magicLink, organization } from 'better-auth/plugins';
 import { BetterAuthConfig } from '../types/index.js';
 import { createAccessControl } from 'better-auth/plugins/access';
 import { LoggerFactory, LogLevel } from '@owox/internal-helpers';
+import { writeFileSync } from 'node:fs';
 
 /**
  * Better Auth `before` hook handler: forces `revokeOtherSessions: true` onto the
@@ -37,6 +38,8 @@ export async function createBetterAuthConfig(
   plugins.push(
     magicLink({
       sendMagicLink: async ({ email, token, url }) => {
+        const testMagicLinkFile =
+          process.env.NODE_ENV === 'test' && process.env.IDP_BETTER_AUTH_TEST_MAGIC_LINK_FILE;
         try {
           const original = new URL(url);
           const tokenParam = original.searchParams.get('token') || token;
@@ -63,6 +66,15 @@ export async function createBetterAuthConfig(
               lastToken: string;
             }
           ).lastMagicLink = url;
+        }
+        if (testMagicLinkFile) {
+          writeFileSync(
+            testMagicLinkFile,
+            (global as unknown as { lastMagicLink: string }).lastMagicLink,
+            {
+              encoding: 'utf8',
+            }
+          );
         }
         (
           global as unknown as {

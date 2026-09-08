@@ -39,7 +39,7 @@ export function ProjectsPage() {
       await selectProject(project.id);
       void navigate(buildProjectPath(project.id, '/data-marts'));
     } catch (e) {
-      setMessage(e instanceof Error ? e.message : 'Unable to create project');
+      setMessage(e instanceof Error ? e.message : t('projectsPage.createFailed'));
     }
   }
 
@@ -52,7 +52,7 @@ export function ProjectsPage() {
     try {
       await renameProject(projectId, title);
     } catch (e) {
-      setMessage(e instanceof Error ? e.message : 'Unable to rename project');
+      setMessage(e instanceof Error ? e.message : t('projectsPage.renameFailed'));
     }
   }
 
@@ -61,7 +61,7 @@ export function ProjectsPage() {
       if (canManageProjects) await selectProject(projectId);
       window.location.assign(buildProjectPath(projectId, '/data-marts'));
     } catch (e) {
-      setMessage(e instanceof Error ? e.message : 'Unable to select project');
+      setMessage(e instanceof Error ? e.message : t('projectsPage.selectFailed'));
     }
   }
 
@@ -85,8 +85,7 @@ export function ProjectsPage() {
         </div>
       ) : (
         <p className='text-muted-foreground mb-8 text-sm'>
-          Project creation and lifecycle management are not available with the configured identity
-          provider.
+          {t('projectsPage.managementUnavailable')}
         </p>
       )}
       {message && <p className='text-destructive mb-4 text-sm'>{message}</p>}

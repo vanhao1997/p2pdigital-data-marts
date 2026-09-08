@@ -4,6 +4,7 @@ import { useCallback, useEffect, useMemo, useRef } from 'react';
 import { toast } from 'sonner';
 import { useOutletContext } from 'react-router';
 import { useTranslation } from 'react-i18next';
+import type { TFunction } from 'i18next';
 import type {
   AthenaSchemaField,
   BigQuerySchemaField,
@@ -129,6 +130,7 @@ function mergeGeneratedMetadata(
 }
 
 function showBulkMergeFeedback(
+  t: TFunction,
   scope: BulkAiScope,
   changed: boolean,
   duplicateNamesSkipped: boolean
@@ -136,8 +138,8 @@ function showBulkMergeFeedback(
   if (duplicateNamesSkipped) {
     toast(
       changed
-        ? 'Some fields were skipped because duplicate field names cannot be matched reliably.'
-        : 'No generated field metadata was applied because duplicate field names cannot be matched reliably.'
+        ? t('schemaSettings.duplicateNamesSkipped')
+        : t('schemaSettings.duplicateNamesNoMetadata')
     );
     return;
   }
@@ -145,19 +147,13 @@ function showBulkMergeFeedback(
 
   switch (scope) {
     case DataMartMetadataScope.ALL_FIELD_DESCRIPTIONS:
-      toast(
-        'No field descriptions were applied. Values may already be filled or fields may have changed during generation.'
-      );
+      toast(t('schemaSettings.noDescriptionsApplied'));
       break;
     case DataMartMetadataScope.ALL_FIELD_ALIASES:
-      toast(
-        'No field aliases were applied. Values may already be filled or fields may have changed during generation.'
-      );
+      toast(t('schemaSettings.noAliasesApplied'));
       break;
     case DataMartMetadataScope.ALL_FIELD_METADATA:
-      toast(
-        'No field aliases or descriptions were applied. Values may already be filled or fields may have changed during generation.'
-      );
+      toast(t('schemaSettings.noMetadataApplied'));
       break;
   }
 }
@@ -459,12 +455,13 @@ export function DataMartSchemaSettings({ definitionType }: DataMartSchemaSetting
       );
       if (changed) handleSchemaFieldsChange(fields);
       showBulkMergeFeedback(
+        t,
         DataMartMetadataScope.ALL_FIELD_DESCRIPTIONS,
         changed,
         duplicateNamesSkipped
       );
     },
-    [dataMartId, generateAllFieldDescriptions, handleSchemaFieldsChange]
+    [dataMartId, generateAllFieldDescriptions, handleSchemaFieldsChange, t]
   );
 
   const handleGenerateAllFieldAliases = useCallback(
@@ -482,12 +479,13 @@ export function DataMartSchemaSettings({ definitionType }: DataMartSchemaSetting
       );
       if (changed) handleSchemaFieldsChange(fields);
       showBulkMergeFeedback(
+        t,
         DataMartMetadataScope.ALL_FIELD_ALIASES,
         changed,
         duplicateNamesSkipped
       );
     },
-    [dataMartId, generateAllFieldAliases, handleSchemaFieldsChange]
+    [dataMartId, generateAllFieldAliases, handleSchemaFieldsChange, t]
   );
 
   const handleGenerateAllFieldMetadata = useCallback(
@@ -507,12 +505,13 @@ export function DataMartSchemaSettings({ definitionType }: DataMartSchemaSetting
       );
       if (changed) handleSchemaFieldsChange(fields);
       showBulkMergeFeedback(
+        t,
         DataMartMetadataScope.ALL_FIELD_METADATA,
         changed,
         duplicateNamesSkipped
       );
     },
-    [dataMartId, generateAllFieldMetadata, handleSchemaFieldsChange]
+    [dataMartId, generateAllFieldMetadata, handleSchemaFieldsChange, t]
   );
 
   // Bulk AI maps generated metadata onto the resolved schema (saved or discarded)
@@ -619,7 +618,7 @@ export function DataMartSchemaSettings({ definitionType }: DataMartSchemaSetting
           role='alert'
           className='border-destructive/30 bg-destructive/5 text-destructive space-y-1 rounded-md border px-3 py-2 text-sm'
         >
-            <p className='font-medium'>{t('schemaSettings.fixCalculated')}</p>
+          <p className='font-medium'>{t('schemaSettings.fixCalculated')}</p>
           <ViolationsByFieldList violationsByField={errorsByField} />
         </div>
       )}

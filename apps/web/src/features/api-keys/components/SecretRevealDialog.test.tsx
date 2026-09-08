@@ -26,7 +26,8 @@ vi.mock('sonner', () => ({
   __esModule: true,
   default: {
     success: vi.fn(),
-  }, toast: {
+  },
+  toast: {
     success: vi.fn(),
     error: vi.fn(),
   },
@@ -55,7 +56,7 @@ describe('SecretRevealDialog', () => {
   it('shows one API Key field', () => {
     render(<SecretRevealDialog data={createdKey} onDone={vi.fn()} />);
 
-    const apiKeyInput = screen.getByLabelText('API Key');
+    const apiKeyInput = screen.getByLabelText('API key');
 
     expect(apiKeyInput).toHaveValue('owox_key_fixture');
     expect(apiKeyInput).toHaveAttribute('readonly');
@@ -66,33 +67,33 @@ describe('SecretRevealDialog', () => {
   it('keeps the API Key input out of the initial dialog focus order', () => {
     render(<SecretRevealDialog data={createdKey} onDone={vi.fn()} />);
 
-    expect(screen.getByLabelText('API Key')).toHaveAttribute('tabindex', '-1');
+    expect(screen.getByLabelText('API key')).toHaveAttribute('tabindex', '-1');
   });
 
   it('hides the API Key by default and allows revealing it', () => {
     render(<SecretRevealDialog data={createdKey} onDone={vi.fn()} />);
 
-    const apiKeyInput = screen.getByLabelText('API Key');
+    const apiKeyInput = screen.getByLabelText('API key');
 
     expect(apiKeyInput).toHaveAttribute('type', 'password');
 
-    fireEvent.click(screen.getByRole('button', { name: 'Show API Key' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Show API key' }));
     expect(apiKeyInput).toHaveAttribute('type', 'text');
 
-    fireEvent.click(screen.getByRole('button', { name: 'Hide API Key' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Hide API key' }));
     expect(apiKeyInput).toHaveAttribute('type', 'password');
   });
 
   it('uses a compact copy button for the API Key', () => {
     render(<SecretRevealDialog data={createdKey} onDone={vi.fn()} />);
 
-    expect(screen.getByRole('button', { name: 'Copy API Key' })).toHaveClass('size-7');
+    expect(screen.getByRole('button', { name: 'Copy API key' })).toHaveClass('size-7');
   });
 
   it('copies the API Key', async () => {
     render(<SecretRevealDialog data={createdKey} onDone={vi.fn()} />);
 
-    fireEvent.click(screen.getByRole('button', { name: 'Copy API Key' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Copy API key' }));
 
     await waitFor(() => {
       expect(navigator.clipboard.writeText).toHaveBeenCalledWith('owox_key_fixture');
@@ -102,18 +103,18 @@ describe('SecretRevealDialog', () => {
   it('places the one-time key notice under the API Key field', () => {
     render(<SecretRevealDialog data={createdKey} onDone={vi.fn()} />);
 
-    const apiKeyInput = screen.getByLabelText('API Key');
+    const apiKeyInput = screen.getByLabelText('API key');
     const apiKeyField = apiKeyInput.closest('div')?.parentElement;
 
     expect(apiKeyField).toHaveTextContent(
-      "Copy the API Key now. You won't be able to see it again."
+      "Copy the API key now. You won't be able to see it again."
     );
   });
 
   it('shows the API Keys documentation link as a secondary footer action', () => {
     render(<SecretRevealDialog data={createdKey} onDone={vi.fn()} />);
 
-    const docsLink = screen.getByRole('link', { name: 'API Keys documentation' });
+    const docsLink = screen.getByRole('link', { name: 'API key documentation' });
 
     expect(docsLink).toHaveAttribute('href', 'https://docs.p2pdigital.io.vn/docs/api/api-keys/');
     expect(docsLink.closest('[data-slot="dialog-footer"]')).not.toBeNull();

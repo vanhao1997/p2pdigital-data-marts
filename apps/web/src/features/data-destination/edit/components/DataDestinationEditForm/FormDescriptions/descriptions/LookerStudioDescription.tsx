@@ -6,26 +6,24 @@ export default function LookerStudioDescription() {
   const { t } = useTranslation();
   return (
     <AccordionItem value='looker-studio-details'>
-      <AccordionTrigger>{t('destinationHelp.lookerStudio.title', 'How do I connect to Data Studio?')}</AccordionTrigger>
+      <AccordionTrigger>{t('destinationHelp.lookerStudio.title')}</AccordionTrigger>
       <AccordionContent>
         <p className='mb-2'>
-          {t('destinationHelp.lookerStudio.setup', 'To send data to Data Studio, you need to provide a deployment URL that the')}{' '}
+          {t('destinationHelp.lookerStudio.setup')}{' '}
           <ExternalAnchor
             className='p-0'
             href='https://datastudio.google.com/datasources/create?connectorId=AKfycbz6kcYn3qGuG0jVNFjcDnkXvVDiz4hewKdAFjOm-_d4VkKVcBidPjqZO991AvGL3FtM4A'
           >
-            {t('destinationHelp.lookerStudio.connector', 'Data Studio connector')}
+            {t('destinationHelp.lookerStudio.connector')}
           </ExternalAnchor>{' '}
-          {t('destinationHelp.lookerStudio.setupEnd', 'will use to access your data.')}
+          {t('destinationHelp.lookerStudio.setupEnd')}
         </p>
-        <p className='mb-2'>
-          {t('destinationHelp.lookerStudio.security', 'Make sure the deployment URL is accessible from the internet and properly secured.')}
-        </p>
+        <p className='mb-2'>{t('destinationHelp.lookerStudio.security')}</p>
         <ExternalAnchor
           className='p-0'
           href='https://docs.p2pdigital.io.vn/docs/destinations/supported-destinations/data-studio/?utm_source=owox_data_marts&utm_medium=destination_entity&utm_campaign=tooltip'
         >
-          {t('destinationHelp.common.learnMore', 'Learn more')}
+          {t('destinationHelp.common.learnMore')}
         </ExternalAnchor>
       </AccordionContent>
     </AccordionItem>

@@ -18,12 +18,8 @@ export default function ConnectorStateDescription() {
       <AccordionItem value='connector-state-details'>
         <AccordionTrigger>{t('connectorRun.stateQuestion')}</AccordionTrigger>
         <AccordionContent>
-          <p className='mb-2'>
-            {t('connectorRun.stateDescription')}
-          </p>
-          <p className='mb-2'>
-            {t('connectorRun.stateIncrementalDescription')}
-          </p>
+          <p className='mb-2'>{t('connectorRun.stateDescription')}</p>
+          <p className='mb-2'>{t('connectorRun.stateIncrementalDescription')}</p>
           <p className='mb-2'>
             {t('destinationHelp.common.moreDetails')}{' '}
             <ExternalAnchor

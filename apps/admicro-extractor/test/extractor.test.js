@@ -37,6 +37,18 @@ describe('Admicro extractor request validation', () => {
     );
   });
 
+  it('rejects base URLs with embedded credentials or path segments', () => {
+    expect(() =>
+      validateRequest({ ...request, baseUrl: 'https://user:pass@adx.admicro.vn/vn' })
+    ).toThrow('BaseUrl must be an HTTPS admicro.vn host');
+  });
+
+  it('rejects report paths with traversal segments', () => {
+    expect(() => validateRequest({ ...request, reportPath: '/vn/../admin' })).toThrow(
+      'ReportPath must be a relative absolute path'
+    );
+  });
+
   it('enforces the connector timezone contract', () => {
     expect(() => validateRequest({ ...request, timezone: 'UTC' })).toThrow(
       'timezone must be Asia/Ho_Chi_Minh'

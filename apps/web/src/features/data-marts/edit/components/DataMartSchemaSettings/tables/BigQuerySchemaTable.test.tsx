@@ -217,7 +217,7 @@ describe('BigQuerySchemaTable — calculated field (flattened-index correctness)
     expect(screen.getByTitle('SUM(id)').closest('td')).toHaveAttribute('colspan', '3');
 
     const row = screen.getByRole('row', { name: /doubled_id/ });
-    expect(within(row).getByLabelText('Aggregations for doubled_id')).toBeInTheDocument();
+    expect(within(row).getByLabelText('Available aggregations for doubled_id')).toBeInTheDocument();
     // Mode is still suppressed: a calculated field of either level owns no warehouse column.
     expect(row.textContent).not.toMatch(/NULLABLE|REQUIRED|REPEATED/);
   });
@@ -227,15 +227,15 @@ describe('BigQuerySchemaTable — calculated field (flattened-index correctness)
     // one button — the case that must keep looking the way it did before the row was split.
     render(<BigQuerySchemaTable fields={[buildIdField()]} schemaToolbar={mockSchemaToolbar} />);
 
-    // The toolbar above the table carries "Add Field" too; the bottom row's is the last one.
-    const addField = screen.getAllByRole('button', { name: 'Add new field' }).at(-1);
-    expect(screen.queryByRole('button', { name: 'Add calculated field' })).not.toBeInTheDocument();
-    expect(addField?.parentElement?.children).toHaveLength(1);
+    const footer = screen.getByTestId('schema-footer-actions');
+    const addField = within(footer).getByRole('button', { name: 'Add Field' });
+    expect(screen.queryByRole('button', { name: 'Add Calculated Field' })).not.toBeInTheDocument();
+    expect(addField.parentElement?.children).toHaveLength(1);
     // `flex-1` on the only child still fills the row; happy-dom has no layout to measure.
-    expect(addField?.className).toMatch(/(^|\s)flex-1(\s|$)/);
+    expect(addField.className).toMatch(/(^|\s)flex-1(\s|$)/);
     // …and it keeps BOTH bottom corners. The inner one is squared only where the two halves meet,
     // so squaring it unconditionally would flatten a corner of the card on every such table.
-    expect(addField?.className).not.toMatch(/(^|\s)rounded-br-none(\s|$)/);
+    expect(addField.className).not.toMatch(/(^|\s)rounded-br-none(\s|$)/);
   });
 
   it('editing an existing calculated field updates only it, leaving the RECORD field and its nested children untouched', () => {
@@ -296,7 +296,7 @@ describe('BigQuerySchemaTable — calculated field (flattened-index correctness)
       />
     );
 
-    fireEvent.click(screen.getAllByRole('button', { name: 'Add calculated field' })[0]);
+    fireEvent.click(screen.getAllByRole('button', { name: 'Add Calculated Field' })[0]);
 
     expect(onFieldsChange).toHaveBeenCalledTimes(1);
     const [updated] = onFieldsChange.mock.calls[0] as [BigQuerySchemaField[]];

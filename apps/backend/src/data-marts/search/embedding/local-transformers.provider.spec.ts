@@ -66,6 +66,35 @@ describe('LocalTransformersEmbeddingProvider', () => {
       expect(importer).toHaveBeenCalledTimes(2);
       expect(warnSpy).toHaveBeenCalledTimes(1);
     });
+
+    it('clears a corrupt model cache, retries once, then backs off after a failed retry', async () => {
+      const fakePipelineFactory = jest
+        .fn()
+        .mockRejectedValueOnce(new Error('Protobuf parsing failed'))
+        .mockRejectedValueOnce(new Error('Protobuf parsing failed'));
+      const importer = jest.fn().mockResolvedValue({
+        pipeline: fakePipelineFactory,
+        env: { cacheDir: 'C:/tmp/owox-model-cache' },
+      });
+      const provider = buildProvider(importer);
+      const warnSpy = jest.spyOn(provider['logger'], 'warn').mockImplementation(() => undefined);
+      const clearCacheSpy = jest
+        .spyOn(
+          provider as unknown as { clearModelCache: (cacheDir: string) => Promise<void> },
+          'clearModelCache'
+        )
+        .mockResolvedValue(undefined);
+
+      const first = await provider.embed(['hello']);
+      expect(first).toEqual([null]);
+      expect(fakePipelineFactory).toHaveBeenCalledTimes(2);
+      expect(clearCacheSpy).toHaveBeenCalledWith('C:/tmp/owox-model-cache');
+
+      const second = await provider.embed(['world']);
+      expect(second).toEqual([null]);
+      expect(fakePipelineFactory).toHaveBeenCalledTimes(2);
+      expect(warnSpy).toHaveBeenCalledTimes(2);
+    });
   });
 
   describe('success path', () => {

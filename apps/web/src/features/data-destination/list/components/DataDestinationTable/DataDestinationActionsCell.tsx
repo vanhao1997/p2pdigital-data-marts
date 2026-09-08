@@ -52,7 +52,9 @@ export const DataDestinationActionsCell: FC<DataDestinationActionsCellProps> = (
     if (credentials && isLookerStudioCredentials(credentials)) {
       const jsonConfig = generateLookerStudioJsonConfig(credentials);
       void navigator.clipboard.writeText(jsonConfig);
-      toast.success(t('dataDestinationList.newConfigCopied', 'New JSON Config copied to clipboard'));
+      toast.success(
+        t('dataDestinationList.newConfigCopied', 'New JSON Config copied to clipboard')
+      );
     }
   };
 

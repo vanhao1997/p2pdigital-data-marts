@@ -1,5 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useCallback, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
 import { useIsAdmin } from '../../idp/hooks/useRole';
 import { useProjectId } from '../../../shared/hooks';
@@ -70,6 +71,7 @@ export interface PublishFailure {
 }
 
 export function usePluginPublishing() {
+  const { t } = useTranslation();
   const queryClient = useQueryClient();
   const projectId = useProjectId();
 
@@ -104,26 +106,26 @@ export function usePluginPublishing() {
     async (repository: string, scope: PluginPublicationScope): Promise<PublishFailure | null> => {
       try {
         await publishMutation.mutateAsync({ repository, scope });
-        toast.success('Plugin published');
+        toast.success(t('uiFeedback.pluginPublished'));
         return null;
       } catch (caught) {
-        return readPublishFailure(caught);
+        return readPublishFailure(caught, t('uiFeedback.pluginPublishFailed'));
       }
     },
-    [publishMutation]
+    [publishMutation, t]
   );
 
   const unpublish = useCallback(
     async (repository: string, scope: PluginPublicationScope) => {
       try {
         await unpublishMutation.mutateAsync({ repository, scope });
-        toast.success('Plugin unpublished');
+        toast.success(t('uiFeedback.pluginUnpublished'));
       } catch (caught) {
-        toast.error(readPublishFailure(caught).message);
+        toast.error(readPublishFailure(caught, t('uiFeedback.pluginPublishFailed')).message);
         throw caught;
       }
     },
-    [unpublishMutation]
+    [unpublishMutation, t]
   );
 
   return {
@@ -134,12 +136,15 @@ export function usePluginPublishing() {
   };
 }
 
-function readPublishFailure(caught: unknown): PublishFailure {
+function readPublishFailure(
+  caught: unknown,
+  fallback = 'Could not publish this plugin.'
+): PublishFailure {
   const body = (caught as { response?: { data?: Record<string, unknown> } } | null)?.response?.data;
   const details = body?.errorDetails as { installationUrl?: string } | undefined;
 
   return {
-    message: (body?.message as string | undefined) ?? 'Could not publish this plugin.',
+    message: (body?.message as string | undefined) ?? fallback,
     ...(body?.code === 'GITHUB_REPO_NOT_ACCESSIBLE' && details?.installationUrl
       ? { installationUrl: details.installationUrl }
       : {}),

@@ -1,4 +1,5 @@
 import { Checkbox } from '@owox/ui/components/checkbox';
+import { useTranslation } from 'react-i18next';
 
 /**
  * Props for the SchemaFieldPrimaryKeyCheckbox component
@@ -17,6 +18,7 @@ export function SchemaFieldPrimaryKeyCheckbox({
   isPrimaryKey,
   onPrimaryKeyChange,
 }: SchemaFieldPrimaryKeyCheckboxProps) {
+  const { t } = useTranslation();
   // Convert to boolean to ensure proper type
   const isPrimaryKeyBoolean = Boolean(isPrimaryKey);
 
@@ -32,7 +34,7 @@ export function SchemaFieldPrimaryKeyCheckbox({
       className='cursor-pointer'
       checked={isPrimaryKeyBoolean}
       onCheckedChange={handleCheckedChange}
-      aria-label='Primary Key'
+      aria-label={t('schemaUi.primaryKey')}
     />
   );
 }

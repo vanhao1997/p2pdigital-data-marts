@@ -10,6 +10,7 @@ import { MicrosoftOauthRender } from './impl/MicrosoftOauthRender';
 import { GoogleAdsOauthRender } from './impl/GoogleAdsOauthRender';
 import { LinkedInOauthRender } from './impl/LinkedInOauthRender';
 import { useState, useEffect, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import type {
   OAuthStatusResponseDto,
   OAuthSettingsResponseDto,
@@ -53,6 +54,7 @@ export function OauthRenderFactory({
   connectorName,
   isEditingExisting = false,
 }: OauthRenderFactoryProps) {
+  const { t } = useTranslation();
   const [isLoading, setIsLoading] = useState(false);
   const [fieldSecretEditing, setFieldSecretEditing] = useState<Record<string, boolean>>({});
   const [status, setStatus] = useState<OAuthStatusResponseDto | null>(null);
@@ -277,7 +279,7 @@ export function OauthRenderFactory({
             }}
             className='px-0'
           >
-            Back to OAuth
+            {t('connectorWizard.oauth.backToOAuth')}
           </Button>
         )}
       </div>
@@ -395,7 +397,7 @@ export function OauthRenderFactory({
           }}
           className='px-0'
         >
-          Manually
+          {t('connectorWizard.oauth.manually')}
         </Button>
       )}
     </div>

@@ -220,7 +220,7 @@ describe('ConnectorRunService', () => {
         { id: 'run-archived', status: DataMartRunStatus.INTERRUPTED },
         expect.objectContaining({
           status: DataMartRunStatus.CANCELLED,
-          errors: ['Project is archived and read-only; interrupted run was not resumed.'],
+          errors: [expect.stringContaining('"code":"PROJECT_ARCHIVED_READ_ONLY"')],
         })
       );
       expect(connectorRunTriggerService.createTrigger).not.toHaveBeenCalled();

@@ -80,7 +80,10 @@ export function MarkdownToolbar({
 
           {MARKDOWN_ACTIONS.map(action => {
             const Icon = action.icon;
-            const actionLabel = t(`insightsUi.${action.id === 'ordered-list' ? 'numberedList' : action.id === 'task-list' ? 'taskList' : action.id === 'code-block' ? 'codeBlock' : action.id === 'slash-command' ? 'slashCommands' : action.id === 'list' ? 'bulletList' : action.id}`, action.label);
+            const actionLabel = t(
+              `insightsUi.${action.id === 'ordered-list' ? 'numberedList' : action.id === 'task-list' ? 'taskList' : action.id === 'code-block' ? 'codeBlock' : action.id === 'slash-command' ? 'slashCommands' : action.id === 'list' ? 'bulletList' : action.id}`,
+              action.label
+            );
             return (
               <Tooltip key={action.id}>
                 <TooltipTrigger asChild>
@@ -135,7 +138,11 @@ export function MarkdownToolbar({
                 onClick={() => {
                   setIsCollapsed(!isCollapsed);
                 }}
-                aria-label={isCollapsed ? t('insightsUi.expandToolbar', 'Expand toolbar') : t('insightsUi.collapseToolbar', 'Collapse toolbar')}
+                aria-label={
+                  isCollapsed
+                    ? t('insightsUi.expandToolbar', 'Expand toolbar')
+                    : t('insightsUi.collapseToolbar', 'Collapse toolbar')
+                }
               >
                 {isCollapsed ? (
                   <ChevronDown className='h-4 w-4' />
@@ -144,7 +151,11 @@ export function MarkdownToolbar({
                 )}
               </Button>
             </TooltipTrigger>
-            <TooltipContent>{isCollapsed ? t('insightsUi.expandToolbar', 'Expand toolbar') : t('insightsUi.collapseToolbar', 'Collapse toolbar')}</TooltipContent>
+            <TooltipContent>
+              {isCollapsed
+                ? t('insightsUi.expandToolbar', 'Expand toolbar')
+                : t('insightsUi.collapseToolbar', 'Collapse toolbar')}
+            </TooltipContent>
           </Tooltip>
         )}
       </div>

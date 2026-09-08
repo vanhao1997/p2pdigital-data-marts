@@ -144,13 +144,13 @@ describe('DataQualityResultCard', () => {
         }}
         titleSuffix='orders'
         scopeLabel='customer_id → id'
-        scopeDetails={['Relationship ID: relationship-1']}
+        scopeDetails={['Relationship relationship-1']}
       />
     );
 
     expect(screen.getByText('Relationship integrity · orders')).toBeInTheDocument();
     expect(screen.getByText('customer_id → id')).toBeInTheDocument();
-    expect(screen.getByText('Relationship ID: relationship-1')).toBeInTheDocument();
+    expect(screen.getByText('Relationship relationship-1')).toBeInTheDocument();
   });
 
   it('copies the exact SQL shown in the card', async () => {
@@ -158,7 +158,7 @@ describe('DataQualityResultCard', () => {
 
     fireEvent.click(screen.getByRole('button', { name: 'Show details for Negative values' }));
     fireEvent.click(screen.getByRole('button', { name: 'SQL' }));
-    fireEvent.click(screen.getByRole('button', { name: 'Copy to Clipboard' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Copy to clipboard' }));
 
     await waitFor(() => {
       expect(navigator.clipboard.writeText).toHaveBeenCalledWith(result.sql);
@@ -251,7 +251,7 @@ describe('DataQualityResultCard', () => {
         "SQL and examples are hidden because you don't have access to the target Data Mart orders. The counts above are still accurate."
       )
     ).toBeInTheDocument();
-    expect(screen.queryByRole('button', { name: 'Copy to Clipboard' })).not.toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: 'Copy to clipboard' })).not.toBeInTheDocument();
   });
 
   it('does not infer access redaction from naturally empty relationship output', () => {

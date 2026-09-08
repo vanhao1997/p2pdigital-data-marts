@@ -5,6 +5,7 @@ import { Button } from '@owox/ui/components/button';
 import { ConfirmationDialog } from '../../../../../shared/components/ConfirmationDialog';
 import { cn } from '@owox/ui/lib/utils';
 import { useTranslation } from 'react-i18next';
+import i18n from '../../../../../i18n';
 
 function getErrorResponse(error: unknown):
   | {
@@ -36,7 +37,7 @@ function getCancelErrorMessage(error: unknown): string {
     return error.message;
   }
 
-  return 'Failed to cancel data mart run';
+  return i18n.t('runHistory.cancelFailed');
 }
 
 interface CancelRunButtonProps {

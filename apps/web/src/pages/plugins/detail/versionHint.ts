@@ -1,4 +1,5 @@
 import { formatDateShort } from '../../../utils/date-formatters';
+import i18n from '../../../i18n';
 
 /**
  * The Version tooltip text on the plugin page: what the version is, plus how maintenance
@@ -10,10 +11,8 @@ import { formatDateShort } from '../../../utils/date-formatters';
  * is formatted in the member's own timezone.
  */
 export function versionHint(nextCheckAt: Date | string | null | undefined): string {
-  const nextCheck = nextCheckAt ? ` Next check: ${formatDateShort(nextCheckAt)}.` : '';
-  return (
-    'The highest eligible release. Versions cannot be pinned. Updates are checked daily.' +
-    nextCheck +
-    ' A newer valid version is applied automatically to everyone using this plugin.'
-  );
+  const nextCheck = nextCheckAt
+    ? i18n.t('pluginsPage.versionNextCheck', { date: formatDateShort(nextCheckAt) })
+    : '';
+  return i18n.t('pluginsPage.versionHint', { nextCheck: nextCheck ? ` ${nextCheck}` : '' });
 }

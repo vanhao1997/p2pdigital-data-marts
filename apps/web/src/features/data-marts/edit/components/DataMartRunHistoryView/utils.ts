@@ -1,4 +1,3 @@
-import { capitalizeFirstLetter } from '../../../../../utils';
 import {
   formatDateTime,
   formatDuration,
@@ -9,10 +8,14 @@ import type { DataMartRunItem } from '../../model';
 import type { DataMartDefinitionConfig } from '../../model/types/data-mart-definition-config';
 import type { LogEntry } from './types';
 import { LogLevel } from './types';
+import i18n from '../../../../../i18n';
+import { localizeOperationalError } from '../../../../../shared/utils/localize-operational-error';
 
 // Mirrors ConnectorMessageType.WARNING ('addWarningToCurrentStatus') from the backend enum —
 // the web app has no shared reference to it, since logs/errors arrive as raw JSON strings.
 const WARNING_MESSAGE_TYPE = 'addWarningToCurrentStatus';
+const OPERATIONAL_WARNING_TYPE = 'warning';
+const OPERATIONAL_ERROR_TYPE = 'error';
 
 /**
  * Whether a persisted entry from the run's `errors` array is a classified warning
@@ -21,14 +24,15 @@ const WARNING_MESSAGE_TYPE = 'addWarningToCurrentStatus';
  */
 export const isPersistedWarning = (raw: string): boolean => {
   try {
-    return (JSON.parse(raw) as { type?: unknown }).type === WARNING_MESSAGE_TYPE;
+    const type = (JSON.parse(raw) as { type?: unknown }).type;
+    return type === WARNING_MESSAGE_TYPE || type === OPERATIONAL_WARNING_TYPE;
   } catch {
     return false;
   }
 };
 
 const resolveLogLevel = (isError: boolean, messageType?: string | null): LogLevel => {
-  if (messageType === WARNING_MESSAGE_TYPE) {
+  if (messageType === WARNING_MESSAGE_TYPE || messageType === OPERATIONAL_WARNING_TYPE) {
     return LogLevel.WARNING;
   }
   return isError ? LogLevel.ERROR : LogLevel.INFO;
@@ -107,28 +111,41 @@ export const processJSONMessage = (
   message: string
 ): { message: string; metadata?: Record<string, string | number | boolean | null> } => {
   try {
-    const parsed = JSON.parse(message) as Record<string, string | number | boolean | null>;
+    const parsed = JSON.parse(message) as unknown;
 
-    if (typeof parsed === 'object') {
+    if (typeof parsed === 'object' && parsed !== null && !Array.isArray(parsed)) {
+      const record = parsed as Record<string, unknown>;
       const metadata: Record<string, string | number | boolean | null> = {};
-      const processedObj = { ...parsed } as Record<string, string | number | boolean | null>;
+      const processedObj = { ...record };
 
       // Extract type and at fields
-      if ('type' in processedObj) {
-        metadata.type = processedObj.type as string;
+      if (typeof processedObj.type === 'string') {
+        metadata.type = processedObj.type;
         delete processedObj.type;
       }
 
-      if ('at' in processedObj) {
-        metadata.at = processedObj.at as string;
+      if (typeof processedObj.at === 'string') {
+        metadata.at = processedObj.at;
         delete processedObj.at;
+      }
+
+      if (typeof processedObj.code === 'string') {
+        metadata.code = processedObj.code;
+      }
+
+      const localizedOperationalError = localizeOperationalError(record);
+      if (localizedOperationalError) {
+        return {
+          message: localizedOperationalError,
+          metadata: Object.keys(metadata).length > 0 ? metadata : undefined,
+        };
       }
 
       // If only one field remains, show it as plain text
       const remainingKeys = Object.keys(processedObj);
       if (remainingKeys.length === 1) {
         const key = remainingKeys[0];
-        const value = processedObj[key] as string;
+        const value = processedObj[key];
         return {
           message: typeof value === 'string' ? value : JSON.stringify(value),
           metadata: Object.keys(metadata).length > 0 ? metadata : undefined,
@@ -149,9 +166,13 @@ export const processJSONMessage = (
 };
 
 export const getDisplayType = (logEntry: LogEntry): string => {
-  if (logEntry.metadata?.type === WARNING_MESSAGE_TYPE) {
-    return 'Warning';
+  if (
+    logEntry.metadata?.type === WARNING_MESSAGE_TYPE ||
+    logEntry.metadata?.type === OPERATIONAL_WARNING_TYPE
+  ) {
+    return i18n.t('runHistory.warning');
   }
+  if (logEntry.metadata?.type === OPERATIONAL_ERROR_TYPE) return i18n.t('runHistory.error');
   if (logEntry.metadata?.type) {
     return logEntry.metadata.type as string;
   }
@@ -170,7 +191,7 @@ export const getRunSummaryParts = (
       runType = 'connector';
       break;
     case DataMartRunType.LOOKER_STUDIO:
-      title = 'Data Studio data fetching';
+      title = i18n.t('runHistory.dataStudioDataFetching');
       runType = 'report';
       break;
     case DataMartRunType.GOOGLE_SHEETS_EXPORT:
@@ -188,27 +209,32 @@ export const getRunSummaryParts = (
       break;
     case DataMartRunType.INSIGHT_TEMPLATE:
       title = run.insightTemplateDefinition?.title ?? '';
-      runType = 'insight template';
+      runType = 'insightTemplate';
       break;
     case DataMartRunType.AI_ASSISTANT:
       title = run.aiAssistantDefinition?.route ?? '';
-      runType = 'ai assistant';
+      runType = 'aiAssistant';
       break;
     case DataMartRunType.HTTP_DATA:
-      runType = 'HTTP Data';
+      runType = 'httpData';
       break;
     case DataMartRunType.MCP_QUERY:
-      runType = 'MCP query';
+      runType = 'mcpQuery';
       break;
     case DataMartRunType.DATA_QUALITY:
-      runType = 'data quality';
+      runType = 'dataQuality';
       title = getDataQualitySummaryLabel(run);
       break;
     default:
       break;
   }
 
-  const runDescription = capitalizeFirstLetter(`${run.triggerType} ${runType} run`.trim());
+  const runDescription = i18n.t('runHistory.runDescription', {
+    trigger: i18n.t(`runHistory.triggerTypes.${run.triggerType}`, {
+      defaultValue: run.triggerType,
+    }),
+    runType: i18n.t(`runHistory.runTypes.${runType}`, { defaultValue: runType }),
+  });
 
   return [runDescription, title];
 };
@@ -217,32 +243,40 @@ function getDataQualitySummaryLabel(run: DataMartRunItem): string {
   const summary = run.qualitySummary;
   if (!summary) return '';
   if (summary.totalChecks > 0 && summary.notApplicableChecks === summary.totalChecks) {
-    return 'Nothing to check · all not applicable';
+    return i18n.t('runHistory.qualitySummary.notApplicable');
   }
 
   const findingCount = summary.errorFindings + summary.warningFindings + summary.noticeFindings;
   if (findingCount > 0) {
-    return `${String(findingCount)} finding${findingCount === 1 ? '' : 's'}`;
+    return i18n.t(
+      findingCount === 1
+        ? 'runHistory.qualitySummary.findingSingular'
+        : 'runHistory.qualitySummary.findingPlural',
+      { count: findingCount }
+    );
   }
   switch (summary.state) {
     case 'PASSED':
       return summary.totalChecks > 0
-        ? `${String(summary.passedChecks)} of ${String(summary.totalChecks)} checks`
-        : 'All checks passed';
+        ? i18n.t('runHistory.qualitySummary.checksPassed', {
+            passed: summary.passedChecks,
+            total: summary.totalChecks,
+          })
+        : i18n.t('runHistory.qualitySummary.allChecksPassed');
     case 'QUEUED':
-      return 'Queued';
+      return i18n.t('runHistory.qualitySummary.queued');
     case 'RUNNING':
-      return 'Running';
+      return i18n.t('runHistory.qualitySummary.running');
     case 'EXECUTION_FAILED':
-      return 'Partial results';
+      return i18n.t('runHistory.qualitySummary.partialResults');
     case 'RESTRICTED':
-      return 'Restricted';
+      return i18n.t('runHistory.qualitySummary.restricted');
     case 'CANCELLED':
-      return 'Partial results kept';
+      return i18n.t('runHistory.qualitySummary.partialResultsKept');
     case 'ALL_DISABLED':
-      return 'Nothing to check · all checks disabled';
+      return i18n.t('runHistory.qualitySummary.allChecksDisabled');
     case 'NEVER_RUN':
-      return 'Never run';
+      return i18n.t('runHistory.qualitySummary.neverRun');
     default:
       return '';
   }

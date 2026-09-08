@@ -28,7 +28,8 @@ export class McpConfigService {
 
   get resourceDocumentationUrl(): string {
     return (
-      this.config.get<string>('MCP_RESOURCE_DOCUMENTATION_URL') ?? 'https://docs.p2pdigital.io.vn/docs/mcp'
+      this.config.get<string>('MCP_RESOURCE_DOCUMENTATION_URL') ??
+      'https://docs.p2pdigital.io.vn/docs/mcp'
     );
   }
 

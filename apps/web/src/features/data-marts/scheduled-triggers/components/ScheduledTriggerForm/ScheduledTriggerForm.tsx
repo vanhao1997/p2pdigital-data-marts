@@ -84,7 +84,12 @@ export function ScheduledTriggerForm({
             name='type'
             render={({ field }) => (
               <FormItem>
-                <FormLabel tooltip={t('triggerForm.triggerTypeTooltip', 'Choose what you want this trigger to run')}>
+                <FormLabel
+                  tooltip={t(
+                    'triggerForm.triggerTypeTooltip',
+                    'Choose what you want this trigger to run'
+                  )}
+                >
                   {t('triggerForm.triggerType', 'Trigger Type')}
                 </FormLabel>
                 <Select
@@ -97,11 +102,15 @@ export function ScheduledTriggerForm({
                 >
                   <FormControl>
                     <SelectTrigger className={'w-full'}>
-                      <SelectValue placeholder={t('triggerForm.selectTriggerType', 'Select trigger type')} />
+                      <SelectValue
+                        placeholder={t('triggerForm.selectTriggerType', 'Select trigger type')}
+                      />
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
-                    <SelectItem value={ScheduledTriggerType.REPORT_RUN}>{t('triggerForm.reportRun', 'Report Run')}</SelectItem>
+                    <SelectItem value={ScheduledTriggerType.REPORT_RUN}>
+                      {t('triggerForm.reportRun', 'Report Run')}
+                    </SelectItem>
                     <SelectItem value={ScheduledTriggerType.CONNECTOR_RUN}>
                       {t('triggerForm.connectorRun', 'Connector Run')}
                     </SelectItem>
@@ -129,7 +138,12 @@ export function ScheduledTriggerForm({
               name='triggerConfig.reportId'
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel tooltip={t('triggerForm.reportTooltip', 'Select the report that will be run by this trigger')}>
+                  <FormLabel
+                    tooltip={t(
+                      'triggerForm.reportTooltip',
+                      'Select the report that will be run by this trigger'
+                    )}
+                  >
                     {t('triggerForm.report', 'Report')}
                   </FormLabel>
                   <FormControl>
@@ -175,7 +189,11 @@ export function ScheduledTriggerForm({
             variant='default'
             type='submit'
             className='w-full'
-            aria-label={initialData ? t('triggerForm.saveChanges', 'Save changes') : t('triggerForm.create', 'Create trigger')}
+            aria-label={
+              initialData
+                ? t('triggerForm.saveChanges', 'Save changes')
+                : t('triggerForm.create', 'Create trigger')
+            }
             disabled={!isDirty || isSubmitting}
           >
             {isSubmitting

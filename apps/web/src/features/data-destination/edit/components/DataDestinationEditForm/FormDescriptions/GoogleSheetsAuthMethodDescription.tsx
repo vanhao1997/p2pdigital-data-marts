@@ -14,35 +14,21 @@ export default function GoogleSheetsAuthMethodDescription() {
   return (
     <Accordion variant='common' type='single' collapsible>
       <AccordionItem value='google-sheets-auth-method-details'>
-        <AccordionTrigger>
-          {t('destinationHelp.googleSheetsAuth.title', 'Which authentication method should I choose?')}
-        </AccordionTrigger>
+        <AccordionTrigger>{t('destinationHelp.googleSheetsAuth.title')}</AccordionTrigger>
         <AccordionContent>
-          <p className='mb-2'>
-            {t('destinationHelp.googleSheetsAuth.intro', 'Google Sheets supports two authentication methods:')}
-          </p>
+          <p className='mb-2'>{t('destinationHelp.googleSheetsAuth.intro')}</p>
           <div className='space-y-3 text-sm'>
             <div>
               <strong className='font-medium'>
-                {t('destinationHelp.googleSheetsAuth.oauthLabel', 'Connect with Google (OAuth):')}
+                {t('destinationHelp.googleSheetsAuth.oauthLabel')}
               </strong>
-              <p className='mt-1'>
-                {t(
-                  'destinationHelp.googleSheetsAuth.oauthText',
-                  'The quickest way to get started. Sign in with your Google account and grant access to Google Sheets in a few clicks. Best for most users.'
-                )}
-              </p>
+              <p className='mt-1'>{t('destinationHelp.googleSheetsAuth.oauthText')}</p>
             </div>
             <div>
               <strong className='font-medium'>
-                {t('destinationHelp.googleSheetsAuth.serviceAccountLabel', 'Service Account JSON:')}
+                {t('destinationHelp.googleSheetsAuth.serviceAccountLabel')}
               </strong>
-              <p className='mt-1'>
-                {t(
-                  'destinationHelp.googleSheetsAuth.serviceAccountText',
-                  'Uses a Google Cloud service account key for server-to-server authentication. Recommended when you need unattended access without a personal Google account, or when your organization requires service accounts for compliance.'
-                )}
-              </p>
+              <p className='mt-1'>{t('destinationHelp.googleSheetsAuth.serviceAccountText')}</p>
             </div>
           </div>
         </AccordionContent>

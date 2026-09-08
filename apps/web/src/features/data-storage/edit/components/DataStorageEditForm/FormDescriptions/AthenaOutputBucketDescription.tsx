@@ -5,35 +5,28 @@ import {
   AccordionTrigger,
 } from '@owox/ui/components/accordion';
 import { ExternalAnchor } from '@owox/ui/components/common/external-anchor';
+import { useTranslation } from 'react-i18next';
 
 /**
  * Accordion with step-by-step instructions for OutputBucket.
  */
 export default function AthenaOutputBucketDescription() {
+  const { t } = useTranslation();
+
   return (
     <Accordion variant='common' type='single' collapsible>
       <AccordionItem value='athena-output-bucket-details'>
-        <AccordionTrigger>How do I find a bucket?</AccordionTrigger>
+        <AccordionTrigger>{t('storageFieldHelp.athenaBucket.title')}</AccordionTrigger>
         <AccordionContent>
-          <p className='mb-2'>
-            Athena saves query results in an <strong>S3 bucket</strong>. You need to specify the
-            bucket used for query output.
+          <p className='text-sm leading-6 whitespace-pre-line'>
+            {t('storageFieldHelp.athenaBucket.content')}
           </p>
-          <p className='mb-2'>Here's how to find or create an S3 bucket for Athena output:</p>
-          <ol className='list-inside list-decimal space-y-2 text-sm'>
-            <li>
-              Open{' '}
-              <ExternalAnchor className='underline' href='https://console.aws.amazon.com/s3/'>
-                the AWS S3 console
-              </ExternalAnchor>
-              .
-            </li>
-            <li>Look for an existing bucket used for Athena query results, or create a new one.</li>
-            <li>
-              If creating a new bucket, make sure it is in the same region as your Athena service.
-            </li>
-            <li>Enter the bucket name in this form field.</li>
-          </ol>
+          <ExternalAnchor
+            className='mt-2 inline-block underline'
+            href='https://console.aws.amazon.com/s3/'
+          >
+            {t('storageFieldHelp.common.s3Console')}
+          </ExternalAnchor>
         </AccordionContent>
       </AccordionItem>
     </Accordion>

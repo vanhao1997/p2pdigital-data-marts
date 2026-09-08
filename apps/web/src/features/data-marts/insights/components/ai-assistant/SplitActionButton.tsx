@@ -49,7 +49,9 @@ export function SplitActionButton({
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align='end'>
-          <DropdownMenuItem onClick={onApplyOnly}>{t('insightsUi.applyOnly', 'Apply only')}</DropdownMenuItem>
+          <DropdownMenuItem onClick={onApplyOnly}>
+            {t('insightsUi.applyOnly', 'Apply only')}
+          </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
     </div>

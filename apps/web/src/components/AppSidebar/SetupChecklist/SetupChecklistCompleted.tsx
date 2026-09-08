@@ -50,9 +50,7 @@ export function SetupChecklistCompleted() {
       </div>
 
       <div className='flex flex-col items-center gap-1'>
-        <p className='text-primary text-sm font-semibold'>
-          {t('setupChecklist.completedTitle')}
-        </p>
+        <p className='text-primary text-sm font-semibold'>{t('setupChecklist.completedTitle')}</p>
         <p className='text-primary/75 dark:text-primary/50 text-xs'>
           {t('setupChecklist.completedSubtitle')}
         </p>

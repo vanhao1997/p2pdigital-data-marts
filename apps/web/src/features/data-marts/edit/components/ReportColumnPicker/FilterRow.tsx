@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Button } from '@owox/ui/components/button';
 import { Pencil, X, Layers, AlertTriangle } from 'lucide-react';
 import { cn } from '@owox/ui/lib/utils';
@@ -27,6 +28,7 @@ export function FilterRow({
   displayLabel,
   dataMartName,
 }: FilterRowProps) {
+  const { t } = useTranslation();
   const [editing, setEditing] = useState(false);
   const isOrphaned = fieldType === null;
   const resolvedType = fieldType ?? 'STRING';
@@ -47,8 +49,8 @@ export function FilterRow({
           {isOrphaned && (
             <span
               className='inline-flex items-center text-red-600'
-              title='This column is no longer available in the data mart schema. Remove this rule or restore the column.'
-              aria-label='Column not found in schema'
+              title={t('reportColumnPicker.orphanFilterHelp')}
+              aria-label={t('reportColumnPicker.columnNotFound')}
             >
               <AlertTriangle className='h-3 w-3' />
             </span>
@@ -59,7 +61,7 @@ export function FilterRow({
                 'inline-flex items-center gap-1',
                 isOrphaned ? 'text-red-700 dark:text-red-300' : 'text-blue-600'
               )}
-              title='Pre-join filter (slice)'
+              title={t('reportColumnPicker.preJoinFilter')}
             >
               <Layers className='h-3 w-3' />
               <span className={cn(isOrphaned && 'line-through')}>
@@ -86,8 +88,8 @@ export function FilterRow({
           size='sm'
           disabled
           className='text-muted-foreground h-6 w-6 p-0 opacity-40'
-          aria-label='Edit disabled — column missing from schema'
-          title='Edit disabled — column missing from schema'
+          aria-label={t('reportColumnPicker.editDisabledColumnMissing')}
+          title={t('reportColumnPicker.editDisabledColumnMissing')}
         >
           <Pencil className='h-4 w-4' />
         </Button>
@@ -103,7 +105,9 @@ export function FilterRow({
                 'text-muted-foreground hover:text-foreground h-6 w-6 p-0 transition-opacity group-hover/control-row:opacity-100',
                 editing ? 'opacity-100' : 'opacity-0'
               )}
-              aria-label={isPreJoin ? 'Edit slice' : 'Edit filter'}
+              aria-label={
+                isPreJoin ? t('reportColumnPicker.editSlice') : t('reportColumnPicker.editFilter')
+              }
             >
               <Pencil className='h-4 w-4' />
             </Button>
@@ -121,7 +125,9 @@ export function FilterRow({
         size='sm'
         className='text-muted-foreground hover:text-foreground h-6 w-6 p-0'
         onClick={onRemove}
-        aria-label={isPreJoin ? 'Remove slice' : 'Remove filter'}
+        aria-label={
+          isPreJoin ? t('reportColumnPicker.removeSlice') : t('reportColumnPicker.removeFilter')
+        }
       >
         <X className='h-4 w-4' />
       </Button>

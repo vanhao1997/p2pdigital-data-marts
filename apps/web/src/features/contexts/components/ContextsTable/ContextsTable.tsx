@@ -8,8 +8,6 @@ import type { UserProjection } from '../../../../shared/types';
 import { getContextsColumns, ContextsColumnKey, type ContextsTableItem } from './columns';
 import type { ContextDto, MemberWithScopeDto } from '../../types/context.types';
 
-const ADMIN_ONLY_HINT = 'You need the Project Admin role to manage contexts.';
-
 interface ContextsTableProps {
   contexts: ContextDto[];
   members: MemberWithScopeDto[];
@@ -29,7 +27,7 @@ export function ContextsTable({
   onDeleteContext,
   onAddContext,
 }: ContextsTableProps) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const data: ContextsTableItem[] = useMemo(() => {
     const toProjection = (m: MemberWithScopeDto): UserProjection => ({
       userId: m.userId,
@@ -68,8 +66,15 @@ export function ContextsTable({
   }, [contexts, members]);
 
   const columns = useMemo(
-    () => getContextsColumns({ onEdit: onEditContext, onDelete: onDeleteContext, isAdmin, t }),
-    [onEditContext, onDeleteContext, isAdmin, t]
+    () =>
+      getContextsColumns({
+        onEdit: onEditContext,
+        onDelete: onDeleteContext,
+        isAdmin,
+        t,
+        locale: i18n.language,
+      }),
+    [onEditContext, onDeleteContext, isAdmin, t, i18n.language]
   );
 
   const { table } = useBaseTable<ContextsTableItem>({
@@ -95,13 +100,13 @@ export function ContextsTable({
         tableId='contexts-settings-table'
         table={table}
         onRowClick={handleRowClick}
-        ariaLabel='Contexts table'
+        ariaLabel={t('contextsPage.tableAriaLabel')}
         paginationProps={{ displaySelected: false }}
         renderToolbarLeft={() => (
           <TableColumnSearch
             table={table}
             columnId={ContextsColumnKey.NAME}
-            placeholder='Search by name'
+            placeholder={t('contextsPage.searchByName')}
           />
         )}
         renderToolbarRight={
@@ -109,7 +114,7 @@ export function ContextsTable({
             ? () => {
                 const button = (
                   <TableCTAButton onClick={isAdmin ? onAddContext : undefined} disabled={!isAdmin}>
-                    Add context
+                    {t('contextsPage.addTitle')}
                   </TableCTAButton>
                 );
                 if (isAdmin) return button;
@@ -118,7 +123,7 @@ export function ContextsTable({
                     <TooltipTrigger asChild>
                       <span className='inline-block'>{button}</span>
                     </TooltipTrigger>
-                    <TooltipContent>{ADMIN_ONLY_HINT}</TooltipContent>
+                    <TooltipContent>{t('contextsPage.adminOnlyHint')}</TooltipContent>
                   </Tooltip>
                 );
               }
@@ -126,7 +131,7 @@ export function ContextsTable({
         }
         renderEmptyState={() => (
           <span role='status' aria-live='polite'>
-            No contexts yet. Click "Add context" to create one.
+            {t('contextsPage.emptyState')}
           </span>
         )}
       />

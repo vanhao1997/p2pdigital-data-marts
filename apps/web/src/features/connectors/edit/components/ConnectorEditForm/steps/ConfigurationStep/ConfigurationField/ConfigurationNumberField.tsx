@@ -1,5 +1,6 @@
 import { Input } from '@owox/ui/components/input';
 import type { ConnectorSpecificationResponseApiDto } from '../../../../../../shared/api/types';
+import { useTranslation } from 'react-i18next';
 
 interface ConfigurationNumberFieldProps {
   specification: ConnectorSpecificationResponseApiDto;
@@ -12,6 +13,7 @@ export function ConfigurationNumberField({
   configuration,
   onValueChange,
 }: ConfigurationNumberFieldProps) {
+  const { t } = useTranslation();
   const { name, placeholder, minimum } = specification;
   const displayName = specification.title ?? specification.name;
   const value = configuration[name];
@@ -24,7 +26,7 @@ export function ConfigurationNumberField({
       type='number'
       min={minimum}
       value={inputValue}
-      placeholder={placeholder ?? `Enter ${displayName.toLowerCase()}`}
+      placeholder={placeholder ?? t('connectorWizard.enterValue', { name: displayName })}
       onChange={e => {
         const value = e.target.value;
         const numValue = value === '' ? undefined : parseFloat(value);

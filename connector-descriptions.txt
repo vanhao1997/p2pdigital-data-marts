@@ -1,0 +1,201 @@
+unique 349
+smth
+Report day in Asia/Ho_Chi_Minh.
+Admicro report platform.
+Admicro report type.
+all or requested campaign ID.
+Campaign ID returned by Admicro.
+Date dimension returned by Admicro, when available.
+Admicro campaign report
+Daily Admicro campaign report with canonical dimensions and raw source columns.
+Admicro date report
+Daily Admicro date report with canonical dimensions and raw source columns.
+Admicro ADX username.
+Admicro ADX password.
+Admicro ADX base URL.
+Admicro report result path.
+Optional campaign IDs separated by comma, semicolon, space, or newline. Empty means all permitted campaigns.
+Admicro source column IDs. Desktop default: 1,8,2,4,5; mobile default: 1,9,2,4,5.
+Manual backfill start date.
+Manual backfill end date.
+Fields to fetch in the format node field, separated by commas.
+Number of days to reimport on each incremental run.
+Create tables when Admicro returns no rows.
+Admicro source column ${id}.
+Bank of Canada Exchange Rates
+Daily foreign exchange rates from Bank of Canada.
+Start date for data import
+End date for data import
+Number of days to look back when reimporting data
+Number of days to keep data before cleaning up
+Comma-separated list of fields to fetch (e.g., date,label,rate)
+Create tables with all columns even if no data is returned from API
+Criteo Statistics
+Statistics and metrics for Criteo advertising campaigns.
+Criteo Placements
+Performance metrics broken down by publisher placement.
+Criteo Placement Categories
+Performance metrics broken down by content category.
+Criteo Transactions
+Transaction-level data with individual order details attributed to Criteo ads.
+Criteo Advertiser IDs to fetch data from
+Criteo API Access Token for authentication
+Your Criteo API Client Id
+Your Criteo API Client Secret
+ISO 4217 code (e.g. USD, EUR). Supported currencies: https://developers.criteo.com/marketing-solutions/docs/campaign-statistics#currencies
+Your request timed out
+Total attributed actions divided by impressions.
+Clicks on links to an app store from the ad.
+Clicks on the call-to-action button in the ad.
+Average cost of a relevant tracked action.
+Landing page views divided by link clicks.
+Marketing messages successfully delivered to customers.
+Purchases divided by landing page views.
+Number of times someone viewed the display ad attentively.
+Total attributed actions, including engagement, clicks, and conversions.
+Total value attributed to all tracked actions.
+Estimated number of Accounts Center accounts that performed an attributed action.
+Estimated number of Accounts Center accounts that saw the ad at least once.
+Video views lasting at least six seconds.
+Video views lasting at least thirty seconds or until the video ends.
+Video completions or views that passed fifteen seconds.
+Authentication type
+Facebook user access token
+Facebook App ID used for token validation
+Facebook App Secret used for token validation
+Facebook API Access Token for authentication
+Facebook API App ID for exchange token
+Facebook API App Secret for exchange token
+Facebook Ad Account IDs to fetch data from
+List of fields to fetch from Facebook API
+Enable automatic processing of short links in link_url_asset field. Only available for ad-account/insights-by-link-url-asset endpoint as it requires breakdown by link_url_asset
+Create tables with all columns even if no data is returned from API (true/false)
+Maximum number of records per API request page. Reduce this value (e.g. to 25) if you encounter
+Facebook Page Insights
+Daily organic metrics for one Facebook Page, including Meta media-view replacements.
+Facebook Page media-view breakdowns
+Daily Page media views split by paid distribution or follower status.
+Facebook Page profile metadata
+Current profile metadata for each selected Facebook Page.
+Facebook Page post insights
+Daily insights for posts published on selected Facebook Pages.
+Facebook Page post lifetime insights
+Latest lifetime media-view totals for posts published on selected Facebook Pages.
+Facebook Page video insights
+Daily insights for videos published on selected Facebook Pages.
+Instagram account insights linked to Facebook Page
+Daily account-level insights for the linked Instagram professional account.
+Instagram media insights linked to Facebook Page
+Daily insights for Instagram media published by the linked account.
+Facebook Page audience breakdowns
+Daily age, gender, country and city audience breakdowns returned by Meta.
+The unique ID of the Facebook Page.
+The current name of the Facebook Page.
+Start date of the daily Page Insights bucket returned by Meta.
+End date of the daily Page Insights bucket returned by Meta.
+Total Page views returned by the Page Insights API for the day.
+Total engagements with Page posts returned by the Page Insights API for the day.
+Page follows returned by the Page Insights API for the day.
+Facebook Page ID.
+Daily insight bucket start returned by Meta.
+Daily insight bucket end returned by Meta.
+Meta media-view breakdown name.
+Value returned for the selected media-view breakdown.
+Page media views for the breakdown value.
+The unique Facebook Page ID.
+Current Facebook Page name.
+Page category.
+Page fan count when supplied by Meta.
+Page follower count when supplied by Meta.
+Public Page URL.
+Page about text.
+Linked Instagram professional account ID.
+UTC timestamp when profile metadata was fetched.
+Facebook post ID.
+Post message, when available.
+Post creation timestamp.
+Public post URL.
+Daily insight bucket start.
+Daily insight bucket end.
+People who engaged with the post.
+Post clicks.
+Post reactions.
+Lifetime number of times the post content was played or displayed.
+Lifetime total unique viewers of the post media.
+UTC timestamp when the lifetime snapshot was fetched.
+Facebook video ID.
+Video title.
+Video creation timestamp.
+Public video URL.
+Total video views.
+Video views reaching ten seconds.
+Video views reaching thirty seconds.
+Facebook Page ID owning the Instagram account.
+Instagram professional account ID.
+Instagram username.
+Instagram account impressions.
+Instagram account reach.
+Instagram profile views.
+Instagram website clicks.
+Instagram media ID.
+Instagram media type.
+Instagram media caption.
+Instagram media timestamp.
+Instagram media impressions.
+Instagram media reach.
+Instagram media engagements.
+Instagram media saves.
+Instagram media comments.
+Instagram media likes.
+Audience breakdown metric name.
+Audience dimension value.
+Audience count returned by Meta.
+Facebook user or Page access token
+Facebook user access token (auto-generated)
+Facebook App ID used for token exchange
+Facebook App Secret used for token exchange
+Legacy single Page ID. Use Page IDs for new configurations.
+One or more managed Facebook Page IDs, comma or newline separated
+Cached Page name selected during OAuth authorization
+List of Page Insights fields to fetch
+Daily Page follows returned by Meta.
+Estimated unique Page follows for the selected day.
+Estimated unique Page unfollows for the selected day.
+Number of times Page content was played or displayed.
+Clicks on Page contact information and call-to-action buttons.
+Total unique viewers of Page media.
+Contributor login name
+Contributor ID
+Contributor node ID
+Contributor avatar URL
+Contributor gravatar ID
+Contributor HTML URL
+Contributor type (User/Bot)
+Whether the contributor is a site admin
+Number of contributions to the repository
+Repository Information
+Contains detailed repository information and statistics
+Repository Contributors
+Contains list of contributors to the repository with their contribution counts
+Repository Statistics
+Contains daily repository statistics including stars and contributors count
+Repository ID
+Repository node ID
+Repository name
+Full repository name (owner/repo)
+Whether the repository is private
+Repository owner login
+Repository owner ID
+Repository owner type (User/Organization)
+Repository HTML URL
+Repository description
+Whether the repository is a fork
+Repository creation date
+Repository last update date
+Repository last push date
+Repository homepage URL
+Repository size in KB
+Number of stars
+Number of watchers
+Primary programming language
+Whether the repository has issues enabled

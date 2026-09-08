@@ -54,7 +54,9 @@ export function PluginCard({ plugin, onInstall }: PluginCardProps) {
 
         <div className='min-w-0 flex-1'>
           <div className='truncate font-medium'>{plugin.displayName}</div>
-          <div className='text-muted-foreground truncate text-xs'>by {plugin.source.ownerName}</div>
+          <div className='text-muted-foreground truncate text-xs'>
+            {t('pluginsPage.publishedBy', { owner: plugin.source.ownerName })}
+          </div>
         </div>
 
         {/* Install or settings, top-right. */}
@@ -65,7 +67,10 @@ export function PluginCard({ plugin, onInstall }: PluginCardProps) {
                 variant='ghost'
                 size='icon'
                 className='-mt-1 shrink-0'
-                aria-label={t('pluginsPage.openSettings', { name: plugin.displayName, defaultValue: 'Open {{name}} settings' })}
+                aria-label={t('pluginsPage.openSettings', {
+                  name: plugin.displayName,
+                  defaultValue: 'Open {{name}} settings',
+                })}
                 onClick={open}
               >
                 <Settings className='size-4' />
@@ -81,7 +86,10 @@ export function PluginCard({ plugin, onInstall }: PluginCardProps) {
                 size='icon'
                 className='-mt-1 shrink-0'
                 disabled={!canInstall}
-                aria-label={t('pluginsPage.installNamed', { name: plugin.displayName, defaultValue: 'Install {{name}}' })}
+                aria-label={t('pluginsPage.installNamed', {
+                  name: plugin.displayName,
+                  defaultValue: 'Install {{name}}',
+                })}
                 onClick={() => {
                   onInstall(plugin);
                 }}

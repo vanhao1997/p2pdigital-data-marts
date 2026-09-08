@@ -1,4 +1,5 @@
 import { FacebookLoginButton } from '../../../../../../../shared/components/FacebookLoginButton';
+import { useTranslation } from 'react-i18next';
 import type { FacebookLoginResponse } from '../../../../../../../shared/components/FacebookLoginButton';
 import type { OauthRenderComponentProps } from '../OauthRenderFactory';
 
@@ -8,6 +9,7 @@ export function FacebookOauthRender({
   settings,
   onOAuthSuccess,
 }: Pick<OauthRenderComponentProps, 'isLoading' | 'status' | 'settings' | 'onOAuthSuccess'>) {
+  const { t } = useTranslation();
   const handleFacebookLogin = (response: FacebookLoginResponse) => {
     void onOAuthSuccess({
       accessToken: response.accessToken,
@@ -24,10 +26,11 @@ export function FacebookOauthRender({
       >
         {status?.user ? (
           <>
-            Authenticated as <strong>{status.user.name ?? status.user.id}</strong>
+            {t('facebookAuth.authenticatedAs')}{' '}
+            <strong>{status.user.name ?? status.user.id}</strong>
           </>
         ) : (
-          'Continue with Facebook'
+          t('facebookAuth.continue')
         )}
       </FacebookLoginButton>
     </div>
