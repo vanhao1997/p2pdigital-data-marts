@@ -114,7 +114,7 @@ flowchart TD
 ## 2. ĐIỀU TRA CHUYÊN SÂU: CÁC ĐIỂM GÃY VẬN HÀNH BACKEND (OPERATIONAL FAILURE MODES)
 
 ### 2.1. Phân hệ Kích hoạt & Điều phối Job (Run Trigger & Concurrency Queue)
-**File mã nguồn:** [`apps/backend/src/data-marts/services/base-run-trigger-handler.service.ts`](file:///c:/Users/PC/.gemini/antigravity/scratch/owox-data-marts/apps/backend/src/data-marts/services/base-run-trigger-handler.service.ts)
+**File mã nguồn:** [`apps/backend/src/data-marts/services/base-run-trigger-handler.service.ts` ](apps/backend/src/data-marts/services/base-run-trigger-handler.service.ts)
 
 Lớp trừu tượng này kiểm soát toàn bộ cơ chế kích hoạt các tiến trình chạy ngầm. Đây là chốt chặn đầu tiên và chứa các điểm gãy nghiêm trọng:
 
@@ -160,8 +160,8 @@ Lớp trừu tượng này kiểm soát toàn bộ cơ chế kích hoạt các t
 
 ### 2.2. Phân hệ Thực thi Báo cáo (Report Run Execution & Lifecycle)
 **File mã nguồn:**  
-- [`apps/backend/src/data-marts/use-cases/run-report.service.ts`](file:///c:/Users/PC/.gemini/antigravity/scratch/owox-data-marts/apps/backend/src/data-marts/use-cases/run-report.service.ts)  
-- [`apps/backend/src/data-marts/models/base-report-run.model.ts`](file:///c:/Users/PC/.gemini/antigravity/scratch/owox-data-marts/apps/backend/src/data-marts/models/base-report-run.model.ts)
+- [`apps/backend/src/data-marts/use-cases/run-report.service.ts` ](apps/backend/src/data-marts/use-cases/run-report.service.ts)  
+- [`apps/backend/src/data-marts/models/base-report-run.model.ts` ](apps/backend/src/data-marts/models/base-report-run.model.ts)
 
 #### 1. Khóa Xung đột Chạy Trùng (Already Running Optimistic Lock)
 - **Vị trí:** `run-report.service.ts`, L158–L163
@@ -215,7 +215,7 @@ Lớp trừu tượng này kiểm soát toàn bộ cơ chế kích hoạt các t
 ---
 
 ### 2.3. Phân hệ Biên dịch & Xuất Dữ liệu Google Sheets (Google Sheets Report Writer)
-**File mã nguồn:** [`apps/backend/src/data-marts/data-destination-types/google-sheets/services/google-sheets-report-writer.ts`](file:///c:/Users/PC/.gemini/antigravity/scratch/owox-data-marts/apps/backend/src/data-marts/data-destination-types/google-sheets/services/google-sheets-report-writer.ts)
+**File mã nguồn:** [`apps/backend/src/data-marts/data-destination-types/google-sheets/services/google-sheets-report-writer.ts` ](apps/backend/src/data-marts/data-destination-types/google-sheets/services/google-sheets-report-writer.ts)
 
 Đây là phân hệ phức tạp nhất và có tần suất xảy ra lỗi vận hành cao nhất do tương tác trực tiếp với API bên ngoài (Google Sheets API v4):
 
@@ -304,8 +304,8 @@ Lớp trừu tượng này kiểm soát toàn bộ cơ chế kích hoạt các t
 
 ### 2.4. Phân hệ Xác thực Google Drive Folder & 12 Mã Ngoại lệ OAuth (OAuth Lifecycle)
 **File mã nguồn:**  
-- [`apps/backend/src/data-marts/data-destination-types/google-sheets/services/google-sheets-folder-validator.service.ts`](file:///c:/Users/PC/.gemini/antigravity/scratch/owox-data-marts/apps/backend/src/data-marts/data-destination-types/google-sheets/services/google-sheets-folder-validator.service.ts)  
-- [`apps/backend/src/data-marts/exceptions/google-oauth.exceptions.ts`](file:///c:/Users/PC/.gemini/antigravity/scratch/owox-data-marts/apps/backend/src/data-marts/exceptions/google-oauth.exceptions.ts)
+- [`apps/backend/src/data-marts/data-destination-types/google-sheets/services/google-sheets-folder-validator.service.ts` ](apps/backend/src/data-marts/data-destination-types/google-sheets/services/google-sheets-folder-validator.service.ts)  
+- [`apps/backend/src/data-marts/exceptions/google-oauth.exceptions.ts` ](apps/backend/src/data-marts/exceptions/google-oauth.exceptions.ts)
 
 #### 1. Ràng buộc Kỹ thuật Nghiêm ngặt về Thư mục Google Drive:
 Khi xuất dữ liệu tự động bằng Service Account, hệ thống bắt buộc kiểm tra các điều kiện tiên quyết tại thời điểm Lưu cấu hình (Save time) để tránh fail ngầm khi chạy:
@@ -340,7 +340,7 @@ Hệ thống định nghĩa cây phân cấp ngoại lệ bắt nguồn từ `Go
 ---
 
 ### 2.5. Phân hệ Trích xuất Dữ liệu Connector (Connector Executor Subsystem)
-**File mã nguồn:** [`apps/backend/src/data-marts/services/connector/connector-executor.service.ts`](file:///c:/Users/PC/.gemini/antigravity/scratch/owox-data-marts/apps/backend/src/data-marts/services/connector/connector-executor.service.ts)
+**File mã nguồn:** [`apps/backend/src/data-marts/services/connector/connector-executor.service.ts` ](apps/backend/src/data-marts/services/connector/connector-executor.service.ts)
 
 Connector chịu trách nhiệm chạy các container hoặc sub-process để kéo dữ liệu từ Meta Ads, Google Ads, TikTok Ads, Shopee, v.v.
 
@@ -369,7 +369,7 @@ Connector chịu trách nhiệm chạy các container hoặc sub-process để k
 ---
 
 ### 2.6. Phân hệ Quản trị Điều khiển Đầu ra & Truy vấn MCP (Output Controls - 30 Mã lỗi)
-**File mã nguồn:** [`apps/backend/src/ee/mcp/tools/output-controls-error.mapper.ts`](file:///c:/Users/PC/.gemini/antigravity/scratch/owox-data-marts/apps/backend/src/ee/mcp/tools/output-controls-error.mapper.ts)
+**File mã nguồn:** [`apps/backend/src/ee/mcp/tools/output-controls-error.mapper.ts` ](apps/backend/src/ee/mcp/tools/output-controls-error.mapper.ts)
 
 Module này biên dịch toàn bộ các lỗi vi phạm cấu trúc truy vấn Data Mart (Bộ lọc, Lát cắt, Phép tổng hợp, Cột tính toán, Khoảng ngày) khi người dùng thao tác trên web hoặc qua MCP AI Agent.
 
@@ -411,7 +411,7 @@ Dưới đây là bảng phân tích toàn diện 30 mã lỗi được định 
 ---
 
 ### 2.7. Phân hệ Khóa Dự án do Bản quyền & Tài chính (Project Blocked Exceptions)
-**File mã nguồn:** [`apps/backend/src/common/exceptions/project-operation-blocked.exception.ts`](file:///c:/Users/PC/.gemini/antigravity/scratch/owox-data-marts/apps/backend/src/common/exceptions/project-operation-blocked.exception.ts)
+**File mã nguồn:** [`apps/backend/src/common/exceptions/project-operation-blocked.exception.ts` ](apps/backend/src/common/exceptions/project-operation-blocked.exception.ts)
 
 Khi người dùng thực hiện bất kỳ thao tác nào, hệ thống kiểm tra trạng thái thuê bao và hạn mức dự án:
 1. `BI_PROJECT_NOT_ACTIVE` (L15–L18):  
@@ -425,8 +425,8 @@ Khi người dùng thực hiện bất kỳ thao tác nào, hệ thống kiểm 
 
 ### 2.8. Phân hệ Nền tảng Mở rộng Plugin Host & Dynamic Collections
 **File mã nguồn:**  
-- [`apps/backend/src/plugin-host/errors/plugin-host.errors.ts`](file:///c:/Users/PC/.gemini/antigravity/scratch/owox-data-marts/apps/backend/src/plugin-host/errors/plugin-host.errors.ts)  
-- [`apps/backend/src/plugin-host/collections/errors/plugin-collection.errors.ts`](file:///c:/Users/PC/.gemini/antigravity/scratch/owox-data-marts/apps/backend/src/plugin-host/collections/errors/plugin-collection.errors.ts)
+- [`apps/backend/src/plugin-host/errors/plugin-host.errors.ts` ](apps/backend/src/plugin-host/errors/plugin-host.errors.ts)  
+- [`apps/backend/src/plugin-host/collections/errors/plugin-collection.errors.ts` ](apps/backend/src/plugin-host/collections/errors/plugin-collection.errors.ts)
 
 Quản lý việc tải và vận hành các plugin mở rộng từ GitHub:
 1. `INVALID_REPO_LOCATOR`: Định dạng repository không đúng (`owner/repo`).
@@ -460,7 +460,7 @@ Khi thực hiện kiểm tra độ sạch của dữ liệu (null check, duplica
 Đây là lỗi phổ biến và gây mất thẩm mỹ giao diện nghiêm trọng nhất trong hệ thống: **Mặc dù giao diện chọn Tiếng Việt, người dùng vẫn liên tục gặp các câu tiếng Anh xen kẽ**.
 
 #### 1. Màn hình Danh sách Báo cáo (`StatusIcon.tsx`):
-- **Vị trí:** [`apps/web/src/features/data-marts/reports/list/components/StatusIcon/StatusIcon.tsx`](file:///c:/Users/PC/.gemini/antigravity/scratch/owox-data-marts/apps/web/src/features/data-marts/reports/list/components/StatusIcon/StatusIcon.tsx)
+- **Vị trí:** [`apps/web/src/features/data-marts/reports/list/components/StatusIcon/StatusIcon.tsx` ](apps/web/src/features/data-marts/reports/list/components/StatusIcon/StatusIcon.tsx)
 - **Dòng code:** L83, L89–L91
   ```tsx
   <TooltipContent id={tooltipId} side='bottom' role='tooltip'>
@@ -483,7 +483,7 @@ Khi thực hiện kiểm tra độ sạch của dữ liệu (null check, duplica
 - **Hệ quả:** Trong bảng hover card hiển thị chi tiết báo cáo, mục lỗi hiển thị nguyên văn tiếng Anh của server.
 
 #### 3. Thông báo Xuất bản Kho Dữ liệu Thất bại (`buildPublishFailureMessage.ts`):
-- **Vị trí:** [`apps/web/src/features/data-storage/shared/utils/buildPublishFailureMessage.ts`](file:///c:/Users/PC/.gemini/antigravity/scratch/owox-data-marts/apps/web/src/features/data-storage/shared/utils/buildPublishFailureMessage.ts)
+- **Vị trí:** [`apps/web/src/features/data-storage/shared/utils/buildPublishFailureMessage.ts` ](apps/web/src/features/data-storage/shared/utils/buildPublishFailureMessage.ts)
 - **Dòng code:** L22:
   ```typescript
   i18n.t('uiFeedback.publishFailure.sharedReason', { reason: reasons[0] })
@@ -491,7 +491,7 @@ Khi thực hiện kiểm tra độ sạch của dữ liệu (null check, duplica
 - **Hệ quả:** Khóa `uiFeedback.publishFailure.sharedReason` trong `vi.json` có nội dung: `"vì: {{reason}}"`. Nhưng `reasons[0]` lại là một câu tiếng Anh từ backend. Kết quả tạo thành câu lai tạp: *"Không thể xuất bản bản nháp vì: The target dataset already exists and contains incompatible tables."*
 
 #### 4. Trạng thái Sức khỏe Kho Dữ liệu (`DataStorageHealthStatusView.tsx`):
-- **Vị trí:** [`apps/web/src/features/data-storage/shared/components/DataStorageHealthIndicator/DataStorageHealthStatusView.tsx`](file:///c:/Users/PC/.gemini/antigravity/scratch/owox-data-marts/apps/web/src/features/data-storage/shared/components/DataStorageHealthIndicator/DataStorageHealthStatusView.tsx)
+- **Vị trí:** [`apps/web/src/features/data-storage/shared/components/DataStorageHealthIndicator/DataStorageHealthStatusView.tsx` ](apps/web/src/features/data-storage/shared/components/DataStorageHealthIndicator/DataStorageHealthStatusView.tsx)
 - **Dòng code:** L44, L52:
   ```tsx
   <span>{errorMessage ?? t('storageHealth.reauthRequired')}</span>
@@ -502,7 +502,7 @@ Khi thực hiện kiểm tra độ sạch của dữ liệu (null check, duplica
 ---
 
 ### 3.2. Cơ chế `humanizeValidationCode` Tự động Tạo Câu Tiếng Anh trong Toast
-**File mã nguồn:** [`apps/web/src/shared/utils/showApiErrorToast.ts`](file:///c:/Users/PC/.gemini/antigravity/scratch/owox-data-marts/apps/web/src/shared/utils/showApiErrorToast.ts)
+**File mã nguồn:** [`apps/web/src/shared/utils/showApiErrorToast.ts` ](apps/web/src/shared/utils/showApiErrorToast.ts)
 
 Tất cả các thông báo lỗi dạng Toast trên toàn bộ ứng dụng web đều đi qua file này:
 - **Dòng code 15–18:**
@@ -528,7 +528,7 @@ Tất cả các thông báo lỗi dạng Toast trên toàn bộ ứng dụng web
 ---
 
 ### 3.3. Các chuỗi Hardcoded Tiếng Anh Tĩnh trong UI Kit (`packages/ui`)
-**File mã nguồn:** [`packages/ui/src/components/file-drop-textarea.tsx`](file:///c:/Users/PC/.gemini/antigravity/scratch/owox-data-marts/packages/ui/src/components/file-drop-textarea.tsx)
+**File mã nguồn:** [`packages/ui/src/components/file-drop-textarea.tsx` ](packages/ui/src/components/file-drop-textarea.tsx)
 
 Component kéo thả file JSON Service Account của Google Sheets chứa nhiều câu tiếng Anh viết cứng:
 - **Dòng 43:** `onFileReject('Only one file can be dropped at a time.')` ➔ *"Chỉ có thể kéo thả 1 file mỗi lần."*
@@ -543,28 +543,28 @@ Component kéo thả file JSON Service Account của Google Sheets chứa nhiề
 ### 3.4. Các chuỗi Hardcoded Tiếng Anh Tĩnh trong Service & Component Frontend
 
 #### 1. Định nghĩa Hằng số Trạng thái Kho Lưu trữ:
-**File:** [`apps/web/src/features/data-storage/shared/services/data-storage-health-status.service.ts`](file:///c:/Users/PC/.gemini/antigravity/scratch/owox-data-marts/apps/web/src/features/data-storage/shared/services/data-storage-health-status.service.ts)
+**File:** [`apps/web/src/features/data-storage/shared/services/data-storage-health-status.service.ts` ](apps/web/src/features/data-storage/shared/services/data-storage-health-status.service.ts)
 - **Dòng 25:** `export const UNCONFIGURED_STATUS_LABEL = 'Complete setup to activate Storage';`
 - **Dòng 26–27:**  
   `export const OAUTH_REAUTH_REQUIRED_STATUS_LABEL = 'Google authorization could not be refreshed. Reconnect this Storage to restore access.';`
 
 #### 2. Cấu hình Hiển thị Sức khỏe Kho Dữ liệu:
-**File:** [`apps/web/src/features/data-storage/shared/components/DataStorageHealthIndicator/DataStorageHealthIndicator.tsx`](file:///c:/Users/PC/.gemini/antigravity/scratch/owox-data-marts/apps/web/src/features/data-storage/shared/components/DataStorageHealthIndicator/DataStorageHealthIndicator.tsx)
+**File:** [`apps/web/src/features/data-storage/shared/components/DataStorageHealthIndicator/DataStorageHealthIndicator.tsx` ](apps/web/src/features/data-storage/shared/components/DataStorageHealthIndicator/DataStorageHealthIndicator.tsx)
 - **Dòng 44:** `text: 'Storage access is valid'`
 - **Dòng 49:** `text: 'Storage access validation failed'`
 - **Dòng 59:** `text: 'Reconnect Storage'`
 - **Dòng 65:** `text: 'Storage status not fetched yet'`
 
 #### 3. Tiêu đề Lần chạy Looker Studio trong Lịch sử:
-**File:** [`apps/web/src/features/data-marts/edit/components/DataMartRunHistoryView/utils.ts`](file:///c:/Users/PC/.gemini/antigravity/scratch/owox-data-marts/apps/web/src/features/data-marts/edit/components/DataMartRunHistoryView/utils.ts)
+**File:** [`apps/web/src/features/data-marts/edit/components/DataMartRunHistoryView/utils.ts` ](apps/web/src/features/data-marts/edit/components/DataMartRunHistoryView/utils.ts)
 - **Dòng 173:** `title = 'Data Studio data fetching';` (Khi xem lịch sử chạy kiểu Looker Studio, tiêu đề luôn là tiếng Anh).
 
 ---
 
 ### 3.5. Cơ chế Đối chiếu Chuỗi Tĩnh trong Connector Metadata (`connectorMetadataVi`)
 **File mã nguồn:**  
-- [`apps/web/src/features/connectors/shared/utils/connector-metadata.ts`](file:///c:/Users/PC/.gemini/antigravity/scratch/owox-data-marts/apps/web/src/features/connectors/shared/utils/connector-metadata.ts)  
-- [`apps/web/src/features/connectors/shared/utils/connector-metadata-vi.ts`](file:///c:/Users/PC/.gemini/antigravity/scratch/owox-data-marts/apps/web/src/features/connectors/shared/utils/connector-metadata-vi.ts)
+- [`apps/web/src/features/connectors/shared/utils/connector-metadata.ts` ](apps/web/src/features/connectors/shared/utils/connector-metadata.ts)  
+- [`apps/web/src/features/connectors/shared/utils/connector-metadata-vi.ts` ](apps/web/src/features/connectors/shared/utils/connector-metadata-vi.ts)
 
 Hệ thống dịch các trường cấu hình của Connector (Facebook Ads, Google Ads, Shopee, v.v.) bằng một từ điển tĩnh:
 - **Dòng code 18–27:**
@@ -584,15 +584,15 @@ Hệ thống dịch các trường cấu hình của Connector (Facebook Ads, Go
 ### 3.6. Tàn dư Nhãn hiệu Cũ "OWOX" trong Codebase
 
 1. **Backend Google Drive Folder Validator:**  
-   [`apps/backend/src/data-marts/data-destination-types/google-sheets/services/google-sheets-folder-validator.service.ts`](file:///c:/Users/PC/.gemini/antigravity/scratch/owox-data-marts/apps/backend/src/data-marts/data-destination-types/google-sheets/services/google-sheets-folder-validator.service.ts), Dòng 95:  
+   [`apps/backend/src/data-marts/data-destination-types/google-sheets/services/google-sheets-folder-validator.service.ts` ](apps/backend/src/data-marts/data-destination-types/google-sheets/services/google-sheets-folder-validator.service.ts), Dòng 95:  
    `"...so OWOX cannot place documents in a Drive folder..."`
 2. **Backend Output Controls Error Mapper:**  
-   [`apps/backend/src/ee/mcp/tools/output-controls-error.mapper.ts`](file:///c:/Users/PC/.gemini/antigravity/scratch/owox-data-marts/apps/backend/src/ee/mcp/tools/output-controls-error.mapper.ts):  
+   [`apps/backend/src/ee/mcp/tools/output-controls-error.mapper.ts` ](apps/backend/src/ee/mcp/tools/output-controls-error.mapper.ts):  
    - Dòng 194: `"...tell the user to open the Data Mart's Output Schema in OWOX and fix the formula."`  
    - Dòng 267: `"...tell the user to open the report in OWOX and clear that source..."`  
    - Dòng 353: `"It was created in the OWOX UI and cannot be expressed over MCP."`
 3. **Frontend Structured Logs View:**  
-   [`apps/web/src/features/data-marts/edit/components/DataMartRunHistoryView/StructuredLogsView.tsx`](file:///c:/Users/PC/.gemini/antigravity/scratch/owox-data-marts/apps/web/src/features/data-marts/edit/components/DataMartRunHistoryView/StructuredLogsView.tsx), Dòng 11–12:  
+   [`apps/web/src/features/data-marts/edit/components/DataMartRunHistoryView/StructuredLogsView.tsx` ](apps/web/src/features/data-marts/edit/components/DataMartRunHistoryView/StructuredLogsView.tsx), Dòng 11–12:  
    `const OWOX_APP_URL = 'https://digitalreport.p2pdigital.io.vn';`  
    `const OWOX_APP_URL_PATTERN = /(https:\/\/digitalreport\.p2pdigital\.io\.vn)/g;`
 
@@ -604,26 +604,26 @@ Bảng tổng hợp chi tiết dưới đây liệt kê đầy đủ từng vị
 
 | STT | Phân Hệ & Đường Dẫn File | Dòng Code | Phân Loại | Thực Trạng Kỹ Thuật Hiện Tại | Hậu Quả Vận Hành & Trải Nghiệm | Phương Án Kỹ Thuật Khắc Phục (Remediation) |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| **1** | [base-run-trigger-handler.service.ts](file:///c:/Users/PC/.gemini/antigravity/scratch/owox-data-marts/apps/backend/src/data-marts/services/base-run-trigger-handler.service.ts) | 80 | Vận hành (Concurrency) | Ghi chuỗi lỗi tiếng Anh cố định 147 ký tự vào `run.errors` khi vượt quota job đồng thời | Job bị FAILED ngay, người dùng thấy câu thông báo tiếng Anh dài dòng không dịch được | Lưu mã lỗi có cấu trúc `{ code: 'CONCURRENCY_LIMIT_REACHED', max: limit }`, frontend dùng i18n để render tiếng Việt kèm gợi ý chờ lượt chạy trước. |
-| **2** | [base-run-trigger-handler.service.ts](file:///c:/Users/PC/.gemini/antigravity/scratch/owox-data-marts/apps/backend/src/data-marts/services/base-run-trigger-handler.service.ts) | 71 | Vận hành (Archive Lock) | Ghi chuỗi tiếng Anh cố định: `'Project is archived and read-only...'` | Cron job thất bại trong im lặng, log hiển thị tiếng Anh thô | Trả về `{ code: 'PROJECT_ARCHIVED_READ_ONLY' }` và cập nhật trigger trạng thái INACTIVE để dừng bắn lịch trình thừa. |
-| **3** | [run-report.service.ts](file:///c:/Users/PC/.gemini/antigravity/scratch/owox-data-marts/apps/backend/src/data-marts/use-cases/run-report.service.ts) | 160 | Vận hành (Lock Conflict) | Báo cáo đang chạy thì yêu cầu mới bị bỏ qua hoặc ném `AlreadyRunning` | Người dùng tưởng hệ thống đơ do bấm không thấy phản hồi | Hiển thị toast thông báo tiếng Việt: "Báo cáo này hiện đang trong tiến trình xử lý, vui lòng không kích hoạt lại". |
-| **4** | [base-report-run.model.ts](file:///c:/Users/PC/.gemini/antigravity/scratch/owox-data-marts/apps/backend/src/data-marts/models/base-report-run.model.ts) | 112–119 | Kiến trúc Lưu trữ Lỗi | Serialize lỗi thành chuỗi JSON `{ type, at, error }` lưu vào cột text DB | Lỗi bị đóng băng dạng tiếng Anh cố định, không thể đa ngôn ngữ hóa ở client | Bổ sung trường `errorCode` và `errorParams` vào schema của `DataMartRun` và `Report.lastRunError`. |
-| **5** | [google-sheets-report-writer.ts](file:///c:/Users/PC/.gemini/antigravity/scratch/owox-data-marts/apps/backend/src/data-marts/data-destination-types/google-sheets/services/google-sheets-report-writer.ts) | 156 | Vận hành (Report Pre-flight) | Ném ngoại lệ khi Data Mart không có trường kết nối (`length === 0`) | Chạy báo cáo bị văng lỗi ngay bước đầu | Thêm validation cảnh báo ngay trên form chỉnh sửa Report: "Data Mart chưa có cột dữ liệu nào được kích hoạt". |
-| **6** | [google-sheets-report-writer.ts](file:///c:/Users/PC/.gemini/antigravity/scratch/owox-data-marts/apps/backend/src/data-marts/data-destination-types/google-sheets/services/google-sheets-report-writer.ts) | 168 | Vận hành (SQL Collision) | Ném ngoại lệ khi 2 bảng JOIN trùng tên cột SQL | Tiến trình xuất dữ liệu sập, báo lỗi `Duplicate column names in SQL output` | Thêm tính năng tự động gán tiền tố alias (Auto-aliasing) khi phát hiện trùng tên cột giữa các bảng joined. |
-| **7** | [google-sheets-report-writer.ts](file:///c:/Users/PC/.gemini/antigravity/scratch/owox-data-marts/apps/backend/src/data-marts/data-destination-types/google-sheets/services/google-sheets-report-writer.ts) | 184 | Vận hành (Header Collision) | Ném ngoại lệ khi 2 cột có cùng Display Label khi ghi lên Sheet | Lỗi `Duplicate column headers in report output`, layout Sheet bị hỏng | Kiểm tra trùng lặp Display Label ngay khi người dùng chỉnh sửa cột trên UI, tự động thêm hậu tố `(1)`, `(2)`. |
-| **8** | [google-sheets-report-writer.ts](file:///c:/Users/PC/.gemini/antigravity/scratch/owox-data-marts/apps/backend/src/data-marts/data-destination-types/google-sheets/services/google-sheets-report-writer.ts) | 660 | Vận hành (Auth Missing) | Không có OAuth hoặc Service Account hợp lệ | Báo cáo thất bại do không kết nối được Google API | Kiểm tra trạng thái Credential trước khi kích hoạt; nếu hết hạn, hiển thị nút "Kết nối lại Google". |
-| **9** | [google-sheets-folder-validator.service.ts](file:///c:/Users/PC/.gemini/antigravity/scratch/owox-data-marts/apps/backend/src/data-marts/data-destination-types/google-sheets/services/google-sheets-folder-validator.service.ts) | 66, 72 | Vận hành (Google Drive) | Service Account không hỗ trợ My Drive; thiếu quyền Content Manager | Lưu điểm đích thất bại hoặc không tạo được file Sheet | Thêm hướng dẫn trực quan ngay dưới ô nhập Folder ID: yêu cầu dùng Shared Drive và cấp quyền Content Manager cho SA email. |
-| **10** | [google-sheets-folder-validator.service.ts](file:///c:/Users/PC/.gemini/antigravity/scratch/owox-data-marts/apps/backend/src/data-marts/data-destination-types/google-sheets/services/google-sheets-folder-validator.service.ts) | 95 | Tàn dư Thương hiệu Cũ | Chứa chuỗi `"...so OWOX cannot place documents..."` | Nhầm lẫn thương hiệu cũ trên thông báo hệ thống | Sửa chuỗi thành: `"...so P2PDigital cannot place documents in a Drive folder..."`. |
-| **11** | [google-oauth.exceptions.ts](file:///c:/Users/PC/.gemini/antigravity/scratch/owox-data-marts/apps/backend/src/data-marts/exceptions/google-oauth.exceptions.ts) | 38–194 | Vận hành (OAuth Lifecycle) | 12 lớp ngoại lệ OAuth đều trả về thông điệp tiếng Anh kỹ thuật | Người dùng gặp lỗi OAuth không hiểu cách cấp lại quyền | Xây dựng bộ Error Code Handler tại Frontend để chuyển 12 mã thành hướng dẫn tiếng Việt kèm nút Re-authenticate. |
-| **12** | [connector-executor.service.ts](file:///c:/Users/PC/.gemini/antigravity/scratch/owox-data-marts/apps/backend/src/data-marts/services/connector/connector-executor.service.ts) | 512, 862 | Vận hành (Connector Run) | Tiến trình con văng lỗi không rõ nguyên nhân, gán FAILED | Người dùng không biết nguồn dữ liệu (Meta/Google) bị từ chối ở điểm nào | Bắt và ghi nhận 20 dòng `stderr` cuối cùng của tiến trình con vào bảng log để hiển thị trực tiếp. |
-| **13** | [output-controls-error.mapper.ts](file:///c:/Users/PC/.gemini/antigravity/scratch/owox-data-marts/apps/backend/src/ee/mcp/tools/output-controls-error.mapper.ts) | 194, 267, 353 | Tàn dư Thương hiệu Cũ | 3 câu hướng dẫn chứa từ khóa `"in OWOX"`, `"OWOX UI"` | Người dùng và AI Agent bị nhầm lẫn tài liệu/giao diện OWOX | Thay thế `"OWOX"` bằng `"P2PDigital Data Marts"`. |
-| **14** | [StatusIcon.tsx](file:///c:/Users/PC/.gemini/antigravity/scratch/owox-data-marts/apps/web/src/features/data-marts/reports/list/components/StatusIcon/StatusIcon.tsx) | 83, 89–91 | Dịch thuật (Mixed UI) | Đổ trực tiếp chuỗi tiếng Anh `errorMessage` vào Tooltip và aria-label | Giao diện tiếng Việt nhưng tooltip báo lỗi hiển thị 100% tiếng Anh | Bổ sung hàm mapper dịch các mã lỗi phổ biến của Report sang tiếng Việt trước khi render vào Tooltip. |
-| **15** | [showApiErrorToast.ts](file:///c:/Users/PC/.gemini/antigravity/scratch/owox-data-marts/apps/web/src/shared/utils/showApiErrorToast.ts) | 15–18, 50, 60 | Dịch thuật & Hardcoded | `humanizeValidationCode` tự tạo câu tiếng Anh, hardcoded `(+N more)`, `Something went wrong` | Toast thông báo lỗi hệ thống hiển thị tiếng Anh lai tạp | Tích hợp từ điển đa ngôn ngữ i18n cho mã kiểm tra hợp lệ và thay thế các chuỗi tĩnh bằng `t(...)`. |
-| **16** | [file-drop-textarea.tsx](file:///c:/Users/PC/.gemini/antigravity/scratch/owox-data-marts/packages/ui/src/components/file-drop-textarea.tsx) | 43, 53, 81, 87, 99 | Hardcoded UI | 6 câu cảnh báo khi kéo thả file Service Account viết cứng tiếng Anh | Khi kéo file JSON sai, toast thông báo hoàn toàn bằng tiếng Anh | Chuyển các thông báo lỗi vào prop callback hoặc sử dụng bản dịch tiếng Việt chuẩn. |
-| **17** | [data-storage-health-status.service.ts](file:///c:/Users/PC/.gemini/antigravity/scratch/owox-data-marts/apps/web/src/features/data-storage/shared/services/data-storage-health-status.service.ts) | 25–27 | Hardcoded UI | Khai báo hằng số tiếng Anh `UNCONFIGURED_STATUS_LABEL`, `OAUTH_REAUTH_REQUIRED_STATUS_LABEL` | Trạng thái kho dữ liệu hiển thị tiếng Anh trên màn hình danh sách | Thay hằng số tĩnh bằng hàm gọi `i18n.t('storageHealth....')`. |
-| **18** | [DataStorageHealthStatusView.tsx](file:///c:/Users/PC/.gemini/antigravity/scratch/owox-data-marts/apps/web/src/features/data-storage/shared/components/DataStorageHealthIndicator/DataStorageHealthStatusView.tsx) | 44, 52 | Dịch thuật (Override Defect) | `errorMessage ?? t('storageHealth.invalid')` ưu tiên chuỗi tiếng Anh của server | Chuỗi tiếng Việt chuẩn bị đè mất khi có lỗi | Sử dụng chuỗi dịch tiếng Việt làm nhãn chính, hiển thị chi tiết kỹ thuật trong tooltip phụ. |
-| **19** | [utils.ts (DataMartRunHistoryView)](file:///c:/Users/PC/.gemini/antigravity/scratch/owox-data-marts/apps/web/src/features/data-marts/edit/components/DataMartRunHistoryView/utils.ts) | 173 | Hardcoded UI | `title = 'Data Studio data fetching'` viết cứng tiếng Anh | Lịch sử chạy báo cáo Looker Studio hiển thị tiêu đề tiếng Anh | Sửa thành `title = i18n.t('runHistory.lookerStudioFetching', 'Truy xuất dữ liệu Looker Studio')`. |
-| **20** | [connector-metadata.ts](file:///c:/Users/PC/.gemini/antigravity/scratch/owox-data-marts/apps/web/src/features/connectors/shared/utils/connector-metadata.ts) | 27 | Dịch thuật (Fallback Gap) | Trường mới không có trong `connectorMetadataVi` sẽ trả về nguyên văn tiếng Anh | Các connector mới hoặc trường API mới hiển thị tiếng Anh | Bổ sung cơ chế fallback tra cứu tự động qua từ điển chung hoặc cập nhật định kỳ từ điển metadata. |
+| **1** | [base-run-trigger-handler.service.ts ](apps/backend/src/data-marts/services/base-run-trigger-handler.service.ts) | 80 | Vận hành (Concurrency) | Ghi chuỗi lỗi tiếng Anh cố định 147 ký tự vào `run.errors` khi vượt quota job đồng thời | Job bị FAILED ngay, người dùng thấy câu thông báo tiếng Anh dài dòng không dịch được | Lưu mã lỗi có cấu trúc `{ code: 'CONCURRENCY_LIMIT_REACHED', max: limit }`, frontend dùng i18n để render tiếng Việt kèm gợi ý chờ lượt chạy trước. |
+| **2** | [base-run-trigger-handler.service.ts ](apps/backend/src/data-marts/services/base-run-trigger-handler.service.ts) | 71 | Vận hành (Archive Lock) | Ghi chuỗi tiếng Anh cố định: `'Project is archived and read-only...'` | Cron job thất bại trong im lặng, log hiển thị tiếng Anh thô | Trả về `{ code: 'PROJECT_ARCHIVED_READ_ONLY' }` và cập nhật trigger trạng thái INACTIVE để dừng bắn lịch trình thừa. |
+| **3** | [run-report.service.ts ](apps/backend/src/data-marts/use-cases/run-report.service.ts) | 160 | Vận hành (Lock Conflict) | Báo cáo đang chạy thì yêu cầu mới bị bỏ qua hoặc ném `AlreadyRunning` | Người dùng tưởng hệ thống đơ do bấm không thấy phản hồi | Hiển thị toast thông báo tiếng Việt: "Báo cáo này hiện đang trong tiến trình xử lý, vui lòng không kích hoạt lại". |
+| **4** | [base-report-run.model.ts ](apps/backend/src/data-marts/models/base-report-run.model.ts) | 112–119 | Kiến trúc Lưu trữ Lỗi | Serialize lỗi thành chuỗi JSON `{ type, at, error }` lưu vào cột text DB | Lỗi bị đóng băng dạng tiếng Anh cố định, không thể đa ngôn ngữ hóa ở client | Bổ sung trường `errorCode` và `errorParams` vào schema của `DataMartRun` và `Report.lastRunError`. |
+| **5** | [google-sheets-report-writer.ts ](apps/backend/src/data-marts/data-destination-types/google-sheets/services/google-sheets-report-writer.ts) | 156 | Vận hành (Report Pre-flight) | Ném ngoại lệ khi Data Mart không có trường kết nối (`length === 0`) | Chạy báo cáo bị văng lỗi ngay bước đầu | Thêm validation cảnh báo ngay trên form chỉnh sửa Report: "Data Mart chưa có cột dữ liệu nào được kích hoạt". |
+| **6** | [google-sheets-report-writer.ts ](apps/backend/src/data-marts/data-destination-types/google-sheets/services/google-sheets-report-writer.ts) | 168 | Vận hành (SQL Collision) | Ném ngoại lệ khi 2 bảng JOIN trùng tên cột SQL | Tiến trình xuất dữ liệu sập, báo lỗi `Duplicate column names in SQL output` | Thêm tính năng tự động gán tiền tố alias (Auto-aliasing) khi phát hiện trùng tên cột giữa các bảng joined. |
+| **7** | [google-sheets-report-writer.ts ](apps/backend/src/data-marts/data-destination-types/google-sheets/services/google-sheets-report-writer.ts) | 184 | Vận hành (Header Collision) | Ném ngoại lệ khi 2 cột có cùng Display Label khi ghi lên Sheet | Lỗi `Duplicate column headers in report output`, layout Sheet bị hỏng | Kiểm tra trùng lặp Display Label ngay khi người dùng chỉnh sửa cột trên UI, tự động thêm hậu tố `(1)`, `(2)`. |
+| **8** | [google-sheets-report-writer.ts ](apps/backend/src/data-marts/data-destination-types/google-sheets/services/google-sheets-report-writer.ts) | 660 | Vận hành (Auth Missing) | Không có OAuth hoặc Service Account hợp lệ | Báo cáo thất bại do không kết nối được Google API | Kiểm tra trạng thái Credential trước khi kích hoạt; nếu hết hạn, hiển thị nút "Kết nối lại Google". |
+| **9** | [google-sheets-folder-validator.service.ts ](apps/backend/src/data-marts/data-destination-types/google-sheets/services/google-sheets-folder-validator.service.ts) | 66, 72 | Vận hành (Google Drive) | Service Account không hỗ trợ My Drive; thiếu quyền Content Manager | Lưu điểm đích thất bại hoặc không tạo được file Sheet | Thêm hướng dẫn trực quan ngay dưới ô nhập Folder ID: yêu cầu dùng Shared Drive và cấp quyền Content Manager cho SA email. |
+| **10** | [google-sheets-folder-validator.service.ts ](apps/backend/src/data-marts/data-destination-types/google-sheets/services/google-sheets-folder-validator.service.ts) | 95 | Tàn dư Thương hiệu Cũ | Chứa chuỗi `"...so OWOX cannot place documents..."` | Nhầm lẫn thương hiệu cũ trên thông báo hệ thống | Sửa chuỗi thành: `"...so P2PDigital cannot place documents in a Drive folder..."`. |
+| **11** | [google-oauth.exceptions.ts ](apps/backend/src/data-marts/exceptions/google-oauth.exceptions.ts) | 38–194 | Vận hành (OAuth Lifecycle) | 12 lớp ngoại lệ OAuth đều trả về thông điệp tiếng Anh kỹ thuật | Người dùng gặp lỗi OAuth không hiểu cách cấp lại quyền | Xây dựng bộ Error Code Handler tại Frontend để chuyển 12 mã thành hướng dẫn tiếng Việt kèm nút Re-authenticate. |
+| **12** | [connector-executor.service.ts ](apps/backend/src/data-marts/services/connector/connector-executor.service.ts) | 512, 862 | Vận hành (Connector Run) | Tiến trình con văng lỗi không rõ nguyên nhân, gán FAILED | Người dùng không biết nguồn dữ liệu (Meta/Google) bị từ chối ở điểm nào | Bắt và ghi nhận 20 dòng `stderr` cuối cùng của tiến trình con vào bảng log để hiển thị trực tiếp. |
+| **13** | [output-controls-error.mapper.ts ](apps/backend/src/ee/mcp/tools/output-controls-error.mapper.ts) | 194, 267, 353 | Tàn dư Thương hiệu Cũ | 3 câu hướng dẫn chứa từ khóa `"in OWOX"`, `"OWOX UI"` | Người dùng và AI Agent bị nhầm lẫn tài liệu/giao diện OWOX | Thay thế `"OWOX"` bằng `"P2PDigital Data Marts"`. |
+| **14** | [StatusIcon.tsx ](apps/web/src/features/data-marts/reports/list/components/StatusIcon/StatusIcon.tsx) | 83, 89–91 | Dịch thuật (Mixed UI) | Đổ trực tiếp chuỗi tiếng Anh `errorMessage` vào Tooltip và aria-label | Giao diện tiếng Việt nhưng tooltip báo lỗi hiển thị 100% tiếng Anh | Bổ sung hàm mapper dịch các mã lỗi phổ biến của Report sang tiếng Việt trước khi render vào Tooltip. |
+| **15** | [showApiErrorToast.ts ](apps/web/src/shared/utils/showApiErrorToast.ts) | 15–18, 50, 60 | Dịch thuật & Hardcoded | `humanizeValidationCode` tự tạo câu tiếng Anh, hardcoded `(+N more)`, `Something went wrong` | Toast thông báo lỗi hệ thống hiển thị tiếng Anh lai tạp | Tích hợp từ điển đa ngôn ngữ i18n cho mã kiểm tra hợp lệ và thay thế các chuỗi tĩnh bằng `t(...)`. |
+| **16** | [file-drop-textarea.tsx ](packages/ui/src/components/file-drop-textarea.tsx) | 43, 53, 81, 87, 99 | Hardcoded UI | 6 câu cảnh báo khi kéo thả file Service Account viết cứng tiếng Anh | Khi kéo file JSON sai, toast thông báo hoàn toàn bằng tiếng Anh | Chuyển các thông báo lỗi vào prop callback hoặc sử dụng bản dịch tiếng Việt chuẩn. |
+| **17** | [data-storage-health-status.service.ts ](apps/web/src/features/data-storage/shared/services/data-storage-health-status.service.ts) | 25–27 | Hardcoded UI | Khai báo hằng số tiếng Anh `UNCONFIGURED_STATUS_LABEL`, `OAUTH_REAUTH_REQUIRED_STATUS_LABEL` | Trạng thái kho dữ liệu hiển thị tiếng Anh trên màn hình danh sách | Thay hằng số tĩnh bằng hàm gọi `i18n.t('storageHealth....')`. |
+| **18** | [DataStorageHealthStatusView.tsx ](apps/web/src/features/data-storage/shared/components/DataStorageHealthIndicator/DataStorageHealthStatusView.tsx) | 44, 52 | Dịch thuật (Override Defect) | `errorMessage ?? t('storageHealth.invalid')` ưu tiên chuỗi tiếng Anh của server | Chuỗi tiếng Việt chuẩn bị đè mất khi có lỗi | Sử dụng chuỗi dịch tiếng Việt làm nhãn chính, hiển thị chi tiết kỹ thuật trong tooltip phụ. |
+| **19** | [utils.ts (DataMartRunHistoryView) ](apps/web/src/features/data-marts/edit/components/DataMartRunHistoryView/utils.ts) | 173 | Hardcoded UI | `title = 'Data Studio data fetching'` viết cứng tiếng Anh | Lịch sử chạy báo cáo Looker Studio hiển thị tiêu đề tiếng Anh | Sửa thành `title = i18n.t('runHistory.lookerStudioFetching', 'Truy xuất dữ liệu Looker Studio')`. |
+| **20** | [connector-metadata.ts ](apps/web/src/features/connectors/shared/utils/connector-metadata.ts) | 27 | Dịch thuật (Fallback Gap) | Trường mới không có trong `connectorMetadataVi` sẽ trả về nguyên văn tiếng Anh | Các connector mới hoặc trường API mới hiển thị tiếng Anh | Bổ sung cơ chế fallback tra cứu tự động qua từ điển chung hoặc cập nhật định kỳ từ điển metadata. |
 
 ---
 
@@ -644,7 +644,7 @@ export interface StandardErrorPayload {
 }
 ```
 
-Khi ghi nhận lỗi trong [`BaseReportRun.markAsUnsuccessful`](file:///c:/Users/PC/.gemini/antigravity/scratch/owox-data-marts/apps/backend/src/data-marts/models/base-report-run.model.ts), lưu trữ có cấu trúc:
+Khi ghi nhận lỗi trong [`BaseReportRun.markAsUnsuccessful` ](apps/backend/src/data-marts/models/base-report-run.model.ts), lưu trữ có cấu trúc:
 ```typescript
 const errorPayload: StandardErrorPayload = {
   code: error instanceof BusinessViolationException ? error.code : 'UNKNOWN_EXECUTION_ERROR',
@@ -730,4 +730,5 @@ Thêm namespace `operationalErrors` vào `apps/web/src/i18n/locales/vi.json`:
 Báo cáo này đã phân tích toàn diện và sâu sát tới từng dòng code của các phân hệ cốt lõi trong codebase `owox-data-marts`. Danh mục lỗi và ma trận khắc phục ở trên cung cấp đầy đủ luận cứ kỹ thuật, vị trí chính xác và mã nguồn đề xuất để đội ngũ phát triển tiến hành cải tổ triệt để chất lượng dịch thuật cũng như độ ổn định vận hành của hệ thống webapp.
 
 <!-- GOAL_COMPLETE -->
+
 
