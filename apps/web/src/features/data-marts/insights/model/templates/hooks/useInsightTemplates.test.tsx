@@ -30,12 +30,12 @@ describe('useInsightTemplates', () => {
         <QueryClientProvider client={client}>{children}</QueryClientProvider>
       ),
     });
-    await waitFor(() => expect(oldSignal).toBeDefined());
+    await waitFor(() => { expect(oldSignal).toBeDefined(); });
     rerender({ id: 'new' });
-    await waitFor(() => expect(result.current.isSuccess).toBe(true));
+    await waitFor(() => { expect(result.current.isSuccess).toBe(true); });
     expect(oldSignal?.aborted).toBe(true);
     await act(async () =>
-      resolveOld({
+      { resolveOld({
         data: [
           {
             id: 'stale',
@@ -47,7 +47,7 @@ describe('useInsightTemplates', () => {
             lastRenderedTemplateUpdatedAt: null,
           },
         ],
-      })
+      }); }
     );
     expect(result.current.data).toEqual([]);
     unmount();

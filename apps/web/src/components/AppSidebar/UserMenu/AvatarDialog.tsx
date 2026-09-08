@@ -62,7 +62,7 @@ export function AvatarDialog({
             aria-label={t('userMenu.avatarUrlPrompt')}
             value={value}
             disabled={pending}
-            onChange={event => setValue(event.target.value)}
+            onChange={event => { setValue(event.target.value); }}
           />
           {value && (
             <img

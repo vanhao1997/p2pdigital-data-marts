@@ -32,7 +32,7 @@ describe('AvatarDialog', () => {
     const onSave = vi.fn().mockResolvedValue(undefined);
     render(<AvatarDialog avatar='https://example.com/a.png' onClose={onClose} onSave={onSave} />);
     fireEvent.click(screen.getByRole('button', { name: 'userMenu.removeAvatar' }));
-    await waitFor(() => expect(onClose).toHaveBeenCalledTimes(1));
+    await waitFor(() => { expect(onClose).toHaveBeenCalledTimes(1); });
     expect(onSave).toHaveBeenCalledWith(null);
   });
 });

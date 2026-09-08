@@ -69,7 +69,7 @@ export function UserMenu() {
         />
       </DropdownMenu>
       {avatarOpen && (
-        <AvatarDialog avatar={avatar} onClose={() => setAvatarOpen(false)} onSave={updateAvatar} />
+        <AvatarDialog avatar={avatar} onClose={() => { setAvatarOpen(false); }} onSave={updateAvatar} />
       )}
     </div>
   );
