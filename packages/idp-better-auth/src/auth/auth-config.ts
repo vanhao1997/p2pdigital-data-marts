@@ -1,5 +1,6 @@
 import { betterAuth } from 'better-auth';
-import { createAuthMiddleware } from 'better-auth/api';
+import { APIError, createAuthMiddleware } from 'better-auth/api';
+import { z } from 'zod';
 import { magicLink, organization } from 'better-auth/plugins';
 import { BetterAuthConfig } from '../types/index.js';
 import { createAccessControl } from 'better-auth/plugins/access';
@@ -24,6 +25,35 @@ export function forceRevokeOtherSessionsOnChangePassword(ctx: {
     };
   }
   return undefined;
+}
+
+const avatarUpdateSchema = z.object({
+  image: z
+    .string()
+    .max(2048)
+    .url()
+    .refine(value => {
+      try {
+        const url = new URL(value);
+        return ['http:', 'https:'].includes(url.protocol) && !url.username && !url.password;
+      } catch {
+        return false;
+      }
+    })
+    .nullable()
+    .optional(),
+});
+
+export function validateAvatarUpdate(ctx: { path: string; body?: unknown }): void {
+  if (ctx.path !== '/update-user') return undefined;
+  if (!avatarUpdateSchema.safeParse(ctx.body ?? {}).success) {
+    throw new APIError('BAD_REQUEST', { message: 'Invalid avatar URL' });
+  }
+}
+
+async function beforeAuthHook(ctx: { path: string; body?: unknown }) {
+  validateAvatarUpdate(ctx);
+  return forceRevokeOtherSessionsOnChangePassword(ctx);
 }
 
 export async function createBetterAuthConfig(
@@ -152,7 +182,7 @@ export async function createBetterAuthConfig(
       // change always invalidates the user's other sessions while Better Auth
       // issues a fresh session for the current one. Logic extracted to
       // forceRevokeOtherSessionsOnChangePassword for unit testing.
-      before: createAuthMiddleware(async ctx => forceRevokeOtherSessionsOnChangePassword(ctx)),
+      before: createAuthMiddleware(async ctx => beforeAuthHook(ctx)),
     },
     advanced: {
       cookies: {

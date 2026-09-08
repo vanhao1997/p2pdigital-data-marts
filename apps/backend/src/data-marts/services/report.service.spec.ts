@@ -10,6 +10,7 @@ describe('ReportService', () => {
   const createService = () => {
     const repository = {
       findOne: jest.fn(),
+      createQueryBuilder: jest.fn(),
       update: jest.fn().mockResolvedValue(undefined),
     };
 
@@ -36,6 +37,36 @@ describe('ReportService', () => {
         lastRunStatus: ReportRunStatus.CANCELLED,
       }
     );
+  });
+
+  it('counts reports referencing an insight template within the data mart project', async () => {
+    const queryBuilder = {
+      innerJoin: jest.fn().mockReturnThis(),
+      where: jest.fn().mockReturnThis(),
+      andWhere: jest.fn().mockReturnThis(),
+      getCount: jest.fn().mockResolvedValue(2),
+    };
+    const { service, repository } = createService();
+    repository.createQueryBuilder.mockReturnValue(queryBuilder);
+
+    await expect(
+      service.countByInsightTemplate({ projectId: 'p', dataMartId: 'd', insightTemplateId: 't' })
+    ).resolves.toBe(2);
+    expect(queryBuilder.where).toHaveBeenCalledWith('dataMart.id = :dataMartId', {
+      dataMartId: 'd',
+    });
+    expect(queryBuilder.andWhere).toHaveBeenCalledWith('dataMart.projectId = :projectId', {
+      projectId: 'p',
+    });
+    expect(queryBuilder.andWhere).toHaveBeenCalledWith(
+      `JSON_EXTRACT(report.destinationConfig, '$.templateSource.type') = :sourceType`,
+      { sourceType: 'INSIGHT_TEMPLATE' }
+    );
+    expect(queryBuilder.andWhere).toHaveBeenCalledWith(
+      `JSON_EXTRACT(report.destinationConfig, '$.templateSource.config.insightTemplateId') = :insightTemplateId`,
+      { insightTemplateId: 't' }
+    );
+    expect(queryBuilder.getCount).toHaveBeenCalled();
   });
 
   it('persists the final run outcome as a targeted update, never a full entity save', async () => {

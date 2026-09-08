@@ -6,6 +6,7 @@ export interface AuthSession {
     id: string;
     email: string;
     name?: string;
+    avatar?: string;
   };
   session: {
     id: string;

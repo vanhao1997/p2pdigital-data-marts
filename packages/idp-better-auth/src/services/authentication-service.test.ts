@@ -14,7 +14,7 @@ function createCryptoServiceMock(): jest.Mocked<CryptoService> {
 
 function createAuthMock(
   sessionData?: {
-    user: { id: string; email: string; name: string };
+    user: { id: string; email: string; name: string; image?: string | null };
     session: { id: string; userId: string; token: string; expiresAt: Date };
   } | null,
   handlerResponse?: globalThis.Response
@@ -109,6 +109,22 @@ describe('AuthenticationService', () => {
   });
 
   describe('generateAccessToken', () => {
+    it('includes the session image in freshly issued access tokens', async () => {
+      const auth = createAuthMock({
+        user: {
+          id: 'user-1',
+          email: 'test@example.com',
+          name: 'Test User',
+          image: 'https://cdn.example.com/a.png',
+        },
+        session: { id: 's1', userId: 'user-1', token: 'session-token', expiresAt: new Date() },
+      });
+      const service = new AuthenticationService(auth as never, cryptoService);
+      await service.generateAccessToken(createMockRequest());
+      expect(JSON.parse(cryptoService.encrypt.mock.calls[0][0])).toMatchObject({
+        avatar: 'https://cdn.example.com/a.png',
+      });
+    });
     it('should encrypt JSON payload with user data and role', async () => {
       const sessionData = {
         user: { id: 'user-1', email: 'test@example.com', name: 'Test User' },

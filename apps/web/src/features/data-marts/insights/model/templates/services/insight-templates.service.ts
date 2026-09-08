@@ -18,8 +18,15 @@ export class InsightTemplatesService extends ApiService {
     super('/data-marts');
   }
 
-  async getInsightTemplates(dataMartId: string): Promise<InsightTemplateListResponseDto> {
-    return this.get<InsightTemplateListResponseDto>(`/${dataMartId}/insight-templates`);
+  async getInsightTemplates(
+    dataMartId: string,
+    signal?: AbortSignal
+  ): Promise<InsightTemplateListResponseDto> {
+    return this.get<InsightTemplateListResponseDto>(
+      `/${dataMartId}/insight-templates`,
+      undefined,
+      signal ? { signal } : undefined
+    );
   }
 
   async getProjectInsightTemplates(

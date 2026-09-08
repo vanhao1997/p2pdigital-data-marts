@@ -6,6 +6,7 @@ import {
   signOut as signOutApi,
   refreshAccessToken as refreshAccessTokenApi,
   getUserApi,
+  updateAvatar as updateAvatarApi,
   RedirectStorageService,
   isBlockedUserError,
   isViewOnlySession,
@@ -186,6 +187,11 @@ export function AuthProvider({ children }: AuthProviderProps) {
     await refresh();
   }, []);
 
+  const updateAvatar = useCallback(async (avatar: string | null) => {
+    await updateAvatarApi(avatar);
+    await refresh();
+  }, []);
+
   /**
    * Redirect to sign-out page and clear local session
    */
@@ -337,6 +343,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
     signOut,
     refreshToken,
     clearError,
+    updateAvatar,
   };
 
   return <AuthContext.Provider value={contextValue}>{children}</AuthContext.Provider>;

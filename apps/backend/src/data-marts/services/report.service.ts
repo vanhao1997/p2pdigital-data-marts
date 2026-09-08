@@ -6,6 +6,7 @@ import { DataDestinationType } from '../data-destination-types/enums/data-destin
 import { LookerStudioConnectorCredentialsType } from '../data-destination-types/looker-studio-connector/schemas/looker-studio-connector-credentials.schema';
 import { Report } from '../entities/report.entity';
 import { ReportRunStatus } from '../enums/report-run-status.enum';
+import { TemplateSourceTypeEnum } from '../enums/template-source-type.enum';
 import { ScheduledTriggerService } from './scheduled-trigger.service';
 import { SystemTimeService } from '../../common/scheduler/services/system-time.service';
 
@@ -47,6 +48,26 @@ export class ReportService {
     }
 
     return report;
+  }
+
+  async countByInsightTemplate(params: {
+    projectId: string;
+    dataMartId: string;
+    insightTemplateId: string;
+  }): Promise<number> {
+    return this.repository
+      .createQueryBuilder('report')
+      .innerJoin('report.dataMart', 'dataMart')
+      .where('dataMart.id = :dataMartId', { dataMartId: params.dataMartId })
+      .andWhere('dataMart.projectId = :projectId', { projectId: params.projectId })
+      .andWhere(`JSON_EXTRACT(report.destinationConfig, '$.templateSource.type') = :sourceType`, {
+        sourceType: TemplateSourceTypeEnum.INSIGHT_TEMPLATE,
+      })
+      .andWhere(
+        `JSON_EXTRACT(report.destinationConfig, '$.templateSource.config.insightTemplateId') = :insightTemplateId`,
+        { insightTemplateId: params.insightTemplateId }
+      )
+      .getCount();
   }
 
   /**

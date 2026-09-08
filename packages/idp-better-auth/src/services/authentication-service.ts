@@ -32,6 +32,7 @@ export class AuthenticationService {
           id: session.user.id,
           email: session.user.email,
           name: session.user.name,
+          avatar: session.user.image ?? undefined,
         },
         session: {
           id: session.session.id,
@@ -140,6 +141,7 @@ export class AuthenticationService {
         projectId: projectId === 'owox_data_marts_organization' ? '0' : projectId,
         email: session.user.email,
         fullName: session.user.name || session.user.email,
+        ...(session.user.avatar ? { avatar: session.user.avatar } : {}),
         ...(organizationId && this.userManagementService
           ? await this.projectTitleClaim(organizationId)
           : {}),

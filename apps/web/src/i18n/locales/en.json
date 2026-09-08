@@ -77,6 +77,11 @@
     "notFound": "Project not found"
   },
   "userMenu": {
+    "removeAvatar": "Remove avatar",
+    "avatarSaveFailed": "Could not update your avatar. Check the URL and try again.",
+    "avatarPreview": "Avatar preview",
+    "changeAvatar": "Change avatar",
+    "avatarUrlPrompt": "Enter an avatar image URL",
     "appearance": "Appearance",
     "system": "System",
     "light": "Light",

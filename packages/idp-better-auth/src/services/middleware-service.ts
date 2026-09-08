@@ -81,6 +81,7 @@ export class MiddlewareService {
             : '',
         email: validation.session.user.email,
         fullName: validation.session.user.name || validation.session.user.email,
+        ...(validation.session.user.avatar ? { avatar: validation.session.user.avatar } : {}),
         roles: role ? [role as 'admin' | 'editor' | 'viewer'] : [],
         ...(projectTitle ? { projectTitle } : {}),
         ...(projectArchived ? { projectArchived: true, viewOnly: true } : {}),

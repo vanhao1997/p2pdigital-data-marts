@@ -36,8 +36,8 @@
     "preview": "vite preview",
     "test": "vitest run",
     "test:coverage": "vitest run --coverage",
-    "type-check": "tsc --noEmit",
-    "type-check:watch": "tsc --noEmit --watch",
+    "type-check": "tsc -b",
+    "type-check:watch": "tsc -b --watch",
     "check:i18n": "node scripts/check-i18n-keys.mjs",
     "build:analyze": "vite build --mode analyze"
   },

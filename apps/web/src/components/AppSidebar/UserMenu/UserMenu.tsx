@@ -8,12 +8,16 @@ import { UserMenuItems } from './items';
 import { UserMenuTrigger } from './UserMenuTrigger';
 import { UserMenuContent } from './UserMenuContent';
 import { LANGUAGE_STORAGE_KEY } from '../../../i18n';
+import { useFlags } from '../../../app/store/hooks';
+import { AvatarDialog } from './AvatarDialog';
 
 export function UserMenu() {
-  const { user, signOut } = useAuth();
+  const { user, signOut, updateAvatar } = useAuth();
   const { setTheme, theme } = useTheme();
   const { t, i18n } = useTranslation();
   const [isOpen, setIsOpen] = useState(false);
+  const [avatarOpen, setAvatarOpen] = useState(false);
+  const { flags } = useFlags();
 
   if (!user) return null;
 
@@ -30,6 +34,11 @@ export function UserMenu() {
     } catch {
       // ignore
     }
+  };
+
+  const changeAvatar = () => {
+    setIsOpen(false);
+    setAvatarOpen(true);
   };
 
   return (
@@ -54,9 +63,14 @@ export function UserMenu() {
             t,
             language: activeLanguage,
             changeLanguage,
+            updateAvatar:
+              flags?.IDP_PROVIDER === 'better-auth' && !user.viewOnly ? changeAvatar : undefined,
           })}
         />
       </DropdownMenu>
+      {avatarOpen && (
+        <AvatarDialog avatar={avatar} onClose={() => setAvatarOpen(false)} onSave={updateAvatar} />
+      )}
     </div>
   );
 }

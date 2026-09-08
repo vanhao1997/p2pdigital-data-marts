@@ -78,7 +78,7 @@ export function sanitizeOperationalErrorMessage(value: unknown, fallback: string
       '$1=[redacted]'
     )
     .replace(/\btoken\b\s*=\s*(?:"[^"]*"|'[^']*'|[^\s,;}]+)/gi, 'token=[redacted]')
-    .replace(/\bBearer\s+[A-Za-z0-9._~+\/-]{10,}\b/gi, 'Bearer [redacted]')
+    .replace(/\bBearer\s+[A-Za-z0-9._~+\x2f-]{10,}\b/gi, 'Bearer [redacted]')
     .replace(/\bEA[A-Za-z0-9_-]{10,}\b/gi, '[redacted token]')
     .replace(/\bact_\d+\b/gi, '[redacted account]')
     .replace(/\b[0-9a-f]{8}-[0-9a-f-]{27,}\b/gi, '[redacted identifier]')

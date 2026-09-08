@@ -1,6 +1,8 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useQueryClient } from '@tanstack/react-query';
+import { ErrorState } from '../../../../shared/components/ErrorState/ErrorState';
 import { useNavigate } from 'react-router';
-import { Plus, Bookmark } from 'lucide-react';
+import { Plus, Bookmark, Search } from 'lucide-react';
 import { toast } from 'sonner';
 import { Button } from '@owox/ui/components/button';
 import type { ColumnDef } from '@tanstack/react-table';
@@ -36,10 +38,12 @@ import type { InsightTemplateEntity } from '../model';
 import {
   insightTemplatesService,
   mapInsightTemplateFromDto,
-  mapInsightTemplateListFromDto,
+  useInsightTemplates,
+  INSIGHT_TEMPLATES_QUERY_KEY,
 } from '../model';
 import { InsightRowActionsCell } from './InsightRowActionsCell';
 import { useTranslation } from 'react-i18next';
+import { Input } from '@owox/ui/components/input';
 
 interface InsightTableItem {
   id: string;
@@ -56,39 +60,35 @@ export default function InsightsListView() {
   const { dataMart } = useDataMartContext();
   const { canCreate, canDelete } = usePermissions();
 
-  const [items, setItems] = useState<InsightTemplateEntity[]>([]);
-  const [loading, setLoading] = useState(false);
+  const queryClient = useQueryClient();
+  const {
+    data: items = [],
+    isLoading: loading,
+    isError,
+    refetch,
+  } = useInsightTemplates(dataMart?.id ?? '');
   const [creating, setCreating] = useState(false);
   const [deleteId, setDeleteId] = useState<string | null>(null);
-
-  const loadInsights = useCallback(async () => {
-    if (!dataMart?.id) return;
-    setLoading(true);
-    try {
-      const response = await insightTemplatesService.getInsightTemplates(dataMart.id);
-      setItems(mapInsightTemplateListFromDto(response));
-    } catch {
-      toast.error(t('insightsUi.loadError', 'Failed to load insight'));
-    } finally {
-      setLoading(false);
-    }
-  }, [dataMart?.id, t]);
+  const [search, setSearch] = useState('');
 
   useEffect(() => {
-    void loadInsights();
-  }, [loadInsights]);
+    setSearch('');
+    setDeleteId(null);
+  }, [dataMart?.id]);
 
   const tableItems = useMemo<InsightTableItem[]>(
     () =>
-      items.map(item => ({
-        id: item.id,
-        title: item.title,
-        sourcesCount: item.sourcesCount ?? item.sources.length,
-        modifiedAt: item.modifiedAt,
-        createdById: item.createdById,
-        createdByUser: item.createdByUser,
-      })),
-    [items]
+      items
+        .filter(item => item.title.toLowerCase().includes(search.trim().toLowerCase()))
+        .map(item => ({
+          id: item.id,
+          title: item.title,
+          sourcesCount: item.sourcesCount ?? item.sources.length,
+          modifiedAt: item.modifiedAt,
+          createdById: item.createdById,
+          createdByUser: item.createdByUser,
+        })),
+    [items, search]
   );
 
   const columns = useMemo<ColumnDef<InsightTableItem>[]>(
@@ -162,7 +162,7 @@ export default function InsightsListView() {
     try {
       const dto = await insightTemplatesService.createInsightTemplate(dataMart.id, {});
       const insight = mapInsightTemplateFromDto(dto);
-      setItems(prev => [insight, ...prev]);
+      void queryClient.invalidateQueries({ queryKey: [INSIGHT_TEMPLATES_QUERY_KEY, dataMart.id] });
       trackEvent({
         event: 'insight_created',
         category: 'Insights',
@@ -185,7 +185,7 @@ export default function InsightsListView() {
     } finally {
       setCreating(false);
     }
-  }, [creating, dataMart?.id, navigate, t]);
+  }, [creating, dataMart?.id, navigate, t, queryClient]);
 
   const handleConfirmDelete = useCallback(() => {
     void (async () => {
@@ -200,7 +200,14 @@ export default function InsightsListView() {
           label: deleteId,
           context: dataMart.id,
         });
-        setItems(prev => prev.filter(item => item.id !== deleteId));
+        await queryClient.cancelQueries({ queryKey: [INSIGHT_TEMPLATES_QUERY_KEY, dataMart.id] });
+        queryClient.setQueryData<InsightTemplateEntity[]>(
+          [INSIGHT_TEMPLATES_QUERY_KEY, dataMart.id],
+          prev => prev?.filter(item => item.id !== deleteId)
+        );
+        void queryClient.invalidateQueries({
+          queryKey: [INSIGHT_TEMPLATES_QUERY_KEY, dataMart.id],
+        });
         toast.success(t('insightsUi.deleted', 'Insight deleted'));
       } catch {
         trackEvent({
@@ -215,10 +222,10 @@ export default function InsightsListView() {
         setDeleteId(null);
       }
     })();
-  }, [dataMart?.id, deleteId, t]);
+  }, [dataMart?.id, deleteId, t, queryClient]);
 
   // Show onboarding video about insights if the user has not seen it yet
-  const shouldShowOnboarding = !loading && items.length === 0;
+  const shouldShowOnboarding = !loading && !isError && items.length === 0;
   useOnboardingVideo({
     storageKey: 'data-mart-insights-onboarding-video-shown',
     popoverId: 'video-5-try-insights',
@@ -235,6 +242,16 @@ export default function InsightsListView() {
           {t('sidebar.insights', 'Insights')}
         </CollapsibleCardHeaderTitle>
         <CollapsibleCardHeaderActions>
+          <div className='relative w-52'>
+            <Search className='text-muted-foreground absolute top-2.5 left-2 size-4' />
+            <Input
+              value={search}
+              onChange={event => setSearch(event.target.value)}
+              placeholder={t('insightsUi.search', 'Search insights')}
+              aria-label={t('insightsUi.search', 'Search insights')}
+              className='h-9 pl-8'
+            />
+          </div>
           <Tooltip>
             <TooltipTrigger asChild>
               <div className='inline-flex'>
@@ -254,11 +271,14 @@ export default function InsightsListView() {
       </CollapsibleCardHeader>
 
       <CollapsibleCardContent>
+        {isError && (
+          <ErrorState message={t('insightsUi.loadError')} onRetry={() => void refetch()} />
+        )}
         {loading && items.length === 0 ? (
           <div className='text-muted-foreground p-4 text-sm'>
             {t('insightsUi.loadingInsights', 'Loading insights…')}
           </div>
-        ) : items.length === 0 ? (
+        ) : isError && items.length === 0 ? null : items.length === 0 ? (
           <Empty>
             <EmptyHeader>
               <EmptyMedia variant='icon'>
@@ -277,7 +297,7 @@ export default function InsightsListView() {
 
             <EmptyContent>
               <div className='inline-flex'>
-                <Button onClick={() => void handleCreate()}>
+                <Button disabled={!canCreate || creating} onClick={() => void handleCreate()}>
                   <Plus className='h-4 w-4' />
                   {t('insightsUi.newInsight', 'New Insight')}
                 </Button>

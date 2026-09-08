@@ -77,6 +77,11 @@
     "notFound": "Không tìm thấy dự án"
   },
   "userMenu": {
+    "removeAvatar": "Xóa ảnh đại diện",
+    "avatarSaveFailed": "Không thể cập nhật ảnh đại diện. Kiểm tra URL và thử lại.",
+    "avatarPreview": "Xem trước ảnh đại diện",
+    "changeAvatar": "Đổi ảnh đại diện",
+    "avatarUrlPrompt": "Nhập URL ảnh đại diện",
     "appearance": "Giao diện",
     "system": "Hệ thống",
     "light": "Sáng",
@@ -486,7 +491,7 @@
   },
   "storageFieldHelp": {
     "common": {
-      "learnMore": "Tìm hiểu thêm cách tạo user trong AWS",
+      "learnMore": "Tìm hiểu thêm cách tạo người dùng trong AWS",
       "documentation": "trong tài liệu",
       "iamCredentials": "Thông tin xác thực AWS IAM",
       "s3Console": "bảng điều khiển AWS S3",
@@ -495,13 +500,13 @@
       "googleCloudConsole": "Google Cloud Console",
       "googleAccountSettings": "cài đặt Tài khoản Google",
       "moreDetails": "Xem thêm trong",
-      "snowflakeKeyPairDocs": "tài liệu xác thực bằng key pair của Snowflake",
+      "snowflakeKeyPairDocs": "tài liệu xác thực bằng cặp khóa của Snowflake",
       "snowflakeAuthDocs": "tài liệu xác thực Snowflake",
       "databricksDocs": "tài liệu Databricks",
       "databricksWarehouseDocs": "tài liệu Databricks SQL Warehouses",
       "databricksTokenDocs": "tài liệu Personal Access Token của Databricks",
       "p2pdigitalExtension": "tiện ích P2PDigital",
-      "keyPairAuthentication": "xác thực bằng key pair"
+      "keyPairAuthentication": "xác thực bằng cặp khóa"
     },
     "snowflakeWarehouse": {
       "title": "Làm cách nào để tìm warehouse Snowflake?",
@@ -543,8 +548,8 @@
       "step5": "Passphrase chỉ dùng để giải mã private key và không bao giờ được gửi đến Snowflake."
     },
     "snowflakeKeyPair": {
-      "title": "Làm cách nào để thiết lập xác thực bằng key pair?",
-      "content": "Để dùng xác thực bằng key pair, hãy tạo một cặp RSA và cấu hình người dùng Snowflake.\n\n1. Tạo cặp RSA bằng OpenSSL:\nopenssl genrsa 2048 | openssl pkcs8 -topk8 -inform PEM -out rsa_key.p8 -nocrypt\n\n2. Trích xuất public key:\nopenssl rsa -in rsa_key.p8 -pubout -out rsa_key.pub\n\n3. Gán public key cho người dùng Snowflake với quyền ACCOUNTADMIN:\nALTER USER your_username SET RSA_PUBLIC_KEY='MIIBIjANBg...';\n\n4. Sao chép nội dung private key từ rsa_key.p8 vào trường Private Key bên trên."
+      "title": "Làm cách nào để thiết lập xác thực bằng cặp khóa?",
+      "content": "Để dùng xác thực bằng cặp khóa, hãy tạo một cặp RSA và cấu hình người dùng Snowflake.\n\n1. Tạo cặp RSA bằng OpenSSL:\nopenssl genrsa 2048 | openssl pkcs8 -topk8 -inform PEM -out rsa_key.p8 -nocrypt\n\n2. Trích xuất public key:\nopenssl rsa -in rsa_key.p8 -pubout -out rsa_key.pub\n\n3. Gán public key cho người dùng Snowflake với quyền ACCOUNTADMIN:\nALTER USER your_username SET RSA_PUBLIC_KEY='MIIBIjANBg...';\n\n4. Sao chép nội dung private key từ rsa_key.p8 vào trường Private Key bên trên."
     },
     "snowflakeAuthMethod": {
       "title": "Nên chọn phương thức xác thực nào?",
@@ -591,12 +596,12 @@
       "content": "URL workspace Databricks là hostname của workspace. Sao chép hostname từ thanh địa chỉ trình duyệt, phần trước dấu gạch chéo đầu tiên.\n\nVí dụ AWS: dbc-12345678-90ab.cloud.databricks.com\nVí dụ Azure: adb-123456789.7.azuredatabricks.net\nVí dụ GCP: 12345678901234.5.gcp.databricks.com"
     },
     "googleBigQueryProject": {
-      "title": "Làm cách nào để tìm Project ID?",
+      "title": "Làm cách nào để tìm mã dự án (Project ID)?",
       "content": "Đây là mã dự án Google Cloud. Chi phí sử dụng BigQuery được tính cho dự án này.\n\n1. Mở Google Cloud Console và đăng nhập.\n2. Mở bộ chọn dự án.\n3. Tìm dự án; Project ID nằm trong cột ID.\n4. Dùng ô tìm kiếm nếu không thấy dự án."
     },
     "googleBigQueryServiceAccount": {
-      "title": "Làm cách nào để lấy key JSON của Service Account?",
-      "content": "1. Mở Google Cloud Console > IAM & Admin > Service Accounts.\n2. Tạo service account hoặc chọn tài khoản hiện có.\n3. Cấp vai trò bigquery.dataEditor và bigquery.jobUser.\n4. Mở Keys > Add key > Create new key.\n5. Chọn JSON và bấm Create.\n6. Sao chép nội dung tệp đã tải vào trường bên trên."
+      "title": "Làm cách nào để lấy khóa JSON của tài khoản dịch vụ?",
+      "content": "1. Mở Google Cloud Console > IAM & Admin > Service Accounts.\n2. Tạo tài khoản dịch vụ hoặc chọn tài khoản hiện có.\n3. Cấp vai trò bigquery.dataEditor và bigquery.jobUser.\n4. Mở Keys > Add key > Create new key.\n5. Chọn JSON và bấm Create.\n6. Sao chép nội dung tệp đã tải vào trường bên trên."
     },
     "googleBigQueryOAuth": {
       "title": "Những quyền nào sẽ được yêu cầu?",
@@ -1482,9 +1487,9 @@
       "scheduled": "theo lịch"
     },
     "runTypes": {
-      "connector": "connector",
+      "connector": "Trình kết nối",
       "report": "báo cáo",
-      "insight": "insight",
+      "insight": "Phân tích chuyên sâu",
       "insightTemplate": "mẫu insight",
       "aiAssistant": "trợ lý AI",
       "httpData": "dữ liệu HTTP",
@@ -2639,7 +2644,7 @@
     "accountLabel": "Tài khoản",
     "accountTooltip": "Nhập mã định danh tài khoản Snowflake của bạn",
     "accountPlaceholder": "ví dụ: xy12345.us-east-1",
-    "warehouseLabel": "Warehouse",
+    "warehouseLabel": "Kho tính toán (Warehouse)",
     "warehouseTooltip": "Chỉ định warehouse Snowflake dùng để thực thi truy vấn",
     "warehousePlaceholder": "Nhập tên warehouse",
     "authMethod": "Phương thức xác thực",
@@ -2694,7 +2699,7 @@
     "databricksHost": "Máy chủ",
     "databricksHostTooltip": "Nhập URL workspace Databricks của bạn",
     "databricksHostPlaceholder": "ví dụ: adb-123456.7.azuredatabricks.net",
-    "httpPath": "HTTP Path",
+    "httpPath": "Đường dẫn HTTP",
     "httpPathTooltip": "Chỉ định HTTP path của SQL warehouse",
     "httpPathPlaceholder": "ví dụ: /sql/1.0/warehouses/abc123def456",
     "personalAccessToken": "Mã truy cập cá nhân",
@@ -3052,7 +3057,7 @@
     "groupingMultiple": "Gộp nhiều thông báo",
     "howGroupingWorks": "Gộp hoạt động như thế nào?",
     "groupingDescription": "Nếu nhiều thông báo được kích hoạt trong khoảng thời gian này, chúng sẽ được gửi trong một email để hộp thư gọn gàng. Chỉ thông báo email được gộp.",
-    "webhook": "Webhook",
+    "webhook": "Webhook (địa chỉ gọi lại)",
     "webhookTooltip": "Nhập URL nhận thông báo webhook",
     "webhookUrl": "URL webhook",
     "test": "Thử nghiệm",

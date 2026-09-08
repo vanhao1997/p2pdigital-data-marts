@@ -36,19 +36,29 @@ export class ListProjectInsightTemplatesService {
     const userProjections =
       await this.userProjectionsFetcherService.fetchRelevantUserProjections(insightTemplates);
 
+    const editAccessByDataMart = new Map<string, Promise<boolean>>();
+    for (const { dataMart } of insightTemplates) {
+      if (!editAccessByDataMart.has(dataMart.id)) {
+        editAccessByDataMart.set(
+          dataMart.id,
+          this.accessDecisionService.canAccess(
+            command.userId,
+            command.roles,
+            EntityType.DATA_MART,
+            dataMart.id,
+            Action.EDIT,
+            command.projectId
+          )
+        );
+      }
+    }
+
     return Promise.all(
       insightTemplates.map(async insightTemplate => {
         const createdByUser = insightTemplate.createdById
           ? (userProjections.getByUserId(insightTemplate.createdById) ?? null)
           : null;
-        const canDelete = await this.accessDecisionService.canAccess(
-          command.userId,
-          command.roles,
-          EntityType.DATA_MART,
-          insightTemplate.dataMart.id,
-          Action.EDIT,
-          command.projectId
-        );
+        const canDelete = (await editAccessByDataMart.get(insightTemplate.dataMart.id)) ?? false;
 
         return new ProjectInsightTemplateDto(
           this.mapper.toDomainDto(insightTemplate, null, createdByUser),

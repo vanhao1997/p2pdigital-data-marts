@@ -15,7 +15,7 @@ export default {
   },
   testEnvironment: 'node',
   collectCoverageFrom: ['src/**/*.ts', '!src/**/*.d.ts', '!src/**/index.ts'],
-  testMatch: ['<rootDir>/src/**/__tests__/**/*.test.ts', '<rootDir>/src/**/*.test.ts'],
+  testMatch: ['**/*.test.ts'],
   moduleFileExtensions: ['ts', 'js', 'json'],
   roots: ['<rootDir>/src'],
   setupFiles: ['<rootDir>/jest.setup.ts'],

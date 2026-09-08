@@ -145,6 +145,20 @@ export async function refreshAccessToken(): Promise<AccessTokenResponse> {
   }
 }
 
+/** Update the signed-in user's avatar through Better Auth's session boundary. */
+export async function updateAvatar(avatar: string | null): Promise<void> {
+  try {
+    if (avatar !== null) {
+      if (avatar.length > 2048) throw new Error('Avatar URL is too long');
+      const parsed = new URL(avatar);
+      if (!['http:', 'https:'].includes(parsed.protocol)) throw new Error('Invalid avatar URL');
+    }
+    await authClient.post('/auth/better-auth/update-user', { image: avatar });
+  } catch (error) {
+    throw handleAuthError(error);
+  }
+}
+
 export async function getUserApi(token: string): Promise<User> {
   const response = await authClient.get<CurrentUserResponse>(AUTH_ENDPOINTS.API_USER, {
     headers: {

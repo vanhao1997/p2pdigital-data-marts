@@ -254,6 +254,7 @@ export class TokenService {
             : (organizationId ?? ''),
         email: session.user.email,
         fullName: session.user.name || session.user.email,
+        ...(session.user.image ? { avatar: session.user.image } : {}),
         ...(projectTitle ? { projectTitle } : {}),
         roles: userRole ? [userRole] : [],
         ...(organizationId &&

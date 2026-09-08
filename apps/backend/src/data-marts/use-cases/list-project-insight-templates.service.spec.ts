@@ -128,4 +128,19 @@ describe('ListProjectInsightTemplatesService', () => {
       })
     );
   });
+
+  it('checks edit access once when multiple templates share a Data Mart', async () => {
+    const { service, insightTemplateService, accessDecisionService } = createService();
+    insightTemplateService.listVisibleByProject.mockResolvedValue([
+      insightTemplate,
+      { ...insightTemplate, id: 'insight-template-2' },
+    ]);
+
+    const result = await service.run(
+      new ListProjectInsightTemplatesCommand('project-1', 20, 0, 'user-1', ['viewer'])
+    );
+
+    expect(accessDecisionService.canAccess).toHaveBeenCalledTimes(1);
+    expect(result).toHaveLength(2);
+  });
 });

@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 import { OwoxEventDispatcher } from '../../common/event-dispatcher/owox-event-dispatcher';
 import { TriggerStatus } from '../../common/scheduler/shared/entities/trigger-status';
 import { UiTriggerService } from '../../common/scheduler/shared/ui-trigger.service';
@@ -25,6 +25,24 @@ export class InsightTemplateRunTriggerService extends UiTriggerService<InsightTe
     private readonly eventDispatcher: OwoxEventDispatcher
   ) {
     super(triggerRepository);
+  }
+
+  async countForInsightTemplate(params: {
+    projectId: string;
+    dataMartId: string;
+    insightTemplateId: string;
+  }): Promise<number> {
+    return (this.triggerRepository as Repository<InsightTemplateRunTrigger>).count({
+      where: {
+        ...params,
+        status: In([
+          TriggerStatus.IDLE,
+          TriggerStatus.READY,
+          TriggerStatus.PROCESSING,
+          TriggerStatus.CANCELLING,
+        ]),
+      },
+    });
   }
 
   async listByInsightTemplate(params: {

@@ -65,4 +65,5 @@ export interface AuthActions {
   signOut: () => void;
   refreshToken: () => Promise<void>;
   clearError: () => void;
+  updateAvatar: (avatar: string | null) => Promise<void>;
 }

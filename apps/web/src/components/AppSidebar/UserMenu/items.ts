@@ -1,4 +1,4 @@
-import { LogOut, Monitor, Moon, Sun, Globe } from 'lucide-react';
+import { LogOut, Monitor, Moon, Sun, Globe, ImagePlus } from 'lucide-react';
 import type { UserMenuItem } from './types';
 import type { TFunction } from 'i18next';
 
@@ -9,6 +9,7 @@ export const UserMenuItems = ({
   t,
   language,
   changeLanguage,
+  updateAvatar,
 }: {
   theme: string | undefined;
   setTheme: (theme: string) => void;
@@ -16,7 +17,18 @@ export const UserMenuItems = ({
   t: TFunction;
   language: string;
   changeLanguage: (lng: string) => void;
+  updateAvatar?: () => void;
 }): UserMenuItem[] => [
+  ...(updateAvatar
+    ? [
+        {
+          type: 'item',
+          title: t('userMenu.changeAvatar', 'Change avatar'),
+          icon: ImagePlus,
+          onClick: updateAvatar,
+        } as UserMenuItem,
+      ]
+    : []),
   {
     type: 'submenu',
     title: t('userMenu.appearance'),
