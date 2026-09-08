@@ -533,27 +533,27 @@
       "step1Prefix": "Để đặt lại PAT, mở",
       "step1Path": "Settings > Authentication > Programmatic access tokens",
       "step1Suffix": "trong menu người dùng Snowflake.",
-      "step2Prefix": "Trong môi trường production, nên cân nhắc dùng",
+      "step2Prefix": "Trong môi trường vận hành thực tế, nên cân nhắc dùng",
       "step2Suffix": "để tăng bảo mật.",
       "step3": "PAT được mã hóa và lưu trữ an toàn. Sau khi lưu, PAT không bao giờ được hiển thị dạng văn bản thuần."
     },
     "snowflakePassphrase": {
       "title": "Passphrase là gì và khi nào cần dùng?",
-      "intro": "Passphrase là mật khẩu mã hóa tùy chọn để bảo vệ private key.",
+      "intro": "Passphrase là mật khẩu mã hóa tùy chọn để bảo vệ khóa riêng tư.",
       "stepsIntro": "Bạn cần lưu ý:",
-      "step1": "Nếu private key được tạo kèm passphrase (key đã mã hóa), bạn phải nhập passphrase ở đây.",
-      "step2": "Nếu private key không được mã hóa (tạo không có cờ -nocrypt), hãy để trống trường này.",
+      "step1": "Nếu khóa riêng tư được tạo kèm passphrase (key đã mã hóa), bạn phải nhập passphrase ở đây.",
+      "step2": "Nếu khóa riêng tư không được mã hóa (tạo không có cờ -nocrypt), hãy để trống trường này.",
       "step3": "Khi tạo key đã mã hóa bằng OpenSSL, bạn đặt passphrase trong quá trình tạo key.",
-      "step4": "Passphrase bổ sung một lớp bảo mật bằng cách mã hóa chính tệp private key.",
-      "step5": "Passphrase chỉ dùng để giải mã private key và không bao giờ được gửi đến Snowflake."
+      "step4": "Passphrase bổ sung một lớp bảo mật bằng cách mã hóa chính tệp khóa riêng tư.",
+      "step5": "Passphrase chỉ dùng để giải mã khóa riêng tư và không bao giờ được gửi đến Snowflake."
     },
     "snowflakeKeyPair": {
       "title": "Làm cách nào để thiết lập xác thực bằng cặp khóa?",
-      "content": "Để dùng xác thực bằng cặp khóa, hãy tạo một cặp RSA và cấu hình người dùng Snowflake.\n\n1. Tạo cặp RSA bằng OpenSSL:\nopenssl genrsa 2048 | openssl pkcs8 -topk8 -inform PEM -out rsa_key.p8 -nocrypt\n\n2. Trích xuất public key:\nopenssl rsa -in rsa_key.p8 -pubout -out rsa_key.pub\n\n3. Gán public key cho người dùng Snowflake với quyền ACCOUNTADMIN:\nALTER USER your_username SET RSA_PUBLIC_KEY='MIIBIjANBg...';\n\n4. Sao chép nội dung private key từ rsa_key.p8 vào trường Private Key bên trên."
+      "content": "Để dùng xác thực bằng cặp khóa, hãy tạo một cặp RSA và cấu hình người dùng Snowflake.\n\n1. Tạo cặp RSA bằng OpenSSL:\nopenssl genrsa 2048 | openssl pkcs8 -topk8 -inform PEM -out rsa_key.p8 -nocrypt\n\n2. Trích xuất khóa công khai:\nopenssl rsa -in rsa_key.p8 -pubout -out rsa_key.pub\n\n3. Gán khóa công khai cho người dùng Snowflake với quyền ACCOUNTADMIN:\nALTER USER your_username SET RSA_PUBLIC_KEY='MIIBIjANBg...';\n\n4. Sao chép nội dung khóa riêng tư từ rsa_key.p8 vào trường Private Key bên trên."
     },
     "snowflakeAuthMethod": {
       "title": "Nên chọn phương thức xác thực nào?",
-      "content": "Snowflake hỗ trợ hai phương thức xác thực:\n\nUsername & PAT (mã truy cập lập trình): Cách đơn giản nhất, dùng tên người dùng Snowflake và PAT. Phù hợp cho phát triển và kiểm thử.\n\nKey Pair Authentication: Cách an toàn hơn, dùng mật mã public/private key. Khuyến nghị cho production. Bạn cần tạo cặp RSA và gán public key cho người dùng Snowflake."
+      "content": "Snowflake hỗ trợ hai phương thức xác thực:\n\nUsername & PAT (mã truy cập lập trình): Cách đơn giản nhất, dùng tên người dùng Snowflake và PAT. Phù hợp cho phát triển và kiểm thử.\n\nKey Pair Authentication: Cách an toàn hơn, dùng mật mã public/khóa riêng tư. Khuyến nghị cho môi trường vận hành thực tế. Bạn cần tạo cặp RSA và gán khóa công khai cho người dùng Snowflake."
     },
     "snowflakeAccount": {
       "title": "Làm cách nào để tìm mã định danh tài khoản Snowflake?",
@@ -565,15 +565,15 @@
     },
     "redshiftSecret": {
       "title": "AWS Secret Access Key là gì?",
-      "content": "Secret Access Key là phần riêng tư trong thông tin xác thực AWS. Key này được dùng cùng Access Key ID để ký và xác thực request đến AWS API.\n\nSecret Access Key thường dài 40 ký tự và chỉ hiển thị một lần khi tạo. Nếu mất key, hãy tạo cặp access key mới.\n\nCảnh báo bảo mật: giữ kín key, không chia sẻ công khai. Key được lưu trữ dưới dạng mã hóa."
+      "content": "Secret Access Key là phần riêng tư trong thông tin xác thực AWS. Key này được dùng cùng Access Key ID để ký và xác thực yêu cầu gửi đến API AWS.\n\nSecret Access Key thường dài 40 ký tự và chỉ hiển thị một lần khi tạo. Nếu mất key, hãy tạo cặp access key mới.\n\nCảnh báo bảo mật: giữ kín key, không chia sẻ công khai. Key được lưu trữ dưới dạng mã hóa."
     },
     "redshiftRegion": {
       "title": "AWS region là gì?",
       "content": "AWS region là vị trí địa lý nơi Redshift cluster hoặc Redshift Serverless workgroup được lưu trữ.\n\nVí dụ phổ biến:\nus-east-1 - US East (N. Virginia)\nus-west-2 - US West (Oregon)\neu-west-1 - Europe (Ireland)\nap-southeast-1 - Asia Pacific (Singapore)\n\nBạn có thể tìm region trong AWS Redshift Console."
     },
     "redshiftDatabase": {
-      "title": "Tên database là gì?",
-      "content": "Tên database là database bạn muốn kết nối trong Redshift cluster hoặc workgroup. Mỗi cluster/workgroup có ít nhất một database; database mặc định thường tên là dev. Trường này bắt buộc với mọi phương thức xác thực."
+      "title": "Tên cơ sở dữ liệu là gì?",
+      "content": "Tên cơ sở dữ liệu là tên của cơ sở dữ liệu bạn muốn kết nối trong Redshift cluster hoặc workgroup. Mỗi cluster/workgroup có ít nhất một cơ sở dữ liệu; cơ sở dữ liệu mặc định thường tên là dev. Trường này bắt buộc với mọi phương thức xác thực."
     },
     "redshiftCluster": {
       "title": "Cluster identifier là gì?",
@@ -581,7 +581,7 @@
     },
     "redshiftAccessKey": {
       "title": "AWS Access Key ID là gì?",
-      "content": "Access Key ID là một phần trong thông tin xác thực AWS. Key này được dùng cùng Secret Access Key để xác thực request đến AWS API.\n\nAccess key thường dài 20 ký tự và bắt đầu bằng AKIA hoặc ASIA với credential tạm thời. Tạo key trong AWS IAM Console."
+      "content": "Access Key ID là một phần trong thông tin xác thực AWS. Key này được dùng cùng Secret Access Key để xác thực yêu cầu gửi đến API AWS.\n\nAccess key thường dài 20 ký tự và bắt đầu bằng AKIA hoặc ASIA với thông tin xác thực tạm thời. Tạo key trong AWS IAM Console."
     },
     "databricksToken": {
       "title": "Làm cách nào để tạo Personal Access Token?",
@@ -593,7 +593,7 @@
     },
     "databricksHost": {
       "title": "Làm cách nào để tìm URL workspace Databricks?",
-      "content": "URL workspace Databricks là hostname của workspace. Sao chép hostname từ thanh địa chỉ trình duyệt, phần trước dấu gạch chéo đầu tiên.\n\nVí dụ AWS: dbc-12345678-90ab.cloud.databricks.com\nVí dụ Azure: adb-123456789.7.azuredatabricks.net\nVí dụ GCP: 12345678901234.5.gcp.databricks.com"
+      "content": "URL workspace Databricks là tên máy chủ của workspace. Sao chép tên máy chủ từ thanh địa chỉ trình duyệt, phần trước dấu gạch chéo đầu tiên.\n\nVí dụ AWS: dbc-12345678-90ab.cloud.databricks.com\nVí dụ Azure: adb-123456789.7.azuredatabricks.net\nVí dụ GCP: 12345678901234.5.gcp.databricks.com"
     },
     "googleBigQueryProject": {
       "title": "Làm cách nào để tìm mã dự án (Project ID)?",
@@ -621,11 +621,11 @@
     },
     "athenaAccessKey": {
       "title": "Làm cách nào để lấy AWS Access Key ID?",
-      "content": "Trước khi lấy AWS Access Key ID, hãy bảo đảm IAM user có đủ quyền Athena và Glue.\n\nAccess Key ID là một phần của credential AWS dùng để kết nối và xác thực.\n\n1. Mở trang AWS IAM Security Credentials.\n2. Trong Access keys, dùng key hiện có hoặc tạo key mới.\n3. Khi tạo key, tải xuống và lưu an toàn cả Access Key ID lẫn Secret Access Key."
+      "content": "Trước khi lấy AWS Access Key ID, hãy bảo đảm người dùng IAM có đủ quyền Athena và Glue.\n\nAccess Key ID là một phần của thông tin xác thực AWS dùng để kết nối và xác thực.\n\n1. Mở trang AWS IAM Security Credentials.\n2. Trong Access keys, dùng key hiện có hoặc tạo key mới.\n3. Khi tạo key, tải xuống và lưu an toàn cả Access Key ID lẫn Secret Access Key."
     },
     "athenaSecret": {
       "title": "Làm cách nào để lấy AWS Secret Access Key?",
-      "content": "Secret Access Key là một phần của credential AWS dùng để kết nối và xác thực. Key chỉ hiển thị khi vừa được tạo.\n\n1. Mở trang AWS IAM Security Credentials.\n2. Trong Access keys, tạo key mới nếu chưa có hoặc đã mất secret.\n3. Sao chép và lưu Secret Access Key an toàn; key không thể hiển thị lại."
+      "content": "Secret Access Key là một phần của thông tin xác thực AWS dùng để kết nối và xác thực. Key chỉ hiển thị khi vừa được tạo.\n\n1. Mở trang AWS IAM Security Credentials.\n2. Trong Access keys, tạo key mới nếu chưa có hoặc đã mất secret.\n3. Sao chép và lưu Secret Access Key an toàn; key không thể hiển thị lại."
     },
     "athenaRegion": {
       "title": "Làm cách nào để tìm region của Athena?",
@@ -979,12 +979,12 @@
   "connectorHelp": {
     "redshiftSchema": {
       "title": "Làm cách nào để cấp quyền tạo schema?",
-      "intro": "Bạn cần cấp quyền cho IAM user sẽ được dùng để tải dữ liệu lên.",
+      "intro": "Bạn cần cấp quyền cho người dùng IAM sẽ được dùng để tải dữ liệu lên.",
       "grant": "Cấp quyền:",
       "replacePrefix": "Thay",
-      "replaceMiddle": "bằng tên database của bạn và",
-      "replaceSuffix": "bằng IAM username của bạn.",
-      "findPrefix": "Bạn có thể tìm IAM username trong",
+      "replaceMiddle": "bằng tên cơ sở dữ liệu của bạn và",
+      "replaceSuffix": "bằng người dùng IAMname của bạn.",
+      "findPrefix": "Bạn có thể tìm người dùng IAMname trong",
       "console": "AWS IAM Console",
       "usersSuffix": "ở tab Users."
     }
@@ -3063,7 +3063,7 @@
     "test": "Thử nghiệm",
     "testSuccess": "Đã gửi webhook thử nghiệm thành công",
     "howWebhooksWork": "Webhook hoạt động như thế nào?",
-    "webhookDescription": "Webhook gửi thông báo theo thời gian thực trực tiếp đến endpoint của bạn. Payload yêu cầu chứa thông tin sự kiện ở định dạng JSON.",
+    "webhookDescription": "Webhook gửi thông báo theo thời gian thực trực tiếp đến điểm cuối API của bạn. Nội dung yêu cầu chứa thông tin sự kiện ở định dạng JSON.",
     "recipientsTooltip": "Chọn thành viên nhóm sẽ nhận thông báo",
     "teamMembers": "Thành viên nhóm",
     "addRecipientsQuestion": "Làm cách nào thêm người nhận cho thông báo này?",
