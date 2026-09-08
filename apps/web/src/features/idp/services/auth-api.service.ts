@@ -155,7 +155,8 @@ export async function updateAvatar(avatar: string | null): Promise<void> {
     }
     await authClient.post('/auth/better-auth/update-user', { image: avatar });
   } catch (error) {
-    throw handleAuthError(error);
+    const authError = handleAuthError(error);
+    throw new Error(authError.message, { cause: authError });
   }
 }
 
