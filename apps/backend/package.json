@@ -1,6 +1,6 @@
 {
   "name": "@owox/backend",
-  "version": "0.32.0",
+  "version": "0.33.0",
   "description": "P2PDigital Data Marts Backend - Full-stack data orchestration platform",
   "author": "OWOX",
   "license": "ELv2",
@@ -151,7 +151,11 @@
     "typeorm-ts-node-commonjs": "^0.3.20"
   },
   "jest": {
-    "moduleFileExtensions": ["js", "json", "ts"],
+    "moduleFileExtensions": [
+      "js",
+      "json",
+      "ts"
+    ],
     "rootDir": "src",
     "testRegex": ".*\\.spec\\.ts$",
     "transform": {
@@ -179,11 +183,15 @@
       "<rootDir>/../../../node_modules/(?!(@owox)/)",
       "<rootDir>/../../../packages/(?!(idp-protocol|idp-better-auth|idp-owox-better-auth|internal-helpers)/)"
     ],
-    "collectCoverageFrom": ["**/*.(t|j)s"],
+    "collectCoverageFrom": [
+      "**/*.(t|j)s"
+    ],
     "coverageDirectory": "../coverage",
     "testEnvironment": "node",
     "testTimeout": 120000,
-    "setupFiles": ["<rootDir>/../jest.setup.ts"],
+    "setupFiles": [
+      "<rootDir>/../jest.setup.ts"
+    ],
     "moduleNameMapper": {
       "^src/(.*)$": "<rootDir>/$1"
     }

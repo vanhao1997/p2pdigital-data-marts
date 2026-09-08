@@ -1,5 +1,19 @@
 # @owox/connectors
 
+## 0.33.0
+
+### Minor Changes
+
+- f13fc57: Update patched runtime transitive dependencies for known `fast-uri` and `qs` security advisories. Snowflake's TOML advisory remains tracked separately because the available force fix would downgrade the Snowflake SDK.
+- 264cdcf: Add stable Meta Marketing API metrics for Facebook Ads and replace deprecated
+  Facebook Page/Post reach reporting with Page media-view and lifetime post media
+  insights. New metrics remain optional and existing default selections stay unchanged.
+- 820d349: # Add manual Facebook Ads credentials
+
+  Facebook Ads setup now offers a dedicated Access Token option where users can enter an Access Token, App ID, and App Secret. OAuth and existing legacy token configurations remain supported.
+
+- a55791f: Show a clear Facebook Ads reconnect action when every configured ad account is rejected for missing `ads_read` or `ads_management` permissions.
+
 ## 0.32.0
 
 ## 0.31.0

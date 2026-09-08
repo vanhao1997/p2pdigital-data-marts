@@ -1,5 +1,26 @@
 # @owox/backend
 
+## 0.33.0
+
+### Minor Changes
+
+- f13fc57: Update patched runtime transitive dependencies for known `fast-uri` and `qs` security advisories. Snowflake's TOML advisory remains tracked separately because the available force fix would downgrade the Snowflake SDK.
+- 264cdcf: Rebrand to P2PDigital, add Vietnamese (VI) language support, increase project limit to 50
+  - Replaced OWOX branding with P2PDigital across all user-facing text, logo, and URLs
+  - Added react-i18next with English and Vietnamese locale files
+  - Added language switcher (EN/VI) in the user menu with localStorage persistence
+  - Increased organization/project creation limit from 20 to 50
+
+### Patch Changes
+
+- Updated dependencies [f13fc57]
+- Updated dependencies [264cdcf]
+- Updated dependencies [820d349]
+- Updated dependencies [a55791f]
+  - @owox/connectors@0.33.0
+  - @owox/internal-helpers@0.33.0
+  - @owox/idp-protocol@0.33.0
+
 ## 0.32.0
 
 ### Patch Changes 0.32.0

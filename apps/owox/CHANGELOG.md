@@ -1,5 +1,82 @@
 # owox
 
+## 0.33.0
+
+### Minor Changes
+
+- 264cdcf: # Add the Admicro Ads connector
+
+  Users can now import Admicro ADX campaign and date reports for desktop and mobile into their data marts. The connector supports project-scoped credentials, dynamic field preview, daily incremental imports, manual backfills, and a seven-day reimport window.
+
+  Self-hosted operators can run the private Playwright extractor sidecar and connect it to OWOX Data Marts with HMAC-signed requests.
+
+- 264cdcf: # Simplify the connector catalog
+
+  The connector setup screen no longer shows Bank of Canada, Criteo Ads, Microsoft Ads, Open Exchange Rates, Open Holidays, or Reddit Ads. Existing connector implementations and saved Data Marts remain unchanged.
+
+- 264cdcf: # Remove obsolete Slack Community links
+
+  The Help menu no longer shows the obsolete Slack Community invitation, and project documentation now directs contributors to GitHub Discussions and Issues instead.
+
+- b3d008d: # Calculated Fields in the Output Schema
+
+  An analyst can now define a Calculated Field directly in a Data Mart's Output Schema — a formula written in that Data Mart's own warehouse SQL, such as `SUM(clicks) * 1.0 / NULLIF(SUM(impressions), 0)` for a click-through rate. Unlike a ratio hard-coded into a Data Mart's SQL, it recomputes at whatever grain the request asks for, so a report broken down by day, a Google Sheet, a Looker Studio page, an MCP agent, an HTTP Data caller and a report's Totals row all get the true ratio of the sums rather than an average of per-row ratios. Whether the field is a metric or a dimension is read from the formula rather than chosen, and the formula is checked when the schema is saved — every problem names the field it belongs to, and the resulting query is test-run against the warehouse once per save, so a broken formula is caught before anyone builds a report on it. Available on Google BigQuery, AWS Athena, Snowflake, AWS Redshift and Databricks; see [Calculated Fields](https://docs.owox.com/docs/getting-started/setup-guide/calculated-fields/) for what each dialect supports and the limitations to know about.
+
+- a4dc4ff: # Send Data Mart reports to Microsoft Excel
+
+  Open the OWOX add-in in a workbook, pick a published Data Mart, and the report's rows land in the worksheet. The report then appears in OWOX Data Marts with its title, its run history and its last-run status, and its columns, filters and sorting can be edited there afterwards.
+
+  A workbook sits on your machine, so nothing can be pushed into it — the add-in reads the report itself. Four things follow from that:
+  - You are not asked to name a document in advance. The worksheet you opened the add-in from is where the rows go.
+  - Such a report is created in the add-in, which is what binds it to a worksheet. The web app offers neither the report nor the destination for creation: the add-in sets both up on first use, and a report made in the web app would be one no workbook points at.
+  - It cannot be run or scheduled from the web app. The web app says so instead of offering a button that would fail; refresh it from the add-in.
+  - Refreshing from the add-in _is_ the report running, so the status shown in Excel and in the web app is the same one.
+
+  Runs from Excel are billed as **Excel Report Run**, a sub-consumption unit of Report Run, so they can be told apart from data pulled through the HTTP Data API.
+
+  Reports on a destination that reads its own data — Excel and Data Studio — no longer accept a run request or a schedule that could never succeed. Both were previously accepted and then failed during execution.
+
+- 3c16cd6: # Help videos now stream from Cloudflare instead of GitHub attachments
+
+  Three in-product help videos — "SQL to Google Sheets in Minutes", "Data Studio Setup", and "Getting Started with Data Marts" — used to load from GitHub issue-attachment storage. Those URLs redirect through short-lived signed links and fail entirely for clients whose networks block github.com, so the videos could show up broken.
+
+  Now all six help videos use the same Cloudflare Stream player. The three migrated videos keep their previous behavior (autoplay, muted, loop) and their exact aspect ratios.
+
+  The documentation site picks up the same fix: pages that embedded the GitHub-hosted files now render the Cloudflare player, while the repository markdown keeps the GitHub links so videos still play inline on github.com. The Google Sheets destination page also gains the setup walkthrough video.
+
+- dc3b2ad: # Show joined Data Mart details in report column pickers
+
+  Report column pickers in the web app and Google Sheets extension now show each joined Data Mart's description and full join path on hover, using the same user-facing titles as the picker.
+
+- da26589: # Connector runs interrupted by a restart are reported as a warning
+
+  When a server restart stops a connector run, the run resumes by itself and continues from the last day it finished. Run history now shows this as a warning instead of an error, so a restart no longer looks like a failed import. Runs that stop for any other reason are still reported as errors.
+
+- 7667281: Fix the Joinable Data Marts diagram zoom controls dying after opening a data mart page
+
+  The +/- zoom buttons on the Joinable Data Marts diagram could stop responding until "Fit to view" was pressed, depending on how the page was opened. The allowed zoom range was captured once from a completed fit, so a fit that ran under transient conditions (a still-loading graph or a settling pane) froze the range in an unusable state. The range is now derived from the live graph and pane geometry, small graphs that fit at the maximum zoom keep a usable zoom-out floor, and a corrupted viewport recovers with a full fit instead of ignoring clicks.
+
+- 9375f07: # Resumable incremental imports for Microsoft Ads
+
+  Previously, an interrupted incremental run restarted the whole date range from the beginning, so long imports could retry endlessly without ever finishing. The connector now saves its progress after each imported day. An interrupted run resumes from the last completed day instead of starting over.
+
+  The connector also stops early with a clear message when the Account IDs field holds no usable ID, or when Fields references a report the source no longer provides.
+
+- de49dce: # Resumable incremental imports for Google Ads, Reddit Ads, Criteo and X Ads
+
+  Previously, an interrupted incremental run restarted the whole date range from the beginning, so long imports could retry endlessly without ever finishing. These connectors now save their progress as the import advances. An interrupted run resumes from the last completed date instead of starting over.
+
+### Patch Changes
+
+- Updated dependencies [f13fc57]
+- Updated dependencies [264cdcf]
+  - @owox/backend@0.33.0
+  - @owox/web@0.33.0
+  - @owox/idp-better-auth@0.33.0
+  - @owox/internal-helpers@0.33.0
+  - @owox/idp-protocol@0.33.0
+  - @owox/idp-owox-better-auth@0.33.0
+
 ## 0.32.0
 
 ### Minor Changes 0.32.0
@@ -53,7 +130,6 @@
 - 918026f: **Data Last Updated Date for AWS Redshift, AWS Athena, Snowflake, and Databricks**
 
   **Data Last Updated** now works for four more storages, on every surface where it already worked for BigQuery: the Data Mart page, the Data Marts list, the model canvas, and MCP `query_data_mart` responses. In each case OWOX asks the storage which tables the executed query reads — views and SQL Data Marts resolve through to their underlying base tables — and then reads each table's last data change. When a table that cannot be measured sits alongside measurable ones, the coverage becomes partial, so the reported value stays a lower bound: the real time can only be more recent.
-
   - **AWS Redshift** (918026f) — reads each table's last data modification time from Redshift's own metadata; materialized views report the time of their last refresh. No setup is needed. Expect the value to trail reality slightly: Redshift refreshes this metadata with a delay of up to about five minutes, so a load that just finished may take a moment to show. Spectrum external tables, whose data lives outside Redshift, and tables Redshift reports no modification time for show as unknown.
   - **AWS Athena** (53e2b84) — what can be reported depends on the table format. **Iceberg** tables answer exactly: the value is the time of the last commit to the data, visible right after a write. Classic **Hive** tables show **Unknown** instead — their catalog stores no record of when the data changed, and the timestamps it does keep also move when someone only edits the table definition, so reporting one could present stale data as freshly updated. Tables from federated catalogs are not measured either. No setup is needed.
   - **Snowflake** (b81cdb2) — reads each table's last **data** change from the account's DML history. The connection role needs access to the `SNOWFLAKE` database (account usage) — without it, Data Marts show Unknown. The value is the start of the hour in which the data last changed, and it can trail reality by several hours, because Snowflake publishes this history with a delay. Schema changes and Snowflake's own background maintenance do not move the value, so the reported time never overstates how fresh the data is. A table with no recorded data changes in the last year shows **Unknown** with a note, and a dropped-and-recreated table answers for its current generation only, never for its predecessor's history. Materialized views, Iceberg tables (whose data can change outside Snowflake), and other objects the history cannot answer for appear as unknown sources.
@@ -104,7 +180,6 @@
   Newly created push-destination reports now run immediately by default when created through MCP `add_report`, and the response returns the initial `run_id` for status polling. Use `run_immediately: false` for configuration-only creation; Looker Studio remains pull-based. If queueing fails after creation, the response preserves the report id and directs the assistant to retry with `run_report` instead of creating a duplicate report or Google Sheet.
 
 - 0301c9e: **Google Chat: direct webhook delivery, clearer setup, and delivery logs**
-
   - **Direct delivery** (0301c9e) — Google Chat Destinations now offer Incoming Webhook and Channel Email delivery methods. Existing email-based destinations keep their current method, while new destinations default to direct delivery through a space-specific incoming webhook. Webhook messages are formatted cards containing the subject, Data Mart name, rendered report, and a link back to OWOX Data Marts.
   - **Setup guidance and logs** (953f107) — destination settings now provide contextual instructions for choosing a delivery method and obtaining an incoming webhook URL or space email address. Report run logs identify the delivery method and destination without exposing webhook credentials, with per-part entries shown only when a report is split across multiple Google Chat messages.
 
@@ -123,7 +198,6 @@
   Previously, publishing Data Mart drafts in bulk from a Storage's menu could fail for every draft with a generic "please check them independently" message, even when some drafts were ready to publish. This is now fixed, so drafts you have access to publish succeed as expected. When a draft still cannot be published, the notification names the reason — that it has no definition yet, for example, or that its table name is not in the expected format — so you know what to correct before trying again.
 
 - 6f2364e: **AI metadata generation for SQL data marts: no dataset-creation permission, and visible failures**
-
   - **No `bigquery.datasets.create` required** (6f2364e) — generating AI metadata (field aliases and descriptions, data mart title and description) for a SQL-based data mart previously materialized a technical view in the `owox_internal_<location>` dataset, and creating that dataset on first use required the project-level `bigquery.datasets.create` permission — so users with data-only access (e.g. `BigQuery Job User` plus `BigQuery Data Viewer`) could not use the AI helper at all. Sample rows are now fetched through an inline derived table built from the data mart's own SQL (`SELECT <columns> FROM (<data mart sql>) LIMIT <n>`), so the AI helper needs exactly the permissions a regular report run needs:
     - Plain `SELECT` definitions are inlined on every storage type except legacy Google BigQuery.
     - `WITH`/CTE definitions are additionally inlined on Google BigQuery storage, where the SQL dialect accepts a CTE inside a parenthesized derived table; other storages keep the previous behavior for CTEs.
@@ -213,7 +287,6 @@
   - The `@owox/api-client` guide now documents every filter operator's `value` shape (scalar / array / `{ from, to }` / preset), the `in`/`not_in` constraints, the full relative-date preset list, and the NULL-inclusive semantics of negative operators; the OpenAPI description of the `filter` query parameter shows an `in` example.
 
 - ec28b5e: **API surface maintenance**
-
   - **Low-level API client transport methods** — OWOX API clients can now use `patchJson()` and `deleteJson()` alongside `getJson()`, `postJson()`, `putJson()`, and `getStream()` for `/api/...` endpoints that do not yet have typed resource abstractions. Authenticated low-level requests accept only root-relative `/api/...` paths up to 2,048 characters and refuse unsafe paths and redirects, preventing credentials from being sent to an unintended destination. Existing custom transports remain source-compatible and can add PATCH and DELETE support independently; calling an unsupported new method rejects with `OWOXConfigError`. The existing plugin protocol adds PATCH and DELETE through `ctx.owox` as an additive capability while preserving compatibility with existing plugins. Low-level JSON return values are caller-typed and are not runtime-validated; consumers should prefer typed resource abstractions when available.
   - **Manage Data Mart run lifecycles through the API client** — `@owox/api-client` now supports starting, listing, inspecting, and cancelling Data Mart runs through the Data-Mart-scoped `runs.forDataMart(id)` client and its `start()`, `list()`, `get()`, and `cancel()` methods. Starting and cancelling require Technical User access; listing and inspecting require Business User access. `start()` accepts typed incremental or manual-backfill options, including connector-specific fields; manual-backfill `data` is optional for connectors without backfill fields. The client requires an explicit `MANUAL_BACKFILL` run type whenever `data` is supplied and rejects `data` on implicit or explicit incremental runs before sending a request, while the backend HTTP endpoint separately accepts retained object-valued `data` on incremental requests so existing run forms remain compatible. The client also rejects empty, dot-segment, or separator-bearing Data Mart and run IDs before sending a request. Serialized manual-run options are limited to 1 MiB by both the client and HTTP API; requests above the HTTP transport ceiling return `413` instead of an internal-server error. Packaged authentication middleware now limits its body parsers to `/auth`, so it no longer overrides the backend API's 2 MiB transport ceiling.
   - **Scoped list pagination** — defaults to 100 items when omitted and preserves valid caller-provided limits and offsets without silently capping them. The scoped list method rejects unknown, zero or negative limits, negative offsets, non-integer values, non-finite values, and integers outside JavaScript's safe range before authentication or network access. Project-wide `runs.list()` pagination remains unchanged and relies on server normalization. Project-wide and Data-Mart-scoped run methods remain compatible with older self-hosted deployments that omit Data Quality fields, and Data Quality response validation tolerates additive server fields while still checking known values. Existing typed integrations need no migration.
@@ -2534,7 +2607,6 @@
   We're excited to introduce **Time Triggers** - a powerful new feature that allows you to schedule your reports and connectors to run automatically at specified times!
 
   ## Benefits
-
   - ✅ **Save Time**: Automate routine data refreshes without manual intervention
   - 🔄 **Stay Updated**: Keep your data fresh with regular scheduled updates
   - 📊 **Consistent Reporting**: Ensure your reports are generated on a reliable schedule
@@ -2542,7 +2614,6 @@
   - 🔧 **Flexible Scheduling Options**: Choose from daily, weekly, monthly, or interval-based schedules
 
   ## Scheduling Options
-
   - **Daily**: Run your reports or connectors at the same time every day
   - **Weekly**: Select specific days of the week for execution
   - **Monthly**: Schedule runs on specific days of the month
