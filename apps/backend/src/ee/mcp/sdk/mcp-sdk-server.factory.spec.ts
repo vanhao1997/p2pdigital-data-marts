@@ -29,7 +29,7 @@ describe('McpSdkServerFactory', () => {
     jest.resetModules();
     mockRegisterTool.mockClear();
     mockMcpServer.mockClear();
-    jest.doMock('@modelcontextprotocol/sdk/server/mcp.js', () => ({
+    jest.doMock('@modelcontextprotocol/server', () => ({
       McpServer: mockMcpServer,
     }));
   });
@@ -68,16 +68,19 @@ describe('McpSdkServerFactory', () => {
 
     expect(factory.create(context)).toBe(mockServer);
 
-    expect(mockMcpServer).toHaveBeenCalledWith({
-      name: 'owox-mcp',
-      version: '0.1.0',
-    });
+    expect(mockMcpServer).toHaveBeenCalledWith(
+      { name: 'owox-mcp', version: '0.1.0' },
+      expect.objectContaining({
+        supportedProtocolVersions: expect.arrayContaining(['2026-07-28', '2025-11-25']),
+        capabilities: { tools: { listChanged: false } },
+      })
+    );
     expect(mockRegisterTool).toHaveBeenCalledWith(
       'list_data_marts',
       {
         description: 'List data marts',
-        inputSchema: { query: expect.any(Object) },
-        outputSchema,
+        inputSchema: expect.objectContaining({ '~standard': expect.any(Object) }),
+        outputSchema: expect.objectContaining({ '~standard': expect.any(Object) }),
         annotations,
       },
       expect.any(Function)
@@ -85,7 +88,7 @@ describe('McpSdkServerFactory', () => {
 
     const sdkHandler = mockRegisterTool.mock.calls[0][2];
     const signal = new AbortController().signal;
-    await expect(sdkHandler({ query: 'orders' }, { signal })).resolves.toEqual({
+    await expect(sdkHandler({ query: 'orders' }, { mcpReq: { signal } })).resolves.toEqual({
       content: [{ type: 'text', text: 'ok' }],
     });
     // The SDK's per-request abort signal (client disconnect/cancel) must reach the tool handler.
@@ -138,8 +141,10 @@ describe('McpSdkServerFactory', () => {
 
     // Deleting the instrumentation.wrap(...) call in the factory must fail here.
     expect(wrap).toHaveBeenCalledWith('list_data_marts', expect.any(Function));
-    // The callback handed to the SDK is the one wrap() returned — instrumentation is not bypassed.
-    expect(mockRegisterTool.mock.calls[0][2]).toBe(wrapped);
+    const signal = new AbortController().signal;
+    const meta = { trace: 'conversation-1' };
+    await mockRegisterTool.mock.calls[0][2]({}, { mcpReq: { signal, _meta: meta } });
+    expect(wrapped).toHaveBeenCalledWith({}, { signal, _meta: meta });
   });
 
   it('rejects tool calls when token context lacks required scope', async () => {
@@ -168,14 +173,15 @@ describe('McpSdkServerFactory', () => {
     const McpSdkServerFactory = await loadFactory();
     const factory = new McpSdkServerFactory(
       new McpConfigService({ get: jest.fn() } as never),
-      new McpToolRegistry([])
+      new McpToolRegistry([]),
+      passthroughInstrumentation
     );
 
     factory.create(context, 'OWOX instructions');
 
     expect(mockMcpServer).toHaveBeenCalledWith(
       { name: 'owox-mcp', version: '0.1.0' },
-      { instructions: 'OWOX instructions' }
+      expect.objectContaining({ instructions: 'OWOX instructions' })
     );
   });
 });

@@ -28,6 +28,33 @@ const configSchema = z
     MAX_CONNECTOR_RUNS_PER_PROJECT: z.coerce.number().int().min(1).max(1000).default(3),
     MAX_REPORT_RUNS_PER_PROJECT: z.coerce.number().int().min(1).max(1000).default(1000),
 
+    MCP_CLIENT_METADATA_DOCUMENT_ENABLED: z
+      .string()
+      .trim()
+      .toLowerCase()
+      .pipe(z.enum(['true', 'false']))
+      .default('true'),
+    MCP_CLIENT_METADATA_ALLOWED_ORIGINS: z.string().trim().default(''),
+    MCP_CLIENT_METADATA_CACHE_TTL_MS: z.coerce
+      .number()
+      .int()
+      .min(1_000)
+      .max(86_400_000)
+      .default(300_000),
+    MCP_CLIENT_METADATA_CACHE_MAX_TTL_MS: z.coerce
+      .number()
+      .int()
+      .min(1_000)
+      .max(86_400_000)
+      .default(3_600_000),
+    MCP_CLIENT_METADATA_CACHE_MAX_ENTRIES: z.coerce.number().int().min(1).max(10_000).default(256),
+    MCP_CLIENT_METADATA_FETCH_TIMEOUT_MS: z.coerce
+      .number()
+      .int()
+      .min(1_000)
+      .max(60_000)
+      .default(5_000),
+
     ADMICRO_EXTRACTOR_ENABLED: z
       .string()
       .trim()

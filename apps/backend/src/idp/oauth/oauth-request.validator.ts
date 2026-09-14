@@ -7,6 +7,11 @@ import type {
 import type { McpResourceContext } from '../../mcp-resource/mcp-resource-context';
 import { McpResourceResolverService } from '../../mcp-resource/mcp-resource-resolver.service';
 import { OAuthClientRegistry, OAuthRegisteredClient } from './oauth-client.registry';
+import {
+  isClientMetadataId,
+  looksLikeClientMetadataId,
+  OAuthClientMetadataService,
+} from './oauth-client-metadata.service';
 import { OAuthConfigService } from './oauth-config.service';
 
 type OAuthInput = Record<string, unknown>;
@@ -26,7 +31,8 @@ export class OAuthRequestValidator {
   constructor(
     private readonly config: OAuthConfigService,
     private readonly clientRegistry: OAuthClientRegistry,
-    private readonly resourceResolver: McpResourceResolverService
+    private readonly resourceResolver: McpResourceResolverService,
+    private readonly clientMetadataService: OAuthClientMetadataService
   ) {}
 
   async validateAuthorizationRequest(
@@ -107,7 +113,9 @@ export class OAuthRequestValidator {
   }
 
   private async getClient(clientId: string): Promise<OAuthRegisteredClient> {
-    const client = await this.clientRegistry.get(clientId);
+    const client = looksLikeClientMetadataId(clientId)
+      ? await this.clientMetadataService.resolve(clientId)
+      : await this.clientRegistry.get(clientId);
     if (!client) {
       throw new BadRequestException('unknown client_id');
     }
@@ -140,17 +148,19 @@ export class OAuthRequestValidator {
     resource: string;
     resourceContext: McpResourceContext;
   } {
-    if (!client.resource) {
+    if (!client.resource && !isClientMetadataId(client.clientId)) {
       throw new BadRequestException('client is not bound to an MCP resource');
     }
 
-    const resource = client.resource;
+    const resource = client.resource ?? this.requiredString(clientResource, 'resource');
     const resourceContext = this.validateResource(resource);
-    this.assertMatchingResource(
-      clientResource,
-      resource,
-      'resource does not match registered client'
-    );
+    if (client.resource) {
+      this.assertMatchingResource(
+        clientResource,
+        resource,
+        'resource does not match registered client'
+      );
+    }
 
     if (requestResource !== undefined && requestResource !== resource) {
       throw new BadRequestException('request resource does not match registered client');

@@ -204,6 +204,27 @@ owox serve --env-file custom.env --port 3030
   - Example for Claude web: `https://claude.ai`
   - Default: empty.
 
+- **MCP_CLIENT_METADATA_DOCUMENT_ENABLED**: Enables OAuth Client ID Metadata
+  Documents (CIMD) for MCP clients whose `client_id` is an HTTPS metadata URL.
+  Defaults to `true`; set `false` only when an operator needs to disable CIMD.
+
+- **MCP_CLIENT_METADATA_ALLOWED_ORIGINS**: Optional comma-separated HTTPS origins
+  allowed to host CIMD documents. Empty means any public HTTPS origin is
+  accepted after SSRF checks. Metadata documents are never fetched from private
+  or loopback addresses.
+
+- **MCP_CLIENT_METADATA_CACHE_TTL_MS** and
+  **MCP_CLIENT_METADATA_CACHE_MAX_TTL_MS**: Default and maximum in-memory cache
+  lifetime for CIMD documents. Defaults are `300000` and `3600000`
+  milliseconds, respectively; values are bounded to one day.
+
+- **MCP_CLIENT_METADATA_CACHE_MAX_ENTRIES**: Maximum number of CIMD documents
+  retained in the process-local cache. Defaults to `256`.
+
+- **MCP_CLIENT_METADATA_FETCH_TIMEOUT_MS**: Maximum time allowed to fetch and
+  read one CIMD document, including guarded redirects. Defaults to `5000`
+  milliseconds and is bounded to one minute.
+
 - **MCP_PUBLIC_BASE_URL**: Public origin of the shared hosted MCP server.
   - Example: `https://mcp.owox.com`
   - `MCP_OAUTH_RESOURCE` defaults to `${MCP_PUBLIC_BASE_URL}/mcp` when not set.

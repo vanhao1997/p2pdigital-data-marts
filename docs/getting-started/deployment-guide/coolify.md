@@ -2,6 +2,9 @@
 
 This guide describes the production deployment shape for P2PDigital Data Marts on Coolify.
 
+For MCP transport or OAuth changes, also complete the
+[MCP staging, canary and production gates](./mcp-rollout.md).
+
 ## Deployment summary
 
 Deploy two private applications from immutable GHCR image tags:

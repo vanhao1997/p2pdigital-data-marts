@@ -169,6 +169,19 @@ describe('fetchPublicUrl', () => {
     );
   });
 
+  it('rejects a redirect to an origin outside the caller allowlist', async () => {
+    fetchMock.mockResolvedValueOnce(redirectTo('https://cdn.example.com/moved'));
+
+    await expect(
+      fetchPublicUrl(
+        'https://example.com/hook',
+        { method: 'GET' },
+        { allowedProtocols: ['https:'], allowedOrigins: ['https://example.com'] }
+      )
+    ).rejects.toMatchObject({ reason: 'origin' });
+    expect(fetchMock).toHaveBeenCalledTimes(1);
+  });
+
   it('gives up rather than looping forever', async () => {
     fetchMock.mockResolvedValue(redirectTo('https://example.com/next'));
 

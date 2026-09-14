@@ -12,6 +12,7 @@ describe('OAuthMetadataController', () => {
       registrationEndpoint: 'https://app.p2pdigital.vn/oauth/register',
       jwksEndpoint: 'https://app.p2pdigital.vn/oauth/jwks',
       scopes: ['mcp:read', 'mcp:write'],
+      clientMetadataDocumentEnabled: true,
     } as OAuthConfigService;
     const resolver = new McpResourceResolverService(
       new ConfigService({
@@ -40,6 +41,8 @@ describe('OAuthMetadataController', () => {
       code_challenge_methods_supported: ['S256'],
       scopes_supported: ['mcp:read', 'mcp:write'],
       token_endpoint_auth_methods_supported: ['none'],
+      authorization_response_iss_parameter_supported: true,
+      client_id_metadata_document_supported: true,
     });
   });
 
@@ -59,6 +62,8 @@ describe('OAuthMetadataController', () => {
       code_challenge_methods_supported: ['S256'],
       scopes_supported: ['mcp:read', 'mcp:write'],
       token_endpoint_auth_methods_supported: ['none'],
+      authorization_response_iss_parameter_supported: true,
+      client_id_metadata_document_supported: true,
       subject_types_supported: ['public'],
       id_token_signing_alg_values_supported: ['RS256'],
     });
@@ -82,7 +87,7 @@ describe('OAuthMetadataController', () => {
     });
   });
 
-  it('keeps authorize on the app host for shared MCP metadata in split production config', () => {
+  it('uses the same canonical issuer for shared discovery and authorization callbacks', () => {
     const controller = createController();
 
     expect(
@@ -92,11 +97,11 @@ describe('OAuthMetadataController', () => {
         headers: { host: 'mcp.owox.com' },
       } as never)
     ).toMatchObject({
-      issuer: 'https://mcp.owox.com',
+      issuer: 'https://app.p2pdigital.vn',
       authorization_endpoint: 'https://app.p2pdigital.vn/oauth/authorize',
-      token_endpoint: 'https://mcp.owox.com/oauth/token',
-      registration_endpoint: 'https://mcp.owox.com/oauth/register',
-      jwks_uri: 'https://mcp.owox.com/oauth/jwks',
+      token_endpoint: 'https://app.p2pdigital.vn/oauth/token',
+      registration_endpoint: 'https://app.p2pdigital.vn/oauth/register',
+      jwks_uri: 'https://app.p2pdigital.vn/oauth/jwks',
     });
   });
 });

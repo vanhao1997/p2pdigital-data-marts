@@ -5,6 +5,7 @@ import { McpResourceResolverService } from '../../../mcp-resource/mcp-resource-r
 import { OAuthClientRegistry } from '../oauth-client.registry';
 import { OAuthConfigService } from '../oauth-config.service';
 import { OAuthDynamicClientService } from '../oauth-dynamic-client.service';
+import { OAuthRedirectUriPolicy } from '../oauth-redirect-uri.policy';
 import { OAuthRegistrationController } from './oauth-registration.controller';
 
 function makeConfig(overrides: Partial<OAuthConfigService> = {}): OAuthConfigService {
@@ -43,7 +44,7 @@ function makeController(config = makeConfig(), registry = makeClientRegistry()) 
   );
   return {
     controller: new OAuthRegistrationController(
-      new OAuthDynamicClientService(config, registry),
+      new OAuthDynamicClientService(config, registry, new OAuthRedirectUriPolicy(config)),
       resolver,
       config
     ),

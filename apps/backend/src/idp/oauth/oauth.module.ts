@@ -10,6 +10,8 @@ import { IdpProviderOAuthAdapter } from './idp-provider-oauth.adapter';
 import { OAuthClientRegistry } from './oauth-client.registry';
 import { OAuthConfigService } from './oauth-config.service';
 import { OAuthDynamicClientService } from './oauth-dynamic-client.service';
+import { OAuthClientMetadataService } from './oauth-client-metadata.service';
+import { OAuthRedirectUriPolicy } from './oauth-redirect-uri.policy';
 import { OAUTH_IDP_PORT } from './oauth-idp.port';
 import { OAuthProjectSelectionService } from './oauth-project-selection.service';
 import { OAuthProjectMemberResolver } from './oauth-project-member.resolver';
@@ -36,7 +38,9 @@ import { IdpProviderService } from '../services/idp-provider.service';
   providers: [
     OAuthConfigService,
     OAuthClientRegistry,
+    OAuthClientMetadataService,
     OAuthDynamicClientService,
+    OAuthRedirectUriPolicy,
     OAuthRequestValidator,
     OAuthProjectSelectionService,
     OAuthProjectMemberResolver,

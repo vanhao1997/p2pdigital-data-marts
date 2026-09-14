@@ -23,6 +23,8 @@ export const OAuthAuthorizationServerMetadataSchema = z.object({
   code_challenge_methods_supported: z.array(z.literal('S256')).min(1),
   scopes_supported: z.array(McpScopeEnum),
   token_endpoint_auth_methods_supported: z.array(z.literal('none')),
+  client_id_metadata_document_supported: z.boolean().optional(),
+  authorization_response_iss_parameter_supported: z.boolean().optional(),
 });
 export type OAuthAuthorizationServerMetadata = z.infer<
   typeof OAuthAuthorizationServerMetadataSchema

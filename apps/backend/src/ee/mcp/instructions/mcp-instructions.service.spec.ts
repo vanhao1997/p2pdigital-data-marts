@@ -1,6 +1,5 @@
-import { Client } from '@modelcontextprotocol/sdk/client/index.js';
-import { InMemoryTransport } from '@modelcontextprotocol/sdk/inMemory.js';
-import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
+import { InMemoryTransport, McpServer } from '@modelcontextprotocol/server';
+import { Client } from '@modelcontextprotocol/client';
 import { McpInstructionsService } from './mcp-instructions.service';
 import { MCP_SYSTEM_INSTRUCTIONS } from './mcp-system-instructions';
 import { hasUniqueCountFieldCandidate } from '../tools/query-data-mart.input';
@@ -13,6 +12,13 @@ describe('MCP instructions', () => {
     const service = new McpInstructionsService();
 
     expect(service.getInstructions()).toBe(MCP_SYSTEM_INSTRUCTIONS);
+  });
+
+  it('sets an adaptive Vietnamese default without overriding host instructions or literal names', () => {
+    expect(MCP_SYSTEM_INSTRUCTIONS).toContain('Use Vietnamese as the default language');
+    expect(MCP_SYSTEM_INSTRUCTIONS).toContain('clearly uses another language');
+    expect(MCP_SYSTEM_INSTRUCTIONS).toContain('Preserve exact tool names, field names, schemas');
+    expect(MCP_SYSTEM_INSTRUCTIONS).toContain('advisory and subordinate');
   });
 
   // The rule the tool ENFORCES (UniqueCountFieldUnsupportedClauseError): a model that reads only

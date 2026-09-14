@@ -414,6 +414,7 @@ export class OAuthProjectSelectionService {
       response_type: 'code',
       client_id: request.clientId,
       redirect_uri: request.redirectUri,
+      resource: request.resource,
       scope: request.scopes.join(' '),
       state: request.state,
       code_challenge: request.codeChallenge,

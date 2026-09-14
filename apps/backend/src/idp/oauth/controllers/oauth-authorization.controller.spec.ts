@@ -13,6 +13,7 @@ import { OAuthProjectSelectionService } from '../oauth-project-selection.service
 import { OAuthProjectMemberResolver } from '../oauth-project-member.resolver';
 import { OAuthRequestValidator } from '../oauth-request.validator';
 import { OAuthAuthorizationController } from './oauth-authorization.controller';
+import { OAuthConfigService } from '../oauth-config.service';
 
 describe('OAuthAuthorizationController', () => {
   afterEach(() => {
@@ -123,16 +124,18 @@ describe('OAuthAuthorizationController', () => {
       resolveProjectHostMember: jest.fn().mockResolvedValue(projectMember),
       renderSelectionPage: jest.fn().mockReturnValue('<html>Select project</html>'),
     } as unknown as jest.Mocked<OAuthProjectSelectionService>;
+    const config = {
+      issuer: 'http://localhost:3000',
+    } as OAuthConfigService;
     return {
-      controller: new (OAuthAuthorizationController as unknown as new (
-        ...args: unknown[]
-      ) => OAuthAuthorizationController)(
+      controller: new OAuthAuthorizationController(
         validator,
         projectMemberResolver,
         idpProviderService,
         oauthIdp,
         clientRegistry,
-        projectSelectionService
+        projectSelectionService,
+        config
       ),
       validator,
       projectMemberResolver,
@@ -140,6 +143,7 @@ describe('OAuthAuthorizationController', () => {
       oauthIdp,
       clientRegistry,
       projectSelectionService,
+      config,
     };
   }
 
@@ -243,7 +247,7 @@ describe('OAuthAuthorizationController', () => {
       oauthIdp.createAuthorizationCode.mock.invocationCallOrder[0]
     );
     expect(response.redirect).toHaveBeenCalledWith(
-      'http://127.0.0.1:63888/callback?code=auth-code-1&state=state-1'
+      'http://127.0.0.1:63888/callback?code=auth-code-1&state=state-1&iss=http%3A%2F%2Flocalhost%3A3000'
     );
   });
 
@@ -266,6 +270,14 @@ describe('OAuthAuthorizationController', () => {
       controller.authorize({}, request, response as unknown as Response)
     ).rejects.toThrow(AuthorizationError);
     expect(oauthIdp.createAuthorizationCode).not.toHaveBeenCalled();
+  });
+
+  it('authorizes a CIMD identity without inserting it into the DCR registry', async () => {
+    const request = { ...authorizationRequest, clientId: `https://client.example/${'a'.repeat(150)}.json` };
+    const { controller, oauthIdp, clientRegistry } = createController({ request, resourceContext: sharedResourceContext });
+    await controller.authorize({}, createRequest({ cookies: { refreshToken: 'refresh-token-1' } }), createResponse() as unknown as Response);
+    expect(oauthIdp.createAuthorizationCode).toHaveBeenCalledWith(request, projectMember);
+    expect(clientRegistry.attachUserIfMissing).not.toHaveBeenCalled();
   });
 
   it('rejects view-only sessions from obtaining MCP authorization codes', async () => {
@@ -363,7 +375,7 @@ describe('OAuthAuthorizationController', () => {
       selectedProjectMember
     );
     expect(response.redirect).toHaveBeenCalledWith(
-      'http://127.0.0.1:63888/callback?code=auth-code-1&state=state-1'
+      'http://127.0.0.1:63888/callback?code=auth-code-1&state=state-1&iss=http%3A%2F%2Flocalhost%3A3000'
     );
   });
 
@@ -406,7 +418,7 @@ describe('OAuthAuthorizationController', () => {
       projectMember
     );
     expect(response.redirect).toHaveBeenCalledWith(
-      'http://127.0.0.1:63888/callback?code=auth-code-1&state=state-1'
+      'http://127.0.0.1:63888/callback?code=auth-code-1&state=state-1&iss=https%3A%2F%2F8c90f0b0f314bf5f5d6f69d24fd7ee3b.mcp.owox.com'
     );
   });
 

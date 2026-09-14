@@ -39,7 +39,7 @@ export class OAuthMetadataController {
   private getBaseMetadata(request?: Request) {
     const issuer = this.resolveIssuer(request);
 
-    return {
+    const metadata = {
       issuer,
       authorization_endpoint: this.config.authorizationEndpoint,
       token_endpoint: `${issuer}/oauth/token`,
@@ -50,7 +50,10 @@ export class OAuthMetadataController {
       code_challenge_methods_supported: ['S256'],
       scopes_supported: this.config.scopes,
       token_endpoint_auth_methods_supported: ['none'],
+      authorization_response_iss_parameter_supported: true,
+      client_id_metadata_document_supported: this.config.clientMetadataDocumentEnabled,
     };
+    return metadata;
   }
 
   private resolveIssuer(request?: Request): string {
@@ -59,6 +62,6 @@ export class OAuthMetadataController {
     }
 
     const resourceContext = this.resourceResolver.tryResolveRequest(request);
-    return resourceContext?.publicBaseUrl ?? this.config.issuer;
+    return resourceContext?.kind === 'project' ? resourceContext.publicBaseUrl : this.config.issuer;
   }
 }

@@ -3,6 +3,7 @@ import { randomUUID } from 'crypto';
 import type { McpScope } from '@owox/idp-protocol';
 import { OAuthClientRegistry } from './oauth-client.registry';
 import { OAuthConfigService } from './oauth-config.service';
+import { OAuthRedirectUriPolicy } from './oauth-redirect-uri.policy';
 
 export interface OAuthDynamicClientRegistrationRequest {
   redirect_uris?: string[];
@@ -28,7 +29,8 @@ export interface OAuthDynamicClientRegistrationResponse {
 export class OAuthDynamicClientService {
   constructor(
     private readonly config: OAuthConfigService,
-    private readonly clientRegistry: OAuthClientRegistry
+    private readonly clientRegistry: OAuthClientRegistry,
+    private readonly redirectUriPolicy: OAuthRedirectUriPolicy
   ) {}
 
   async register(
@@ -39,13 +41,7 @@ export class OAuthDynamicClientService {
       throw new BadRequestException('Dynamic Client Registration is disabled');
     }
 
-    const redirectUris = request.redirect_uris ?? [];
-    if (redirectUris.length === 0) {
-      throw new BadRequestException('redirect_uris must contain at least one URI');
-    }
-    if (redirectUris.length > this.config.maxRedirectUris) {
-      throw new BadRequestException('too many redirect_uris');
-    }
+    const redirectUris = this.redirectUriPolicy.validate(request.redirect_uris ?? []);
 
     const responseTypes = request.response_types ?? ['code'];
     if (responseTypes.some(value => value !== 'code')) {
@@ -59,10 +55,6 @@ export class OAuthDynamicClientService {
 
     if ((request.token_endpoint_auth_method ?? 'none') !== 'none') {
       throw new BadRequestException('token_endpoint_auth_method supports only none');
-    }
-
-    for (const redirectUri of redirectUris) {
-      this.assertRedirectUriAllowed(redirectUri);
     }
 
     const scopes = request.scope ? this.parseScope(request.scope) : [...this.config.scopes];
@@ -99,36 +91,5 @@ export class OAuthDynamicClientService {
       }
     }
     return scopes as McpScope[];
-  }
-
-  private assertRedirectUriAllowed(raw: string): void {
-    let url: URL;
-    try {
-      url = new URL(raw);
-    } catch {
-      throw new BadRequestException('redirect_uri must be a valid URL');
-    }
-
-    if (this.isLoopbackHttpRedirect(url)) {
-      return;
-    }
-
-    if (url.protocol === 'https:' && this.config.allowedRedirectOrigins.includes(url.origin)) {
-      return;
-    }
-
-    if (url.protocol === 'https:') {
-      throw new BadRequestException(
-        `redirect_uri origin is not allowlisted. Add to MCP_DYNAMIC_CLIENT_ALLOWED_REDIRECT_ORIGINS: ${url.origin}`
-      );
-    }
-
-    throw new BadRequestException('redirect_uri must be loopback http or allowlisted https origin');
-  }
-
-  private isLoopbackHttpRedirect(url: URL): boolean {
-    return (
-      url.protocol === 'http:' && ['127.0.0.1', 'localhost', '[::1]', '::1'].includes(url.hostname)
-    );
   }
 }

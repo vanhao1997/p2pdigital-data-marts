@@ -5,6 +5,7 @@ import { withGuardedDispatcher } from './guarded-dispatcher';
 export type UnsafeUrlReason =
   | 'invalid-url'
   | 'protocol'
+  | 'origin'
   | 'internal-host'
   | 'private-ipv4'
   | 'private-ipv6'
@@ -25,6 +26,11 @@ export class UnsafeUrlError extends Error {
 export interface SafeUrlOptions {
   /** Defaults to ['http:', 'https:']. Plugin delivery URLs pass ['https:']. */
   readonly allowedProtocols?: readonly string[];
+  /**
+   * When provided, every URL (including redirect hops) must use one of these
+   * origins. This is useful when a caller has a same-origin redirect contract.
+   */
+  readonly allowedOrigins?: readonly string[];
 }
 
 const DEFAULT_PROTOCOLS = ['http:', 'https:'] as const;
@@ -58,6 +64,9 @@ export async function assertPublicHttpUrl(rawUrl: string, options?: SafeUrlOptio
   const allowedProtocols = options?.allowedProtocols ?? DEFAULT_PROTOCOLS;
   if (!allowedProtocols.includes(url.protocol)) {
     throw new UnsafeUrlError('protocol', rawUrl);
+  }
+  if (options?.allowedOrigins !== undefined && !options.allowedOrigins.includes(url.origin)) {
+    throw new UnsafeUrlError('origin', rawUrl);
   }
 
   // Strip IPv6 brackets (e.g. [::1] -> ::1)
@@ -131,7 +140,11 @@ export async function fetchPublicUrl(
       return response;
     }
 
-    currentUrl = new URL(location, currentUrl).toString();
+    const nextUrl = new URL(location, currentUrl);
+    if (options?.allowedOrigins !== undefined && !options.allowedOrigins.includes(nextUrl.origin)) {
+      throw new UnsafeUrlError('origin', nextUrl.toString());
+    }
+    currentUrl = nextUrl.toString();
   }
 
   throw new UnsafeUrlError('too-many-redirects', rawUrl);

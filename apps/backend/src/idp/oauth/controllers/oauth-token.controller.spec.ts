@@ -133,4 +133,13 @@ describe('OAuthTokenController', () => {
   it('exports a stable OAuth IDP injection token', () => {
     expect(OAUTH_IDP_PORT).toBeDefined();
   });
+
+  it('exchanges a CIMD token without updating the DCR registry', async () => {
+    const clientId = `https://client.example/${'a'.repeat(150)}.json`;
+    const validated = { grantType: 'refresh_token', clientId, resource: 'https://mcp.owox.com/mcp', refreshToken: 'test-refresh' };
+    const { controller, idp, clientRegistry } = createController(validated);
+    await controller.token({}, {} as Request);
+    expect(idp.exchangeToken).toHaveBeenCalledWith(validated);
+    expect(clientRegistry.markSuccessfulTokenExchange).not.toHaveBeenCalled();
+  });
 });

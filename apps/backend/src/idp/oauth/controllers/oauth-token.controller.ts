@@ -4,6 +4,7 @@ import { McpResourceResolverService } from '../../../mcp-resource/mcp-resource-r
 import { OAuthClientRegistry } from '../oauth-client.registry';
 import { OAuthIdpPort, OAUTH_IDP_PORT } from '../oauth-idp.port';
 import { OAuthRequestValidator } from '../oauth-request.validator';
+import { isClientMetadataId } from '../oauth-client-metadata.service';
 
 @Controller('/oauth')
 export class OAuthTokenController {
@@ -20,7 +21,9 @@ export class OAuthTokenController {
     const validated = await this.validator.validateTokenRequest(body, requestResource);
     const tokenRequest = validated.request;
     const result = await this.oauthIdp.exchangeToken(tokenRequest);
-    await this.clientRegistry.markSuccessfulTokenExchange(tokenRequest.clientId);
+    if (!isClientMetadataId(tokenRequest.clientId)) {
+      await this.clientRegistry.markSuccessfulTokenExchange(tokenRequest.clientId);
+    }
     return result;
   }
 }

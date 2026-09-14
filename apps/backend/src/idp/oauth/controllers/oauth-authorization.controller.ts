@@ -24,6 +24,8 @@ import { OAuthIdpPort, OAUTH_IDP_PORT } from '../oauth-idp.port';
 import { OAuthProjectSelectionService } from '../oauth-project-selection.service';
 import { OAuthProjectMemberResolver } from '../oauth-project-member.resolver';
 import { OAuthRequestValidator } from '../oauth-request.validator';
+import { OAuthConfigService } from '../oauth-config.service';
+import { isClientMetadataId } from '../oauth-client-metadata.service';
 
 @Controller('/oauth')
 export class OAuthAuthorizationController {
@@ -35,7 +37,8 @@ export class OAuthAuthorizationController {
     private readonly idpProviderService: IdpProviderService,
     @Inject(OAUTH_IDP_PORT) private readonly oauthIdp: OAuthIdpPort,
     private readonly clientRegistry: OAuthClientRegistry,
-    private readonly projectSelectionService: OAuthProjectSelectionService
+    private readonly projectSelectionService: OAuthProjectSelectionService,
+    private readonly config: OAuthConfigService
   ) {}
 
   @Get('/authorize')
@@ -59,10 +62,14 @@ export class OAuthAuthorizationController {
       throw new ViewOnlyModeError('MCP authorization is not allowed in view-only mode');
     }
 
-    await this.clientRegistry.attachUserIfMissing(
-      authorizationRequest.clientId,
-      authorization.context.userId
-    );
+    // CIMD identities are HTTPS URLs and cannot be persisted in the legacy
+    // length-limited DCR table. Their user binding is the current authorization.
+    if (!isClientMetadataId(authorizationRequest.clientId)) {
+      await this.clientRegistry.attachUserIfMissing(
+        authorizationRequest.clientId,
+        authorization.context.userId
+      );
+    }
 
     const projects = this.projectSelectionService.filterSelectableProjects(
       await this.loadProjectsOrEmpty(provider, authorization.accessToken)
@@ -96,6 +103,10 @@ export class OAuthAuthorizationController {
     const redirectUrl = new URL(authorizationRequest.redirectUri);
     redirectUrl.searchParams.set('code', authorizationCode.code);
     redirectUrl.searchParams.set('state', authorizationRequest.state);
+    redirectUrl.searchParams.set(
+      'iss',
+      resourceContext.kind === 'project' ? resourceContext.publicBaseUrl : this.config.issuer
+    );
     response.redirect(redirectUrl.toString());
   }
 

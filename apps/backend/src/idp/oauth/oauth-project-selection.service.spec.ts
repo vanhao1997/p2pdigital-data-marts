@@ -252,7 +252,7 @@ describe('OAuthProjectSelectionService', () => {
     });
 
     expect(html).toContain('<form method="get" action="/oauth/authorize">');
-    expect(html).not.toContain('name="resource"');
+    expect(html).toContain('name="resource"');
     expect(html).toContain('Select project (2)');
     expect(html).toContain('name="selected_project_id"');
     expect(html).toContain('Current project');

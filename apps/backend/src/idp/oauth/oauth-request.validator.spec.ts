@@ -4,6 +4,8 @@ import { McpResourceResolverService } from '../../mcp-resource/mcp-resource-reso
 import { OAuthClientRegistry } from './oauth-client.registry';
 import { OAuthConfigService } from './oauth-config.service';
 import { OAuthRequestValidator } from './oauth-request.validator';
+import { OAuthClientMetadataService } from './oauth-client-metadata.service';
+import { OAuthRedirectUriPolicy } from './oauth-redirect-uri.policy';
 
 function makeServices(): {
   config: OAuthConfigService;
@@ -46,7 +48,12 @@ describe('OAuthRequestValidator', () => {
       createdAt: new Date('2026-06-10T10:00:00.000Z'),
     });
     const { config, resourceResolver } = makeServices();
-    validator = new OAuthRequestValidator(config, registry, resourceResolver);
+    validator = new OAuthRequestValidator(
+      config,
+      registry,
+      resourceResolver,
+      new OAuthClientMetadataService(config, new OAuthRedirectUriPolicy(config))
+    );
   });
 
   it('accepts authorization request for registered client and exact redirect URI', async () => {
