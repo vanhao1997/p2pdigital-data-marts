@@ -9,6 +9,10 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const rootDir = resolve(__dirname, '..', '..');
 const sqliteDbPath = process.env.SQLITE_DB_PATH ?? resolve(rootDir, 'tmp', 'tests.db');
 mkdirSync(dirname(sqliteDbPath), { recursive: true });
+// The API fixtures run in the Playwright test process and seed connector-only
+// rows directly. Keep their path identical to the backend webServer path so a
+// plain `npx playwright test` command is deterministic outside CI as well.
+process.env.SQLITE_DB_PATH = sqliteDbPath;
 
 // Load root .env first (base configuration)
 config({ path: resolve(rootDir, '.env') });

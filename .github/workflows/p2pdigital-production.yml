@@ -104,6 +104,9 @@ jobs:
       - name: Build workspaces
         run: npm run build
 
+      - name: Enforce web bundle budget
+        run: npm run check:bundle -w @owox/web
+
   images:
     name: Build and publish immutable images
     runs-on: ubuntu-latest

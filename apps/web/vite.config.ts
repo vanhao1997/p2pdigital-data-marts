@@ -39,15 +39,48 @@ export default defineConfig(({ mode }) => ({
     sourcemap: mode === 'development',
     rollupOptions: {
       output: {
-        manualChunks: {
-          'vendor-react': ['react', 'react-dom'],
-          'vendor-router': ['react-router'],
-          'vendor-query': ['@tanstack/react-query'],
-          'vendor-i18n': ['i18next', 'react-i18next', 'i18next-browser-languagedetector'],
-          'vendor-forms': ['react-hook-form', '@hookform/resolvers'],
-          'vendor-editor': ['@monaco-editor/react'],
-          'vendor-flow': ['@xyflow/react', '@dagrejs/dagre'],
-          'vendor-dnd': ['@dnd-kit/core', '@dnd-kit/sortable', '@dnd-kit/utilities'],
+        // Match resolved module paths instead of package entry names. This is
+        // required for subpath imports such as `react-dom/client`, which do not
+        // belong to a package-entry-only manual chunk and otherwise inflate the
+        // application entry by more than 500 kB.
+        manualChunks(id) {
+          const moduleId = id.replaceAll('\\', '/');
+
+          if (moduleId.includes('/node_modules/react-dom/')) return 'vendor-react-dom';
+          if (moduleId.includes('/node_modules/react/')) return 'vendor-react';
+          if (moduleId.includes('/node_modules/react-router')) return 'vendor-router';
+          if (moduleId.includes('/node_modules/@tanstack/react-query')) return 'vendor-query';
+          if (
+            moduleId.includes('/node_modules/i18next') ||
+            moduleId.includes('/node_modules/react-i18next')
+          ) {
+            return 'vendor-i18n';
+          }
+          if (
+            moduleId.includes('/node_modules/react-hook-form') ||
+            moduleId.includes('/node_modules/@hookform/resolvers')
+          ) {
+            return 'vendor-forms';
+          }
+          if (moduleId.includes('/node_modules/@monaco-editor/react')) return 'vendor-editor';
+          if (
+            moduleId.includes('/node_modules/@xyflow/react') ||
+            moduleId.includes('/node_modules/@dagrejs/dagre')
+          ) {
+            return 'vendor-flow';
+          }
+          if (
+            moduleId.includes('/node_modules/@dnd-kit/core') ||
+            moduleId.includes('/node_modules/@dnd-kit/sortable') ||
+            moduleId.includes('/node_modules/@dnd-kit/utilities')
+          ) {
+            return 'vendor-dnd';
+          }
+          if (moduleId.includes('/node_modules/zod/')) return 'vendor-validation';
+          if (moduleId.includes('/node_modules/tailwind-merge/')) return 'vendor-styling';
+          if (moduleId.includes('/src/i18n/locales/')) return 'vendor-locales';
+
+          return undefined;
         },
       },
     },

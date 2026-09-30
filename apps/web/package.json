@@ -25,6 +25,7 @@
   "files": ["dist"],
   "scripts": {
     "build": "tsc -p tsconfig.build.json && vite build",
+    "check:bundle": "node scripts/check-bundle-size.mjs",
     "dev": "vite --config vite.config.ts",
     "lint": "eslint . --config ./eslint.config.js",
     "lint:fix": "eslint . --fix",

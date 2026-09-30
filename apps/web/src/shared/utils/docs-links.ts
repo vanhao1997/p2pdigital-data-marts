@@ -24,7 +24,7 @@ export type DocsPath =
   | 'api/api-client'
   | 'api/openapi';
 
-const DOCS_ORIGIN = 'https://docs.p2pdigital.io.vn/docs';
+const DOCS_ORIGIN = 'https://docs.p2pdigital.io.vn';
 const VIETNAMESE_PATHS = new Set<DocsPath>([
   'getting-started/quick-start',
   'getting-started/core-concepts',
@@ -93,7 +93,9 @@ export function buildDocsUrl(path: DocsPath, locale: DocsLocale, campaign = 'hel
   const useVietnamese = locale === 'vi' && VIETNAMESE_PATHS.has(path);
   const resolvedPath = useVietnamese ? path : (ENGLISH_PATH_FALLBACKS[path] ?? path);
   const normalizedPath = resolvedPath.replace(/^\/+|\/+$/g, '');
-  const localePrefix = useVietnamese ? '/vi' : '';
+  // The docs site keeps English under `/docs` and Vietnamese under `/vi`.
+  // They are separate route namespaces; `/docs/vi` is a 404.
+  const localePrefix = useVietnamese ? '/vi' : '/docs';
   const url = new URL(`${DOCS_ORIGIN}${localePrefix}/${normalizedPath}/`);
   url.searchParams.set('utm_source', 'app_p2pdigital_vn');
   url.searchParams.set('utm_medium', 'ui');
