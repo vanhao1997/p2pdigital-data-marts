@@ -3,13 +3,23 @@ import { Info, Clapperboard, MessagesSquare, Rocket, Airplay, ListTodo } from 'l
 import { openIntercom } from '../../../app/intercom/intercomUtils';
 import type { TFunction } from 'i18next';
 import i18n from '../../../i18n';
-import { buildDocsUrl, resolveDocsLocale } from '../../../shared/utils/docs-links';
+import {
+  buildDocsUrl,
+  docsPathForRoute,
+  resolveDocsLocale,
+} from '../../../shared/utils/docs-links';
 
 export function helpMenuItems(
   openPopover: (id: string) => void,
   openSetupChecklist: () => void,
-  t: TFunction
+  t: TFunction,
+  pathname = ''
 ): HelpMenuItem[] {
+  const contextualDocsUrl = buildDocsUrl(
+    docsPathForRoute(pathname),
+    resolveDocsLocale(i18n.language),
+    'contextual_help'
+  );
   return [
     {
       type: 'menu-item',
@@ -31,14 +41,14 @@ export function helpMenuItems(
     {
       type: 'menu-item',
       title: t('helpMenu.documentation'),
-      href: buildDocsUrl('getting-started/quick-start', resolveDocsLocale(i18n.language)),
+      href: contextualDocsUrl,
       icon: Info,
       visible: { flagKey: 'MENU_DOCUMENTATION_COMMUNITY_EDITION_VISIBLE', expectedValue: 'true' },
     },
     {
       type: 'menu-item',
       title: t('helpMenu.documentation'),
-      href: buildDocsUrl('getting-started/quick-start', resolveDocsLocale(i18n.language)),
+      href: contextualDocsUrl,
       icon: Info,
       visible: { flagKey: 'MENU_DOCUMENTATION_OWOX_CLOUD_VISIBLE', expectedValue: 'true' },
     },

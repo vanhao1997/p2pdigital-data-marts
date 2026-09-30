@@ -67,6 +67,10 @@ tmp-facebook-*.text.txt
 # Test artifacts
 playwright-report/
 test-results/
+output/
+apps/web/output/
+audit-*.json
+adm-tree.json
 
 # NPM automation
 packages/.npmrc

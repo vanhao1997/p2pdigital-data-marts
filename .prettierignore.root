@@ -4,3 +4,14 @@ package-lock.json
 # Workspaces
 packages/*
 apps/*
+
+# Generated local and CI artifacts are never source for the root quality gate.
+.playwright-cli/
+.turbo/
+.tmp*/
+output/
+audit-*.json
+adm-tree.json
+fallback-calls.json
+playwright-report/
+test-results/

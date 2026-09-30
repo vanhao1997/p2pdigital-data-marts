@@ -10,6 +10,9 @@ permissions:
 
 jobs:
   publish:
+    # npm trusted publishing is scoped to the package owner and this workflow.
+    # Forks opt in only after configuring every @owox package publisher.
+    if: github.repository == 'OWOX/owox-data-marts' || vars.NPM_PUBLISH_ENABLED == 'true'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5

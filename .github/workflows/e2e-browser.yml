@@ -68,3 +68,62 @@ jobs:
           name: playwright-traces
           path: apps/web/test-results/
           retention-days: 7
+
+  visual-regression:
+    name: Visual regression baselines
+    # The baseline set is intentionally opt-in: it is a slower, pixel-sensitive
+    # check and should be enabled after the repository has accepted the runner
+    # image as its visual rendering contract.
+    if: vars.VISUAL_REGRESSION_ENABLED == 'true'
+    runs-on: windows-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version: '22'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci --prefer-offline --no-audit --no-fund --loglevel error
+
+      - name: Build all workspace packages
+        run: npm run build --workspaces --if-present
+
+      - name: Install Playwright Chromium
+        run: cd apps/web; npx playwright install chromium
+
+      - name: Create temp directory for SQLite
+        run: New-Item -ItemType Directory -Force tmp | Out-Null
+
+      - name: Run visual regression suite
+        run: cd apps/web; npx playwright test e2e/specs/visual-regression.spec.ts
+        env:
+          CI: true
+          NODE_ENV: test
+          VISUAL_REGRESSION: '1'
+          DB_TYPE: sqlite
+          SQLITE_DB_PATH: ${{ github.workspace }}/tmp/tests.db
+          SERVER_TIMEOUT_MS: '180000'
+          KEEP_ALIVE_TIMEOUT_MS: '180000'
+          HEADERS_TIMEOUT_MS: '185000'
+
+      - name: Upload visual report
+        uses: actions/upload-artifact@v4
+        if: ${{ !cancelled() }}
+        with:
+          name: visual-regression-report
+          path: apps/web/playwright-report/
+          retention-days: 14
+
+      - name: Upload visual diffs
+        uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: visual-regression-diffs
+          path: apps/web/test-results/
+          retention-days: 14

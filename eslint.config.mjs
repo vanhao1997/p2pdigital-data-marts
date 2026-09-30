@@ -12,6 +12,11 @@ export default [
       'dist/',
       'build/',
       'coverage/',
+      'output/',
+      '.tmp*/',
+      '.playwright-cli/',
+      'playwright-report/',
+      'test-results/',
 
       // workspaces
       'packages/*',

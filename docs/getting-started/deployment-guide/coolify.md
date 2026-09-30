@@ -88,14 +88,40 @@ Configure GitHub for deploy automation:
 
 Configure each Coolify resource as a Docker Image application and give Coolify pull access to the
 private GHCR packages. The workflow updates `docker_registry_image_name` and
-`docker_registry_image_tag`, starts the sidecar before the main runtime, and waits for both Coolify
-deployments to reach `finished`. It does not use the `docker_tag` deploy parameter because Coolify
-reserves that parameter for Docker Image preview deployments with a pull-request ID. Coolify does
-not rebuild repository source.
+`docker_registry_image_tag`, verifies that Coolify reports `build_pack=dockerimage` and the exact
+SHA tag, starts the sidecar before the main runtime, and waits for both Coolify deployments to reach
+`finished`. It does not use the `docker_tag` deploy parameter because Coolify reserves that
+parameter for Docker Image preview deployments with a pull-request ID. Coolify does not rebuild
+repository source.
 
-Keep branch protection on `main` with `Lint, test, and build` as a required check. Leave
+Existing P2PDigital resources may still report `build_pack=dockerfile` with an empty image/tag. The
+workflow attempts to convert them through the Coolify API, then reads both resources back before
+deploying either one. If Coolify rejects or ignores the conversion, create replacement Docker Image
+applications in the Coolify UI, copy the environment and health settings, attach the same private
+network, configure GHCR pull credentials, and update `COOLIFY_MAIN_RESOURCE_UUID` and
+`COOLIFY_ADMICRO_RESOURCE_UUID`. Check that both replacement applications can pull the exact
+`sha-<git-sha>` image before switching public traffic. Do not bypass the failed preflight by
+re-enabling source builds: that could deploy unverified branch content.
+
+Protect `main` with a pull request requirement, at least one approving review, stale approval
+dismissal when new commits arrive, and no routine bypass for administrators. Require the stable
+`Lint, test, and build`, `E2E API Tests`, `E2E Browser Tests`, `Audit all`, root quality, and docs
+quality checks once their names have been confirmed in a green PR run. Leave
 `COOLIFY_DEPLOY_ENABLED` unset until at least one green run exists, then enable it for automatic
 deployments from `main`. Use `workflow_dispatch` for controlled redeploys or rollback validation.
+
+The `Release PR` workflow needs repository **Actions → General → Workflow permissions → Allow GitHub
+Actions to create and approve pull requests**. It uses a custom Changesets version command so
+changelog and lockfile updates are committed on the release PR branch. The `Snapshot` workflow
+publishes upstream npm package names; forks skip it unless `NPM_PUBLISH_ENABLED=true` and npm
+trusted publishing has been configured for every package and the exact workflow path. Do not enable
+that variable solely to make the check green.
+
+The docs workflow always builds the site. Publishing from this repository uses GitHub Pages only
+when `DOCS_PAGES_ENABLED=true`, the repository Pages source is **GitHub Actions**, and the optional
+`DOCS_SITE`, `DOCS_BASE`, and `DOCS_CNAME` variables match the actual domain. Do not set a CNAME
+for `docs.owox.com` in this fork; use a domain owned by this deployment, such as
+`docs.p2pdigital.io.vn` after its DNS and Pages custom-domain verification are complete.
 
 ## Job/queue setup
 

@@ -7,6 +7,7 @@ import { DataMart } from '../entities/data-mart.entity';
 import { Action, AccessDecisionService, EntityType } from '../services/access-decision';
 import { DataMartService } from '../services/data-mart.service';
 import { SourceDataLastUpdatedService } from '../services/source-data-last-updated.service';
+import { recordOperationalMetric } from '../../common/observability/operational-metric';
 
 /**
  * The user-triggered "how current is this?" check behind the refresh affordances on the Data Mart
@@ -99,6 +100,7 @@ export class RefreshDataMartDataLastUpdatedService {
 
       for (const [dataMartId, block] of resolved) {
         results.set(dataMartId, block);
+        recordOperationalMetric(this.logger, 'data_freshness', block.coverage);
         // Persist only what actually resolved: a failed lookup must not erase yesterday's answer,
         // it just returns unknown to this caller.
         if (block.dataLastUpdatedAt !== null) {

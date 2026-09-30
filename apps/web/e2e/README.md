@@ -56,6 +56,26 @@ npx playwright test --ui
 npx playwright show-report
 ```
 
+### Visual regression
+
+The opt-in `e2e/specs/visual-regression.spec.ts` suite captures the Data Mart
+empty state at 320, 375, 768, 1024, and 1440 pixels in light/dark mode and
+Vietnamese/English. It also asserts that the document has no horizontal
+overflow. Run it locally after the backend is built:
+
+```bash
+VISUAL_REGRESSION=1 npx playwright test e2e/specs/visual-regression.spec.ts
+```
+
+On PowerShell, use `$env:VISUAL_REGRESSION = '1'` before running the same command.
+
+The checked-in Chromium baselines are tied to the Windows runner image used by
+the dedicated GitHub Actions job. Set the repository variable
+`VISUAL_REGRESSION_ENABLED=true` only after accepting that runner as the visual
+rendering contract. Update baselines deliberately with
+`--update-snapshots`, review every image diff, and commit the resulting files
+under `e2e/specs/visual-regression.spec.ts-snapshots/`.
+
 All commands run from `apps/web/`.
 
 ### Environment

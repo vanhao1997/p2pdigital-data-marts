@@ -3,6 +3,16 @@ name: Build and Deploy @owox/docs
 on:
   push:
     branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: docs-pages
+  cancel-in-progress: false
 
 jobs:
   build-and-deploy:
@@ -24,18 +34,38 @@ jobs:
         run: npm run build:docs
         env:
           NODE_ENV: production
-          DOCS_SITE: https://docs.owox.com
-          DOCS_BASE:
+          DOCS_SITE: ${{ vars.DOCS_SITE || 'https://docs.p2pdigital.io.vn' }}
+          DOCS_BASE: ${{ vars.DOCS_BASE }}
           PUBLIC_GTM_ID: ${{ secrets.DOCS_GTM_ID }}
 
       - name: Add .nojekyll file
         run: touch apps/docs/dist/.nojekyll
 
       - name: Add CNAME file
-        run: echo docs.owox.com > apps/docs/dist/CNAME
+        if: vars.DOCS_PAGES_ENABLED == 'true' && vars.DOCS_CNAME != ''
+        env:
+          DOCS_CNAME: ${{ vars.DOCS_CNAME }}
+        run: printf '%s\n' "$DOCS_CNAME" > apps/docs/dist/CNAME
 
-      - name: Deploy 🚀
-        uses: JamesIves/github-pages-deploy-action@v4
+      - name: Configure GitHub Pages
+        if: vars.DOCS_PAGES_ENABLED == 'true'
+        uses: actions/configure-pages@v5
+
+      - name: Upload Pages artifact
+        if: vars.DOCS_PAGES_ENABLED == 'true'
+        uses: actions/upload-pages-artifact@v4
         with:
-          branch: gh-pages
-          folder: apps/docs/dist
+          path: apps/docs/dist
+
+  deploy-pages:
+    name: Deploy Pages artifact
+    if: vars.DOCS_PAGES_ENABLED == 'true'
+    needs: build-and-deploy
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy Pages artifact
+        id: deployment
+        uses: actions/deploy-pages@v4

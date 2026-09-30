@@ -3,6 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import { fetchWithBackoff, ImpersonatedIdTokenFetcher } from '@owox/internal-helpers';
 import { randomBytes } from 'crypto';
 import { ProjectOperationBlockedException } from '../../../common/exceptions/project-operation-blocked.exception';
+import { recordOperationalMetric } from '../../../common/observability/operational-metric';
 import { PubSubService } from '../../../common/pubsub/pubsub.service';
 import { ConsumptionContext } from '../../ai-insights/data-mart-insights.types';
 import { DataDestinationType } from '../../data-destination-types/enums/data-destination-type.enum';
@@ -275,20 +276,20 @@ export class InternalProjectBillingService extends ProjectBillingService {
         if (throwOnFailure) {
           throw new Error(message);
         }
+        recordOperationalMetric(this.logger, 'billing_publish', 'skipped');
         this.logger.debug(`${message}, skipping...`);
         return;
       }
 
       const messageId = await this.pubSubService.publishMessageWithDefaultWrap(topic, event);
+      recordOperationalMetric(this.logger, 'billing_publish', 'accepted');
       this.logger.log(
         `Sent consumption command to PubSub. Message: ${messageId}. Topic: ${topic}. CMD: ${JSON.stringify(this.safeCommandSummary(kind, event))}`
       );
     } catch (error) {
+      recordOperationalMetric(this.logger, 'billing_publish', 'rejected');
       this.logger.error(
-        `Failed to send ${kind} consumption command to PubSub: ${
-          error instanceof Error ? error.message : String(error)
-        }. CMD: ${JSON.stringify(this.safeCommandSummary(kind, event))}`,
-        error instanceof Error ? error.stack : undefined
+        `Failed to send ${kind} consumption command to PubSub. CMD: ${JSON.stringify(this.safeCommandSummary(kind, event))}`
       );
       if (throwOnFailure) {
         throw error;

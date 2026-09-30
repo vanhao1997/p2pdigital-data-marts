@@ -47,6 +47,10 @@ import { ConnectorCredentialInjectorService } from './connector-credential-injec
 import { ConnectorSourceCredentialsService } from './connector-source-credentials.service';
 import { addMessageToArray } from './connector-message.utils';
 import { NON_TERMINAL_DATA_MART_RUN_STATUSES } from '../../utils/data-mart-run-cancellation';
+import {
+  durationBucket,
+  recordOperationalMetric,
+} from '../../../common/observability/operational-metric';
 
 interface ConfigurationExecutionResult {
   configIndex: number;
@@ -87,6 +91,8 @@ export class ConnectorExecutorService {
   ): Promise<void> {
     const runId = run.id;
     const processId = `connector-run-${runId}`;
+    const executionStartedAt = this.systemTimeService.now();
+    const resumedInterruptedRun = run.status === DataMartRunStatus.INTERRUPTED;
 
     this.gracefulShutdownService.registerActiveProcess(processId);
 
@@ -230,6 +236,20 @@ export class ConnectorExecutorService {
         capturedErrors,
         operationBlockedException,
         wasCancelled
+      );
+
+      if (resumedInterruptedRun) {
+        recordOperationalMetric(this.logger, 'connector_sync', 'retry');
+      }
+      recordOperationalMetric(
+        this.logger,
+        'connector_sync',
+        wasCancelled ? 'interrupted' : hasSuccessfulRun ? 'success' : 'failed',
+        {
+          durationBucket: durationBucket(
+            this.systemTimeService.now().getTime() - executionStartedAt.getTime()
+          ),
+        }
       );
 
       if (hasSuccessfulRun && statusPersisted) {

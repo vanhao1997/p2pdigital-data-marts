@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { DropdownMenu } from '@owox/ui/components/dropdown-menu';
 import { useTranslation } from 'react-i18next';
+import { useLocation } from 'react-router';
 import { helpMenuItems } from './items';
 import { HelpMenuTrigger } from './HelpMenuTrigger';
 import { HelpMenuContent } from './HelpMenuContent';
@@ -11,8 +12,9 @@ export function HelpMenu({ openSetupChecklist }: { openSetupChecklist: () => voi
   const [isOpen, setIsOpen] = useState(false);
   const { open } = useContentPopovers();
   const { t } = useTranslation();
+  const { pathname } = useLocation();
 
-  const rawItems = helpMenuItems(open, openSetupChecklist, t);
+  const rawItems = helpMenuItems(open, openSetupChecklist, t, pathname);
   const { visibleItems } = useHelpMenu(rawItems);
 
   return (

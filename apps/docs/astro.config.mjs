@@ -111,6 +111,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
           label: 'Project Settings',
           items: [
             'docs/project/license-keys',
+            'docs/project-administration',
             {
               label: 'Members Management',
               items: [
@@ -129,6 +130,10 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
               ],
             },
           ],
+        },
+        {
+          label: 'Analytics',
+          items: ['docs/analytics/metric-dictionary'],
         },
         {
           label: 'Destinations',

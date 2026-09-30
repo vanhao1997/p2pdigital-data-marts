@@ -10,8 +10,7 @@ const connectorsRoot = path.join(repoRoot, 'packages/connectors/src');
 const baseUrl = process.env.PROVIDER_SANDBOX_URL || 'http://127.0.0.1:8099';
 const mappedEndpoints = {
   googleToken: process.env.PROVIDER_SANDBOX_GOOGLE_TOKEN_URL || `${baseUrl}/google/oauth/token`,
-  googleUserInfo:
-    process.env.PROVIDER_SANDBOX_GOOGLE_USERINFO_URL || `${baseUrl}/google/userinfo`,
+  googleUserInfo: process.env.PROVIDER_SANDBOX_GOOGLE_USERINFO_URL || `${baseUrl}/google/userinfo`,
   facebookDebugToken:
     process.env.PROVIDER_SANDBOX_FACEBOOK_DEBUG_TOKEN_URL || `${baseUrl}/facebook/debug_token`,
   facebookGraphBase:
@@ -32,7 +31,10 @@ globalThis.fetch = async (input, init) => {
     return nativeFetch(`${mappedEndpoints.facebookDebugToken}${url.search}`, init);
   }
   if (url.hostname === 'graph.facebook.com' && url.pathname.startsWith('/v25.0/')) {
-    return nativeFetch(`${mappedEndpoints.facebookGraphBase}${url.pathname.slice('/v25.0'.length)}${url.search}`, init);
+    return nativeFetch(
+      `${mappedEndpoints.facebookGraphBase}${url.pathname.slice('/v25.0'.length)}${url.search}`,
+      init
+    );
   }
 
   return nativeFetch(input, init);

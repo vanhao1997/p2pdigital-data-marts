@@ -289,6 +289,7 @@ jobs:
               --request "${method}"
               --header "Authorization: Bearer ${token}"
               --header "Accept: application/json"
+              --header "User-Agent: P2PDigital-Release-Workflow/1.0"
             )
             if [ -n "${payload}" ]; then
               curl_args+=(--header "Content-Type: application/json" --data "${payload}")
@@ -327,6 +328,7 @@ jobs:
               --arg health_path "${health_path}" \
               --argjson health_port "${health_port}" \
               '{
+                build_pack: "dockerimage",
                 docker_registry_image_name: $image,
                 docker_registry_image_tag: $tag,
                 health_check_enabled: true,
@@ -346,6 +348,22 @@ jobs:
               "${COOLIFY_API_TOKEN}" \
               "${response_file}" \
               "${payload}"
+
+            # An existing source-build application must not silently ignore the
+            # image fields and rebuild the branch after the verified image passed.
+            api_request \
+              GET \
+              "${COOLIFY_URL%/}/api/v1/applications/${uuid}" \
+              "${COOLIFY_API_TOKEN}" \
+              "${response_file}"
+            if ! jq -e \
+              --arg image "${image_name}" \
+              --arg tag "${IMAGE_TAG}" \
+              '.build_pack == "dockerimage" and .docker_registry_image_name == $image and .docker_registry_image_tag == $tag' \
+              "${response_file}" >/dev/null; then
+              echo "::error::${name} is not pinned to ${image_name}:${IMAGE_TAG} as a Docker Image application. Convert/recreate the resource in Coolify and grant GHCR pull access before deployment."
+              return 1
+            fi
             echo "Coolify image configured for ${name}: ${image_name}:${IMAGE_TAG}."
           }
 

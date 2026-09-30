@@ -6,6 +6,7 @@ export default tseslint.config(
   {
     ignores: [
       'src/features/data-marts/insights-prev/**',
+      'output/**',
       'playwright-report/**',
       'test-results/**',
     ],

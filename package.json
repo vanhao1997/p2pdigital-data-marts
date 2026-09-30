@@ -37,6 +37,7 @@
     "format:root": "prettier --write \"**/*.{js,ts,mjs,yml,yaml,json}\" --ignore-path .prettierignore.root",
     "format:root:check": "prettier --check \"**/*.{js,ts,mjs,yml,yaml,json}\" --ignore-path .prettierignore.root",
     "format:packages": "node tools/format-package-info.mjs",
+    "version:release:ci": "changeset version && node tools/fix-changelog-headings.mjs && npm run format:packages && npm install --package-lock-only --ignore-scripts --no-audit --no-fund",
     "lint": "turbo run lint",
     "lint:fix": "turbo run lint:fix",
     "lint:root": "eslint . --config ./eslint.config.mjs",

@@ -246,7 +246,9 @@ export default function InsightsListView() {
             <Search className='text-muted-foreground absolute top-2.5 left-2 size-4' />
             <Input
               value={search}
-              onChange={event => { setSearch(event.target.value); }}
+              onChange={event => {
+                setSearch(event.target.value);
+              }}
               placeholder={t('insightsUi.search', 'Search insights')}
               aria-label={t('insightsUi.search', 'Search insights')}
               className='h-9 pl-8'

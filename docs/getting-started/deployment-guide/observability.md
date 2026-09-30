@@ -1,5 +1,30 @@
 # Admicro Extractor Observability
 
+## ODM operational counters
+
+The backend emits `operational_metric` JSON log records with bounded `metric`, `outcome`, and,
+for duration-aware events, a reviewed `durationBucket`. Each record represents one attempt or
+transition; aggregate records by event time in the log collector to build counters. No tenant, IP,
+API-key, OAuth client, credential, request body, upstream error message, or arbitrary label is
+included.
+
+| Metric               | Outcomes                                            | Meaning                                                                                                                                        |
+| -------------------- | --------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
+| `api_key_exchange`   | `success`, `unauthorized`, `rate_limited`, `failed` | Result of the public exchange endpoint. `failed` includes oversized bodies and unexpected errors.                                              |
+| `oauth_registration` | `accepted`, `rejected`, `rate_limited`, `failed`    | Result of the dynamic registration endpoint. Disabled registration is `rejected`.                                                              |
+| `tenant_boundary`    | `mismatch`, `missing_context`                       | Rejected tenant guard checks. Count spikes as security signals; no project identifiers are logged.                                             |
+| `billing_publish`    | `accepted`, `rejected`, `skipped`                   | Attempt to publish a consumption command. `accepted` means Pub/Sub acknowledged the publish, **not** that billing consumed or deduplicated it. |
+| `connector_sync`     | `success`, `failed`, `interrupted`, `retry`         | Connector execution outcome. A `retry` record means an interrupted run was resumed; terminal outcomes include a `durationBucket`.              |
+| `report_delivery`    | `success`, `failed`, `cancelled`, `retry`           | Report destination execution outcome. Terminal outcomes include a `durationBucket`.                                                            |
+| `data_freshness`     | `complete`, `partial`, `unavailable`                | Coverage returned by an explicit Data Mart source freshness refresh. No timestamp or project identifier is logged.                             |
+
+`billing_publish` cannot report downstream `duplicated` or `consumed` outcomes. Those need
+receiver-side telemetry tied to the billing service's durable deduplication result. Keep billing
+alerts separate from connector and report delivery signals.
+
+The [Vietnamese Data Mart metric dictionary](../../vi/analytics/metric-dictionary.md)
+defines product dashboard metrics separately from operational counters.
+
 The private Admicro extractor exposes Prometheus-compatible metrics at `/metrics`. Keep this
 endpoint on the private application network; it contains operational counters but no tenant IDs,
 credentials, raw provider payloads, or report data.

@@ -1,9 +1,16 @@
+import { lazy, Suspense, type ReactNode } from 'react';
 import type { RouteObject } from 'react-router';
 import { LayoutErrorBoundary } from '../../components/errors';
-import PluginDetailsPage from '../../pages/plugins/detail/PluginDetailsPage';
-import PluginsGalleryPage from '../../pages/plugins/gallery/PluginsGalleryPage';
-import PluginHistoryPage from '../../pages/plugins/history/PluginHistoryPage';
-import PluginRuntimePage from '../../pages/plugins/runtime/PluginRuntimePage';
+import { RouteLoading } from '../RouteLoading';
+
+const PluginDetailsPage = lazy(() => import('../../pages/plugins/detail/PluginDetailsPage'));
+const PluginsGalleryPage = lazy(() => import('../../pages/plugins/gallery/PluginsGalleryPage'));
+const PluginHistoryPage = lazy(() => import('../../pages/plugins/history/PluginHistoryPage'));
+const PluginRuntimePage = lazy(() => import('../../pages/plugins/runtime/PluginRuntimePage'));
+
+function lazyElement(element: ReactNode) {
+  return <Suspense fallback={<RouteLoading />}>{element}</Suspense>;
+}
 
 /**
  * Project-scoped plugin routes.
@@ -14,23 +21,23 @@ import PluginRuntimePage from '../../pages/plugins/runtime/PluginRuntimePage';
 export const pluginsRoutes: RouteObject[] = [
   {
     path: 'plugins',
-    element: <PluginsGalleryPage />,
+    element: lazyElement(<PluginsGalleryPage />),
     errorElement: <LayoutErrorBoundary />,
   },
   {
     // Before :pluginId, or the router would read "history" as a plugin id.
     path: 'plugins/history',
-    element: <PluginHistoryPage />,
+    element: lazyElement(<PluginHistoryPage />),
     errorElement: <LayoutErrorBoundary />,
   },
   {
     path: 'plugins/run/:installationId',
-    element: <PluginRuntimePage />,
+    element: lazyElement(<PluginRuntimePage />),
     errorElement: <LayoutErrorBoundary />,
   },
   {
     path: 'plugins/:pluginId',
-    element: <PluginDetailsPage />,
+    element: lazyElement(<PluginDetailsPage />),
     errorElement: <LayoutErrorBoundary />,
   },
 ];

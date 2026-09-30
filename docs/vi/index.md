@@ -20,6 +20,8 @@ description: Tài liệu tiếng Việt cho nền tảng kho dữ liệu phân t
 - [Data Mart từ extension](getting-started/setup-guide/extension-data-marts.md)
 - [Data quality checks](getting-started/setup-guide/data-quality-checks.md)
 - [Last updated](getting-started/setup-guide/data-last-updated.md)
+- [Từ điển chỉ số Data Mart](analytics/metric-dictionary.md)
+- [Consumption units và usage](getting-started/billing/consumption-units.md)
 - [Output controls](getting-started/setup-guide/output-controls.md)
 - [Calculated fields](getting-started/setup-guide/calculated-fields.md)
 - [Connector triggers](getting-started/setup-guide/connector-triggers.md)

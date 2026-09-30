@@ -13,6 +13,10 @@ import { DataMartRunType } from '../enums/data-mart-run-type.enum';
 import { DataMartRunService } from './data-mart-run.service';
 import { RunReportService } from '../use-cases/run-report.service';
 import { BaseRunTriggerHandlerService } from './base-run-trigger-handler.service';
+import {
+  durationBucket,
+  recordOperationalMetric,
+} from '../../common/observability/operational-metric';
 
 const REPORT_RUN_TYPES = [
   DataMartRunType.GOOGLE_SHEETS_EXPORT,
@@ -46,6 +50,7 @@ export class ReportRunTriggerHandlerService extends BaseRunTriggerHandlerService
     trigger: ReportRunTrigger,
     options?: { signal?: AbortSignal }
   ): Promise<void> {
+    const executionStartedAt = Date.now();
     try {
       if (await this.cancelTriggerIfRunAlreadyCancelled(trigger)) {
         return;
@@ -63,6 +68,12 @@ export class ReportRunTriggerHandlerService extends BaseRunTriggerHandlerService
         trigger.createdById,
         options?.signal
       );
+      recordOperationalMetric(
+        this.logger,
+        'report_delivery',
+        options?.signal?.aborted ? 'cancelled' : 'success',
+        { durationBucket: durationBucket(Date.now() - executionStartedAt) }
+      );
       if (options?.signal?.aborted) {
         await this.markTriggerAsCancelled(
           trigger,
@@ -71,6 +82,7 @@ export class ReportRunTriggerHandlerService extends BaseRunTriggerHandlerService
       }
     } catch (error) {
       if (error instanceof ConcurrencyLimitExceededException) {
+        recordOperationalMetric(this.logger, 'report_delivery', 'retry');
         this.logger.warn(
           `Report concurrency limit reached for project ${trigger.projectId}, trigger ${trigger.id} will retry`
         );
@@ -88,6 +100,9 @@ export class ReportRunTriggerHandlerService extends BaseRunTriggerHandlerService
         return;
       }
       if (existingRun?.status === DataMartRunStatus.CANCELLED) {
+        recordOperationalMetric(this.logger, 'report_delivery', 'cancelled', {
+          durationBucket: durationBucket(Date.now() - executionStartedAt),
+        });
         await this.markTriggerAsCancelled(
           trigger,
           `Skipping run trigger ${trigger.id}: DataMartRun ${trigger.dataMartRunId} is already CANCELLED`
@@ -96,6 +111,10 @@ export class ReportRunTriggerHandlerService extends BaseRunTriggerHandlerService
       }
 
       await this.failDataMartRunSafely(trigger.dataMartRunId, error);
+
+      recordOperationalMetric(this.logger, 'report_delivery', 'failed', {
+        durationBucket: durationBucket(Date.now() - executionStartedAt),
+      });
 
       this.logger.error(
         `Error processing report run trigger ${trigger.id}: ${error instanceof Error ? error.message : String(error)}`

@@ -26,6 +26,8 @@ if (!hasFileArguments) {
   options.globs = [
     '**/*.md', // Include all markdown files
     '!**/node_modules/**', // Exclude all node_modules folders
+    '!**/upgrade-plan/**', // Legacy implementation notes are not published quality-gated guides.
+    '!CLAUDE.md', // Repository instructions are not user-facing documentation.
     // '!**/CHANGELOG.md', // Exclude specific file
     '!.changeset/*.md', // Exclude specific directory
     '!.planning/**', // Exclude planning docs

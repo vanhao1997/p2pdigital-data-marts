@@ -1,9 +1,9 @@
 import { ForbiddenException, Injectable, Logger } from '@nestjs/common';
 import { ClsService } from 'nestjs-cls';
 import { AUTH_CONTEXT } from '../guards/idp.guard';
+import { recordOperationalMetric } from '../../common/observability/operational-metric';
 
 interface CachedAuthContext {
-  userId?: string;
   projectId?: string;
 }
 
@@ -34,10 +34,7 @@ export class TenantGuardService {
     if (!authContext || !authContext.projectId) return;
 
     if (authContext.projectId !== projectId) {
-      this.logger.warn(
-        `Tenant boundary violation: auth projectId=${authContext.projectId} ` +
-          `requested projectId=${projectId} userId=${authContext.userId ?? 'unknown'}`
-      );
+      recordOperationalMetric(this.logger, 'tenant_boundary', 'mismatch');
       throw new ForbiddenException('Project mismatch');
     }
   }
@@ -49,11 +46,13 @@ export class TenantGuardService {
    */
   assertHttpProject(projectId: string): void {
     if (!this.cls.isActive()) {
+      recordOperationalMetric(this.logger, 'tenant_boundary', 'missing_context');
       throw new ForbiddenException('Tenant context is required');
     }
 
     const authContext = this.cls.get<CachedAuthContext>(AUTH_CONTEXT);
     if (!authContext?.projectId) {
+      recordOperationalMetric(this.logger, 'tenant_boundary', 'missing_context');
       throw new ForbiddenException('Tenant context is required');
     }
 

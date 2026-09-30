@@ -2,10 +2,13 @@ import { config } from 'dotenv';
 import { execSync } from 'child_process';
 import { dirname, resolve } from 'path';
 import { fileURLToPath } from 'url';
+import { mkdirSync } from 'fs';
 import { defineConfig, devices } from '@playwright/test';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const rootDir = resolve(__dirname, '..', '..');
+const sqliteDbPath = process.env.SQLITE_DB_PATH ?? resolve(rootDir, 'tmp', 'tests.db');
+mkdirSync(dirname(sqliteDbPath), { recursive: true });
 
 // Load root .env first (base configuration)
 config({ path: resolve(rootDir, '.env') });
@@ -78,6 +81,8 @@ export default defineConfig({
       stderr: 'pipe',
       env: {
         NODE_ENV: 'test',
+        DB_TYPE: process.env.DB_TYPE ?? 'sqlite',
+        SQLITE_DB_PATH: sqliteDbPath,
         PORT: '3000',
         SERVER_TIMEOUT_MS: '180000',
         KEEP_ALIVE_TIMEOUT_MS: '180000',

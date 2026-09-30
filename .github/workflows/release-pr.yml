@@ -31,26 +31,5 @@ jobs:
 
       - name: Create or update release PR
         uses: changesets/action@v1
-        id: changesets
-
-      - name: Fix changelogs headings
-        if: steps.changesets.outputs.hasChangesets == 'true'
-        run: node tools/fix-changelog-headings.mjs
-
-      - name: Format package.json files
-        if: steps.changesets.outputs.hasChangesets == 'true'
-        run: npm run format:packages
-
-      - name: Update package-lock.json
-        if: steps.changesets.outputs.hasChangesets == 'true'
-        run: npm run clean:reinstall
-
-      - name: Commit fixed changelogs
-        if: steps.changesets.outputs.hasChangesets == 'true'
-        run: |
-          set -e
-          git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git config --global user.name "github-actions[bot]"
-          git add .
-          git commit -m "chore: fix changelog headings and update package-lock.json"
-          git push origin HEAD
+        with:
+          version: npm run version:release:ci
