@@ -82,7 +82,13 @@ export function VariablesTab() {
           {variablesQuery.error instanceof Error
             ? variablesQuery.error.message
             : t('variablesPage.requestFailed')}
-          <Button size='sm' variant='outline' onClick={() => void variablesQuery.refetch()}>
+          <Button
+            size='sm'
+            variant='outline'
+            onClick={() => {
+              void variablesQuery.refetch();
+            }}
+          >
             {t('common.retry', 'Retry')}
           </Button>
         </AlertDescription>
@@ -212,7 +218,9 @@ export function VariablesTab() {
                     size='icon'
                     aria-label={`Delete ${variable.name}`}
                     disabled={deleteMutation.isPending}
-                    onClick={() => setPendingDelete({ id: variable.id, name: variable.name })}
+                    onClick={() => {
+                      setPendingDelete({ id: variable.id, name: variable.name });
+                    }}
                   >
                     <Trash2 className='text-destructive h-4 w-4' />
                   </Button>
@@ -225,7 +233,9 @@ export function VariablesTab() {
       <ConfirmationDialog
         open={pendingDelete !== null}
         onOpenChange={open => {
-          if (!open) setPendingDelete(null);
+          if (!open) {
+            setPendingDelete(null);
+          }
         }}
         title={t('variablesPage.deleteTitle', 'Delete variable?')}
         description={t('variablesPage.deleteDescription', {
@@ -235,10 +245,14 @@ export function VariablesTab() {
         confirmLabel={t('common.delete', 'Delete')}
         cancelLabel={t('common.cancel', 'Cancel')}
         confirmDisabled={deleteMutation.isPending}
-        onCancel={() => deleteMutation.reset()}
+        onCancel={() => {
+          deleteMutation.reset();
+        }}
         onConfirm={() => {
           if (!pendingDelete) return;
-          void deleteMutation.mutateAsync(pendingDelete.id).then(() => setPendingDelete(null));
+          void deleteMutation.mutateAsync(pendingDelete.id).then(() => {
+            setPendingDelete(null);
+          });
         }}
       >
         {deleteMutation.isError && (

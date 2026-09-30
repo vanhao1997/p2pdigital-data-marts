@@ -123,7 +123,9 @@ export function ProjectsPage() {
             maxLength={100}
           />
           <Button
-            onClick={() => void handleCreate()}
+            onClick={() => {
+              void handleCreate();
+            }}
             disabled={!name.trim() || isLoading || pendingAction !== null}
           >
             {pendingAction === 'create' ? t('projectsPage.creating') : t('projectsPage.create')}
@@ -157,7 +159,9 @@ export function ProjectsPage() {
                 (project.archived ? (
                   <Button
                     variant='outline'
-                    onClick={() => void handleArchive(project.id, true)}
+                    onClick={() => {
+                      void handleArchive(project.id, true);
+                    }}
                     disabled={pendingAction !== null}
                   >
                     {pendingAction === `unarchive:${project.id}`
@@ -167,7 +171,9 @@ export function ProjectsPage() {
                 ) : (
                   <Button
                     variant='outline'
-                    onClick={() => void handleArchive(project.id, false)}
+                    onClick={() => {
+                      void handleArchive(project.id, false);
+                    }}
                     disabled={pendingAction !== null}
                   >
                     {pendingAction === `archive:${project.id}`
@@ -187,7 +193,9 @@ export function ProjectsPage() {
                 </Button>
               )}
               <Button
-                onClick={() => void handleSelect(project.id)}
+                onClick={() => {
+                  void handleSelect(project.id);
+                }}
                 disabled={pendingAction !== null}
               >
                 {pendingAction === `select:${project.id}`
@@ -223,7 +231,9 @@ export function ProjectsPage() {
               autoFocus
               aria-label={t('projectsPage.newProjectName')}
               value={renameTitle}
-              onChange={event => setRenameTitle(event.target.value)}
+              onChange={event => {
+                setRenameTitle(event.target.value);
+              }}
               maxLength={100}
             />
             {renameError && (
@@ -232,7 +242,13 @@ export function ProjectsPage() {
               </p>
             )}
             <DialogFooter>
-              <Button type='button' variant='outline' onClick={() => setRenameProjectId(null)}>
+              <Button
+                type='button'
+                variant='outline'
+                onClick={() => {
+                  setRenameProjectId(null);
+                }}
+              >
                 {t('common.cancel', 'Cancel')}
               </Button>
               <Button type='submit' disabled={!renameTitle.trim() || pendingAction === 'rename'}>

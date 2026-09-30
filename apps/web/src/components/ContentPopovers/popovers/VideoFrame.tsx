@@ -43,8 +43,12 @@ export function VideoFrame({ src, aspectRatio, titleKey }: VideoFrameProps) {
         src={src}
         title={t(titleKey)}
         loading='lazy'
-        onLoad={() => setStatus('ready')}
-        onError={() => setStatus('error')}
+        onLoad={() => {
+          setStatus('ready');
+        }}
+        onError={() => {
+          setStatus('error');
+        }}
         className='absolute inset-0 h-full w-full rounded-md border-none'
         allow='accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture;'
         allowFullScreen
