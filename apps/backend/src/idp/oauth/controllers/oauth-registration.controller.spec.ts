@@ -1,4 +1,4 @@
-import { BadRequestException } from '@nestjs/common';
+import { BadRequestException, HttpException, HttpStatus } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import type { Request } from 'express';
 import { McpResourceResolverService } from '../../../mcp-resource/mcp-resource-resolver.service';
@@ -80,9 +80,29 @@ describe('OAuthRegistrationController', () => {
       })
     );
     expect(result.client_id).toMatch(/^mcp_dyn_/);
+    expect(result.expires_at).toBeGreaterThan(Math.floor(Date.now() / 1000));
     expect(registerSpy).toHaveBeenCalledWith(
       expect.objectContaining({ resource: 'https://mcp.owox.com/mcp' })
     );
+  });
+
+  it('rejects missing redirect metadata and unknown registration fields', async () => {
+    const { controller } = makeController();
+
+    await expect(
+      controller.register({ client_name: 'missing redirect' }, makeRequest())
+    ).rejects.toThrow(BadRequestException);
+    await expect(
+      controller.register(
+        {
+          redirect_uris: ['http://127.0.0.1:5555/callback'],
+          client_name: 'unknown field',
+          // Runtime callers can still bypass TypeScript types.
+          extra_field: 'must be rejected',
+        } as never,
+        makeRequest()
+      )
+    ).rejects.toThrow(BadRequestException);
   });
 
   it('binds a project resource to a client registered on a project MCP host', async () => {
@@ -198,5 +218,21 @@ describe('OAuthRegistrationController', () => {
     );
 
     expect(result.redirect_uris).toEqual(['https://claude.ai/api/mcp/auth_callback']);
+  });
+
+  it('limits dynamic registrations per source, resource and redirect origin', async () => {
+    const { controller } = makeController();
+    const request = {
+      redirect_uris: ['http://127.0.0.1:5555/callback'],
+      token_endpoint_auth_method: 'none',
+    };
+
+    for (let attempt = 0; attempt < 10; attempt += 1) {
+      await controller.register(request, makeRequest());
+    }
+
+    const error = await controller.register(request, makeRequest()).catch(error => error);
+    expect(error).toBeInstanceOf(HttpException);
+    expect((error as HttpException).getStatus()).toBe(HttpStatus.TOO_MANY_REQUESTS);
   });
 });

@@ -18,6 +18,7 @@ import {
 import { UserProjectionDto } from '../../../idp/dto/domain/user-projection.dto';
 
 const id = z.string().trim().min(1);
+const dedupeKey = z.string().regex(/^[a-f0-9]{64}$/);
 const baseConsumptionPayload = z
   .object({
     projectId: id,
@@ -25,8 +26,9 @@ const baseConsumptionPayload = z
     dataStorageId: id,
     dataStorageType: z.nativeEnum(DataStorageType),
     runTime: z.string().datetime(),
+    dedupeKey,
   })
-  .passthrough();
+  .strict();
 const reportConsumptionPayload = baseConsumptionPayload.extend({
   reportId: id,
   reportRunId: id,

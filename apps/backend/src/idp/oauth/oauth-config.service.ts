@@ -39,7 +39,7 @@ export class OAuthConfigService {
   }
 
   get isDynamicClientRegistrationEnabled(): boolean {
-    return this.readBoolean('MCP_DYNAMIC_CLIENT_REGISTRATION_ENABLED', true);
+    return this.readBoolean('MCP_DYNAMIC_CLIENT_REGISTRATION_ENABLED', false);
   }
 
   get clientMetadataDocumentEnabled(): boolean {

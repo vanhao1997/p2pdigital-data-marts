@@ -105,7 +105,7 @@ export class IdentityOwoxClient {
       const { data } = await this.http.post<TokenResponse>('/api/idp/token', req);
       return TokenResponseSchema.parse(data);
     } catch (err) {
-      this.handleAxiosError(err, { req }, 'Failed to get token');
+      this.handleAxiosError(err, { operation: 'token' }, 'Failed to get token');
     }
   }
 
@@ -113,7 +113,9 @@ export class IdentityOwoxClient {
    * POST auth-flow/extension/identity
    */
   async exchangeGoogleIdentityToken(req: GoogleIdentityExchangeRequest): Promise<TokenResponse> {
-    const authHeader = await this.getC2cAuthHeader('exchange Google identity token', { req });
+    const authHeader = await this.getC2cAuthHeader('exchange Google identity token', {
+      operation: 'google_identity_exchange',
+    });
 
     try {
       const { data } = await this.http.post<TokenResponse>(
@@ -123,7 +125,11 @@ export class IdentityOwoxClient {
       );
       return TokenResponseSchema.parse(data);
     } catch (err) {
-      this.handleAxiosError(err, { req }, 'Failed to exchange Google identity token');
+      this.handleAxiosError(
+        err,
+        { operation: 'google_identity_exchange', projectId: req.biProjectId },
+        'Failed to exchange Google identity token'
+      );
     }
   }
 
@@ -181,7 +187,15 @@ export class IdentityOwoxClient {
       );
       return TokenResponseSchema.parse(data);
     } catch (err) {
-      this.handleAxiosError(err, { req }, 'Failed to issue project member API key token');
+      this.handleAxiosError(
+        err,
+        {
+          operation: 'project_member_api_key_exchange',
+          projectId: parsed.projectId,
+          userId: parsed.userId,
+        },
+        'Failed to issue project member API key token'
+      );
     }
   }
 
@@ -207,7 +221,15 @@ export class IdentityOwoxClient {
       );
       return PluginRuntimeAuthFlowResponseSchema.parse(data);
     } catch (err) {
-      this.handleAxiosError(err, { req }, 'Failed to issue plugin runtime token');
+      this.handleAxiosError(
+        err,
+        {
+          operation: 'plugin_runtime_exchange',
+          projectId: parsed.projectId,
+          userId: parsed.userId,
+        },
+        'Failed to issue plugin runtime token'
+      );
     }
   }
 
@@ -232,7 +254,15 @@ export class IdentityOwoxClient {
       );
       return McpOAuthAuthorizationCodeResponseSchema.parse(data);
     } catch (err) {
-      this.handleAxiosError(err, { req }, 'Failed to create MCP OAuth authorization code');
+      this.handleAxiosError(
+        err,
+        {
+          operation: 'mcp_oauth_authorization_code',
+          projectId: parsed.projectMember.projectId,
+          userId: parsed.projectMember.userId,
+        },
+        'Failed to create MCP OAuth authorization code'
+      );
     }
   }
 
@@ -257,7 +287,11 @@ export class IdentityOwoxClient {
       );
       return McpOAuthTokenExchangeResponseSchema.parse(data);
     } catch (err) {
-      this.handleAxiosError(err, { req }, 'Failed to exchange MCP OAuth token');
+      this.handleAxiosError(
+        err,
+        { operation: 'mcp_oauth_token_exchange', provider: 'mcp' },
+        'Failed to exchange MCP OAuth token'
+      );
     }
   }
 
@@ -280,7 +314,11 @@ export class IdentityOwoxClient {
       const result = McpOAuthTokenVerificationResponseSchema.parse(data);
       return result.active ? result.payload : null;
     } catch (err) {
-      this.handleAxiosError(err, { req }, 'Failed to verify MCP access token');
+      this.handleAxiosError(
+        err,
+        { operation: 'mcp_oauth_token_verify', provider: 'mcp' },
+        'Failed to verify MCP access token'
+      );
     }
   }
 
@@ -371,7 +409,11 @@ export class IdentityOwoxClient {
       );
       return AuthFlowResponseSchema.parse(data);
     } catch (err) {
-      this.handleAxiosError(err, { request }, 'Failed to complete auth flow');
+      this.handleAxiosError(
+        err,
+        { operation: 'complete_auth_flow' },
+        'Failed to complete auth flow'
+      );
     }
   }
 
@@ -536,7 +578,7 @@ export class IdentityOwoxClient {
     } catch (err) {
       this.handleAxiosError(
         err,
-        { projectId, actorUserId, settings },
+        { projectId, userId: actorUserId, operation: 'update_user_provisioning_settings' },
         'Failed to update user provisioning settings'
       );
     }
@@ -726,7 +768,9 @@ export class IdentityOwoxClient {
     ) {
       throw new IdpFailedException(
         `C2C authentication is not configured. Cannot ${operationLabel}.`,
-        { context }
+        {
+          context: sanitizeErrorContext({ ...context, operation: operationLabel }),
+        }
       );
     }
     const idToken = await this.impersonatedIdTokenFetcher.getIdToken(
@@ -747,43 +791,76 @@ export class IdentityOwoxClient {
 
     const status = error.response?.status;
     const rawBody = error.response?.data;
+    // Error context is copied into application logs and HTTP errors. Keep this
+    // allow-listed so a request object, headers, credentials or raw upstream
+    // payload can never be serialized by accident.
+    const safeContext = sanitizeErrorContext({
+      ...context,
+      operation: context.operation ?? defaultMessage,
+    });
+    const upstreamCode = getSafeUpstreamCode(rawBody);
+    const contextWithCode = upstreamCode ? { ...safeContext, upstreamCode } : safeContext;
 
     // Handle specific status codes.
     switch (status) {
       case 400:
         throw new IdentityApiException('Bad request', {
-          cause: error,
-          context: { ...context, body: rawBody },
+          context: contextWithCode,
           status: 400,
         });
       case 401:
         throw new AuthenticationException('Invalid or expired credentials', {
-          cause: error,
-          context,
+          context: contextWithCode,
           status,
-          description:
-            typeof rawBody === 'object' && rawBody !== null && 'error' in rawBody
-              ? ((rawBody as Record<string, unknown>).description as string | null | undefined)
-              : undefined,
         });
       case 403:
         throw new ForbiddenException('Identity inactive or blocked', {
-          cause: error,
-          context,
+          context: contextWithCode,
           status,
         });
       case 404:
         throw new IdpNotFoundException('Upstream resource not found', {
-          cause: error,
-          context: { ...context, responseData: rawBody },
+          context: contextWithCode,
           status,
         });
       default:
         throw new IdpFailedException(`${defaultMessage}${status ? `: ${status}` : ''}`, {
-          cause: error,
-          context: { ...context, responseData: rawBody },
+          context: contextWithCode,
           status,
         });
     }
   }
+}
+
+const SAFE_CONTEXT_FIELDS = new Set([
+  'operation',
+  'status',
+  'requestId',
+  'projectId',
+  'userId',
+  'provider',
+  'upstreamCode',
+]);
+
+function sanitizeErrorContext(context: Record<string, unknown>): Record<string, unknown> {
+  return Object.fromEntries(
+    Object.entries(context).filter(
+      ([key, value]) => SAFE_CONTEXT_FIELDS.has(key) && isSafeScalar(value)
+    )
+  );
+}
+
+function isSafeScalar(value: unknown): value is string | number | boolean {
+  return typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean';
+}
+
+function getSafeUpstreamCode(body: unknown): string | undefined {
+  if (!body || typeof body !== 'object') return undefined;
+  const candidate =
+    (body as Record<string, unknown>).code ??
+    (body as Record<string, unknown>).status ??
+    (body as Record<string, unknown>).error;
+  return typeof candidate === 'string' && /^[A-Za-z0-9_.-]{1,80}$/.test(candidate)
+    ? candidate
+    : undefined;
 }

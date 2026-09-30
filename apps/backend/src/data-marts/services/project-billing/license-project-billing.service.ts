@@ -17,6 +17,7 @@ import {
   ProjectBillingService,
   RunKind,
   SheetsReportDetails,
+  buildConsumptionDedupeKey,
 } from './project-billing.service';
 
 /** Not configurable: the license key travels here as a bearer token, so a redirectable base URL would leak it. */
@@ -116,7 +117,8 @@ export class LicenseProjectBillingService extends ProjectBillingService {
 
   private async sendConsumption(kind: RunKind, payload: Record<string, unknown>): Promise<void> {
     try {
-      await this.callCloud('consumption', { kind, payload });
+      const event = { ...payload, dedupeKey: buildConsumptionDedupeKey(kind, payload) };
+      await this.callCloud('consumption', { kind, payload: event });
     } catch (error) {
       this.logger.error(
         `Failed to report ${kind} consumption for project ${payload.projectId}: ${

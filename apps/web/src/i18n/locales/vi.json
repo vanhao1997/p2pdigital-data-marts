@@ -104,6 +104,18 @@
     "onlineChat": "Chat trực tuyến",
     "triggerSubtitle": "Trò chuyện, tài liệu, video"
   },
+  "contentPopovers": {
+    "dialogLabel": "Video hướng dẫn",
+    "sqlToSheets": "SQL sang Google Sheets trong vài phút",
+    "dataStudioSetup": "Thiết lập Data Studio",
+    "gettingStarted": "Bắt đầu với Data Marts",
+    "bigQuerySetup": "Hoàn tất thiết lập kho BigQuery để xuất bản Data Mart",
+    "insightsVideo": "Phân tích chuyên sâu: nhận báo cáo tự động từ câu hỏi",
+    "emailReports": "Báo cáo email: gửi báo cáo qua email",
+    "videoLoading": "Đang tải video…",
+    "videoError": "Không thể tải video.",
+    "videoRetry": "Thử lại"
+  },
   "setupChecklist": {
     "createStorage": "Tạo kho lưu trữ",
     "createStorageDesc": "Kho lưu trữ là kết nối đến kho dữ liệu của bạn (BigQuery, Snowflake, v.v.). Cần thiết để tạo và chạy Data Mart.",
@@ -2894,6 +2906,14 @@
     "archive": "Lưu trữ",
     "rename": "Đổi tên",
     "open": "Mở",
+    "creating": "Đang tạo...",
+    "saving": "Đang lưu...",
+    "loading": "Đang tải...",
+    "created": "Đã tạo dự án",
+    "renamed": "Đã đổi tên dự án",
+    "archived": "Đã lưu trữ dự án",
+    "unarchived": "Đã khôi phục dự án",
+    "updateFailed": "Không thể cập nhật dự án",
     "createFailed": "Không thể tạo dự án",
     "renameFailed": "Không thể đổi tên dự án",
     "selectFailed": "Không thể chọn dự án",
@@ -3497,6 +3517,9 @@
     "descriptionPlaceholder": "Mô tả (tùy chọn)",
     "save": "Lưu biến",
     "saveFailed": "Không thể lưu biến",
+    "deleteTitle": "Xóa biến?",
+    "deleteDescription": "Xóa {{name}}? Bạn không thể hoàn tác thao tác này.",
+    "deleteFailed": "Không thể xóa biến",
     "empty": "Chưa có biến nào được lưu cho dự án này."
   },
   "notFoundPage": {

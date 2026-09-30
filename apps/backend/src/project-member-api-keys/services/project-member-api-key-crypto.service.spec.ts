@@ -61,4 +61,30 @@ describe('ProjectMemberApiKeyCryptoService', () => {
     await expect(service.verifySecret('bad-key', apiKeySecret, stored)).resolves.toBe(false);
     await expect(service.verifySecret(apiKeyId, 'bad-secret', stored)).resolves.toBe(false);
   });
+
+  it('returns all semaphore capacity after queued work drains', async () => {
+    type Deferred = { promise: Promise<void>; resolve: () => void };
+    const deferred = (): Deferred => {
+      let resolve!: () => void;
+      const promise = new Promise<void>(nextResolve => {
+        resolve = nextResolve;
+      });
+      return { promise, resolve };
+    };
+    const gate = deferred();
+    const internal = service as unknown as {
+      withScryptSlot<T>(operation: () => Promise<T>): Promise<T>;
+      activeScryptOperations: number;
+    };
+
+    const operations = Array.from({ length: 6 }, () =>
+      internal.withScryptSlot(async () => gate.promise)
+    );
+    await new Promise<void>(resolve => setImmediate(resolve));
+    expect(internal.activeScryptOperations).toBe(4);
+
+    gate.resolve();
+    await Promise.all(operations);
+    expect(internal.activeScryptOperations).toBe(0);
+  });
 });

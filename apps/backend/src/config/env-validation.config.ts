@@ -25,6 +25,16 @@ const configSchema = z
     KEEP_ALIVE_TIMEOUT_MS: z.coerce.number().default(DEFAULT_KEEP_ALIVE_TIMEOUT_MS),
     HEADERS_TIMEOUT_MS: z.coerce.number().default(DEFAULT_HEADERS_TIMEOUT_MS),
 
+    // Query parameters can contain credentials and PII. This opt-in is only
+    // honored by the data-source factory when NODE_ENV=development.
+    TYPEORM_LOG_QUERY_PARAMETERS: z
+      .string()
+      .trim()
+      .toLowerCase()
+      .pipe(z.enum(['true', 'false']))
+      .default('false'),
+    API_KEY_EXCHANGE_HMAC_SECRET: z.string().default(''),
+
     MAX_CONNECTOR_RUNS_PER_PROJECT: z.coerce.number().int().min(1).max(1000).default(3),
     MAX_REPORT_RUNS_PER_PROJECT: z.coerce.number().int().min(1).max(1000).default(1000),
 
@@ -34,6 +44,12 @@ const configSchema = z
       .toLowerCase()
       .pipe(z.enum(['true', 'false']))
       .default('true'),
+    MCP_DYNAMIC_CLIENT_REGISTRATION_ENABLED: z
+      .string()
+      .trim()
+      .toLowerCase()
+      .pipe(z.enum(['true', 'false']))
+      .default('false'),
     MCP_CLIENT_METADATA_ALLOWED_ORIGINS: z.string().trim().default(''),
     MCP_CLIENT_METADATA_CACHE_TTL_MS: z.coerce
       .number()

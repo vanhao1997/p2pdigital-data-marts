@@ -50,6 +50,8 @@ import { createDatabaseStore } from '../store/DatabaseStoreFactory.js';
 import { logger } from '../logger.js';
 import { getMigrations } from 'better-auth/db/migration';
 
+const ROLE_RANK: Record<Role, number> = { viewer: 1, editor: 2, admin: 3 };
+
 export class BetterAuthProvider
   implements
     IdpProvider,
@@ -296,8 +298,8 @@ export class BetterAuthProvider
     apiKeyId: string,
     userId: string,
     projectId: string,
-    _role: Role | null,
-    _readOnly: boolean
+    role: Role | null,
+    readOnly: boolean
   ): Promise<AuthResult> {
     const user = await this.store.getUserById(userId);
     if (!user) {
@@ -311,12 +313,15 @@ export class BetterAuthProvider
       throw new AuthorizationError('Project member API key user is not an active project member');
     }
 
+    const effectiveRole = role && ROLE_RANK[role] < ROLE_RANK[currentRole] ? role : currentRole;
+
     return this.tokenService.issueProjectMemberApiKeyAccessToken({
       userId,
       projectId,
       email: user.email,
       fullName: user.name || user.email,
-      roles: [currentRole],
+      roles: [effectiveRole],
+      viewOnly: readOnly,
       projectTitle: this.getProjectTitle(projectId),
       authFlow: 'api_key',
       apiKeyId,

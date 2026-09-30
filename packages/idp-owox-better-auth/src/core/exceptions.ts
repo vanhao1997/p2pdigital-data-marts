@@ -110,7 +110,8 @@ export class SessionException extends BaseException {
 }
 
 /**
- * Error for Identity API 4xx responses with raw body in context.
+ * Error for Identity API 4xx responses. Context is always a safe, allow-listed
+ * projection; raw upstream response bodies are intentionally discarded.
  */
 export class IdentityApiException extends BaseException {
   constructor(message: string, opts?: ExceptionOpts) {

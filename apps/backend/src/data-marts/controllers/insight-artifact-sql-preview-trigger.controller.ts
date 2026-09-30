@@ -19,7 +19,7 @@ export class InsightArtifactSqlPreviewTriggerController extends UiTriggerControl
   }
 
   @CreateInsightArtifactSqlPreviewTriggerSpec()
-  @Auth(Role.viewer(Strategy.PARSE))
+  @Auth(Role.viewer(Strategy.INTROSPECT))
   @Post()
   async createTrigger(
     @AuthContext() context: AuthorizationContext,

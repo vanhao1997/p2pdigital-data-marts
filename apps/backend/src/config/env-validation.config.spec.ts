@@ -2,7 +2,10 @@ import { validateConfig } from './env-validation.config';
 
 describe('Admicro extractor environment validation', () => {
   it('allows the connector to remain disabled without sidecar settings', () => {
-    expect(validateConfig({}).ADMICRO_EXTRACTOR_ENABLED).toBe(false);
+    const config = validateConfig({});
+    expect(config.ADMICRO_EXTRACTOR_ENABLED).toBe(false);
+    expect(config.MCP_DYNAMIC_CLIENT_REGISTRATION_ENABLED).toBe('false');
+    expect(config.TYPEORM_LOG_QUERY_PARAMETERS).toBe('false');
   });
 
   it('requires URL and shared secret when enabled', () => {

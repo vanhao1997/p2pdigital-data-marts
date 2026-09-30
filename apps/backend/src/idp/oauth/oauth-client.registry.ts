@@ -17,6 +17,7 @@ export interface OAuthRegisteredClient {
   scopes: McpScope[];
   createdAt: Date;
   lastUsedAt?: Date;
+  expiresAt?: Date;
 }
 
 @Injectable()
@@ -37,13 +38,18 @@ export class OAuthClientRegistry {
       scopes: client.scopes,
       createdAt: client.createdAt,
       lastUsedAt: client.lastUsedAt ?? null,
+      expiresAt: client.expiresAt ?? null,
     });
     return client;
   }
 
   async get(clientId: string): Promise<OAuthRegisteredClient | undefined> {
     const client = await this.repository.findOne({ where: { clientId } });
-    return client ? this.toRegisteredClient(client) : undefined;
+    if (!client) return undefined;
+    if (client.expiresAt && client.expiresAt.getTime() <= Date.now()) {
+      return undefined;
+    }
+    return this.toRegisteredClient(client);
   }
 
   async hasRedirectUri(clientId: string, redirectUri: string): Promise<boolean> {
@@ -58,6 +64,15 @@ export class OAuthClientRegistry {
     await this.repository.update({ clientId }, { status: 'success', lastUsedAt: usedAt });
   }
 
+  async removeExpired(now: Date = new Date()): Promise<void> {
+    await this.repository
+      .createQueryBuilder()
+      .delete()
+      .from(OAuthDynamicClient)
+      .where('expiresAt IS NOT NULL AND expiresAt <= :now', { now })
+      .execute();
+  }
+
   private toRegisteredClient(client: OAuthDynamicClient): OAuthRegisteredClient {
     return {
       clientId: client.clientId,
@@ -69,6 +84,7 @@ export class OAuthClientRegistry {
       scopes: client.scopes,
       createdAt: client.createdAt,
       lastUsedAt: client.lastUsedAt ?? undefined,
+      expiresAt: client.expiresAt ?? undefined,
     };
   }
 }

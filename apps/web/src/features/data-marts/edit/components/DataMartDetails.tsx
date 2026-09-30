@@ -370,7 +370,7 @@ export function DataMartDetails({ id }: DataMartDetailsProps) {
 
   return (
     <div
-      className='min-w-[600px] px-4 py-6 md:min-w-0 md:px-8 md:py-4 lg:px-12 xl:px-16'
+      className='min-w-0 px-4 py-6 md:px-8 md:py-4 lg:px-12 xl:px-16'
       data-testid='datamartDetails'
     >
       <div className='items-top -mt-2.5 mb-4 flex flex-col-reverse justify-between gap-2 md:-mt-0 md:flex-row md:items-start md:gap-4'>

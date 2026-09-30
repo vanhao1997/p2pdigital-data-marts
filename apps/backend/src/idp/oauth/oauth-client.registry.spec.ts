@@ -90,6 +90,7 @@ describe('OAuthClientRegistry', () => {
       status: 'pending',
       userId: null,
       lastUsedAt: null,
+      expiresAt: null,
       createdAt,
     });
   });
@@ -163,5 +164,23 @@ describe('OAuthClientRegistry', () => {
       redirectUris: ['https://chatgpt.com/connector/oauth/callback'],
       scopes: ['mcp:read', 'mcp:write'],
     });
+  });
+
+  it('does not return an expired dynamic client', async () => {
+    const repository = createRepository([
+      {
+        clientId: 'mcp_dyn_expired',
+        clientName: 'Expired',
+        resource: 'https://mcp.owox.com/mcp',
+        redirectUris: ['http://127.0.0.1:54248/callback/OxWjtjMxOIr3'],
+        scopes: ['mcp:read'],
+        status: 'pending',
+        createdAt: new Date('2026-06-11T14:00:00.000Z'),
+        expiresAt: new Date('2026-06-11T14:01:00.000Z'),
+      },
+    ]);
+    const registry = new OAuthClientRegistry(repository as never);
+
+    await expect(registry.get('mcp_dyn_expired')).resolves.toBeUndefined();
   });
 });

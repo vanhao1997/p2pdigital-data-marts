@@ -28,7 +28,7 @@ export class CreateProjectMemberApiKeyService {
       command.userId,
       command.name,
       command.role,
-      false,
+      command.readOnly,
       expiresAt
     );
 

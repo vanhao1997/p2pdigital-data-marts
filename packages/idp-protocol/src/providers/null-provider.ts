@@ -28,6 +28,8 @@ import {
 import { IdpOperationNotSupportedError } from '../types/errors.js';
 import { Express, Request, Response, NextFunction } from 'express';
 
+const ROLE_RANK: Record<Role, number> = { viewer: 1, editor: 2, admin: 3 };
+
 /**
  * NULL IDP Provider - single user, single project
  * Used for deployments without user management and development
@@ -60,15 +62,17 @@ export class NullIdpProvider implements IdpProvider {
     apiKeyId: string,
     userId: string,
     projectId: string,
-    _role: Role | null,
-    _readOnly: boolean
+    role: Role | null,
+    readOnly: boolean
   ): Promise<AuthResult> {
     const accessToken = `apiKeyAccessToken:${apiKeyId}`;
+    const effectiveRole = role && ROLE_RANK[role] < ROLE_RANK.admin ? role : 'admin';
     this.issuedAccessTokens.set(accessToken, {
       ...this.defaultPayload,
       userId,
       projectId,
-      roles: this.defaultPayload.roles,
+      roles: [effectiveRole],
+      viewOnly: readOnly,
       authFlow: 'api_key',
       apiKeyId,
     });

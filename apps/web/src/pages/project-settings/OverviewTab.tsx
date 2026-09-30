@@ -40,6 +40,8 @@ import { useIsAdmin } from '../../features/idp/hooks/useRole';
 import { useProjectSettings } from '../../features/project-settings/overview';
 import { InlineEditDescription } from '../../shared/components/InlineEditDescription';
 import { Skeleton } from '@owox/ui/components/skeleton';
+import i18n from '../../i18n';
+import { buildDocsUrl, resolveDocsLocale } from '../../shared/utils/docs-links';
 
 interface Stats {
   dataMarts: number | null;
@@ -324,7 +326,11 @@ export function OverviewTab() {
               <p className='text-muted-foreground text-sm'>
                 {t('projectOverview.mcpDescription')}{' '}
                 <a
-                  href='https://docs.p2pdigital.io.vn/docs/getting-started/setup-guide/mcp/'
+                  href={buildDocsUrl(
+                    'getting-started/setup-guide/mcp',
+                    resolveDocsLocale(i18n.language),
+                    'project_mcp_card'
+                  )}
                   target='_blank'
                   rel='noopener noreferrer'
                   className='text-primary hover:underline'

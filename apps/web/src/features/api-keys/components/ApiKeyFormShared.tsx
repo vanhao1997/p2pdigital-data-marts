@@ -2,11 +2,8 @@ import type { ReactNode } from 'react';
 import { FormLabel, FormSection } from '@owox/ui/components/form';
 import { ExternalLink } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-
-const API_KEYS_DOCS_URL = 'https://docs.p2pdigital.io.vn/docs/api/api-keys/';
-const OWOX_CTL_DOCS_URL = 'https://docs.p2pdigital.io.vn/docs/api/owox-ctl/';
-const API_CLIENT_DOCS_URL = 'https://docs.p2pdigital.io.vn/docs/api/api-client/';
-const OPENAPI_DOCS_URL = 'https://docs.p2pdigital.io.vn/docs/api/openapi/';
+import i18n from '../../../i18n';
+import { buildDocsUrl, resolveDocsLocale } from '../../../shared/utils/docs-links';
 
 interface ApiKeyFormLabelProps {
   description: string;
@@ -55,23 +52,30 @@ function DocumentationLink({ href, title, description, code = false }: Documenta
 
 export function ApiKeyDocumentationSection({ name }: { name: string }) {
   const { t } = useTranslation();
+  const locale = resolveDocsLocale(i18n.language);
 
   return (
     <FormSection title={t('apiKeysPage.documentation.title')} name={name} defaultOpen={false}>
-      <DocumentationLink href={API_KEYS_DOCS_URL} title={t('apiKeysPage.documentation.apiKeys')} />
       <DocumentationLink
-        href={OWOX_CTL_DOCS_URL}
+        href={buildDocsUrl('api/api-keys', locale, 'api_keys_form')}
+        title={t('apiKeysPage.documentation.apiKeys')}
+      />
+      <DocumentationLink
+        href={buildDocsUrl('api/owox-ctl', locale, 'api_keys_form')}
         title='owox-ctl'
         description={t('apiKeysPage.documentation.cliTool')}
         code
       />
       <DocumentationLink
-        href={API_CLIENT_DOCS_URL}
+        href={buildDocsUrl('api/api-client', locale, 'api_keys_form')}
         title='@owox/api-client'
         description={t('apiKeysPage.documentation.apiClient')}
         code
       />
-      <DocumentationLink href={OPENAPI_DOCS_URL} title={t('apiKeysPage.documentation.openapi')} />
+      <DocumentationLink
+        href={buildDocsUrl('api/openapi', locale, 'api_keys_form')}
+        title={t('apiKeysPage.documentation.openapi')}
+      />
     </FormSection>
   );
 }

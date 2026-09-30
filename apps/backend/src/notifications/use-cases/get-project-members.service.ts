@@ -11,7 +11,7 @@ export class GetProjectMembersService {
   ) {}
 
   async run(projectId: string): Promise<ProjectMemberApiDto[]> {
-    this.tenantGuard.assertProject(projectId);
+    this.tenantGuard.assertHttpProject(projectId);
     const members = await this.idpProjectionsFacade.getProjectMembers(projectId);
     return members.map(m => ({
       userId: m.userId,

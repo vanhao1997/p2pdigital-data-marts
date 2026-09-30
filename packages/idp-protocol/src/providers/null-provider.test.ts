@@ -79,13 +79,14 @@ describe('NullIdpProvider project member API keys', () => {
         userId: 'user-1',
         projectId: 'project-1',
         roles: ['admin'],
+        viewOnly: false,
         authFlow: 'api_key',
         apiKeyId: 'pmk_AbCdEfGhIjKlMnOpQrStUv',
       })
     );
   });
 
-  it('uses the development member role instead of a stored API-key role', async () => {
+  it('preserves a lower stored API-key role in the development provider', async () => {
     const provider = new NullIdpProvider();
 
     const result = await provider.issueAccessTokenForProjectMemberApiKey(
@@ -97,7 +98,7 @@ describe('NullIdpProvider project member API keys', () => {
     );
 
     await expect(provider.introspectToken(result.accessToken)).resolves.toEqual(
-      expect.objectContaining({ roles: ['admin'] })
+      expect.objectContaining({ roles: ['viewer'], viewOnly: false })
     );
   });
 

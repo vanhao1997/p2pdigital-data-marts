@@ -16,6 +16,7 @@ import { useIsAdmin } from '../../features/idp/hooks/useRole';
 import { useProjectRoute } from '../../shared/hooks';
 import { configurationVariablesApi } from '../../features/configuration-variables';
 import type { ConfigurationVariableKind } from '../../features/configuration-variables';
+import { ConfirmationDialog } from '../../shared/components/ConfirmationDialog';
 
 const variablesKey = (projectId: string) => ['configuration-variables', projectId] as const;
 const candidatesKey = (projectId: string) =>
@@ -32,6 +33,7 @@ export function VariablesTab() {
   const [description, setDescription] = useState('');
   const [kind, setKind] = useState<ConfigurationVariableKind>('value');
   const [credentialId, setCredentialId] = useState('');
+  const [pendingDelete, setPendingDelete] = useState<{ id: string; name: string } | null>(null);
 
   const variablesQuery = useQuery({
     queryKey: variablesKey(projectKey),
@@ -210,10 +212,7 @@ export function VariablesTab() {
                     size='icon'
                     aria-label={`Delete ${variable.name}`}
                     disabled={deleteMutation.isPending}
-                    onClick={() => {
-                      if (window.confirm(`Delete variable ${variable.name}?`))
-                        void deleteMutation.mutateAsync(variable.id);
-                    }}
+                    onClick={() => setPendingDelete({ id: variable.id, name: variable.name })}
                   >
                     <Trash2 className='text-destructive h-4 w-4' />
                   </Button>
@@ -223,6 +222,33 @@ export function VariablesTab() {
           </div>
         )}
       </div>
+      <ConfirmationDialog
+        open={pendingDelete !== null}
+        onOpenChange={open => {
+          if (!open) setPendingDelete(null);
+        }}
+        title={t('variablesPage.deleteTitle', 'Delete variable?')}
+        description={t('variablesPage.deleteDescription', {
+          name: pendingDelete?.name ?? '',
+          defaultValue: 'Delete {{name}}? This action cannot be undone.',
+        })}
+        confirmLabel={t('common.delete', 'Delete')}
+        cancelLabel={t('common.cancel', 'Cancel')}
+        confirmDisabled={deleteMutation.isPending}
+        onCancel={() => deleteMutation.reset()}
+        onConfirm={() => {
+          if (!pendingDelete) return;
+          void deleteMutation.mutateAsync(pendingDelete.id).then(() => setPendingDelete(null));
+        }}
+      >
+        {deleteMutation.isError && (
+          <p className='text-destructive text-sm'>
+            {deleteMutation.error instanceof Error
+              ? deleteMutation.error.message
+              : t('variablesPage.deleteFailed', 'Could not delete variable')}
+          </p>
+        )}
+      </ConfirmationDialog>
     </div>
   );
 }

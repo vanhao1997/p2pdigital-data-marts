@@ -116,7 +116,10 @@ describe('SecretRevealDialog', () => {
 
     const docsLink = screen.getByRole('link', { name: 'API key documentation' });
 
-    expect(docsLink).toHaveAttribute('href', 'https://docs.p2pdigital.io.vn/docs/api/api-keys/');
+    expect(docsLink).toHaveAttribute(
+      'href',
+      'https://docs.p2pdigital.io.vn/docs/api/api-keys/?utm_source=app_p2pdigital_vn&utm_medium=ui&utm_campaign=api_key_reveal'
+    );
     expect(docsLink.closest('[data-slot="dialog-footer"]')).not.toBeNull();
     expect(docsLink).not.toHaveClass('hover:bg-muted');
   });

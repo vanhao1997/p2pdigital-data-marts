@@ -1,5 +1,14 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { IsISO8601, IsNotEmpty, IsOptional, IsString, MaxLength } from 'class-validator';
+import type { Role } from '@owox/idp-protocol';
+import {
+  IsBoolean,
+  IsISO8601,
+  IsIn,
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+  MaxLength,
+} from 'class-validator';
 
 export class CreateProjectMemberApiKeyRequestDto {
   @ApiProperty({ description: 'User-facing name for the API key' })
@@ -12,6 +21,16 @@ export class CreateProjectMemberApiKeyRequestDto {
   @IsOptional()
   @IsISO8601()
   expiresAt?: string;
+
+  @ApiPropertyOptional({ enum: ['admin', 'editor', 'viewer'] })
+  @IsOptional()
+  @IsIn(['admin', 'editor', 'viewer'])
+  role?: Role;
+
+  @ApiPropertyOptional({ description: 'Restrict this key to read-only operations' })
+  @IsOptional()
+  @IsBoolean()
+  readOnly?: boolean;
 }
 
 export class UpdateProjectMemberApiKeyRequestDto {
@@ -37,6 +56,12 @@ export class ProjectMemberApiKeyResponseDto {
 
   @ApiProperty({ nullable: true })
   lastAuthenticatedAt: string | null;
+
+  @ApiProperty({ enum: ['admin', 'editor', 'viewer'], nullable: true })
+  role: Role | null;
+
+  @ApiProperty()
+  readOnly: boolean;
 }
 
 export class CreateProjectMemberApiKeyResponseDto extends ProjectMemberApiKeyResponseDto {

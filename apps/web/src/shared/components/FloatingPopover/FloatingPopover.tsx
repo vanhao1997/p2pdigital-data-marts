@@ -2,6 +2,7 @@
 import { X } from 'lucide-react';
 import { cn } from '@owox/ui/lib/utils';
 import { useTranslation } from 'react-i18next';
+import { useEffect } from 'react';
 
 export type FloatingPopoverPosition =
   | 'center'
@@ -16,6 +17,7 @@ interface FloatingPopoverProps {
   position?: FloatingPopoverPosition;
   children: React.ReactNode;
   onClose?: () => void;
+  'aria-label'?: string;
 }
 
 const positionClasses: Record<FloatingPopoverPosition, string> = {
@@ -31,17 +33,34 @@ export function FloatingPopover({
   height = 500,
   position = 'center',
   children,
+  onClose,
+  'aria-label': ariaLabel,
 }: FloatingPopoverProps) {
+  useEffect(() => {
+    if (!onClose) return;
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') onClose();
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [onClose]);
+
   return (
     <div
       className={cn(
-        'fixed z-[999] rounded-2xl border bg-white dark:bg-neutral-900',
+        'fixed z-[999] rounded-t-2xl border bg-white md:rounded-2xl dark:bg-neutral-900',
         'border-neutral-200 dark:border-neutral-800',
         'hover:shadow-3xl transform shadow-2xl transition-all duration-200 ease-out',
-        'max-w-[calc(100vw-2rem)]',
+        'max-h-[calc(100dvh-2rem)] max-w-[calc(100vw-2rem)]',
         positionClasses[position]
       )}
-      style={{ width, height }}
+      role='dialog'
+      aria-modal='true'
+      aria-label={ariaLabel}
+      style={{
+        width: `min(${width}px, calc(100vw - 2rem))`,
+        height: `min(${height}px, calc(100dvh - 2rem))`,
+      }}
       data-slot='floating-popover'
     >
       <div className='flex h-full flex-col'>{children}</div>

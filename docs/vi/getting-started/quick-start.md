@@ -3,15 +3,14 @@ title: Bắt đầu nhanh
 description: Các bước đầu tiên để sử dụng P2PDigital Data Marts trên cloud hoặc môi trường tự quản lý.
 ---
 
-# Bắt đầu nhanh
-
 ## Sử dụng bản cloud
 
 1. Mở [P2PDigital Data Marts](https://digitalreport.p2pdigital.io.vn).
 2. Đăng nhập và chọn dự án.
-3. Tạo **Kho lưu trữ** để kết nối BigQuery, Snowflake, Databricks hoặc nền tảng được hỗ trợ.
-4. Tạo Data Mart từ connector, SQL, bảng, khung nhìn hoặc mẫu bảng.
-5. Xuất bản Data Mart, tạo Điểm đến và cấu hình Báo cáo.
+3. Tạo **Kho lưu trữ** để kết nối BigQuery, Snowflake, Databricks hoặc nền tảng được hỗ trợ. Kiểm tra kết nối trước khi lưu.
+4. Tạo Data Mart từ connector, SQL, bảng, khung nhìn hoặc mẫu bảng; kiểm tra schema và mô tả trước khi xuất bản.
+5. Tạo hoặc xác thực **Điểm đến**, sau đó thêm Báo cáo cho Data Mart đã xuất bản.
+6. Chạy thử Báo cáo và kiểm tra dữ liệu tại Điểm đến. Nếu cần, cấu hình trigger và múi giờ trong [Tạo Báo cáo và lịch chạy](setup-guide/report-and-schedule.md).
 
 ## Tự triển khai
 

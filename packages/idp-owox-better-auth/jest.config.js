@@ -16,7 +16,9 @@ export default {
   },
   testEnvironment: 'node',
   collectCoverageFrom: ['src/**/*.ts', '!src/**/*.d.ts', '!src/**/index.ts'],
-  testMatch: ['<rootDir>/src/**/*.test.ts'],
+  // Use a root-relative glob. Embedding `<rootDir>` produces mixed Windows
+  // separators (`C:/...\\src/...`) which Jest does not match on Windows.
+  testMatch: ['**/*.test.ts'],
   moduleFileExtensions: ['ts', 'js', 'json'],
   roots: ['<rootDir>/src'],
   setupFiles: ['<rootDir>/jest.setup.ts'],

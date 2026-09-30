@@ -44,7 +44,11 @@ export function SetupGroupPopover({ groupProgress, progress }: SetupGroupPopover
           />
         </div>
       </PopoverTrigger>
-      <PopoverContent side='right' align='start' className='w-96'>
+      <PopoverContent
+        side='right'
+        align='start'
+        className='max-h-[min(80vh,42rem)] w-[min(24rem,calc(100vw-2rem))] overflow-y-auto'
+      >
         <div className='flex flex-col gap-4'>
           <div className='flex flex-col gap-0.5'>
             <div className='flex items-center justify-between gap-2'>

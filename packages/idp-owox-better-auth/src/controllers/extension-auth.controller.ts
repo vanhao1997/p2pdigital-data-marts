@@ -119,9 +119,9 @@ export class ExtensionAuthController {
     );
 
     if (error instanceof IdentityApiException) {
-      const body = error.context?.body as Record<string, unknown> | undefined;
-      if (body) {
-        res.status(status).json(body);
+      const upstreamCode = error.context?.upstreamCode;
+      if (typeof upstreamCode === 'string') {
+        res.status(status).json({ status: upstreamCode });
         return;
       }
     }

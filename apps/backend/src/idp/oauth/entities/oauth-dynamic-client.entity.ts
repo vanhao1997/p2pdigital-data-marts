@@ -31,4 +31,8 @@ export class OAuthDynamicClient {
 
   @Column({ type: 'datetime', nullable: true })
   lastUsedAt?: Date | null;
+
+  /** Dynamic registrations are short-lived until the client proves it is used. */
+  @Column({ type: 'datetime', nullable: true })
+  expiresAt?: Date | null;
 }

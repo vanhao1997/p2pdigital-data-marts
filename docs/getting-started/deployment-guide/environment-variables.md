@@ -27,6 +27,18 @@ Depending on the selected database type for the backend (`DB_TYPE`) and identity
 
 The complete list of all available environment variables is located in the [.env.example](https://github.com/vanhao1997/p2pdigital-data-marts/blob/main/.env.example) file in the project root directory.
 
+### SQL parameter logging
+
+`TYPEORM_LOG_QUERY_PARAMETERS=false` is the secure default. Query parameters can contain credentials
+and customer data, so production always suppresses them. For a local development session only, set
+`NODE_ENV=development` and `TYPEORM_LOG_QUERY_PARAMETERS=true`; the application ignores the flag in
+other environments. The same redaction policy applies to the plugin collections data source.
+
+`API_KEY_EXCHANGE_HMAC_SECRET` is the preferred deployment secret for API-key exchange rate-limit
+buckets. It is used only as an HMAC key; raw IP addresses, API-key ids and API-key secrets are never
+stored. Existing deployments may fall back to `IDP_BETTER_AUTH_SECRET`, but new deployments should
+provision the dedicated secret through the secret store.
+
 ### Admicro Ads extractor
 
 Set `ADMICRO_EXTRACTOR_ENABLED=true` and point `ADMICRO_EXTRACTOR_URL` at the private
@@ -203,6 +215,12 @@ owox serve --env-file custom.env --port 3030
   - Loopback HTTP redirects for desktop/CLI clients are always allowed.
   - Example for Claude web: `https://claude.ai`
   - Default: empty.
+
+- **MCP_DYNAMIC_CLIENT_REGISTRATION_ENABLED**: Enables the public MCP OAuth dynamic
+  client registration endpoint. Defaults to `false`; enable it explicitly only when
+  the deployment needs dynamic registration. Registrations are limited per source,
+  resource and redirect origin (10 attempts per five minutes) and receive a 24-hour
+  expiry; stale records are pruned opportunistically during registration.
 
 - **MCP_CLIENT_METADATA_DOCUMENT_ENABLED**: Enables OAuth Client ID Metadata
   Documents (CIMD) for MCP clients whose `client_id` is an HTTPS metadata URL.

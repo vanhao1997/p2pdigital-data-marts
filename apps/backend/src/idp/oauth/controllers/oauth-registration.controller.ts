@@ -24,7 +24,14 @@ export class OAuthRegistrationController {
       throw new BadRequestException('dynamic client registration requires an MCP resource host');
     }
 
-    return this.dynamicClientService.register(body, resource);
+    const sourceKey = this.getRequestIp(request);
+    return this.dynamicClientService.register(body, resource, sourceKey);
+  }
+
+  private getRequestIp(request: Request): string {
+    const forwarded = request.headers['x-forwarded-for'];
+    const firstForwarded = Array.isArray(forwarded) ? forwarded[0] : forwarded?.split(',')[0];
+    return (request.ip ?? request.socket?.remoteAddress ?? firstForwarded ?? 'unknown').trim();
   }
 
   private getSharedResourceForAuthorizationServer(request: Request): string | null {

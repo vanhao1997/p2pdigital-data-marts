@@ -20,7 +20,7 @@ export class IntercomController {
 
   // Not @ViewOnlySafe: view-only sessions must not get an Intercom JWT, so the
   // widget can never boot for them (see IntercomChat on the client).
-  @Auth(Role.viewer(Strategy.PARSE))
+  @Auth(Role.viewer(Strategy.INTROSPECT))
   @Post('jwt')
   @HttpCode(HttpStatus.OK)
   @IssueIntercomJwtSpec()

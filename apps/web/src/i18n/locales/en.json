@@ -104,6 +104,18 @@
     "onlineChat": "Online Chat",
     "triggerSubtitle": "Chat, Docs, Videos"
   },
+  "contentPopovers": {
+    "dialogLabel": "Help video",
+    "sqlToSheets": "SQL to Google Sheets in Minutes",
+    "dataStudioSetup": "Data Studio Setup",
+    "gettingStarted": "Getting Started with Data Marts",
+    "bigQuerySetup": "Complete BigQuery storage setup to publish Data Marts",
+    "insightsVideo": "Insights: how to get automated reports from questions",
+    "emailReports": "Email reports: how to send reports by email",
+    "videoLoading": "Loading video…",
+    "videoError": "The video could not be loaded.",
+    "videoRetry": "Retry"
+  },
   "setupChecklist": {
     "createStorage": "Create storage",
     "createStorageDesc": "Storage is a connection to your data warehouse (BigQuery, Snowflake, etc.). It is required to create and run Data Marts.",
@@ -2894,6 +2906,14 @@
     "archive": "Archive",
     "rename": "Rename",
     "open": "Open",
+    "creating": "Creating...",
+    "saving": "Saving...",
+    "loading": "Loading...",
+    "created": "Project created",
+    "renamed": "Project renamed",
+    "archived": "Project archived",
+    "unarchived": "Project restored",
+    "updateFailed": "Unable to update project",
     "createFailed": "Unable to create project",
     "renameFailed": "Unable to rename project",
     "selectFailed": "Unable to select project",
@@ -3497,6 +3517,9 @@
     "descriptionPlaceholder": "Description (optional)",
     "save": "Save variable",
     "saveFailed": "Could not save variable",
+    "deleteTitle": "Delete variable?",
+    "deleteDescription": "Delete {{name}}? This action cannot be undone.",
+    "deleteFailed": "Could not delete variable",
     "empty": "No variables saved for this project."
   },
   "notFoundPage": {

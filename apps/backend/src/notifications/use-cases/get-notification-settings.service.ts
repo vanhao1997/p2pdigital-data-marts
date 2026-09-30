@@ -17,7 +17,7 @@ export class GetNotificationSettingsService {
   ) {}
 
   async run(command: GetNotificationSettingsCommand): Promise<NotificationSettingsResponseApiDto> {
-    this.tenantGuard.assertProject(command.projectId);
+    this.tenantGuard.assertHttpProject(command.projectId);
     const allMembers = await this.idpProjectionsFacade.getProjectMembers(command.projectId);
     const activeMembers = allMembers.filter(m => !m.isOutbound);
 

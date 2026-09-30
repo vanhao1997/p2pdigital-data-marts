@@ -117,7 +117,7 @@ export class AiHelperTriggerController extends UiTriggerController<AiHelperUiRes
   }
 
   @CancelAiHelperTriggerSpec()
-  @Auth(Role.viewer(Strategy.PARSE))
+  @Auth(Role.viewer(Strategy.INTROSPECT))
   @Delete('/:triggerId')
   public override async abortTriggerRun(
     @Param('triggerId') triggerId: string,

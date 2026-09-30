@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { ForbiddenException, Injectable } from '@nestjs/common';
 import {
   CreateProjectMemberApiKeyResponseDto,
   ProjectMemberApiKeyResponseDto,
@@ -31,9 +31,33 @@ export class ProjectMemberApiKeysMapper {
       context.projectId,
       context.userId,
       dto.name,
-      null,
-      dto.expiresAt
+      this.resolveRole(context, dto.role),
+      dto.expiresAt,
+      Boolean(context.viewOnly || dto.readOnly)
     );
+  }
+
+  private resolveRole(
+    context: AuthorizationContext,
+    requestedRole?: CreateProjectMemberApiKeyRequestDto['role']
+  ): CreateProjectMemberApiKeyCommand['role'] {
+    const currentRole = (context.roles ?? []).reduce<CreateProjectMemberApiKeyCommand['role']>(
+      (highest, role) => {
+        if (!highest) return role;
+        return this.roleRank(role) > this.roleRank(highest) ? role : highest;
+      },
+      null
+    );
+
+    if (!requestedRole) return currentRole;
+    if (!currentRole || this.roleRank(requestedRole) > this.roleRank(currentRole)) {
+      throw new ForbiddenException('API key role cannot exceed the requester role');
+    }
+    return requestedRole;
+  }
+
+  private roleRank(role: NonNullable<CreateProjectMemberApiKeyCommand['role']>): number {
+    return role === 'admin' ? 3 : role === 'editor' ? 2 : 1;
   }
 
   toUpdateCommand(
@@ -63,6 +87,8 @@ export class ProjectMemberApiKeysMapper {
       expiresAt: data.expiresAt?.toISOString() ?? null,
       createdAt: data.createdAt.toISOString(),
       lastAuthenticatedAt: data.lastAuthenticatedAt?.toISOString() ?? null,
+      role: data.role,
+      readOnly: data.readOnly,
     };
   }
 

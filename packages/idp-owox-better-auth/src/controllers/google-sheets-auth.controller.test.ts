@@ -121,19 +121,14 @@ describe('GoogleSheetsExtensionAuthController', () => {
       const res = createMockResponse();
       tokenFacade.exchangeGoogleIdToken.mockRejectedValue(
         new IdentityApiException('IDP error', {
-          context: {
-            body: { status: 'UnknownUser', params: { googleAccountId: '118327446763797398368' } },
-          },
+          context: { upstreamCode: 'UnknownUser' },
         })
       );
 
       await controller.authenticate(req, res);
 
       expect(res.status).toHaveBeenCalledWith(400);
-      expect(res.json).toHaveBeenCalledWith({
-        status: 'UnknownUser',
-        params: { googleAccountId: '118327446763797398368' },
-      });
+      expect(res.json).toHaveBeenCalledWith({ status: 'UnknownUser' });
     });
 
     it('maps UnknownProject IDP error to stable error response', async () => {
@@ -141,17 +136,14 @@ describe('GoogleSheetsExtensionAuthController', () => {
       const res = createMockResponse();
       tokenFacade.exchangeGoogleIdToken.mockRejectedValue(
         new IdentityApiException('IDP error', {
-          context: { body: { status: 'UnknownProject', params: { projectName: 'My Project' } } },
+          context: { upstreamCode: 'UnknownProject' },
         })
       );
 
       await controller.authenticate(req, res);
 
       expect(res.status).toHaveBeenCalledWith(400);
-      expect(res.json).toHaveBeenCalledWith({
-        status: 'UnknownProject',
-        params: { projectName: 'My Project' },
-      });
+      expect(res.json).toHaveBeenCalledWith({ status: 'UnknownProject' });
     });
 
     it('maps AuthenticationException with description to stable error response', async () => {
@@ -215,13 +207,13 @@ describe('GoogleSheetsExtensionAuthController', () => {
         const req = { body: { google_id_token: 'test' } } as Request;
         const res = createMockResponse();
         tokenFacade.exchangeGoogleIdToken.mockRejectedValue(
-          new IdentityApiException('IDP error', { context: { body: rawBody } })
+          new IdentityApiException('IDP error', { context: { upstreamCode: rawBody.status } })
         );
 
         await controller.authenticate(req, res);
 
         expect(res.status).toHaveBeenCalledWith(400);
-        expect(res.json).toHaveBeenCalledWith(rawBody);
+        expect(res.json).toHaveBeenCalledWith({ status: rawBody.status });
       }
     });
   });

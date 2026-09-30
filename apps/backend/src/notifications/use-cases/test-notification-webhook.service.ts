@@ -13,7 +13,7 @@ export class TestNotificationWebhookService {
   ) {}
 
   async run(command: TestNotificationWebhookCommand): Promise<void> {
-    this.tenantGuard.assertProject(command.projectId);
+    this.tenantGuard.assertHttpProject(command.projectId);
     const resolvedUrl =
       command.webhookUrl ??
       (

@@ -154,9 +154,9 @@ export interface IdpProvider {
   /**
    * Issue an ODM access token after the backend has validated a project member API key.
    *
-   * `role` and `readOnly` are compatibility parameters and are not used by the
-   * current exchange flow. Providers should issue tokens from the current
-   * project membership, not from API-key metadata.
+   * `role` and `readOnly` are the effective authority captured when the key was
+   * created. Providers must preserve these restrictions in the issued token;
+   * the exchange endpoint must never broaden them.
    */
   issueAccessTokenForProjectMemberApiKey(
     apiKeyId: string,

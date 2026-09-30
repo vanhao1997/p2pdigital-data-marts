@@ -20,6 +20,7 @@ import {
   REPORT_RUN_KINDS,
   RunKind,
   SheetsReportDetails,
+  buildConsumptionDedupeKey,
 } from './project-billing.service';
 
 const TOPIC_ENV_BY_RUN_KIND: Record<Exclude<RunKind, RunKind.EMAIL_BASED_REPORT_RUN>, string> = {
@@ -266,6 +267,7 @@ export class InternalProjectBillingService extends ProjectBillingService {
     destinationType?: DataDestinationType,
     throwOnFailure = false
   ): Promise<void> {
+    const event = { ...command, dedupeKey: buildConsumptionDedupeKey(kind, command) };
     try {
       const topic = this.resolveTopic(kind, destinationType);
       if (!this.pubSubService || !topic) {
@@ -277,21 +279,47 @@ export class InternalProjectBillingService extends ProjectBillingService {
         return;
       }
 
-      const messageId = await this.pubSubService.publishMessageWithDefaultWrap(topic, command);
+      const messageId = await this.pubSubService.publishMessageWithDefaultWrap(topic, event);
       this.logger.log(
-        `Sent consumption command to PubSub. Message: ${messageId}. Topic: ${topic}. CMD: ${JSON.stringify(command)}`
+        `Sent consumption command to PubSub. Message: ${messageId}. Topic: ${topic}. CMD: ${JSON.stringify(this.safeCommandSummary(kind, event))}`
       );
     } catch (error) {
       this.logger.error(
         `Failed to send ${kind} consumption command to PubSub: ${
           error instanceof Error ? error.message : String(error)
-        }. CMD: ${JSON.stringify(command)}`,
+        }. CMD: ${JSON.stringify(this.safeCommandSummary(kind, event))}`,
         error instanceof Error ? error.stack : undefined
       );
       if (throwOnFailure) {
         throw error;
       }
     }
+  }
+
+  private safeCommandSummary(
+    kind: RunKind,
+    command: Record<string, unknown>
+  ): Record<string, unknown> {
+    const safeKeys = [
+      'projectId',
+      'dataMartId',
+      'dataStorageId',
+      'dataStorageType',
+      'dataDestinationId',
+      'dataDestinationType',
+      'reportId',
+      'reportRunId',
+      'runId',
+      'runTime',
+      'selfManagedProjectId',
+      'selfManagedLicenseKeyId',
+      'dedupeKey',
+      'selfManagedOrigin',
+    ];
+    return {
+      kind,
+      ...Object.fromEntries(safeKeys.filter(key => key in command).map(key => [key, command[key]])),
+    };
   }
 
   private resolveTopic(kind: RunKind, destinationType?: DataDestinationType): string | undefined {
@@ -320,8 +348,10 @@ export class InternalProjectBillingService extends ProjectBillingService {
     });
 
     if (!response.ok) {
-      const errorBody = await response.text();
-      const errorMessage = `Balance API request failed with status ${response.status}. Response: ${errorBody}`;
+      // Do not serialize the upstream body: balance services may return
+      // customer or credential-bearing diagnostics. The status is enough for
+      // retry/alert classification and keeps logs safe by default.
+      const errorMessage = `Balance API request failed with status ${response.status}`;
       this.logger.error(errorMessage);
       throw new Error(errorMessage);
     }

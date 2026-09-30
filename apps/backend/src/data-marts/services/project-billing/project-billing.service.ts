@@ -1,4 +1,5 @@
 import { ConsumptionContext } from '../../ai-insights/data-mart-insights.types';
+import { createHash } from 'node:crypto';
 import { GoogleSheetsConfig } from '../../data-destination-types/google-sheets/schemas/google-sheets-config.schema';
 import { ProjectBalanceDto } from '../../dto/domain/project-balance.dto';
 import { DataMart } from '../../entities/data-mart.entity';
@@ -28,6 +29,29 @@ export const REPORT_RUN_KINDS: readonly RunKind[] = [
 
 export function isReportRun(kind: RunKind): boolean {
   return REPORT_RUN_KINDS.includes(kind);
+}
+
+/**
+ * Produces the idempotency key shared by self-managed forwarding and Cloud
+ * Pub/Sub. Runtime timestamps are intentionally excluded so a retry of the
+ * same logical run is deduplicated even when it is rebuilt later.
+ */
+export function buildConsumptionDedupeKey(kind: RunKind, payload: Record<string, unknown>): string {
+  const identity = {
+    kind,
+    projectId: payload.projectId ?? null,
+    dataMartId: payload.dataMartId ?? null,
+    dataStorageId: payload.dataStorageId ?? null,
+    dataDestinationId: payload.dataDestinationId ?? null,
+    reportId: payload.reportId ?? null,
+    reportRunId: payload.reportRunId ?? null,
+    runId: payload.runId ?? null,
+    processRunId: payload.processRunId ?? null,
+    contextId: payload.contextId ?? null,
+    selfManagedProjectId: payload.selfManagedProjectId ?? null,
+    selfManagedLicenseKeyId: payload.selfManagedLicenseKeyId ?? null,
+  };
+  return createHash('sha256').update(JSON.stringify(identity)).digest('hex');
 }
 
 export interface SheetsReportDetails {
@@ -85,9 +109,7 @@ export abstract class ProjectBillingService {
     return {
       projectId: dataMart.projectId,
       dataMartId: dataMart.id,
-      dataMartTitle: dataMart.title,
       dataStorageId: dataMart.storage.id,
-      dataStorageTitle: dataMart.storage.title,
       dataStorageType: dataMart.storage.type,
       runTime: new Date().toISOString(),
     };
@@ -97,22 +119,18 @@ export abstract class ProjectBillingService {
     return {
       ...this.baseDataMartConsumptionPayload(report.dataMart),
       dataDestinationId: report.dataDestination.id,
-      dataDestinationTitle: report.dataDestination.title,
       dataDestinationType: report.dataDestination.type,
       reportId: report.id,
-      reportTitle: report.title,
       reportRunId: `${report.id}-${Date.now()}`,
     };
   }
 
-  protected sheetsReportConsumptionPayload(report: Report, sheetsDetails: SheetsReportDetails) {
+  protected sheetsReportConsumptionPayload(report: Report, _sheetsDetails: SheetsReportDetails) {
     const reportConfig = report.destinationConfig as GoogleSheetsConfig;
     return {
       ...this.baseReportConsumptionPayload(report),
       googleSheetsDocumentId: reportConfig.spreadsheetId,
-      googleSheetsDocumentTitle: sheetsDetails.googleSheetsDocumentTitle,
       googleSheetsListId: reportConfig.sheetId,
-      googleSheetsListTitle: sheetsDetails.googleSheetsListTitle,
     };
   }
 

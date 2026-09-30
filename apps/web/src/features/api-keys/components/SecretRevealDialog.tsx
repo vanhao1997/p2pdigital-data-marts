@@ -1,8 +1,8 @@
 import { SecretRevealDialog as RevealDialog } from '../../../shared/components/SecretRevealDialog/SecretRevealDialog';
 import type { CreateProjectMemberApiKeyResponse } from '../types';
 import { useTranslation } from 'react-i18next';
-
-const API_KEYS_DOCS_URL = 'https://docs.p2pdigital.io.vn/docs/api/api-keys/';
+import i18n from '../../../i18n';
+import { buildDocsUrl, resolveDocsLocale } from '../../../shared/utils/docs-links';
 
 interface SecretRevealDialogProps {
   data: CreateProjectMemberApiKeyResponse | null;
@@ -22,7 +22,10 @@ export function SecretRevealDialog({ data, onDone }: SecretRevealDialogProps) {
       secret={data.apiKey}
       notice={t('apiKeysPage.reveal.notice')}
       confirmLabel={t('apiKeysPage.reveal.confirm')}
-      docsLink={{ href: API_KEYS_DOCS_URL, label: t('apiKeysPage.reveal.docs') }}
+      docsLink={{
+        href: buildDocsUrl('api/api-keys', resolveDocsLocale(i18n.language), 'api_key_reveal'),
+        label: t('apiKeysPage.reveal.docs'),
+      }}
       onDone={onDone}
     />
   );

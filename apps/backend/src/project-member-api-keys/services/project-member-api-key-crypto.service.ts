@@ -31,8 +31,21 @@ const CURRENT_HASH_PARAMS: ProjectMemberApiKeyHashParams = {
   parallelization: 1,
 };
 
+const MAX_CONCURRENT_SCRYPT = 4;
+const MAX_QUEUED_SCRYPT = 32;
+
+export class ApiKeyKdfCapacityError extends Error {
+  constructor() {
+    super('API-key verification capacity is temporarily unavailable');
+    this.name = 'ApiKeyKdfCapacityError';
+  }
+}
+
 @Injectable()
 export class ProjectMemberApiKeyCryptoService {
+  private activeScryptOperations = 0;
+  private readonly scryptWaiters: Array<() => void> = [];
+
   generateApiKeyId(): string {
     return `pmk_${randomBytes(16).toString('base64url')}`;
   }
@@ -99,25 +112,67 @@ export class ProjectMemberApiKeyCryptoService {
   ): Promise<Buffer> {
     const canonicalMaterial = `owox_pmkey:${apiKeyId}:${apiKeySecret}`;
 
-    return new Promise((resolve, reject) => {
-      scrypt(
-        canonicalMaterial,
-        keyHashSalt,
-        params.keyLength,
-        {
-          N: params.cost,
-          r: params.blockSize,
-          p: params.parallelization,
-        },
-        (error, derivedKey) => {
-          if (error) {
-            reject(error);
-            return;
-          }
-          resolve(derivedKey);
-        }
+    return this.withScryptSlot(
+      async () =>
+        new Promise<Buffer>((resolve, reject) => {
+          scrypt(
+            canonicalMaterial,
+            keyHashSalt,
+            params.keyLength,
+            {
+              N: params.cost,
+              r: params.blockSize,
+              p: params.parallelization,
+            },
+            (error, derivedKey) => {
+              if (error) {
+                reject(error);
+                return;
+              }
+              resolve(derivedKey);
+            }
+          );
+        })
+    );
+  }
+
+  private async withScryptSlot<T>(operation: () => Promise<T>): Promise<T> {
+    const release = await this.acquireScryptSlot();
+    try {
+      return await operation();
+    } finally {
+      release();
+    }
+  }
+
+  private async acquireScryptSlot(): Promise<() => void> {
+    if (this.activeScryptOperations >= MAX_CONCURRENT_SCRYPT) {
+      if (this.scryptWaiters.length >= MAX_QUEUED_SCRYPT) {
+        throw new ApiKeyKdfCapacityError();
+      }
+      await new Promise<void>(resolve =>
+        this.scryptWaiters.push(() => {
+          // The releasing operation hands its slot to this waiter. Count the
+          // transferred slot before the waiter starts so active capacity does
+          // not slowly shrink after queued work drains.
+          this.activeScryptOperations += 1;
+          resolve();
+        })
       );
-    });
+    } else {
+      this.activeScryptOperations += 1;
+    }
+
+    let released = false;
+    return () => {
+      if (released) return;
+      released = true;
+      this.activeScryptOperations -= 1;
+      const next = this.scryptWaiters.shift();
+      if (next) {
+        next();
+      }
+    };
   }
 
   private parseHashParams(

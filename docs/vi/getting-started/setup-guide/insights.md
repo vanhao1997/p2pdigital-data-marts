@@ -3,8 +3,6 @@ title: Hướng dẫn Phân tích chuyên sâu
 description: Tạo phân tích chuyên sâu từ dữ liệu Data Mart đã được quản trị.
 ---
 
-# Hướng dẫn Phân tích chuyên sâu
-
 1. Chọn Data Mart đã xuất bản và có dữ liệu cập nhật.
 2. Mở tab **Phân tích chuyên sâu**.
 3. Chọn mẫu hoặc tạo phân tích mới.

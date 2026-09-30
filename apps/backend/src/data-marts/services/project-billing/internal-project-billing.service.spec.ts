@@ -193,9 +193,7 @@ describe('InternalProjectBillingService', () => {
         expect.objectContaining({
           projectId: 'proj-1',
           dataMartId: 'dm-1',
-          dataMartTitle: 'My DM',
           dataStorageId: 'storage-1',
-          dataStorageTitle: 'BQ',
           dataStorageType: 'GOOGLE_BIGQUERY',
           reportRunId: 'run-1',
         })
@@ -298,13 +296,10 @@ describe('InternalProjectBillingService', () => {
         'sheets-topic',
         expect.objectContaining({
           reportId: 'report-1',
-          reportTitle: 'My Report',
           dataDestinationId: 'dest-1',
           dataDestinationType: DataDestinationType.GOOGLE_SHEETS,
           googleSheetsDocumentId: 'spreadsheet-1',
-          googleSheetsDocumentTitle: 'Test Spreadsheet',
           googleSheetsListId: 'sheet-1',
-          googleSheetsListTitle: 'Sheet1',
         })
       );
     });

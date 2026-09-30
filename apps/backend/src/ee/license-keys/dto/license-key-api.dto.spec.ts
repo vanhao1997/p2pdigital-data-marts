@@ -17,6 +17,7 @@ describe('LicenseConsumptionRequestDto', () => {
     dataStorageId: 'storage-1',
     dataStorageType: DataStorageType.GOOGLE_BIGQUERY,
     runTime: '2026-08-12T12:00:00.000Z',
+    dedupeKey: 'a'.repeat(64),
   };
   const payloadByKind: Record<RunKind, Record<string, unknown>> = {
     [RunKind.SHEETS_REPORT_RUN]: {
@@ -65,12 +66,12 @@ describe('LicenseConsumptionRequestDto', () => {
     });
   });
 
-  it('keeps additive fields for rolling deployment compatibility', async () => {
+  it('rejects unknown fields instead of forwarding arbitrary payload data', async () => {
     const payload = { ...payloadByKind[RunKind.MCP_QUERY_RUN], futureField: 'future-value' };
 
     await expect(
       pipe.transform({ kind: RunKind.MCP_QUERY_RUN, payload }, metadata)
-    ).resolves.toMatchObject({ payload });
+    ).rejects.toThrow();
   });
 
   it('rejects a payload without the kind-specific run id', async () => {

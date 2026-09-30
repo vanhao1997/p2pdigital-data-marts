@@ -2,6 +2,8 @@ import type { HelpMenuItem } from './types';
 import { Info, Clapperboard, MessagesSquare, Rocket, Airplay, ListTodo } from 'lucide-react';
 import { openIntercom } from '../../../app/intercom/intercomUtils';
 import type { TFunction } from 'i18next';
+import i18n from '../../../i18n';
+import { buildDocsUrl, resolveDocsLocale } from '../../../shared/utils/docs-links';
 
 export function helpMenuItems(
   openPopover: (id: string) => void,
@@ -13,7 +15,7 @@ export function helpMenuItems(
       type: 'menu-item',
       title: t('helpMenu.whatsNew'),
       icon: Rocket,
-      href: 'https://docs.p2pdigital.io.vn/docs/changelog/?utm_source=community_edition&utm_medium=organic&utm_campaign=support_menu_dropdown&utm_content=whats_new',
+      href: buildDocsUrl('changelog', 'en', 'support_menu_dropdown'),
       visible: true,
     },
     { type: 'separator' },
@@ -29,14 +31,14 @@ export function helpMenuItems(
     {
       type: 'menu-item',
       title: t('helpMenu.documentation'),
-      href: 'https://docs.p2pdigital.io.vn/?utm_source=community_edition&utm_medium=organic&utm_campaign=support_menu_dropdown&utm_content=documentation',
+      href: buildDocsUrl('getting-started/quick-start', resolveDocsLocale(i18n.language)),
       icon: Info,
       visible: { flagKey: 'MENU_DOCUMENTATION_COMMUNITY_EDITION_VISIBLE', expectedValue: 'true' },
     },
     {
       type: 'menu-item',
       title: t('helpMenu.documentation'),
-      href: 'https://docs.p2pdigital.io.vn/?utm_source=app_p2pdigital_vn&utm_medium=organic&utm_campaign=support_menu_dropdown&utm_content=documentation',
+      href: buildDocsUrl('getting-started/quick-start', resolveDocsLocale(i18n.language)),
       icon: Info,
       visible: { flagKey: 'MENU_DOCUMENTATION_OWOX_CLOUD_VISIBLE', expectedValue: 'true' },
     },

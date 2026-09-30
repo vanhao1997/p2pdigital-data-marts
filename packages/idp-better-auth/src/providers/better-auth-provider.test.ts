@@ -692,13 +692,14 @@ describe('BetterAuthProvider', () => {
         email: 'user@example.com',
         fullName: 'User Name',
         roles: ['editor'],
+        viewOnly: false,
         authFlow: 'api_key',
         apiKeyId: 'pmk_AbCdEfGhIjKlMnOpQrStUv',
       });
       expect(result).toEqual({ accessToken: 'encrypted-api-key-access-token' });
     });
 
-    it('uses the current member role instead of a stored API-key role', async () => {
+    it('caps a stored API-key role to the requested lower authority', async () => {
       store.getUserById.mockResolvedValue({
         id: 'user-1',
         email: 'user@example.com',
@@ -724,7 +725,8 @@ describe('BetterAuthProvider', () => {
         expect.objectContaining({
           fullName: 'user@example.com',
           projectTitle: 'project-1',
-          roles: ['admin'],
+          roles: ['viewer'],
+          viewOnly: false,
           authFlow: 'api_key',
           apiKeyId: 'pmk_AbCdEfGhIjKlMnOpQrStUv',
         })

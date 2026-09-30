@@ -41,4 +41,22 @@ export class TenantGuardService {
       throw new ForbiddenException('Project mismatch');
     }
   }
+
+  /**
+   * Fail-closed variant for HTTP use-cases. Background jobs must use the
+   * intentionally permissive `assertProject` path and provide their own job
+   * scope; an HTTP request must never silently lose its tenant context.
+   */
+  assertHttpProject(projectId: string): void {
+    if (!this.cls.isActive()) {
+      throw new ForbiddenException('Tenant context is required');
+    }
+
+    const authContext = this.cls.get<CachedAuthContext>(AUTH_CONTEXT);
+    if (!authContext?.projectId) {
+      throw new ForbiddenException('Tenant context is required');
+    }
+
+    this.assertProject(projectId);
+  }
 }

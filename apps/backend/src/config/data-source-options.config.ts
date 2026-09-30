@@ -18,7 +18,11 @@ export class CustomDataSourceLogger implements Logger {
   constructor(
     private readonly logger: LoggerService,
     private readonly loggingOptions: LoggerOptions,
-    private readonly logQueryParameters = true
+    /**
+     * Query parameters can contain credentials and customer data. They must be
+     * opt-in for local debugging, never the production default.
+     */
+    private readonly logQueryParameters = false
   ) {
     this.logger = logger;
     this.loggingOptions = loggingOptions;
@@ -123,7 +127,9 @@ export function createDataSourceOptions(config: ConfigService): DataSourceOption
     migrations: [__dirname + '/../migrations/[0-9]*-*.{ts,js}'],
     logger: new CustomDataSourceLogger(
       createLogger('TypeORM'),
-      resolveLoggerOptions(config.get<string>('TYPEORM_LOGGING', 'error'))
+      resolveLoggerOptions(config.get<string>('TYPEORM_LOGGING', 'error')),
+      config.get<string>('NODE_ENV') === 'development' &&
+        config.get<string>('TYPEORM_LOG_QUERY_PARAMETERS') === 'true'
     ),
     synchronize: false,
   };

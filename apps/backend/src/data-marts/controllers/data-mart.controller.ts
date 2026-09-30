@@ -395,7 +395,7 @@ export class DataMartController {
     return this.mapper.toRunDetailResponse(runDto);
   }
 
-  @Auth(Role.viewer(Strategy.PARSE))
+  @Auth(Role.viewer(Strategy.INTROSPECT))
   @Post('data-last-updated/refresh')
   @HttpCode(200)
   @RefreshDataMartDataLastUpdatedSpec()

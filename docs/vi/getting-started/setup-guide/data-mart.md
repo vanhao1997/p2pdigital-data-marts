@@ -3,8 +3,6 @@ title: Hướng dẫn Data Mart
 description: Tạo, kiểm tra và xuất bản Data Mart trong P2PDigital.
 ---
 
-# Hướng dẫn Data Mart
-
 1. Mở **Dữ liệu → Data Mart**.
 2. Chọn **Tạo Data Mart mới**.
 3. Chọn loại định nghĩa: connector, SQL, bảng, khung nhìn hoặc mẫu bảng.

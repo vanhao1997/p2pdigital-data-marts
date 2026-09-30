@@ -1,7 +1,11 @@
 import { AuthenticationError, type IdpProvider } from '@owox/idp-protocol';
 import { IdpProviderService } from '../../idp/services/idp-provider.service';
 import { ProjectMemberApiKeyService } from '../services/project-member-api-key.service';
-import { ExchangeProjectMemberApiKeyService } from './exchange-project-member-api-key.service';
+import { ApiKeyExchangeRateLimiterService } from '../services/api-key-exchange-rate-limiter.service';
+import {
+  ApiKeyExchangeRateLimitError,
+  ExchangeProjectMemberApiKeyService,
+} from './exchange-project-member-api-key.service';
 
 describe('ExchangeProjectMemberApiKeyService', () => {
   const apiKeyId = 'pmk_AbCdEfGhIjKlMnOpQrStUv';
@@ -30,16 +34,28 @@ describe('ExchangeProjectMemberApiKeyService', () => {
       getProviderFromApp: jest.fn(() => idpProvider),
     } as unknown as jest.Mocked<IdpProviderService>;
 
+    const rateLimiter = {
+      createRateLimitKey: jest.fn(() => ({
+        ipHash: 'hashed-ip',
+        apiKeyIdHash: 'hashed-api-key-id',
+        bucketStart: new Date('2026-01-01T00:00:00.000Z'),
+      })),
+      check: jest.fn().mockResolvedValue({ allowed: true }),
+      recordFailure: jest.fn().mockResolvedValue(undefined),
+      resetKeyBucket: jest.fn().mockResolvedValue(undefined),
+    } as unknown as jest.Mocked<ApiKeyExchangeRateLimiterService>;
+
     const service = new ExchangeProjectMemberApiKeyService(
       projectMemberApiKeyService,
-      idpProviderService
+      idpProviderService,
+      rateLimiter
     );
 
-    return { service, projectMemberApiKeyService, idpProvider };
+    return { service, projectMemberApiKeyService, idpProvider, rateLimiter };
   };
 
   it('exchanges a valid API key for an ODM access token and updates lastAuthenticatedAt', async () => {
-    const { service, projectMemberApiKeyService, idpProvider } = createService();
+    const { service, projectMemberApiKeyService, idpProvider, rateLimiter } = createService();
     projectMemberApiKeyService.verifyCredential.mockResolvedValue(createVerifiedKey());
     idpProvider.issueAccessTokenForProjectMemberApiKey.mockResolvedValue({
       accessToken: 'regular-odm-access-token',
@@ -48,7 +64,7 @@ describe('ExchangeProjectMemberApiKeyService', () => {
       refreshTokenExpiresIn: 3600,
     });
 
-    const result = await service.run({ apiKeyId, apiKeySecret });
+    const result = await service.run({ apiKeyId, apiKeySecret, ipAddress: '192.0.2.1' });
 
     expect(projectMemberApiKeyService.verifyCredential).toHaveBeenCalledWith(
       apiKeyId,
@@ -65,13 +81,14 @@ describe('ExchangeProjectMemberApiKeyService', () => {
       apiKeyId,
       expect.any(Date)
     );
+    expect(rateLimiter.resetKeyBucket).toHaveBeenCalled();
     expect(result).toEqual({
       accessToken: 'regular-odm-access-token',
       accessTokenExpiresIn: 900,
     });
   });
 
-  it('does not bind a stored API-key role to the issued IDP token', async () => {
+  it('binds the stored API-key role and read-only restriction to the issued IDP token', async () => {
     const { service, projectMemberApiKeyService, idpProvider } = createService();
     projectMemberApiKeyService.verifyCredential.mockResolvedValue(
       createVerifiedKey({ role: 'viewer' })
@@ -80,24 +97,26 @@ describe('ExchangeProjectMemberApiKeyService', () => {
       accessToken: 'regular-odm-access-token',
     });
 
-    await service.run({ apiKeyId, apiKeySecret });
+    await service.run({ apiKeyId, apiKeySecret, ipAddress: '192.0.2.1' });
 
     expect(idpProvider.issueAccessTokenForProjectMemberApiKey).toHaveBeenCalledWith(
       apiKeyId,
       'user-1',
       'project-1',
-      null,
+      'viewer',
       false
     );
   });
 
   it('does not update lastAuthenticatedAt when the secret is invalid', async () => {
-    const { service, projectMemberApiKeyService } = createService();
+    const { service, projectMemberApiKeyService, rateLimiter } = createService();
     projectMemberApiKeyService.verifyCredential.mockResolvedValue(null);
 
-    await expect(service.run({ apiKeyId, apiKeySecret })).rejects.toBeInstanceOf(
-      AuthenticationError
-    );
+    await expect(
+      service.run({ apiKeyId, apiKeySecret, ipAddress: '192.0.2.1' })
+    ).rejects.toBeInstanceOf(AuthenticationError);
+
+    expect(rateLimiter.recordFailure).toHaveBeenCalled();
 
     expect(projectMemberApiKeyService.markAuthenticated).not.toHaveBeenCalled();
   });
@@ -106,11 +125,24 @@ describe('ExchangeProjectMemberApiKeyService', () => {
     const { service, projectMemberApiKeyService, idpProvider } = createService();
     projectMemberApiKeyService.verifyCredential.mockResolvedValue(null);
 
-    await expect(service.run({ apiKeyId, apiKeySecret })).rejects.toBeInstanceOf(
-      AuthenticationError
-    );
+    await expect(
+      service.run({ apiKeyId, apiKeySecret, ipAddress: '192.0.2.1' })
+    ).rejects.toBeInstanceOf(AuthenticationError);
 
     expect(idpProvider.issueAccessTokenForProjectMemberApiKey).not.toHaveBeenCalled();
     expect(projectMemberApiKeyService.markAuthenticated).not.toHaveBeenCalled();
+  });
+
+  it('rejects rate-limited requests before credential verification', async () => {
+    const { service, projectMemberApiKeyService, rateLimiter } = createService();
+    rateLimiter.check.mockResolvedValue({ allowed: false, retryAfterSeconds: 17 });
+
+    await expect(service.run({ apiKeyId, apiKeySecret, ipAddress: '192.0.2.1' })).rejects.toEqual(
+      expect.objectContaining({
+        constructor: ApiKeyExchangeRateLimitError,
+        retryAfterSeconds: 17,
+      })
+    );
+    expect(projectMemberApiKeyService.verifyCredential).not.toHaveBeenCalled();
   });
 });

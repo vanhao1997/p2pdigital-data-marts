@@ -247,7 +247,7 @@ export function ProjectSettingsPage() {
 
   return (
     <MembersSettingsProvider value={providerValue}>
-      <div className='min-w-[600px] px-12 py-6'>
+      <div className='min-w-0 px-4 py-6 sm:px-6 lg:px-8 xl:px-12'>
         <div className='mb-4 flex items-center gap-4'>
           <span className='text-2xl font-medium'>
             {t('projectSettingsPage.title', 'Project settings')}
@@ -257,7 +257,6 @@ export function ProjectSettingsPage() {
         <nav
           className='no-scrollbar -mb-px flex gap-2 overflow-x-auto border-b whitespace-nowrap'
           aria-label={t('projectSettingsPage.tabsLabel', 'Tabs')}
-          role='tablist'
         >
           {navigation.map(item => (
             <NavLink
@@ -266,7 +265,7 @@ export function ProjectSettingsPage() {
               end={item.end}
               className={({ isActive }) =>
                 cn(
-                  'border-b-2 px-4 py-4 text-sm font-medium whitespace-nowrap',
+                  'border-b-2 px-3 py-3 text-sm font-medium whitespace-nowrap sm:px-4 sm:py-4',
                   isActive
                     ? 'border-primary text-primary'
                     : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 dark:text-gray-400 dark:hover:border-gray-200 dark:hover:text-gray-200'

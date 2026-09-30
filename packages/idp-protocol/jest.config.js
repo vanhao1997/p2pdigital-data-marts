@@ -14,7 +14,9 @@ export default {
     ],
   },
   testEnvironment: 'node',
-  testMatch: ['<rootDir>/src/**/*.test.ts'],
+  // Use a root-relative glob. Embedding `<rootDir>` produces mixed Windows
+  // separators which Jest does not match on Windows.
+  testMatch: ['**/*.test.ts'],
   moduleFileExtensions: ['ts', 'js', 'json'],
   roots: ['<rootDir>/src'],
 };

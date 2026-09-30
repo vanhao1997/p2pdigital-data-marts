@@ -18,7 +18,7 @@ export class UpsertNotificationSettingService {
   async run(
     command: UpsertNotificationSettingCommand
   ): Promise<NotificationSettingsItemResponseApiDto> {
-    this.tenantGuard.assertProject(command.projectId);
+    this.tenantGuard.assertHttpProject(command.projectId);
     const settings = await this.settingsService.upsert(
       command.projectId,
       command.notificationType,

@@ -3,8 +3,6 @@ title: Hướng dẫn Kho lưu trữ
 description: Kết nối và quản lý Kho lưu trữ dữ liệu cho dự án P2PDigital.
 ---
 
-# Hướng dẫn Kho lưu trữ
-
 1. Mở **Dữ liệu → Kho lưu trữ**.
 2. Chọn nền tảng, ví dụ Google BigQuery, Snowflake, Databricks, AWS Athena hoặc AWS Redshift.
 3. Nhập thông tin kết nối và bí mật theo hướng dẫn của nền tảng.

@@ -3,8 +3,6 @@ title: Khái niệm cốt lõi
 description: Giải thích các thành phần chính của P2PDigital Data Marts bằng tiếng Việt.
 ---
 
-# Khái niệm cốt lõi
-
 ## Nguồn dữ liệu
 
 Dịch vụ cung cấp dữ liệu đầu vào, ví dụ Google Ads, Facebook Ads, TikTok Ads hoặc Google Sheets.
