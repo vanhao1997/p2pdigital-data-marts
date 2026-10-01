@@ -1,5 +1,17 @@
 # @owox/idp-protocol
 
+## 0.33.0
+
+### Minor Changes 0.33.0
+
+- 988e0b9: Chuẩn hóa MCP server theo protocol `2026-07-28`, giữ tương thích client legacy và
+  đặt tiếng Việt làm ngôn ngữ giao tiếp mặc định của MCP agent. OAuth MCP bổ sung
+  kiểm tra metadata client hiện đại trong khi vẫn hỗ trợ dynamic client registration.
+
+### Patch Changes 0.33.0
+
+- @owox/internal-helpers@0.33.0
+
 ## 0.32.0
 
 ### Patch Changes 0.32.0
