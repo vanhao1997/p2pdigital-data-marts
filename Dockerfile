@@ -18,7 +18,8 @@ LABEL org.opencontainers.image.source="https://github.com/vanhao1997/p2pdigital-
 # contains private workspace devDependencies that are not published to npm.
 RUN mkdir -p /tmp/mcp-runtime \
   && printf '{"private":true}\n' > /tmp/mcp-runtime/package.json \
-  && npm install --prefix /tmp/mcp-runtime --omit=dev --ignore-scripts --no-audit --no-fund --package-lock=false @modelcontextprotocol/server@2.0.0 \
+  && npm install --prefix /tmp/mcp-runtime --omit=dev --ignore-scripts --no-audit --no-fund --package-lock=false \
+    @modelcontextprotocol/core@2.0.0 @modelcontextprotocol/node@2.0.0 @modelcontextprotocol/server@2.0.0 \
   && cp -a /tmp/mcp-runtime/node_modules/. /usr/local/lib/node_modules/owox/node_modules/ \
   && rm -rf /tmp/mcp-runtime
 
