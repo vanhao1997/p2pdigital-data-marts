@@ -179,7 +179,7 @@ jobs:
       - name: Smoke main runtime healthcheck
         run: |
           set -euo pipefail
-          docker run --rm -d --name owox-runtime-smoke \
+          docker run -d --name owox-runtime-smoke \
             -p 127.0.0.1:3000:3000 \
             -e NODE_ENV=production \
             -e OWOX_TELEMETRY_DISABLED=1 \
@@ -188,7 +188,7 @@ jobs:
             -e IDP_PROVIDER=none \
             -e PUBLIC_ORIGIN=http://127.0.0.1:3000 \
             owox-runtime-smoke:${{ github.sha }}
-          trap 'docker logs owox-runtime-smoke || true; docker stop owox-runtime-smoke || true' EXIT
+          trap 'docker logs owox-runtime-smoke || true; docker rm -f owox-runtime-smoke || true' EXIT
           for attempt in {1..60}; do
             if curl --fail --silent http://127.0.0.1:3000/health/ready >/dev/null; then
               exit 0
@@ -200,12 +200,12 @@ jobs:
       - name: Smoke Admicro sidecar healthcheck
         run: |
           set -euo pipefail
-          docker run --rm -d --name admicro-extractor-smoke \
+          docker run -d --name admicro-extractor-smoke \
             -p 127.0.0.1:8091:8091 \
             -e ADMICRO_EXTRACTOR_ENABLED=true \
             -e ADMICRO_EXTRACTOR_SHARED_SECRET=smoke-secret \
             admicro-extractor-smoke:${{ github.sha }}
-          trap 'docker logs admicro-extractor-smoke || true; docker stop admicro-extractor-smoke || true' EXIT
+          trap 'docker logs admicro-extractor-smoke || true; docker rm -f admicro-extractor-smoke || true' EXIT
           for attempt in {1..30}; do
             if curl --fail --silent http://127.0.0.1:8091/healthz >/dev/null; then
               exit 0
