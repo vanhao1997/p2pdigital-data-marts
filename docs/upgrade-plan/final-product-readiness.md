@@ -1,4 +1,4 @@
-# Trạng thái hoàn thiện sản phẩm — 2026-10-01
+# Trạng thái hoàn thiện sản phẩm — 2026-10-02
 
 ## MVP đã thực hiện
 
@@ -56,6 +56,10 @@ Gate web đầy đủ của bản vá đã đạt:
 - Bản sửa Email đã đạt 22 unit tests trong hai file: 7 regression về vòng đời submit và 2 regression về callback đóng sheet giữ từ render cũ. Callback đọc state đã commit hiện tại, xóa đúng deep link sở hữu và giữ deep link của báo cáo khác.
 - Browser `RPT-03` đạt 3 lượt liên tiếp không retry: giữ assertion đóng sheet trong 15 giây, PUT thành công và GET xác nhận subject đã lưu. Không tăng thời gian đóng sheet để bỏ qua lỗi mở lại. Artifact nằm trong `output/playwright/release-email-deeplink-fixed-report.json`.
 - Web typecheck, ESLint/Prettier của các hook và Prettier của browser specs/tài liệu đều đạt. Nhãn owner và cache lifetime đã sửa theo UI hiện có, giữ assertion persistence.
+- [Browser CI 36891983825](https://github.com/vanhao1997/p2pdigital-data-marts/actions/runs/36891983825) trên SHA `b21d1b1610cddb48c1c75171fe3a62102667f9bc` đạt cả 4 shard và check tổng: **126 passed, 22 skipped, 0 failed**. Skip có sẵn gồm 20 visual baseline opt-in, 1 non-admin fixture chưa có và 1 report trigger cần license. Không thêm skip để xử lý lỗi browser.
+- [GHSA-c475-qrg2-pj4r](https://github.com/advisories/GHSA-c475-qrg2-pj4r) được công bố lúc `2026-10-01 14:42 UTC`, sau lượt runtime audit của `3cd598c`. Audit của `b21d1b1` phát hiện dependency `basic-ftp`; gate image chặn 1 advisory high trước publication. Bằng chứng 0 advisory của SHA cũ giữ nguyên thời điểm quan sát.
+- Bản vá scoped `get-uri → basic-ftp@6.2.1` giữ Databricks `1.17.0`, proxy-agent `6.5.0`, pac-proxy-agent `7.2.0` và get-uri `6.0.5`. Source audit sau bản vá đạt 0 vulnerabilities. Fixture FTP/PAC đạt 21/21; guard tổng hợp đạt 39/39, không fail/skip; lint và format đạt. CI/image audit trên SHA cuối còn cần xác nhận.
+- Fixture dùng dependency chain được resolve từ Databricks thực tế: Unix listing/parser, MLSD metadata, get-uri download/cache/error, EPSV→PASV cùng host và PAC proxy HTTP. FTP data host mặc định phải khớp control host; deployment dùng transfer host tách riêng cần compatibility review theo changeset.
 
 ## Cấu hình chuyển image
 
@@ -74,7 +78,7 @@ Backup nằm trên server tại `/data/owox-backups/2026-10-01-final/`; chỉ gh
 
 ## V1: acceptance còn cần hoàn tất
 
-1. Chạy lại CI đầy đủ và audit image trên SHA cuối sau bản sửa Email sheet. Bằng chứng của `3cd598c` không chứng nhận source sửa sau đó.
+1. Chạy lại CI đầy đủ và audit image trên SHA cuối sau bản vá dependency. Browser đã đạt trên `b21d1b1`; bản vá sau đó cần CI mới.
 2. Chạy staging/canary, readiness và rollback trước chuyển production. GHCR pull của `3cd598c` đã đạt.
 3. Xác nhận tài khoản trong Chrome bằng phiên đăng nhập mới. Người dùng nhập mật khẩu trực tiếp.
 4. Chạy acceptance Admicro với credential thật nhập trong UI: preview, extract, reconnect, retry và checkpoint theo ngày.
