@@ -186,6 +186,7 @@ jobs:
             -e DB_TYPE=sqlite \
             -e SQLITE_DB_PATH=/tmp/owox.sqlite \
             -e IDP_PROVIDER=none \
+            -e IDP_BETTER_AUTH_SECRET=smoke-only-api-key-hmac-secret \
             -e PUBLIC_ORIGIN=http://127.0.0.1:3000 \
             owox-runtime-smoke:${{ github.sha }}
           trap 'docker logs owox-runtime-smoke || true; docker rm -f owox-runtime-smoke || true' EXIT
