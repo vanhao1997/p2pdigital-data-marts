@@ -42,6 +42,7 @@ Gate web đầy đủ của bản vá đã đạt:
 - Sửa locator manual run theo nhãn `Manual run...`; `RUN-02` đã đạt với toàn ca 90 giây, giữ assertion run history 15 giây và response `201`.
 - Browser CI có 4 shard độc lập trên 4 runner với SQLite riêng, budget toàn ca 90 giây, timeout tổng test 45 phút và job 60 phút để upload diagnostics. Check tổng `Browser E2E Tests` chỉ đạt khi cả 4 shard đạt. Lần chạy local với budget cũ 20 phút: 61 pass, 14 fail, 73 chưa chạy. Các lỗi fixture/selector/focus đang được sửa và xác thực lại; chưa đánh dấu suite 148 tests đạt.
 - Guard staging và helper audit đã rerun chung: 38 checks đạt, không skip hoặc cancel. Web typecheck đạt. Browser fixture bật catalog Admicro bằng URL local và secret giả dành riêng cho test; không đổi environment contract của production.
+- Nhóm browser 45 cases: lần đầu 41 pass, 3 fail, 1 skip MR-04 có sẵn. Ba ca lỗi đã pass trong các rerun riêng: chip reference phải chấp nhận suggestion, filter chờ rows tải xong, GitHub wizard dùng text exact và giữ kiểm tra PUT/persistence sau reload. Đây là coverage ghép từ các lượt có artifact riêng; chưa thay thế full CI trên SHA cuối.
 - Đã boot candidate và image hiện tại từ hai bản sao app backup riêng trong network `none`, không mount database live: readiness `200`, integrity `ok`; candidate 85 bảng sau migration, image hiện tại 84 bảng. Auth restore giữ 7 bảng và integrity `ok`. Chưa kiểm tra fresh login bằng auth restore hoặc chuyển traffic rollback.
 
 ## Cấu hình chuyển image

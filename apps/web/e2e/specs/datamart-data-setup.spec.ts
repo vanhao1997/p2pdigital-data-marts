@@ -238,9 +238,11 @@ test.describe('Data Setup - Connector Definition', () => {
     // -----------------------------------------------------------------------
     // Step 3 of 5: Select Nodes -- click "Repository Information"
     // -----------------------------------------------------------------------
-    await expect(wizard.getByText('Repository Information')).toBeVisible({ timeout: 10000 });
+    await expect(wizard.getByText('Repository Information', { exact: true })).toBeVisible({
+      timeout: 10000,
+    });
     // The node is rendered as AppWizardStepCardItem with type='radio'
-    await wizard.getByText('Repository Information').click();
+    await wizard.getByText('Repository Information', { exact: true }).click();
     await expect(nextButton).toBeEnabled();
     await nextButton.click();
 
@@ -287,7 +289,9 @@ test.describe('Data Setup - Connector Definition', () => {
     // After saving, the Input Source section shows the connector configuration.
     // The ConnectorConfigurationItem renders the connector's internal name "GitHub".
     const dataSetupContent = page.getByTestId(TESTIDS.datamartTabDataSetup);
-    await expect(dataSetupContent.getByText('GitHub')).toBeVisible({ timeout: 10000 });
+    await expect(dataSetupContent.getByText('GitHub', { exact: true })).toBeVisible({
+      timeout: 10000,
+    });
 
     // -----------------------------------------------------------------------
     // DSET-07: Verify persistence after reload
@@ -297,7 +301,9 @@ test.describe('Data Setup - Connector Definition', () => {
 
     // After reload, the connector definition should still be displayed.
     // The definition type selector will NOT appear since definition exists.
-    await expect(dataSetupContent.getByText('GitHub')).toBeVisible({ timeout: 10000 });
+    await expect(dataSetupContent.getByText('GitHub', { exact: true })).toBeVisible({
+      timeout: 10000,
+    });
 
     // Verify via API that the definition was saved with connector type
     const apiRes = await page.request.get(`/api/data-marts/${datamartId}`);

@@ -516,6 +516,12 @@ test.describe('Data Setup - Calculated field chips', () => {
     // what this test needs: a violation about a function or about the formula as a whole marks no
     // chip.
     await page.keyboard.type(' + clicks', { delay: 20 });
+    // A typed identifier remains plain SQL until its field suggestion is accepted.
+    // Complete that authoring step so this occurrence is a reference chip too.
+    await expect(
+      page.locator('.formula-editor-overflow-widgets .suggest-widget.visible')
+    ).toBeVisible();
+    await page.keyboard.press('Enter');
     await expect(popover.locator(CHIP)).toHaveText(['clicks', 'clicks']);
     await expect(page.getByTestId('formula-diagnostics')).toContainText('row-level column', {
       timeout: 15000,
