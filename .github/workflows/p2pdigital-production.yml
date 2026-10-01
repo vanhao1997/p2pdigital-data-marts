@@ -176,6 +176,19 @@ jobs:
             version=${{ env.IMAGE_TAG }}
             revision=${{ github.sha }}
 
+      - name: Audit candidate image runtime dependencies
+        run: |
+          set -euo pipefail
+          node --test tools/audit-runtime-dependencies.test.mjs
+          docker run --rm --entrypoint node \
+            --volume "${GITHUB_WORKSPACE}/tools/audit-runtime-dependencies.mjs:/tmp/audit-runtime-dependencies.mjs:ro" \
+            owox-runtime-smoke:${{ github.sha }} \
+            /tmp/audit-runtime-dependencies.mjs --root /usr/local/lib/node_modules/owox
+          docker run --rm --entrypoint node \
+            --volume "${GITHUB_WORKSPACE}/tools/audit-runtime-dependencies.mjs:/tmp/audit-runtime-dependencies.mjs:ro" \
+            admicro-extractor-smoke:${{ github.sha }} \
+            /tmp/audit-runtime-dependencies.mjs --root /app
+
       - name: Smoke main runtime healthcheck
         run: |
           set -euo pipefail
@@ -278,6 +291,10 @@ jobs:
             echo "::error::Both COOLIFY_MAIN_RESOURCE_UUID and COOLIFY_ADMICRO_RESOURCE_UUID must be configured as GitHub Actions variables."
             exit 1
           fi
+          if [ "${COOLIFY_MAIN_RESOURCE_UUID}" = "${COOLIFY_ADMICRO_RESOURCE_UUID}" ]; then
+            echo "::error::Main runtime and Admicro sidecar must use different Coolify resource UUIDs."
+            exit 1
+          fi
 
           api_request() {
             local method="$1"
@@ -316,6 +333,23 @@ jobs:
             fi
           }
 
+          preflight_resource() {
+            local name="$1"
+            local uuid="$2"
+            local response_file
+            response_file="$(mktemp)"
+            api_request \
+              GET \
+              "${COOLIFY_URL%/}/api/v1/applications/${uuid}" \
+              "${COOLIFY_API_TOKEN}" \
+              "${response_file}"
+            if ! jq -e '.build_pack == "dockerimage"' "${response_file}" >/dev/null; then
+              echo "::error::${name} must already be a Docker Image application (build_pack=dockerimage). Create a replacement Docker Image resource in Coolify, copy its environment/network settings, grant GHCR pull access, and update the GitHub resource UUID variable. No resources have been modified."
+              return 1
+            fi
+            echo "Coolify preflight passed for ${name}: Docker Image application."
+          }
+
           configure_resource() {
             local name="$1"
             local uuid="$2"
@@ -330,12 +364,12 @@ jobs:
               --arg image "${image_name}" \
               --arg tag "${IMAGE_TAG}" \
               --arg health_path "${health_path}" \
-              --argjson health_port "${health_port}" \
+              --arg health_port "${health_port}" \
               '{
-                build_pack: "dockerimage",
                 docker_registry_image_name: $image,
                 docker_registry_image_tag: $tag,
                 health_check_enabled: true,
+                health_check_type: "http",
                 health_check_path: $health_path,
                 health_check_port: $health_port,
                 health_check_scheme: "http",
@@ -353,19 +387,19 @@ jobs:
               "${response_file}" \
               "${payload}"
 
-            # An existing source-build application must not silently ignore the
-            # image fields and rebuild the branch after the verified image passed.
+            # Read back the settings before any deployment is queued. Numeric
+            # health settings can be serialized as strings by the database.
             api_request \
               GET \
               "${COOLIFY_URL%/}/api/v1/applications/${uuid}" \
               "${COOLIFY_API_TOKEN}" \
               "${response_file}"
             if ! jq -e \
-              --arg image "${image_name}" \
-              --arg tag "${IMAGE_TAG}" \
-              '.build_pack == "dockerimage" and .docker_registry_image_name == $image and .docker_registry_image_tag == $tag' \
+              --argjson expected "${payload}" \
+              '. as $actual | .build_pack == "dockerimage" and
+                all($expected | to_entries[]; ($actual[.key] | tostring) == (.value | tostring))' \
               "${response_file}" >/dev/null; then
-              echo "::error::${name} is not pinned to ${image_name}:${IMAGE_TAG} as a Docker Image application. Convert/recreate the resource in Coolify and grant GHCR pull access before deployment."
+              echo "::error::${name} did not retain the Docker Image configuration for ${image_name}:${IMAGE_TAG} and the required healthcheck settings. No deployments have been queued."
               return 1
             fi
             echo "Coolify image configured for ${name}: ${image_name}:${IMAGE_TAG}."
@@ -416,6 +450,11 @@ jobs:
             exit 1
           }
 
+          # Check both applications before PATCH so source-build resources fail
+          # without changing either application. Coolify PATCH cannot convert
+          # a source-build resource to the Docker Image build pack.
+          preflight_resource "Admicro sidecar" "${COOLIFY_ADMICRO_RESOURCE_UUID}"
+          preflight_resource "main runtime" "${COOLIFY_MAIN_RESOURCE_UUID}"
           configure_resource "Admicro sidecar" "${COOLIFY_ADMICRO_RESOURCE_UUID}" "${SIDECAR_IMAGE}" "/healthz" "8091"
           configure_resource "main runtime" "${COOLIFY_MAIN_RESOURCE_UUID}" "${RUNTIME_IMAGE}" "/health/ready" "3000"
           deploy_resource "Admicro sidecar" "${COOLIFY_ADMICRO_RESOURCE_UUID}"

@@ -1,6 +1,10 @@
 ---
 '@owox/backend': minor
 '@owox/connectors': minor
+'@owox/idp-owox-better-auth': minor
+'@owox/web': minor
 ---
 
-Update patched runtime transitive dependencies for known `fast-uri` and `qs` security advisories. Snowflake's TOML advisory remains tracked separately because the available force fix would downgrade the Snowflake SDK.
+Update runtime dependencies to address known security advisories in HTTP requests, gRPC certificate authorization, TOML parsing, and URI/query parsing. The HTTP and gRPC updates stay within the existing major versions, preserving integration compatibility.
+
+Deployment images include the patched HTTP/gRPC packages across SDK dependencies and remove stale build workspace links to support runtime dependency verification.

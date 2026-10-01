@@ -87,21 +87,27 @@ Configure GitHub for deploy automation:
   run and rollback rehearsal.
 
 Configure each Coolify resource as a Docker Image application and give Coolify pull access to the
-private GHCR packages. The workflow updates `docker_registry_image_name` and
-`docker_registry_image_tag`, verifies that Coolify reports `build_pack=dockerimage` and the exact
-SHA tag, starts the sidecar before the main runtime, and waits for both Coolify deployments to reach
-`finished`. It does not use the `docker_tag` deploy parameter because Coolify reserves that
-parameter for Docker Image preview deployments with a pull-request ID. Coolify does not rebuild
-repository source.
+private GHCR packages. The two UUIDs must identify different applications. Before updating either
+application, the workflow reads both resources and requires `build_pack=dockerimage`. It then updates
+only image and healthcheck fields, sending `health_check_port` as a JSON string (`"8091"` or `"3000"`),
+and reads each resource back to verify the exact image SHA tag and all requested healthcheck settings.
+It starts the sidecar before the main runtime and waits for both Coolify deployments to reach
+`finished`. It does not use the `docker_tag` deploy parameter because Coolify reserves that parameter
+for Docker Image preview deployments with a pull-request ID. Coolify does not rebuild repository
+source.
 
-Existing P2PDigital resources may still report `build_pack=dockerfile` with an empty image/tag. The
-workflow attempts to convert them through the Coolify API, then reads both resources back before
-deploying either one. If Coolify rejects or ignores the conversion, create replacement Docker Image
-applications in the Coolify UI, copy the environment and health settings, attach the same private
-network, configure GHCR pull credentials, and update `COOLIFY_MAIN_RESOURCE_UUID` and
-`COOLIFY_ADMICRO_RESOURCE_UUID`. Check that both replacement applications can pull the exact
-`sha-<git-sha>` image before switching public traffic. Do not bypass the failed preflight by
-re-enabling source builds: that could deploy unverified branch content.
+Existing P2PDigital resources may still report `build_pack=dockerfile` with an empty image/tag. On
+Coolify `v4.0.0-beta.473`, the application PATCH validator does not accept `build_pack=dockerimage`,
+so the workflow does not attempt to convert source-build applications. See the pinned Coolify
+[application update handler](https://github.com/coollabsio/coolify/blob/v4.0.0-beta.473/app/Http/Controllers/Api/ApplicationsController.php#L2474),
+[shared validation rules](https://github.com/coollabsio/coolify/blob/v4.0.0-beta.473/bootstrap/helpers/api.php#L82),
+and [build-pack enum](https://github.com/coollabsio/coolify/blob/v4.0.0-beta.473/app/Enums/BuildPackTypes.php).
+If either resource is a source-build application, preflight stops before any resource is modified or
+deployed. Create replacement Docker Image applications in the Coolify UI, copy the environment and
+health settings, attach the same private network, configure GHCR pull credentials, and update
+`COOLIFY_MAIN_RESOURCE_UUID` and `COOLIFY_ADMICRO_RESOURCE_UUID`. Check that both replacements can
+pull the exact `sha-<git-sha>` image before switching public traffic. Do not bypass the failed
+preflight by re-enabling source builds: that could deploy unverified branch content.
 
 Protect `main` with a pull request requirement, at least one approving review, stale approval
 dismissal when new commits arrive, and no routine bypass for administrators. Require the stable
@@ -165,6 +171,8 @@ pressure, Chromium launch failures, active browser count, and RSS. Import
   those resources.
 - CI workflow has a green run on the exact Git SHA.
 - Main and sidecar GHCR images exist with `sha-<git-sha>` tags.
+- Both Coolify resource UUIDs are different and already report `build_pack=dockerimage`; preflight
+  passes before image or health settings are updated.
 - Coolify main app uses the runtime image SHA and `/health/ready`.
 - Coolify sidecar app uses the sidecar image SHA, private networking, one replica, and `/healthz`.
 - Required migrations have been reviewed; no rollback-blocking migration is pending.
