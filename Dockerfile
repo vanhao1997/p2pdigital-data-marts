@@ -14,8 +14,13 @@ LABEL org.opencontainers.image.source="https://github.com/vanhao1997/p2pdigital-
 # The immutable overlay may contain backend code newer than the pinned OWOX
 # base image. Keep runtime-only MCP dependencies aligned with that code so the
 # application can load the backend module before the health endpoint starts.
-RUN cd /usr/local/lib/node_modules/owox \
-  && npm install --omit=dev --ignore-scripts --no-audit --no-fund --no-save @modelcontextprotocol/server@2.0.0
+# Install from an isolated manifest because the base image's package.json
+# contains private workspace devDependencies that are not published to npm.
+RUN mkdir -p /tmp/mcp-runtime \
+  && printf '{"private":true}\n' > /tmp/mcp-runtime/package.json \
+  && npm install --prefix /tmp/mcp-runtime --omit=dev --ignore-scripts --no-audit --no-fund --package-lock=false @modelcontextprotocol/server@2.0.0 \
+  && cp -a /tmp/mcp-runtime/node_modules/. /usr/local/lib/node_modules/owox/node_modules/ \
+  && rm -rf /tmp/mcp-runtime
 
 COPY deploy/owox-runtime-artifacts.tar.gz /tmp/owox-runtime-artifacts.tar.gz
 RUN tar -xzf /tmp/owox-runtime-artifacts.tar.gz -C /tmp \
