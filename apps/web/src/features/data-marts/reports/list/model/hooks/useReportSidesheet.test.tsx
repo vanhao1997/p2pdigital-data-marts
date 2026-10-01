@@ -81,6 +81,49 @@ describe('useReportSidesheet deep linking', () => {
     expect(result.current.searchParams.get(REPORT_ID_URL_PARAM)).toBeNull();
   });
 
+  it('closes the edit from a callback retained before reportId navigation', async () => {
+    const { result } = renderSidesheetHook('/ui/project-1/data-marts/mart-1/reports', [report]);
+    const retainedClose = result.current.sidesheet.handleCloseModal;
+    let finishSave!: () => void;
+    const pendingSave = new Promise<void>(resolve => {
+      finishSave = resolve;
+    });
+    const closeAfterSave = pendingSave.then(retainedClose);
+
+    act(() => {
+      result.current.sidesheet.handleEditReport(report);
+    });
+    expect(result.current.sidesheet.isOpen).toBe(true);
+    expect(result.current.searchParams.get(REPORT_ID_URL_PARAM)).toBe('report-1');
+
+    await act(async () => {
+      finishSave();
+      await closeAfterSave;
+    });
+
+    expect(result.current.sidesheet.isOpen).toBe(false);
+    expect(result.current.sidesheet.editingReport).toBeNull();
+    expect(result.current.searchParams.get(REPORT_ID_URL_PARAM)).toBeNull();
+  });
+
+  it('keeps another report deep link when a retained edit close callback completes', () => {
+    const { result } = renderSidesheetHook('/ui/project-1/data-marts/mart-1/reports', [report]);
+    act(() => {
+      result.current.sidesheet.handleEditReport(report);
+    });
+    const retainedClose = result.current.sidesheet.handleCloseModal;
+
+    act(() => {
+      result.current.setSearchParams({ [REPORT_ID_URL_PARAM]: 'other-report' });
+    });
+    act(() => {
+      retainedClose();
+    });
+
+    expect(result.current.sidesheet.isOpen).toBe(false);
+    expect(result.current.searchParams.get(REPORT_ID_URL_PARAM)).toBe('other-report');
+  });
+
   it('opens a deep link that arrives after a previous sidesheet was closed', () => {
     const { result } = renderSidesheetHook(
       '/ui/project-1/data-marts/mart-1/reports?reportId=report-1',

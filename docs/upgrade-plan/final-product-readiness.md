@@ -45,6 +45,18 @@ Gate web đầy đủ của bản vá đã đạt:
 - Nhóm browser 45 cases: lần đầu 41 pass, 3 fail, 1 skip MR-04 có sẵn. Ba ca lỗi đã pass trong các rerun riêng: chip reference phải chấp nhận suggestion, filter chờ rows tải xong, GitHub wizard dùng text exact và giữ kiểm tra PUT/persistence sau reload. Đây là coverage ghép từ các lượt có artifact riêng; chưa thay thế full CI trên SHA cuối.
 - Đã boot candidate và image hiện tại từ hai bản sao app backup riêng trong network `none`, không mount database live: readiness `200`, integrity `ok`; candidate 85 bảng sau migration, image hiện tại 84 bảng. Auth restore giữ 7 bảng và integrity `ok`. Chưa kiểm tra fresh login bằng auth restore hoặc chuyển traffic rollback.
 
+## CI và GHCR đã xác nhận
+
+- SHA `3cd598c9c2f7ecc2d86f3fc66c828d1a1d76a913`: unit tests, ESLint, Prettier, Markdownlint, source audit, docs build và cả 4 API E2E shard đạt.
+- [Runtime workflow 36862303377](https://github.com/vanhao1997/p2pdigital-data-marts/actions/runs/36862303377) đạt: build, audit inventory, native SQLite/CommonJS, Chromium và healthcheck. `deploy_to_coolify=false`; deploy bị skip.
+- Main GHCR cùng SHA: 1.465 installed copies, 1.354 unique name/version pairs, 0 advisory. Multiarch index digest `sha256:41dff8915f9b56a9e712dacb015f498aa1ec1c5efe5032d82b5bce8ddd3d5cae`; có `linux/amd64` và `linux/arm64`.
+- Sidecar GHCR cùng SHA: 77 copies, 75 pairs, 0 advisory; digest `sha256:f1b8928ecb2cae4e339adb1712090fd573eef5320b71af8ef5f06efbb22020a4`.
+- Server đích đã pull thành công cả hai image qua GHCR. Pull không khởi động resource hoặc chuyển domain.
+- [Browser CI 36862308972](https://github.com/vanhao1997/p2pdigital-data-marts/actions/runs/36862308972): shard 1, 2, 4 đạt; shard 3 thất bại ở nhãn owner và cache lifetime Looker Studio. Email edit pass sau retry nhưng rerun local phát hiện sheet đóng rồi mở lại. Check tổng vẫn thất bại; chưa chứng nhận full browser suite.
+- Bản sửa Email đã đạt 22 unit tests trong hai file: 7 regression về vòng đời submit và 2 regression về callback đóng sheet giữ từ render cũ. Callback đọc state đã commit hiện tại, xóa đúng deep link sở hữu và giữ deep link của báo cáo khác.
+- Browser `RPT-03` đạt 3 lượt liên tiếp không retry: giữ assertion đóng sheet trong 15 giây, PUT thành công và GET xác nhận subject đã lưu. Không tăng thời gian đóng sheet để bỏ qua lỗi mở lại. Artifact nằm trong `output/playwright/release-email-deeplink-fixed-report.json`.
+- Web typecheck, ESLint/Prettier của các hook và Prettier của browser specs/tài liệu đều đạt. Nhãn owner và cache lifetime đã sửa theo UI hiện có, giữ assertion persistence.
+
 ## Cấu hình chuyển image
 
 | Resource | Hiện tại                   | Thay thế đã chuẩn bị       |
@@ -62,13 +74,14 @@ Backup nằm trên server tại `/data/owox-backups/2026-10-01-final/`; chỉ gh
 
 ## V1: acceptance còn cần hoàn tất
 
-1. Chạy CI đầy đủ trên SHA của bản vá và audit dependencies thực tế trong cả hai candidate image.
-2. Xác nhận GHCR pull, staging/canary, readiness và rollback trước chuyển production.
+1. Chạy lại CI đầy đủ và audit image trên SHA cuối sau bản sửa Email sheet. Bằng chứng của `3cd598c` không chứng nhận source sửa sau đó.
+2. Chạy staging/canary, readiness và rollback trước chuyển production. GHCR pull của `3cd598c` đã đạt.
 3. Xác nhận tài khoản trong Chrome bằng phiên đăng nhập mới. Người dùng nhập mật khẩu trực tiếp.
 4. Chạy acceptance Admicro với credential thật nhập trong UI: preview, extract, reconnect, retry và checkpoint theo ngày.
 5. Chạy live MCP với Codex/Claude, refresh/restart và project A/B theo deployment guide. Test SDK không thay thế acceptance này.
 6. Ghi nhận billing mode: `LICENSE` không tính phí connector/process run; dùng report hoặc `MCP_QUERY_RUN` để xác nhận một lần charge. `INTERNAL` kiểm tra connector consumption sau thành công. Preview, failed/cancelled run và retry không tạo charge trùng.
 7. Xác định Issue sở hữu MCP: `.changeset/10-mcp-2026-protocol.md` đang dùng số của Issue bảo mật; chưa đổi hoặc đoán số mới.
+8. Xác định Issue sở hữu bản sửa hành vi lưu Email trước khi tạo changeset theo release policy.
 
 ## Data model và rủi ro còn cần xác thực
 

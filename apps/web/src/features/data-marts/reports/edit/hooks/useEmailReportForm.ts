@@ -1,4 +1,4 @@
-import { type RefObject, useCallback, useEffect, useState } from 'react';
+import { type RefObject, useCallback, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -91,13 +91,6 @@ export function useEmailReportForm({
   const [formError, setFormError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { updateReport, createReport, error: reportError, clearError } = useReport();
-
-  useEffect(() => {
-    if (isSubmitting && reportError) {
-      setFormError(reportError);
-      setIsSubmitting(false);
-    }
-  }, [reportError, isSubmitting]);
 
   const form = useForm<EmailReportEditFormValues>({
     resolver: zodResolver(EmailReportEditFormSchema),
@@ -222,7 +215,7 @@ export function useEmailReportForm({
           });
         }
 
-        if (!result || reportError) {
+        if (!result) {
           setFormError(reportError ?? 'An error occurred while submitting the form');
           return;
         }
@@ -237,6 +230,8 @@ export function useEmailReportForm({
       } catch (error) {
         console.error('Error submitting form:', error);
         setFormError('An error occurred while submitting the form');
+      } finally {
+        setIsSubmitting(false);
       }
     },
     [

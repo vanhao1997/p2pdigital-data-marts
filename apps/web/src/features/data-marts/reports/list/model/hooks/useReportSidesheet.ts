@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import type { DataMartReport } from '../../../shared/model/types/data-mart-report';
 import { ReportFormMode } from '../../../shared';
 import { trackEvent } from '../../../../../../utils/data-layer';
@@ -42,6 +42,24 @@ export function useReportSidesheet({ deepLinkReports }: UseReportSidesheetOption
     setParam: setReportIdParam,
     removeParam: removeReportIdParam,
   } = useUrlParam(REPORT_ID_URL_PARAM);
+
+  // Async submissions can retain a close callback from before URL navigation
+  // commits. Read the latest committed state so closing also removes the owned
+  // deep link and the auto-open effect cannot reopen the saved report.
+  const closeStateRef = useRef({
+    isDeepLinkEnabled,
+    mode,
+    editingReportId: editingReport?.id ?? null,
+    deepLinkReportId,
+  });
+  useLayoutEffect(() => {
+    closeStateRef.current = {
+      isDeepLinkEnabled,
+      mode,
+      editingReportId: editingReport?.id ?? null,
+      deepLinkReportId,
+    };
+  }, [isDeepLinkEnabled, mode, editingReport?.id, deepLinkReportId]);
 
   /**
    * Opens the modal in CREATE mode
@@ -91,22 +109,27 @@ export function useReportSidesheet({ deepLinkReports }: UseReportSidesheetOption
   const justClosedReportIdRef = useRef<string | null>(null);
 
   const handleCloseModal = useCallback(() => {
+    const current = closeStateRef.current;
     setIsOpen(false);
     setEditingReport(null);
     // Remove the param only when this sidesheet instance owns it — every card on
     // the page shares the param, and closing an unrelated (e.g. CREATE-mode) sheet
     // must not clobber a deep link another card has not resolved yet.
-    if (isDeepLinkEnabled && editingReport?.id === deepLinkReportId) {
-      justClosedReportIdRef.current = deepLinkReportId;
+    if (
+      current.isDeepLinkEnabled &&
+      current.editingReportId !== null &&
+      current.editingReportId === current.deepLinkReportId
+    ) {
+      justClosedReportIdRef.current = current.deepLinkReportId;
       removeReportIdParam();
     }
     trackEvent({
       event: 'report_close',
       category: 'Report',
-      action: mode === ReportFormMode.EDIT ? 'Edit' : 'Create',
+      action: current.mode === ReportFormMode.EDIT ? 'Edit' : 'Create',
       label: 'ReportForm',
     });
-  }, [isDeepLinkEnabled, mode, editingReport, deepLinkReportId, removeReportIdParam]);
+  }, [removeReportIdParam]);
 
   // Auto-open the sidesheet for a deep-linked report once it appears in the list.
   // Guarded by isOpen (not a one-shot ref): a manual open sets the param itself, so
