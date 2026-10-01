@@ -107,9 +107,9 @@ test.describe('Data Setup - Calculated field formula autocomplete', () => {
     // the one that runs here) and `textarea.inputarea` otherwise. Both carry the editor's tabindex
     // and its focus tracker; the native path's other textarea is `.ime-text-area`, so neither
     // selector can match twice.
-    await expect(
-      formulaPopover(page).locator('div.native-edit-context, textarea.inputarea')
-    ).toBeFocused({ timeout: 15000 });
+    const input = formulaPopover(page).locator('div.native-edit-context, textarea.inputarea');
+    await input.focus();
+    await expect(input).toBeFocused({ timeout: 15000 });
     await page.keyboard.type('users');
 
     const suggestWidget = page.locator(SUGGEST_WIDGET);
@@ -178,6 +178,11 @@ test.describe('Data Setup - Calculated field formula autocomplete', () => {
 
     // Re-filtering re-opens the list at the size Monaco persisted for the drag. Nothing here may
     // measure over that and widen it back.
+    // The resize sash can take focus away from Monaco's input. Restore that input without moving
+    // the caret, so the next character re-filters the same formula rather than reaching the page.
+    const input = formulaPopover(page).locator('div.native-edit-context, textarea.inputarea');
+    await input.focus();
+    await expect(input).toBeFocused();
     await page.keyboard.type('.');
     await expect(suggestWidget).toBeVisible();
     const afterTyping = await suggestWidget.boundingBox();

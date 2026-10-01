@@ -91,6 +91,10 @@ export default defineConfig({
         SERVER_TIMEOUT_MS: '180000',
         KEEP_ALIVE_TIMEOUT_MS: '180000',
         HEADERS_TIMEOUT_MS: '185000',
+        // Catalog tests include Admicro; they do not call the extractor/provider.
+        ADMICRO_EXTRACTOR_ENABLED: 'true',
+        ADMICRO_EXTRACTOR_URL: 'http://127.0.0.1:8091',
+        ADMICRO_EXTRACTOR_SHARED_SECRET: 'browser-fixture-only-shared-secret',
       },
     },
     {

@@ -78,7 +78,7 @@ test.describe('DataMart List with data', () => {
     const dialog = page.getByRole('dialog', { name: 'Check Data Quality' });
     await expect(dialog).toBeVisible();
     await expect(
-      dialog.getByText('Run Data Quality checks for 1 selected Data Mart?')
+      dialog.getByText('Run Data Quality checks for 1 selected Data Marts?', { exact: true })
     ).toBeVisible();
   });
 

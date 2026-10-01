@@ -168,6 +168,13 @@ test.describe('Data Setup - Calculated field chips', () => {
     // The chip is what says the editor is mounted, resolved and painted — not just present.
     await expect(popover.locator(CHIP)).toHaveText(chipText, { timeout: 15000 });
     await editor.click();
+    // Painting a chip can precede Monaco attaching its keyboard input. Wait for the input that
+    // actually receives the keys, so select-all cannot select the page and arrows cannot scroll it.
+    const input = popover.locator('div.native-edit-context, textarea.inputarea');
+    await input.focus();
+    await expect(input).toBeFocused({
+      timeout: 15000,
+    });
     await page.keyboard.press('End');
     return popover;
   }
@@ -224,13 +231,28 @@ test.describe('Data Setup - Calculated field chips', () => {
     await expect(link).toHaveAttribute('href', /setup-guide\/calculated-fields\//);
     await expect(link).toHaveAttribute('href', /utm_source=owox_data_marts/);
 
-    const hint = await link.boundingBox();
-    const apply = await popover.getByRole('button', { name: 'Apply' }).boundingBox();
-    expect(hint).not.toBeNull();
-    expect(apply).not.toBeNull();
-    expect((hint?.x ?? 0) + (hint?.width ?? 0)).toBeLessThanOrEqual(apply?.x ?? 0);
-    // Same line, not stacked above it.
-    expect(Math.abs((hint?.y ?? 0) - (apply?.y ?? 0))).toBeLessThan(20);
+    // Monaco's async mount can move the popover while its opening animation is running. Read both
+    // boxes in one frame, then poll the actual layout rather than compare two different positions.
+    await expect
+      .poll(() =>
+        popover.evaluate(root => {
+          const hint = root.querySelector('a[href*="setup-guide/calculated-fields/"]');
+          const apply = Array.from(root.querySelectorAll('button')).find(
+            button => button.textContent?.trim() === 'Apply'
+          );
+          if (!hint || !apply) return null;
+          const hintBox = hint.getBoundingClientRect();
+          const applyBox = apply.getBoundingClientRect();
+          return {
+            hintDrawn: hintBox.width > 0 && hintBox.height > 0,
+            applyDrawn: applyBox.width > 0 && applyBox.height > 0,
+            hintBeforeApply: hintBox.right <= applyBox.left,
+            // Same line, not stacked above it.
+            sameLine: Math.abs(hintBox.top - applyBox.top) < 20,
+          };
+        })
+      )
+      .toEqual({ hintDrawn: true, applyDrawn: true, hintBeforeApply: true, sameLine: true });
   });
 
   test('draws a resolved reference as a pill that changes no text metrics (DSET-10)', async ({
@@ -493,7 +515,8 @@ test.describe('Data Setup - Calculated field chips', () => {
     // Mixing the two levels is what is still refused, and it is refused about a FIELD, which is
     // what this test needs: a violation about a function or about the formula as a whole marks no
     // chip.
-    await page.keyboard.type(' + clicks');
+    await page.keyboard.type(' + clicks', { delay: 20 });
+    await expect(popover.locator(CHIP)).toHaveText(['clicks', 'clicks']);
     await expect(page.getByTestId('formula-diagnostics')).toContainText('row-level column', {
       timeout: 15000,
     });

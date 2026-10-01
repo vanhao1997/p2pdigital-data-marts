@@ -130,7 +130,7 @@ test.describe('Project Settings — Membership requests', () => {
     await expect(page.getByText(/Approved request from alice@example\.com/i)).toBeVisible();
 
     // Row should be gone (optimistic removal).
-    await expect(page.getByText('alice@example.com')).toBeHidden();
+    await expect(page.getByTestId('membershipRequestRow-mock-req-alice')).toBeHidden();
   });
 
   // ---------------------------------------------------------------------------
@@ -162,7 +162,7 @@ test.describe('Project Settings — Membership requests', () => {
     await expect(page.getByText(/Declined request from bob@example\.com/i)).toBeVisible();
 
     // Row should be gone (optimistic removal).
-    await expect(page.getByText('bob@example.com')).toBeHidden();
+    await expect(page.getByTestId('membershipRequestRow-mock-req-bob')).toBeHidden();
   });
 
   // ---------------------------------------------------------------------------
