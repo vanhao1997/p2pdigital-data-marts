@@ -11,6 +11,12 @@ LABEL org.opencontainers.image.revision="${revision}"
 LABEL org.opencontainers.image.version="${version}"
 LABEL org.opencontainers.image.source="https://github.com/vanhao1997/p2pdigital-data-marts"
 
+# The immutable overlay may contain backend code newer than the pinned OWOX
+# base image. Keep runtime-only MCP dependencies aligned with that code so the
+# application can load the backend module before the health endpoint starts.
+RUN cd /usr/local/lib/node_modules/owox \
+  && npm install --omit=dev --ignore-scripts --no-audit --no-fund --no-save @modelcontextprotocol/server@2.0.0
+
 COPY deploy/owox-runtime-artifacts.tar.gz /tmp/owox-runtime-artifacts.tar.gz
 RUN tar -xzf /tmp/owox-runtime-artifacts.tar.gz -C /tmp \
   && cp -a /tmp/packages/connectors/dist/. /usr/local/lib/node_modules/owox/node_modules/@owox/connectors/dist/ \
