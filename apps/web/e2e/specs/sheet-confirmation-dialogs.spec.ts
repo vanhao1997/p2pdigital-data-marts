@@ -64,6 +64,10 @@ test.describe('Sheet-hosted confirmation dialogs', () => {
       const titleInput = form.getByLabel('Title');
       await titleInput.click();
       await titleInput.fill('Dirty storage title');
+      await expect(titleInput).toHaveValue('Dirty storage title');
+      // Dirty state reaches the sheet guard through an effect. Wait for the form's existing
+      // dirty-state control before requesting dismissal, so this tests the dirty-form branch.
+      await expect(form.getByRole('button', { name: 'Save', exact: true })).toBeEnabled();
 
       await page.getByRole('button', { name: 'Cancel' }).click();
       await radix.stayOnDirtySheet(sheet);
@@ -84,12 +88,15 @@ test.describe('Sheet-hosted confirmation dialogs', () => {
       const sheet = page.getByTestId(TESTIDS.storageConfigSheet);
       const form = page.getByTestId(TESTIDS.storageEditForm);
       await expect(sheet).toBeVisible();
+      await expect(form).toBeVisible();
 
       const titleInput = form.getByLabel('Title');
       await titleInput.click();
       await titleInput.fill('Dirty storage title');
+      await expect(titleInput).toHaveValue('Dirty storage title');
+      await expect(form.getByRole('button', { name: 'Save', exact: true })).toBeEnabled();
 
-      await page.keyboard.press('Escape');
+      await titleInput.press('Escape');
       await radix.leaveDirtySheet(sheet);
     });
   });

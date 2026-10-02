@@ -1,4 +1,5 @@
 import type { Locator, Page } from '@playwright/test';
+import type { BlendableSchema } from '../../src/features/data-marts/shared/types/relationship.types';
 import { test, expect } from '../fixtures/base';
 import { TESTIDS } from '../selectors/testids';
 
@@ -86,16 +87,33 @@ test.describe('Data Setup - Calculated field formula autocomplete', () => {
 
   /** Opens the metric's formula popover and types `users`, so the joined paths are offered. */
   async function openAutocomplete(page: Page): Promise<Locator> {
+    // Joined fields arrive independently of the output schema. Typing before that response leaves
+    // Monaco filtering an empty joined index; the later response does not retrigger suggestions.
+    const joinedSchemaLoaded = page.waitForResponse(
+      response =>
+        response.request().method() === 'GET' &&
+        new URL(response.url()).pathname === `/api/data-marts/${dataMartId}/blendable-schema`
+    );
     await page.goto(`/ui/0/data-marts/${dataMartId}/data-setup`);
     await expect(page.getByTestId(TESTIDS.datamartTabDataSetup)).toBeVisible();
+    const joinedSchemaResponse = await joinedSchemaLoaded;
+    expect(joinedSchemaResponse.ok()).toBeTruthy();
+    const joinedSchema = (await joinedSchemaResponse.json()) as BlendableSchema;
+    expect(
+      joinedSchema.blendedFields.map(field => `${field.aliasPath}.${field.originalFieldName}`)
+    ).toContain(DEEP_FIELD_NAME);
 
     // The formula cell of the `roas` row — the whole cell carries the formula as its title.
     const formulaCell = page.locator(`[title="${METRIC_FORMULA}"]`).first();
     await expect(formulaCell).toBeVisible({ timeout: 15000 });
     await formulaCell.click();
 
-    const formulaEditor = formulaPopover(page).locator('.monaco-editor').first();
+    const popover = formulaPopover(page);
+    const formulaEditor = popover.locator('.monaco-editor').first();
     await expect(formulaEditor).toBeVisible({ timeout: 15000 });
+    // The input DOM can exist before handleMount registers the completion provider. A painted
+    // chip comes from the effect that runs after handleMount, so it proves the editor is ready.
+    await expect(popover.locator('.formula-field-chip')).toHaveText('clicks', { timeout: 15000 });
     await formulaEditor.click();
     // Monaco attaches its input asynchronously, so its node is on screen and clickable before it
     // can receive a keystroke. Characters typed into that gap are dropped, and nothing retriggers
@@ -110,7 +128,9 @@ test.describe('Data Setup - Calculated field formula autocomplete', () => {
     const input = formulaPopover(page).locator('div.native-edit-context, textarea.inputarea');
     await input.focus();
     await expect(input).toBeFocused({ timeout: 15000 });
+    await input.press('End');
     await page.keyboard.type('users');
+    await expect(popover.locator('.view-lines')).toHaveText(`${METRIC_FORMULA}users`);
 
     const suggestWidget = page.locator(SUGGEST_WIDGET);
     await expect(suggestWidget).toBeVisible({ timeout: 15000 });

@@ -60,6 +60,23 @@ Gate web đầy đủ của bản vá đã đạt:
 - [GHSA-c475-qrg2-pj4r](https://github.com/advisories/GHSA-c475-qrg2-pj4r) được công bố lúc `2026-10-01 14:42 UTC`, sau lượt runtime audit của `3cd598c`. Audit của `b21d1b1` phát hiện dependency `basic-ftp`; gate image chặn 1 advisory high trước publication. Bằng chứng 0 advisory của SHA cũ giữ nguyên thời điểm quan sát.
 - Bản vá scoped `get-uri → basic-ftp@6.2.1` giữ Databricks `1.17.0`, proxy-agent `6.5.0`, pac-proxy-agent `7.2.0` và get-uri `6.0.5`. Source audit sau bản vá đạt 0 vulnerabilities. Fixture FTP/PAC đạt 21/21; guard tổng hợp đạt 39/39, không fail/skip; lint và format đạt. CI/image audit trên SHA cuối còn cần xác nhận.
 - Fixture dùng dependency chain được resolve từ Databricks thực tế: Unix listing/parser, MLSD metadata, get-uri download/cache/error, EPSV→PASV cùng host và PAC proxy HTTP. FTP data host mặc định phải khớp control host; deployment dùng transfer host tách riêng cần compatibility review theo changeset.
+- SHA `8d8f011afd88bcfdb4ecff06211fc2b7f3bdb354`: source audit, unit tests, 4 API E2E shard, lint, format và docs checks đạt. Một lượt install của Markdownlint gặp `ECONNRESET`; rerun job đã đạt, không sửa hoặc bỏ gate.
+- [Runtime workflow 36900142252](https://github.com/vanhao1997/p2pdigital-data-marts/actions/runs/36900142252) cùng SHA đạt: main inventory 1.465 copies/1.354 pairs, sidecar 77 copies/75 pairs, cả hai 0 advisory; 21 FTP/PAC fixtures, native SQLite/CommonJS, Chromium và healthchecks đạt. Main có `linux/amd64` và `linux/arm64`. Server đích đã pull cả hai image; `deploy_to_coolify=false`, chưa chuyển traffic.
+- Restore boot từ hai bản sao app backup riêng bằng đúng main image `8d8f011` và image production trước đó đạt readiness `200`, integrity `ok`, lần lượt 85 và 84 bảng. Container dùng network `none` và đã dọn; không mount database live. Bằng chứng này chưa xác nhận downgrade database đã migrate hoặc rollback traffic.
+- [Browser CI 36900147323](https://github.com/vanhao1997/p2pdigital-data-marts/actions/runs/36900147323) cùng SHA đạt nhờ retry: **122 passed, 4 flaky, 22 skipped, 0 failed**. Lần đầu Email sheet đóng rồi mở lại; hai ca formula autocomplete thiếu suggestion và một ca dialog bỏ thay đổi thiếu dialog. Các lỗi đang được sửa; CI xanh chưa đủ để chứng nhận candidate sẵn sàng release.
+
+## Tiếp tục ngày 2026-10-02
+
+- Khôi phục goal trong chat hiện tại, giữ draft PR `#11` và nhánh `codex/final-product-release-20261001`. Bằng chứng CI của SHA `8d8f011` không chứng nhận các thay đổi working tree tiếp theo.
+- Regression URL pending tái hiện lỗi khi lưu/đóng report trước khi `reportId` commit; regression thứ ba còn phát hiện deep link của report khác bị thay thế. Bản sửa giữ cancellation đến khi router xác nhận và khôi phục deep link/query của luồng khác. Hai hook đạt 25 unit tests; web typecheck và diff check đạt.
+- `RPT-03` đạt 3/3 lượt không retry trên database test riêng: giữ assertion sheet đóng trong 15 giây và GET xác nhận subject đã lưu. Artifact: `output/playwright/final-webapp-email-20261002.json`.
+- Lượt autocomplete/dialog trên database test riêng đạt 5/7 ca, không retry. Bốn ca dialog và ca chèn suggestion bằng chuột đạt. Ca formula đầu mất ký tự `users` thành `uss`; ca thứ hai có text đầy đủ nhưng suggestion không hiện. Trace được giữ trong `output/playwright/final-webapp-fixtures-20261002/`; regression đang được sửa tại đồng bộ controlled value của FormulaEditor.
+- Bản sửa FormulaEditor đồng bộ callback native model trước lần gõ tiếp theo, tránh controlled wrapper ghi đè giá trị mới bằng prop cũ. Regression mới thất bại trước sửa (`SUM(clicks)` thay vì `SUM(clicks)u`), đạt sau sửa; FormulaEditor có 44/44 tests đạt. Formula E2E đạt 3/3 ca, không retry trong 2,6 phút: gõ nhanh giữ đầy đủ text, suggestion join sâu, drag width và chèn bằng chuột. Artifact: `output/playwright/final-webapp-formula-sync-20261002.json`.
+- Gate local toàn web sau các bản sửa: 266 files, 2.382 unit tests đạt; ESLint toàn web đạt. Reviewer độc lập không tìm thấy finding chặn trong hai bản sửa; kiểm tra native editor/router thật dựa trên E2E, không suy ra từ mocks.
+- Web build và bundle budget đạt: 217 JavaScript chunks, chunk lớn nhất 435.456 bytes. Visual regression đạt 20/20 ca, không retry trong 4,1 phút: widths 320/375/768/1024/1440px, light/dark và vi/en; giữ nguyên baseline đã có và kiểm tra không overflow ngang. Artifact: `output/playwright/final-webapp-visual-20261002.json`.
+- Coolify API đọc lại cho thấy main và sidecar hiện tại `running:healthy`; hai resource thay thế chưa chạy candidate mới và vẫn trỏ image tag SHA `4e0512d`. Chrome mở được Data Mart bằng phiên hiện có; đây không phải bằng chứng fresh login hoặc acceptance của candidate.
+- Hai mô tả Issue MCP và Email đã chuẩn bị; câu hỏi về Issue sở hữu được gửi trong chat hiện tại. Chưa tạo hoặc đổi tên changeset khi chưa xác định được Issue.
+- Bản sửa FormulaEditor cũng cần changeset vì ngăn mất ký tự người dùng nhập. Mô tả Issue thứ ba đã chuẩn bị tại `output/issue-formula-edit-body.md`; chưa gán Issue hoặc tạo changeset theo số suy đoán.
 
 ## Cấu hình chuyển image
 
@@ -78,14 +95,15 @@ Backup nằm trên server tại `/data/owox-backups/2026-10-01-final/`; chỉ gh
 
 ## V1: acceptance còn cần hoàn tất
 
-1. Chạy lại CI đầy đủ và audit image trên SHA cuối sau bản vá dependency. Browser đã đạt trên `b21d1b1`; bản vá sau đó cần CI mới.
-2. Chạy staging/canary, readiness và rollback trước chuyển production. GHCR pull của `3cd598c` đã đạt.
+1. Các regression Email, formula và dialog đã đạt trong các lượt local riêng không retry; chạy lại CI đầy đủ và audit image trên SHA cuối. Runtime `8d8f011` đã đạt; browser cùng SHA vẫn có bốn ca cần retry trước bản sửa working tree.
+2. Chạy staging/canary, readiness và rollback trước chuyển production. GHCR pull và isolated restore boot của `8d8f011` đã đạt; rollback traffic chưa kiểm tra.
 3. Xác nhận tài khoản trong Chrome bằng phiên đăng nhập mới. Người dùng nhập mật khẩu trực tiếp.
 4. Chạy acceptance Admicro với credential thật nhập trong UI: preview, extract, reconnect, retry và checkpoint theo ngày.
 5. Chạy live MCP với Codex/Claude, refresh/restart và project A/B theo deployment guide. Test SDK không thay thế acceptance này.
 6. Ghi nhận billing mode: `LICENSE` không tính phí connector/process run; dùng report hoặc `MCP_QUERY_RUN` để xác nhận một lần charge. `INTERNAL` kiểm tra connector consumption sau thành công. Preview, failed/cancelled run và retry không tạo charge trùng.
 7. Xác định Issue sở hữu MCP: `.changeset/10-mcp-2026-protocol.md` đang dùng số của Issue bảo mật; chưa đổi hoặc đoán số mới.
 8. Xác định Issue sở hữu bản sửa hành vi lưu Email trước khi tạo changeset theo release policy.
+9. Xác định Issue sở hữu bản sửa FormulaEditor trước khi tạo changeset theo release policy.
 
 ## Data model và rủi ro còn cần xác thực
 

@@ -62,7 +62,8 @@ export default defineConfig({
   use: {
     baseURL: 'https://localhost:5173',
     ignoreHTTPSErrors: true,
-    trace: 'on-first-retry',
+    // Preserve the failing first attempt even when a CI retry later succeeds.
+    trace: 'retain-on-failure',
     screenshot: 'only-on-failure',
     viewport: { width: 1280, height: 720 },
   },
