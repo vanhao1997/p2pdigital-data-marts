@@ -4,6 +4,7 @@ import { ErrorState } from '../../../../shared/components/ErrorState/ErrorState'
 import { useNavigate } from 'react-router';
 import { Plus, Bookmark, Search } from 'lucide-react';
 import { toast } from 'sonner';
+import { showApiErrorToast } from '../../../../shared/utils';
 import { Button } from '@owox/ui/components/button';
 import type { ColumnDef } from '@tanstack/react-table';
 import {
@@ -209,7 +210,7 @@ export default function InsightsListView() {
           queryKey: [INSIGHT_TEMPLATES_QUERY_KEY, dataMart.id],
         });
         toast.success(t('insightsUi.deleted', 'Insight deleted'));
-      } catch {
+      } catch (error) {
         trackEvent({
           event: 'insight_error',
           category: 'Insights',
@@ -217,7 +218,7 @@ export default function InsightsListView() {
           label: deleteId,
           context: dataMart.id,
         });
-        toast.error(t('insightsUi.deleteFailed', 'Failed to delete insight'));
+        showApiErrorToast(error, t('insightsUi.deleteFailed', 'Failed to delete insight'));
       } finally {
         setDeleteId(null);
       }

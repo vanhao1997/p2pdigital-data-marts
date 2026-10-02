@@ -1,3 +1,7 @@
+import type { Page } from '@playwright/test';
+import type { MemberWithScopeDto } from '../../src/features/contexts/types/context.types';
+import type { CurrentUserResponse } from '../../src/features/idp/types/auth-api.types';
+import type { ProjectRole, Projects } from '../../src/features/idp/types/projects.types';
 import { test, expect } from '../fixtures/base';
 import { TESTIDS } from '../selectors/testids';
 
@@ -20,6 +24,10 @@ import { TESTIDS } from '../selectors/testids';
  * The mock is stateless: approve/decline always resolve 200/204. The frontend
  * applies optimistic removal so the row disappears immediately; reloading would
  * bring it back. Tests verify optimistic behaviour only.
+ *
+ * MR-04 additionally mocks the browser's current-user/project-role responses and
+ * member data for viewer/editor roles. The harness still uses NullIdpProvider;
+ * this verifies UI role gating, not backend authorization or tenant isolation.
  *
  * URL: /ui/0/project-settings/members
  */
@@ -52,7 +60,7 @@ const MOCK_REQUESTS = [
  * Must be called before page.goto() so intercepts are in place before the page
  * fires its initial data-fetch.
  */
-async function mockMembershipRequestRoutes(page: import('@playwright/test').Page): Promise<void> {
+async function mockMembershipRequestRoutes(page: Page): Promise<void> {
   // GET /api/members/requests — list
   await page.route('**/api/members/requests', route => {
     if (route.request().method() === 'GET') {
@@ -87,21 +95,65 @@ async function mockMembershipRequestRoutes(page: import('@playwright/test').Page
   });
 }
 
+async function openAdminMembersPage(page: Page): Promise<void> {
+  await page.goto(MEMBERS_URL);
+  // Wait for data to load before exercising admin controls.
+  await expect(page.getByTestId(TESTIDS.pendingRequestsSection)).toBeVisible({
+    timeout: 25_000,
+  });
+}
+
+async function mockNonAdminRoutes(page: Page, role: Exclude<ProjectRole, 'admin'>): Promise<void> {
+  const currentUser: CurrentUserResponse = {
+    userId: `mock-${role}`,
+    email: `${role}@example.com`,
+    fullName: 'Project Member',
+    projectId: '0',
+    projectTitle: 'Test Project',
+    roles: [role],
+  };
+  const projects: Projects = [{ id: '0', title: 'Test Project', roles: [role], status: 'active' }];
+  const members: MemberWithScopeDto[] = [
+    {
+      userId: 'mock-existing-member',
+      email: 'existing-member@example.com',
+      displayName: 'Existing Member',
+      avatarUrl: undefined,
+      role: 'viewer',
+      roleScope: 'entire_project',
+      contextIds: [],
+    },
+  ];
+
+  // Mirror AuthContext and ProjectsContext contracts. Keep the shared sign-in
+  // fixture unchanged and register these overrides before the first navigation.
+  await page.route('**/auth/api/user', route => route.fulfill({ json: currentUser }));
+  await page.route('**/auth/api/projects', route => route.fulfill({ json: projects }));
+  await page.route(/\/api\/members\/?$/, route => route.fulfill({ json: members }));
+  await page.route(/\/api\/contexts\/?$/, route => route.fulfill({ json: [] }));
+  await page.route('**/api/members/user-provisioning-settings', route =>
+    route.fulfill({
+      json: { isApplicable: false, isMainProject: false, organization: null, settings: null },
+    })
+  );
+
+  // Fail closed if a UI regression sends an administrative action. These local
+  // responses are safety guards; the request recorder below supplies the check.
+  await page.route(/\/api\/members\/requests\/[^/]+\/(approve|decline)$/, route =>
+    route.fulfill({ status: 403, json: { message: 'Forbidden' } })
+  );
+}
+
 test.describe('Project Settings — Membership requests', () => {
   test.beforeEach(async ({ page }) => {
     await mockMembershipRequestRoutes(page);
-    await page.goto(MEMBERS_URL);
-    // Wait for the Members tab content to settle — the pending-requests card
-    // is the earliest reliable anchor once data has loaded.
-    await expect(page.getByTestId(TESTIDS.pendingRequestsSection)).toBeVisible({
-      timeout: 25_000,
-    });
   });
 
   // ---------------------------------------------------------------------------
   // MR-01: Admin sees the pending requests section with both mock entries
   // ---------------------------------------------------------------------------
   test('admin sees both pending requests (MR-01)', async ({ page }) => {
+    await openAdminMembersPage(page);
     await expect(page.getByTestId(TESTIDS.pendingRequestsSection)).toBeVisible();
     // Trade-off: no count in the header — the row testids carry the cardinality
     // contract instead, surviving copy tweaks to the section title.
@@ -114,6 +166,7 @@ test.describe('Project Settings — Membership requests', () => {
   // MR-02: Approve flow — sheet opens, Approve button triggers toast + row gone
   // ---------------------------------------------------------------------------
   test('approve flow removes the row optimistically (MR-02)', async ({ page }) => {
+    await openAdminMembersPage(page);
     // Click the alice row to open the sheet.
     await page.getByText('alice@example.com').click();
 
@@ -138,6 +191,7 @@ test.describe('Project Settings — Membership requests', () => {
   //         row gone
   // ---------------------------------------------------------------------------
   test('decline flow asks for confirmation then removes the row (MR-03)', async ({ page }) => {
+    await openAdminMembersPage(page);
     // Click the bob row to open the sheet.
     await page.getByText('bob@example.com').click();
 
@@ -166,13 +220,59 @@ test.describe('Project Settings — Membership requests', () => {
   });
 
   // ---------------------------------------------------------------------------
-  // MR-04: Non-admin user — section not rendered
+  // MR-04: Non-admin users — normal members remain visible, admin actions absent
   // ---------------------------------------------------------------------------
-  test('non-admin does not see the section (MR-04)', async () => {
-    // The e2e harness currently has no role-switch helper (all tests run as the
-    // default admin). Skip until a non-admin fixture is wired up.
-    // TODO: implement once a viewer/editor user fixture is available in
-    //       apps/web/e2e/fixtures/ — mirror the pattern from api-helpers.ts.
-    test.skip(true, 'TODO: wire up non-admin user fixture once available');
-  });
+  for (const role of ['viewer', 'editor'] as const) {
+    test(`${role} cannot see or act on pending requests (MR-04)`, async ({ page }) => {
+      const pendingRequestReads: string[] = [];
+      const administrativeActions: string[] = [];
+      page.on('request', request => {
+        const pathname = new URL(request.url()).pathname;
+        if (request.method() === 'GET' && pathname === '/api/members/requests') {
+          pendingRequestReads.push(pathname);
+        }
+        if (
+          request.method() === 'POST' &&
+          /^\/api\/members\/requests\/[^/]+\/(approve|decline)$/.test(pathname)
+        ) {
+          administrativeActions.push(pathname);
+        }
+      });
+
+      await mockNonAdminRoutes(page, role);
+      await page.goto(MEMBERS_URL);
+
+      // A loaded member row proves the page is usable. Negative assertions alone
+      // could pass while the route is still loading or has redirected to login.
+      const membersTable = page.getByRole('table', { name: 'Project members table' });
+      const memberRow = membersTable.getByRole('row').filter({
+        has: page.getByText('existing-member@example.com', { exact: true }),
+      });
+      await expect(memberRow).toBeVisible({ timeout: 25_000 });
+      await expect(page).toHaveURL(new RegExp(`${MEMBERS_URL}$`));
+      await expect(memberRow.getByText('Existing Member', { exact: true })).toBeVisible();
+      await expect(page.getByTestId(TESTIDS.pendingRequestsSection)).toHaveCount(0);
+      await expect(page.getByTestId(TESTIDS.membershipRequestSheet)).toHaveCount(0);
+      await expect(page.getByTestId('membershipRequestRow-mock-req-alice')).toHaveCount(0);
+      await expect(page.getByTestId('membershipRequestRow-mock-req-bob')).toHaveCount(0);
+      await expect(
+        page.getByRole('button', { name: /Approve request|Decline request/i })
+      ).toHaveCount(0);
+      await expect(page.getByRole('button', { name: /Invite member/i })).toBeDisabled();
+
+      // Clicking a normal member must not expose a request or editable member
+      // sheet. Its menu remains accessible, with administrative items disabled.
+      await memberRow.getByText('existing-member@example.com', { exact: true }).click();
+      await expect(page.getByRole('dialog')).toHaveCount(0);
+      await memberRow.getByRole('button', { name: 'Open menu', exact: true }).click();
+      await expect(page.getByRole('menuitem', { name: 'Edit', exact: true })).toBeDisabled();
+      await expect(
+        page.getByRole('menuitem', { name: 'Remove from project', exact: true })
+      ).toBeDisabled();
+      await page.keyboard.press('Escape');
+
+      expect(pendingRequestReads).toEqual([]);
+      expect(administrativeActions).toEqual([]);
+    });
+  }
 });

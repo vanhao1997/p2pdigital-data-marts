@@ -130,6 +130,28 @@ Helper audit chỉ gửi `{ packageName: [installedVersion] }` tới npm advisor
 
 Metric source, formula, grain, timezone và refresh contract nằm trong `docs/analytics/metric-dictionary.md`. Dữ liệu unavailable không được hiển thị như zero.
 
+## Tiếp tục kiểm thử webapp ngày 2026-10-02
+
+### MVP: bổ sung kiểm thử và phản hồi lỗi
+
+Working tree sau `5495246` bổ sung kiểm thử Google Sheets destination, membership editor/viewer và xóa insight từ cả danh sách lẫn chi tiết. Insight đang được report sử dụng giữ nguyên khi DELETE trả 400; giao diện hiển thị lý do từ API. Sau khi xóa report, DELETE insight thành công và GET trả 404.
+
+Lượt Chromium local sau bản sửa: **23 pass, 0 fail, 0 retry** (4,9 phút), trên SQLite mới và `IDP_PROVIDER=none`. Google Sheets edit dùng PUT thật, GET và reload giữ title; delete dùng DELETE thật rồi GET trả 404. Bản sửa đánh dấu destination đã được tải khi mở edit để thay đổi URL không kích hoạt GET thứ hai và xóa state hiện có. Unit regression có red/green: trước sửa 1 fail/2 pass do hai GET, sau sửa 3/3 pass. Focused Google Sheets đạt 2/2 trước khi chạy lại bộ 23 cases.
+
+Web lint, typecheck và Prettier đạt sau bản sửa; shared API error helper đạt 12/12. Log selected browser: `output/final-webapp-completion-browser-20261002.log`; log quality: `output/final-webapp-completion-lint-20261002.log` và `output/final-webapp-completion-typecheck-20261002.log`. CI/image/restore trên `5495246` chỉ chứng nhận SHA đó; CI cho source mới còn chờ.
+
+Data model giữ nguyên destination, credential và project ID hiện có. Folder của Google Sheets nằm trong `data_destination.config.folderId` và `folderUrl`; credentials fixture là dữ liệu giả trong DB test riêng. Không có migration, thay đổi biến môi trường production, metric formula/grain/timezone, sync cadence hay billing contract.
+
+### V1: acceptance còn chờ
+
+- Destination regression và selected suite local đã đạt; xác thực các gate bắt buộc trên SHA mới sau commit.
+- Xác định public Issue sở hữu trước khi tạo/đổi changeset. Đã chuẩn bị draft cho MCP, Email, FormulaEditor, insight deletion feedback và destination editing; chưa tạo Issue hoặc đoán số.
+- Fresh login/refresh/restart, live MCP OAuth và project A/B isolation, Admicro thật, billing consumption, canary và traffic rollback vẫn chưa có acceptance trên candidate mới.
+
+Role mocks chỉ xác thực UX, không thay thế backend authorization. Fake Google credentials không chứng nhận OAuth hoặc quyền provider. Restore boot với IDP none không chứng nhận authentication, sync, billing hoặc semantic/traffic rollback. Production SQLite tiếp tục yêu cầu một writer cho volume live.
+
+Hồ sơ local của continuation: `output/final-webapp-continuation-evidence-20261002.md`. Gate chưa xác thực được giữ mở.
+
 ## Future
 
 - Avatar object storage, kiểm tra size/type và crop UI.
