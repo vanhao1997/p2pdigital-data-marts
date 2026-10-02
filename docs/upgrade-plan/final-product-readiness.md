@@ -78,6 +78,18 @@ Gate web đầy đủ của bản vá đã đạt:
 - Hai mô tả Issue MCP và Email đã chuẩn bị; câu hỏi về Issue sở hữu được gửi trong chat hiện tại. Chưa tạo hoặc đổi tên changeset khi chưa xác định được Issue.
 - Bản sửa FormulaEditor cũng cần changeset vì ngăn mất ký tự người dùng nhập. Mô tả Issue thứ ba đã chuẩn bị tại `output/issue-formula-edit-body.md`; chưa gán Issue hoặc tạo changeset theo số suy đoán.
 
+## Candidate `db28eb2` đã xác nhận
+
+- SHA đầy đủ: `db28eb2d866816bf416176f224f5890e469b3a27`; draft PR `#11` vẫn mở và trỏ đúng SHA này.
+- [Browser CI 36948818041](https://github.com/vanhao1997/p2pdigital-data-marts/actions/runs/36948818041) đạt: **126 passed, 22 skipped, 0 flaky, 0 failed**; không có first-attempt failure hoặc retry. Cả bốn shard và gate tổng đạt. Các ca skip giữ nguyên theo tên so với baseline trước đó.
+- Unit, API E2E, code quality, source audit và docs build cùng SHA đạt. Visual CI opt-in được skip; bằng chứng visual là lượt local 20/20 đã ghi ở trên, chỉ bao phủ baseline danh sách Data Mart rỗng.
+- [Runtime workflow 36948804106](https://github.com/vanhao1997/p2pdigital-data-marts/actions/runs/36948804106) và [PR runtime workflow 36948817935](https://github.com/vanhao1997/p2pdigital-data-marts/actions/runs/36948817935) đạt; deployment được skip. Main inventory: 1.465 installed copies/1.354 unique name-version pairs; sidecar: 77/75; cả hai 0 advisory. Native SQLite/CommonJS, Chromium và healthchecks đạt.
+- Image từ manual runtime workflow được pin bằng digest: main `sha256:48358fde4ea6164df92b9351148042c642b78ac7d2369c6ed2cc7e6cf388e238`, sidecar `sha256:66deb605aeb064d4bf2b4b30746832e308cd848be8d3acc719ff13f362e26fea`. Server đích đã pull cả hai; revision labels khớp SHA đầy đủ. Main có `linux/amd64` và `linux/arm64`; sidecar có `linux/amd64`.
+- Rehearsal dùng các bản sao backup riêng: candidate có 85 bảng, image production hiện tại có 84 bảng, image production trên bản sao database đã được candidate migrate có 85 bảng. Cả ba đạt readiness `200` và integrity `ok`; sidecar đúng digest đạt readiness `200`.
+- Mọi container rehearsal dùng network `none`, không publish port và không mount database live. Sau rehearsal không còn container test; production main và sidecar vẫn healthy trên image hiện tại. `IDP_PROVIDER=none` trong rehearsal nên không chứng nhận authentication, semantic rollback, provider sync, billing hoặc rollback traffic.
+- Hồ sơ chi tiết local: `output/final-webapp-release-evidence-db28.md`; logs: `output/final-webapp-runtime-ci-20261002.log`, `output/browser-db28-ci.log`, `output/final-webapp-restore-db28-20261002.log` và `output/final-webapp-post-rehearsal-db28-20261002.log`.
+- CI và runtime evidence trên đây chứng nhận candidate `db28eb2`, không chứng nhận một SHA mới sau khi bổ sung changeset hoặc commit tiếp theo. Chưa merge hoặc chuyển traffic production.
+
 ## Cấu hình chuyển image
 
 | Resource | Hiện tại                   | Thay thế đã chuẩn bị       |
@@ -95,8 +107,8 @@ Backup nằm trên server tại `/data/owox-backups/2026-10-01-final/`; chỉ gh
 
 ## V1: acceptance còn cần hoàn tất
 
-1. Các regression Email, formula và dialog đã đạt trong các lượt local riêng không retry; chạy lại CI đầy đủ và audit image trên SHA cuối. Runtime `8d8f011` đã đạt; browser cùng SHA vẫn có bốn ca cần retry trước bản sửa working tree.
-2. Chạy staging/canary, readiness và rollback trước chuyển production. GHCR pull và isolated restore boot của `8d8f011` đã đạt; rollback traffic chưa kiểm tra.
+1. CI đầy đủ, browser không retry và audit image đã đạt trên `db28eb2`. Sau khi hoàn tất Issue ownership và changeset, xác nhận các gate bắt buộc trên SHA release cuối; không dùng bằng chứng của SHA cũ cho source mới.
+2. Chạy staging/canary và rollback traffic trước chuyển production. GHCR pull, isolated restore boot và image hiện tại boot trên bản sao đã migrate của `db28eb2` đạt; authenticated app behavior và rollback traffic chưa kiểm tra.
 3. Xác nhận tài khoản trong Chrome bằng phiên đăng nhập mới. Người dùng nhập mật khẩu trực tiếp.
 4. Chạy acceptance Admicro với credential thật nhập trong UI: preview, extract, reconnect, retry và checkpoint theo ngày.
 5. Chạy live MCP với Codex/Claude, refresh/restart và project A/B theo deployment guide. Test SDK không thay thế acceptance này.
@@ -111,9 +123,9 @@ Không thay schema ứng dụng, metric formula, timezone, sync cadence hoặc b
 
 Helper audit chỉ gửi `{ packageName: [installedVersion] }` tới npm advisory API. Kết quả gồm package name, advisory ID và severity; không gửi source, environment, credential hoặc database.
 
-- **Security:** source audit không chứng minh dependencies của base image; gate candidate image phải đạt. Không đưa credential hoặc magic link vào log.
+- **Security:** source audit và runtime npm audit của candidate `db28eb2` đã đạt. Fresh login và live MCP authorization vẫn cần acceptance riêng; không đưa credential hoặc magic link vào log.
 - **Tenant isolation:** production project A/B acceptance chưa chạy; không suy ra pass từ tài khoản admin hoặc smoke readiness.
-- **Data sync:** fixture CI đã có cho SHA cũ; chưa có acceptance provider thật trên candidate mới. Preview thành công không thay thế extract/checkpoint/retry.
+- **Data sync:** các fixture Admicro của `db28eb2` đã đạt trong CI; chưa có acceptance provider thật trên candidate mới. Preview thành công không thay thế extract/checkpoint/retry.
 - **Billing:** chưa có live evidence về một lần charge, retry và cancellation trên candidate mới.
 
 Metric source, formula, grain, timezone và refresh contract nằm trong `docs/analytics/metric-dictionary.md`. Dữ liệu unavailable không được hiển thị như zero.
