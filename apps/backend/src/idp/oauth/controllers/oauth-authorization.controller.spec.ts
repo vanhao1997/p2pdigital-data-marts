@@ -273,9 +273,19 @@ describe('OAuthAuthorizationController', () => {
   });
 
   it('authorizes a CIMD identity without inserting it into the DCR registry', async () => {
-    const request = { ...authorizationRequest, clientId: `https://client.example/${'a'.repeat(150)}.json` };
-    const { controller, oauthIdp, clientRegistry } = createController({ request, resourceContext: sharedResourceContext });
-    await controller.authorize({}, createRequest({ cookies: { refreshToken: 'refresh-token-1' } }), createResponse() as unknown as Response);
+    const request = {
+      ...authorizationRequest,
+      clientId: `https://client.example/${'a'.repeat(150)}.json`,
+    };
+    const { controller, oauthIdp, clientRegistry } = createController({
+      request,
+      resourceContext: sharedResourceContext,
+    });
+    await controller.authorize(
+      {},
+      createRequest({ cookies: { refreshToken: 'refresh-token-1' } }),
+      createResponse() as unknown as Response
+    );
     expect(oauthIdp.createAuthorizationCode).toHaveBeenCalledWith(request, projectMember);
     expect(clientRegistry.attachUserIfMissing).not.toHaveBeenCalled();
   });

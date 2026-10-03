@@ -1,6 +1,6 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { MemoryRouter } from 'react-router';
+import { MemoryRouter, useLocation } from 'react-router';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { AuthStatus } from '../../../../../features/idp/types';
 import { DataDestinationType } from '../../../shared';
@@ -9,6 +9,10 @@ import { DataDestinationList } from './DataDestinationList';
 
 const tableMocks = vi.hoisted(() => ({
   onDelete: undefined as ((id: string) => void) | undefined,
+}));
+
+const detailMocks = vi.hoisted(() => ({
+  getDataDestinationById: vi.fn(),
 }));
 
 vi.mock('../../../shared', async importOriginal => {
@@ -75,6 +79,11 @@ vi.mock('../../../edit', () => ({
     isOpen ? <div data-testid='destinationEditSheet' /> : null,
 }));
 
+function LocationSearch() {
+  const { search } = useLocation();
+  return <output data-testid='locationSearch'>{search}</output>;
+}
+
 describe('DataDestinationList', () => {
   beforeEach(() => {
     vi.clearAllMocks();
@@ -96,7 +105,7 @@ describe('DataDestinationList', () => {
       loading: false,
       error: null,
       fetchDataDestinations: vi.fn(),
-      getDataDestinationById: vi.fn(),
+      getDataDestinationById: detailMocks.getDataDestinationById,
       createDataDestination: vi.fn(),
       updateDataDestination: vi.fn(),
       deleteDataDestination: vi.fn(),
@@ -111,11 +120,27 @@ describe('DataDestinationList', () => {
         client={new QueryClient({ defaultOptions: { queries: { retry: false } } })}
       >
         <MemoryRouter initialEntries={['/ui/project-1/data-destinations']}>
+          <LocationSearch />
           <DataDestinationList />
         </MemoryRouter>
       </QueryClientProvider>
     );
   }
+
+  it('loads destination details once when opening edit updates the deep link', async () => {
+    detailMocks.getDataDestinationById.mockResolvedValue({ id: 'destination-1' });
+
+    renderList();
+
+    fireEvent.click(screen.getByRole('button', { name: 'Edit [Ok OAuth] Sheets' }));
+
+    await screen.findByTestId('destinationEditSheet');
+    await waitFor(() => {
+      expect(screen.getByTestId('locationSearch')).toHaveTextContent('id=destination-1');
+    });
+    expect(detailMocks.getDataDestinationById).toHaveBeenCalledWith('destination-1');
+    expect(detailMocks.getDataDestinationById).toHaveBeenCalledTimes(1);
+  });
 
   it('links blocked destination reports to the project reports page filtered by destination', async () => {
     vi.mocked(dataDestinationService.getDataDestinationImpact).mockResolvedValueOnce({

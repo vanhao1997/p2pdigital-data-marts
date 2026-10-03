@@ -92,7 +92,7 @@ test.describe('DataMart Detail - Manual Run', () => {
     await detailsContainer.locator('button:has(svg.lucide-ellipsis-vertical)').click();
 
     // Click "Manual Run..." menu item
-    await page.getByRole('menuitem', { name: /Manual Run/ }).click();
+    await page.getByRole('menuitem', { name: 'Manual run...', exact: true }).click();
 
     // ConnectorRunSheet opens as a dialog. Scope the Run button to the dialog
     // to avoid ambiguity with other buttons on the page.
@@ -122,7 +122,9 @@ test.describe('DataMart Detail - Manual Run', () => {
     await detailsContainer.locator('button:has(svg.lucide-ellipsis-vertical)').click();
 
     // Verify "Manual Run..." is NOT present in the menu
-    await expect(page.getByRole('menuitem', { name: /Manual Run/ })).not.toBeVisible();
+    await expect(
+      page.getByRole('menuitem', { name: 'Manual run...', exact: true })
+    ).not.toBeVisible();
 
     // Close the dropdown
     await page.keyboard.press('Escape');

@@ -119,8 +119,9 @@ test.describe('DataMart Ownership', () => {
     await page.goto(`/ui/0/data-marts/${dm.id}/overview`);
     await expect(page.getByTestId(TESTIDS.datamartTabOverview)).toBeVisible();
 
-    await expect(page.getByText('Technical Owner', { exact: true })).toBeVisible();
-    await expect(page.getByText('Business Owner', { exact: true })).toBeVisible();
+    const overview = page.getByTestId(TESTIDS.datamartTabOverview);
+    await expect(overview.getByText('Technical owner', { exact: true })).toBeVisible();
+    await expect(overview.getByText('Business owner', { exact: true })).toBeVisible();
   });
 
   test('creator auto-assigned as technical owner (OWN-09)', async ({ page, apiHelpers }) => {

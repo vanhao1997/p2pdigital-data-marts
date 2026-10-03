@@ -111,6 +111,11 @@ test.describe('Data Setup - row-level calculated field', () => {
     const editor = popover.locator('.monaco-editor').first();
     await expect(editor).toBeVisible({ timeout: 15000 });
     await editor.click();
+    const input = popover.locator('div.native-edit-context, textarea.inputarea');
+    await input.focus();
+    await expect(input).toBeFocused({
+      timeout: 15000,
+    });
     await page.keyboard.type(ROW_LEVEL_FORMULA);
     // The chip is the proof `clicks` RESOLVED to a real field rather than being left as bare SQL —
     // an unresolved name is what the local gate refuses on Apply.
@@ -133,7 +138,15 @@ test.describe('Data Setup - row-level calculated field', () => {
 
     const save = schemaSaveButton(page);
     await expect(save).toBeEnabled();
+    // Save is disabled while the request is in flight as well as after it succeeds. Wait for the
+    // schema PUT before reading the API, otherwise that read can still return the previous fields.
+    const schemaSaved = page.waitForResponse(
+      response =>
+        response.request().method() === 'PUT' &&
+        new URL(response.url()).pathname === `/api/data-marts/${dataMartId}/schema`
+    );
     await save.click();
+    expect((await schemaSaved).ok()).toBeTruthy();
 
     // Saved, and saved CLEAN: the field-grouped error block is what a refused formula renders.
     await expect(save).toBeDisabled({ timeout: 15000 });

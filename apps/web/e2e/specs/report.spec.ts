@@ -48,7 +48,7 @@ test.describe('Reports - Looker Studio Pattern (Card UI)', () => {
     radix,
   }) => {
     // Create report via API
-    await apiHelpers.createReport(datamartId, destId);
+    const report = await apiHelpers.createReport(datamartId, destId);
 
     await page.goto(`/ui/0/data-marts/${datamartId}/reports`);
     const destTab = page.getByTestId(TESTIDS.destTab);
@@ -69,17 +69,26 @@ test.describe('Reports - Looker Studio Pattern (Card UI)', () => {
     await expect(sheet).toBeVisible();
 
     // Change cache lifetime to a different value than the API default (3600 = 1 hour)
-    // Use '4 hours' to avoid substring collision ('2 hours' matches '12 hours')
+    // Cache options retain the localized labels rendered by this form.
     const cacheSelect = sheet.getByRole('combobox');
-    await radix.selectOption(cacheSelect, '4 hours');
+    await radix.selectOption(cacheSelect, '4 giờ');
 
     // Save changes -- LookerStudio form uses 'Save changes' in edit mode
     const saveButton = sheet.getByRole('button', { name: 'Save changes' });
     await expect(saveButton).toBeEnabled({ timeout: 5000 });
+    const updateResponse = page.waitForResponse(
+      response =>
+        new URL(response.url()).pathname === `/api/reports/${report.id}` &&
+        response.request().method() === 'PUT'
+    );
     await saveButton.click();
+    expect((await updateResponse).ok()).toBe(true);
 
     // Verify sheet closes
     await expect(sheet).not.toBeVisible({ timeout: 10000 });
+    const persisted = await page.request.get(`/api/reports/${report.id}`);
+    expect(persisted.ok()).toBe(true);
+    expect((await persisted.json()).destinationConfig.cacheLifetime).toBe(14400);
   });
 
   test('deletes Looker Studio report by toggling card off (RPT-04)', async ({
@@ -194,6 +203,7 @@ test.describe('Reports - Email Pattern (Table UI)', () => {
       },
     });
     expect(reportRes.ok()).toBeTruthy();
+    const createdReport = (await reportRes.json()) as { id: string };
 
     await page.goto(`/ui/0/data-marts/${datamartId}/reports`);
     const destTab = page.getByTestId(TESTIDS.destTab);
@@ -219,10 +229,19 @@ test.describe('Reports - Email Pattern (Table UI)', () => {
       name: 'Save changes to report',
     });
     await expect(saveButton).toBeEnabled({ timeout: 5000 });
+    const updateResponse = page.waitForResponse(
+      response =>
+        new URL(response.url()).pathname === `/api/reports/${createdReport.id}` &&
+        response.request().method() === 'PUT'
+    );
     await saveButton.click();
+    expect((await updateResponse).ok()).toBe(true);
 
     // Verify sheet closes
     await expect(sheet).not.toBeVisible({ timeout: 15000 });
+    const persisted = await page.request.get(`/api/reports/${createdReport.id}`);
+    expect(persisted.ok()).toBe(true);
+    expect((await persisted.json()).destinationConfig.subject).toBe('Updated Subject');
   });
 
   test('deletes Email report with confirmation (RPT-04)', async ({ page, radix }) => {

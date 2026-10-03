@@ -30,6 +30,7 @@ import {
   ResizableHandle,
 } from '@owox/ui/components/resizable';
 import { toast } from 'sonner';
+import { showApiErrorToast } from '../../../../shared/utils';
 import { Button } from '@owox/ui/components/button';
 import {
   Breadcrumb,
@@ -526,7 +527,7 @@ export default function InsightDetailsView() {
       });
       toast.success(t('insightsUi.deleted', 'Insight deleted'));
       void navigate('..');
-    } catch {
+    } catch (error) {
       trackEvent({
         event: 'insight_error',
         category: 'Insights',
@@ -534,7 +535,7 @@ export default function InsightDetailsView() {
         label: insightId,
         context: dataMart.id,
       });
-      toast.error(t('insightsUi.deleteFailed', 'Failed to delete insight'));
+      showApiErrorToast(error, t('insightsUi.deleteFailed', 'Failed to delete insight'));
     }
   }, [canDelete, dataMart?.id, insightId, navigate, t]);
 
@@ -740,7 +741,11 @@ export default function InsightDetailsView() {
           </Button>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant='ghost' size='icon'>
+              <Button
+                variant='ghost'
+                size='icon'
+                aria-label={t('insightsUi.rowActions', 'Insight actions')}
+              >
                 <MoreVertical className='h-4 w-4' />
               </Button>
             </DropdownMenuTrigger>

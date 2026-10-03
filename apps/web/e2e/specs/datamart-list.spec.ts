@@ -78,7 +78,7 @@ test.describe('DataMart List with data', () => {
     const dialog = page.getByRole('dialog', { name: 'Check Data Quality' });
     await expect(dialog).toBeVisible();
     await expect(
-      dialog.getByText('Run Data Quality checks for 1 selected Data Mart?')
+      dialog.getByText('Run Data Quality checks for 1 selected Data Marts?', { exact: true })
     ).toBeVisible();
   });
 
@@ -102,7 +102,12 @@ test.describe('DataMart List with data', () => {
 
   test('filter by status shows matching datamarts (DLIST-03)', async ({ page, radix }) => {
     await page.goto('/ui/0/data-marts');
-    await expect(page.getByTestId(TESTIDS.datamartTable)).toBeVisible();
+    const table = page.getByTestId(TESTIDS.datamartTable);
+    await expect(table).toBeVisible();
+    // The table shell precedes its async rows. Open filters after the initial
+    // query settles so its loading render cannot detach the open popover.
+    await expect(table.getByText(draftTitle, { exact: true })).toBeVisible();
+    await expect(table.getByText(publishedTitle, { exact: true })).toBeVisible();
 
     // Close FloatingPopover if it's open (blocks interaction with filters)
     await radix.closeFloatingPopoverIfOpen();

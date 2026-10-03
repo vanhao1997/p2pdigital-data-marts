@@ -105,6 +105,7 @@ export const DataDestinationList = ({
       try {
         const dataDestination = await getDataDestinationById(id);
         if (!dataDestination) return;
+        hasAttemptedDeepLink.current = true;
         setIsEditSheetOpen(true);
         setIdParam(id);
       } catch {

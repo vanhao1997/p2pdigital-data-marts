@@ -1,0 +1,161 @@
+# Trạng thái hoàn thiện sản phẩm — 2026-10-02
+
+## MVP đã thực hiện
+
+- Sửa contract Coolify `v4.0.0-beta.473`: kiểm tra cả hai Docker Image resource trước khi PATCH, dùng port healthcheck dạng string và đọc lại cấu hình trước deploy.
+- Chặn UUID trùng và resource còn dùng source build trước mọi thay đổi deployment.
+- Nâng Axios lên `1.20.0` và gRPC lên `1.14.5` trong các dependency liên quan, giữ nguyên major version.
+- Runtime dùng base Node `22.22.3` được pin bằng digest và cài mới production dependencies từ npm lockfile trên Linux; không kế thừa dependency tree từ image OWOX cũ.
+- Thêm gate audit package thực tế trong cả hai candidate image, trước smoke và push. Lỗi inventory hoặc dịch vụ advisory làm gate thất bại.
+- Cập nhật changeset bảo mật của Issue `#10`; bỏ mô tả TOML chưa được vá đã lỗi thời.
+- Chuẩn bị hai Docker Image resource thay thế trong project/environment hiện tại, chưa khởi động hoặc chuyển traffic.
+- Sao chép runtime environment, private network, healthcheck và directory mount của database. Không lưu giá trị secret trong báo cáo.
+
+## Bằng chứng xác thực
+
+| Kiểm tra                                              | Kết quả quan sát                                                                                                                                                                   |
+| ----------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| CI của SHA `4e0512dc7e851c6b7299ab0bfb73155133e5e17e` | Lint, test, build, bundle budget, hai image smoke và push đạt; deploy thất bại ở Coolify HTTP 422. Đây là bằng chứng cho SHA cũ, không chứng nhận bản vá mới.                      |
+| Contract workflow                                     | YAML, Bash và 14 kịch bản API giả lập đạt.                                                                                                                                         |
+| Helper audit image                                    | 20 checks đạt; ESLint và Prettier đạt. Hai working-tree candidate Linux đã audit 0 advisory; CI/GHCR của SHA mới còn cần xác nhận.                                                 |
+| Runtime audit source sau bản vá                       | `npm audit --omit=dev`: 0 advisory.                                                                                                                                                |
+| IDP client                                            | 5 suites, 23 tests đạt; typecheck đạt.                                                                                                                                             |
+| Web HTTP/error tests                                  | 2 files, 18 tests đạt.                                                                                                                                                             |
+| Dockerfile dependency fixtures                        | Copy root/nested, HTTP request, redirect guard, gRPC roundtrip và guard major version đạt.                                                                                         |
+| Backup auth DB và app DB                              | SQLite backup API; restore auth 7 bảng, app 84 bảng có integrity `ok`. Candidate và image hiện tại boot từ hai bản sao app riêng, readiness `200`, integrity `ok`; network `none`. |
+| Tài khoản được yêu cầu                                | Chrome đã mở được danh sách Data Mart bằng tài khoản được yêu cầu. Đây là phiên hiện có; fresh login/refresh/restart chưa kiểm tra. Email được giữ ngoài tài liệu repo.            |
+| Token Coolify                                         | Người dùng xác nhận đã xoay và cập nhật secret store; API đọc được bằng credential lấy từ Windows user environment.                                                                |
+
+Gate web đầy đủ của bản vá đã đạt:
+
+- `npm test -w @owox/web`: 266 files, 2.369 tests đạt.
+- `npm run lint -w @owox/web`: exit code 0.
+- `npm run type-check -w @owox/web`: exit code 0.
+
+## Tiếp tục ngày 2026-10-01
+
+- Script staging có 18 guard checks đạt; context thực tế gồm 8 workspace artifacts và 18 manifests. `package.json` và lockfile trong context giữ nguyên bytes từ checkout.
+- Sửa dependency `@owox/ui` của web thành workspace `*`, bỏ hai lock records trỏ sai `apps/packages/ui`. Không nâng version hoặc đổi resolved/integrity của package ngoài phạm vi.
+- Giữ CLI `serve` và migration commands, CommonJS/ESM exports, root user, working directory và SQLite data path hiện có.
+- Linux `npm ci --omit=dev` đã cài 1.465 packages trong candidate build. Audit image main: 1.465 installed copies, 1.354 unique name/version pairs, 0 advisory. Probe native `better-sqlite3` và CommonJS helpers đạt; `/health/ready` trả `200`, UI trả `200`, container `healthy`. Đây là working-tree candidate local, chưa chứng nhận image GHCR của SHA mới.
+- Sidecar candidate Linux: 77 installed copies, 75 unique name/version pairs, 0 advisory. `/healthz` trả `200`, container `healthy`; Chromium launch và page probe đạt. CI smoke kiểm tra native SQLite/CommonJS và Chromium trước push.
+- Sửa locator manual run theo nhãn `Manual run...`; `RUN-02` đã đạt với toàn ca 90 giây, giữ assertion run history 15 giây và response `201`.
+- Browser CI có 4 shard độc lập trên 4 runner với SQLite riêng, budget toàn ca 90 giây, timeout tổng test 45 phút và job 60 phút để upload diagnostics. Check tổng `Browser E2E Tests` chỉ đạt khi cả 4 shard đạt. Lần chạy local với budget cũ 20 phút: 61 pass, 14 fail, 73 chưa chạy. Các lỗi fixture/selector/focus đang được sửa và xác thực lại; chưa đánh dấu suite 148 tests đạt.
+- Guard staging và helper audit đã rerun chung: 38 checks đạt, không skip hoặc cancel. Web typecheck đạt. Browser fixture bật catalog Admicro bằng URL local và secret giả dành riêng cho test; không đổi environment contract của production.
+- Nhóm browser 45 cases: lần đầu 41 pass, 3 fail, 1 skip MR-04 có sẵn. Ba ca lỗi đã pass trong các rerun riêng: chip reference phải chấp nhận suggestion, filter chờ rows tải xong, GitHub wizard dùng text exact và giữ kiểm tra PUT/persistence sau reload. Đây là coverage ghép từ các lượt có artifact riêng; chưa thay thế full CI trên SHA cuối.
+- Đã boot candidate và image hiện tại từ hai bản sao app backup riêng trong network `none`, không mount database live: readiness `200`, integrity `ok`; candidate 85 bảng sau migration, image hiện tại 84 bảng. Auth restore giữ 7 bảng và integrity `ok`. Chưa kiểm tra fresh login bằng auth restore hoặc chuyển traffic rollback.
+
+## CI và GHCR đã xác nhận
+
+- SHA `3cd598c9c2f7ecc2d86f3fc66c828d1a1d76a913`: unit tests, ESLint, Prettier, Markdownlint, source audit, docs build và cả 4 API E2E shard đạt.
+- [Runtime workflow 36862303377](https://github.com/vanhao1997/p2pdigital-data-marts/actions/runs/36862303377) đạt: build, audit inventory, native SQLite/CommonJS, Chromium và healthcheck. `deploy_to_coolify=false`; deploy bị skip.
+- Main GHCR cùng SHA: 1.465 installed copies, 1.354 unique name/version pairs, 0 advisory. Multiarch index digest `sha256:41dff8915f9b56a9e712dacb015f498aa1ec1c5efe5032d82b5bce8ddd3d5cae`; có `linux/amd64` và `linux/arm64`.
+- Sidecar GHCR cùng SHA: 77 copies, 75 pairs, 0 advisory; digest `sha256:f1b8928ecb2cae4e339adb1712090fd573eef5320b71af8ef5f06efbb22020a4`.
+- Server đích đã pull thành công cả hai image qua GHCR. Pull không khởi động resource hoặc chuyển domain.
+- [Browser CI 36862308972](https://github.com/vanhao1997/p2pdigital-data-marts/actions/runs/36862308972): shard 1, 2, 4 đạt; shard 3 thất bại ở nhãn owner và cache lifetime Looker Studio. Email edit pass sau retry nhưng rerun local phát hiện sheet đóng rồi mở lại. Check tổng vẫn thất bại; chưa chứng nhận full browser suite.
+- Bản sửa Email đã đạt 22 unit tests trong hai file: 7 regression về vòng đời submit và 2 regression về callback đóng sheet giữ từ render cũ. Callback đọc state đã commit hiện tại, xóa đúng deep link sở hữu và giữ deep link của báo cáo khác.
+- Browser `RPT-03` đạt 3 lượt liên tiếp không retry: giữ assertion đóng sheet trong 15 giây, PUT thành công và GET xác nhận subject đã lưu. Không tăng thời gian đóng sheet để bỏ qua lỗi mở lại. Artifact nằm trong `output/playwright/release-email-deeplink-fixed-report.json`.
+- Web typecheck, ESLint/Prettier của các hook và Prettier của browser specs/tài liệu đều đạt. Nhãn owner và cache lifetime đã sửa theo UI hiện có, giữ assertion persistence.
+- [Browser CI 36891983825](https://github.com/vanhao1997/p2pdigital-data-marts/actions/runs/36891983825) trên SHA `b21d1b1610cddb48c1c75171fe3a62102667f9bc` đạt cả 4 shard và check tổng: **126 passed, 22 skipped, 0 failed**. Skip có sẵn gồm 20 visual baseline opt-in, 1 non-admin fixture chưa có và 1 report trigger cần license. Không thêm skip để xử lý lỗi browser.
+- [GHSA-c475-qrg2-pj4r](https://github.com/advisories/GHSA-c475-qrg2-pj4r) được công bố lúc `2026-10-01 14:42 UTC`, sau lượt runtime audit của `3cd598c`. Audit của `b21d1b1` phát hiện dependency `basic-ftp`; gate image chặn 1 advisory high trước publication. Bằng chứng 0 advisory của SHA cũ giữ nguyên thời điểm quan sát.
+- Bản vá scoped `get-uri → basic-ftp@6.2.1` giữ Databricks `1.17.0`, proxy-agent `6.5.0`, pac-proxy-agent `7.2.0` và get-uri `6.0.5`. Source audit sau bản vá đạt 0 vulnerabilities. Fixture FTP/PAC đạt 21/21; guard tổng hợp đạt 39/39, không fail/skip; lint và format đạt. CI/image audit trên SHA cuối còn cần xác nhận.
+- Fixture dùng dependency chain được resolve từ Databricks thực tế: Unix listing/parser, MLSD metadata, get-uri download/cache/error, EPSV→PASV cùng host và PAC proxy HTTP. FTP data host mặc định phải khớp control host; deployment dùng transfer host tách riêng cần compatibility review theo changeset.
+- SHA `8d8f011afd88bcfdb4ecff06211fc2b7f3bdb354`: source audit, unit tests, 4 API E2E shard, lint, format và docs checks đạt. Một lượt install của Markdownlint gặp `ECONNRESET`; rerun job đã đạt, không sửa hoặc bỏ gate.
+- [Runtime workflow 36900142252](https://github.com/vanhao1997/p2pdigital-data-marts/actions/runs/36900142252) cùng SHA đạt: main inventory 1.465 copies/1.354 pairs, sidecar 77 copies/75 pairs, cả hai 0 advisory; 21 FTP/PAC fixtures, native SQLite/CommonJS, Chromium và healthchecks đạt. Main có `linux/amd64` và `linux/arm64`. Server đích đã pull cả hai image; `deploy_to_coolify=false`, chưa chuyển traffic.
+- Restore boot từ hai bản sao app backup riêng bằng đúng main image `8d8f011` và image production trước đó đạt readiness `200`, integrity `ok`, lần lượt 85 và 84 bảng. Container dùng network `none` và đã dọn; không mount database live. Bằng chứng này chưa xác nhận downgrade database đã migrate hoặc rollback traffic.
+- [Browser CI 36900147323](https://github.com/vanhao1997/p2pdigital-data-marts/actions/runs/36900147323) cùng SHA đạt nhờ retry: **122 passed, 4 flaky, 22 skipped, 0 failed**. Lần đầu Email sheet đóng rồi mở lại; hai ca formula autocomplete thiếu suggestion và một ca dialog bỏ thay đổi thiếu dialog. Các lỗi đang được sửa; CI xanh chưa đủ để chứng nhận candidate sẵn sàng release.
+
+## Tiếp tục ngày 2026-10-02
+
+- Khôi phục goal trong chat hiện tại, giữ draft PR `#11` và nhánh `codex/final-product-release-20261001`. Bằng chứng CI của SHA `8d8f011` không chứng nhận các thay đổi working tree tiếp theo.
+- Regression URL pending tái hiện lỗi khi lưu/đóng report trước khi `reportId` commit; regression thứ ba còn phát hiện deep link của report khác bị thay thế. Bản sửa giữ cancellation đến khi router xác nhận và khôi phục deep link/query của luồng khác. Hai hook đạt 25 unit tests; web typecheck và diff check đạt.
+- `RPT-03` đạt 3/3 lượt không retry trên database test riêng: giữ assertion sheet đóng trong 15 giây và GET xác nhận subject đã lưu. Artifact: `output/playwright/final-webapp-email-20261002.json`.
+- Lượt autocomplete/dialog trên database test riêng đạt 5/7 ca, không retry. Bốn ca dialog và ca chèn suggestion bằng chuột đạt. Ca formula đầu mất ký tự `users` thành `uss`; ca thứ hai có text đầy đủ nhưng suggestion không hiện. Trace được giữ trong `output/playwright/final-webapp-fixtures-20261002/`; regression đang được sửa tại đồng bộ controlled value của FormulaEditor.
+- Bản sửa FormulaEditor đồng bộ callback native model trước lần gõ tiếp theo, tránh controlled wrapper ghi đè giá trị mới bằng prop cũ. Regression mới thất bại trước sửa (`SUM(clicks)` thay vì `SUM(clicks)u`), đạt sau sửa; FormulaEditor có 44/44 tests đạt. Formula E2E đạt 3/3 ca, không retry trong 2,6 phút: gõ nhanh giữ đầy đủ text, suggestion join sâu, drag width và chèn bằng chuột. Artifact: `output/playwright/final-webapp-formula-sync-20261002.json`.
+- Gate local toàn web sau các bản sửa: 266 files, 2.382 unit tests đạt; ESLint toàn web đạt. Reviewer độc lập không tìm thấy finding chặn trong hai bản sửa; kiểm tra native editor/router thật dựa trên E2E, không suy ra từ mocks.
+- Web build và bundle budget đạt: 217 JavaScript chunks, chunk lớn nhất 435.456 bytes. Visual regression đạt 20/20 ca, không retry trong 4,1 phút: widths 320/375/768/1024/1440px, light/dark và vi/en; giữ nguyên baseline đã có và kiểm tra không overflow ngang. Artifact: `output/playwright/final-webapp-visual-20261002.json`.
+- Coolify API đọc lại cho thấy main và sidecar hiện tại `running:healthy`; hai resource thay thế chưa chạy candidate mới và vẫn trỏ image tag SHA `4e0512d`. Chrome mở được Data Mart bằng phiên hiện có; đây không phải bằng chứng fresh login hoặc acceptance của candidate.
+- Hai mô tả Issue MCP và Email đã chuẩn bị; câu hỏi về Issue sở hữu được gửi trong chat hiện tại. Chưa tạo hoặc đổi tên changeset khi chưa xác định được Issue.
+- Bản sửa FormulaEditor cũng cần changeset vì ngăn mất ký tự người dùng nhập. Mô tả Issue thứ ba đã chuẩn bị tại `output/issue-formula-edit-body.md`; chưa gán Issue hoặc tạo changeset theo số suy đoán.
+
+## Candidate `db28eb2` đã xác nhận
+
+- SHA đầy đủ: `db28eb2d866816bf416176f224f5890e469b3a27`; draft PR `#11` vẫn mở và trỏ đúng SHA này.
+- [Browser CI 36948818041](https://github.com/vanhao1997/p2pdigital-data-marts/actions/runs/36948818041) đạt: **126 passed, 22 skipped, 0 flaky, 0 failed**; không có first-attempt failure hoặc retry. Cả bốn shard và gate tổng đạt. Các ca skip giữ nguyên theo tên so với baseline trước đó.
+- Unit, API E2E, code quality, source audit và docs build cùng SHA đạt. Visual CI opt-in được skip; bằng chứng visual là lượt local 20/20 đã ghi ở trên, chỉ bao phủ baseline danh sách Data Mart rỗng.
+- [Runtime workflow 36948804106](https://github.com/vanhao1997/p2pdigital-data-marts/actions/runs/36948804106) và [PR runtime workflow 36948817935](https://github.com/vanhao1997/p2pdigital-data-marts/actions/runs/36948817935) đạt; deployment được skip. Main inventory: 1.465 installed copies/1.354 unique name-version pairs; sidecar: 77/75; cả hai 0 advisory. Native SQLite/CommonJS, Chromium và healthchecks đạt.
+- Image từ manual runtime workflow được pin bằng digest: main `sha256:48358fde4ea6164df92b9351148042c642b78ac7d2369c6ed2cc7e6cf388e238`, sidecar `sha256:66deb605aeb064d4bf2b4b30746832e308cd848be8d3acc719ff13f362e26fea`. Server đích đã pull cả hai; revision labels khớp SHA đầy đủ. Main có `linux/amd64` và `linux/arm64`; sidecar có `linux/amd64`.
+- Rehearsal dùng các bản sao backup riêng: candidate có 85 bảng, image production hiện tại có 84 bảng, image production trên bản sao database đã được candidate migrate có 85 bảng. Cả ba đạt readiness `200` và integrity `ok`; sidecar đúng digest đạt readiness `200`.
+- Mọi container rehearsal dùng network `none`, không publish port và không mount database live. Sau rehearsal không còn container test; production main và sidecar vẫn healthy trên image hiện tại. `IDP_PROVIDER=none` trong rehearsal nên không chứng nhận authentication, semantic rollback, provider sync, billing hoặc rollback traffic.
+- Hồ sơ chi tiết local: `output/final-webapp-release-evidence-db28.md`; logs: `output/final-webapp-runtime-ci-20261002.log`, `output/browser-db28-ci.log`, `output/final-webapp-restore-db28-20261002.log` và `output/final-webapp-post-rehearsal-db28-20261002.log`.
+- CI và runtime evidence trên đây chứng nhận candidate `db28eb2`, không chứng nhận một SHA mới sau khi bổ sung changeset hoặc commit tiếp theo. Chưa merge hoặc chuyển traffic production.
+
+## Cấu hình chuyển image
+
+| Resource | Hiện tại                   | Thay thế đã chuẩn bị       |
+| -------- | -------------------------- | -------------------------- |
+| Main     | `b28iq4vagsm5pcghhckg1fli` | `w7o3yetefi0h89xa54thd173` |
+| Sidecar  | `vmmuqrrbnehbcpielsthjdlc` | `ogjemhzck5epcq7ask3gugmq` |
+
+Main thay thế dùng port `3000`, `/health/ready` và mount `/root/.local/share/owox` từ cùng directory dữ liệu. Main hiện tại dùng port `3008`.
+
+Sidecar thay thế dùng port `8091`, `/healthz`, cùng private network và không có public domain. Main thay thế trỏ extractor URL tới sidecar thay thế.
+
+Hai resource thay thế chưa chạy. Chưa cập nhật GitHub resource UUID hoặc chuyển public domain. Không khởi động hai main instance cùng ghi database SQLite.
+
+Backup nằm trên server tại `/data/owox-backups/2026-10-01-final/`; chỉ ghi đường dẫn và trạng thái kiểm tra, không đưa dữ liệu database vào repo.
+
+## V1: acceptance còn cần hoàn tất
+
+1. CI đầy đủ, browser không retry và audit image đã đạt trên `db28eb2`. Sau khi hoàn tất Issue ownership và changeset, xác nhận các gate bắt buộc trên SHA release cuối; không dùng bằng chứng của SHA cũ cho source mới.
+2. Chạy staging/canary và rollback traffic trước chuyển production. GHCR pull, isolated restore boot và image hiện tại boot trên bản sao đã migrate của `db28eb2` đạt; authenticated app behavior và rollback traffic chưa kiểm tra.
+3. Xác nhận tài khoản trong Chrome bằng phiên đăng nhập mới. Người dùng nhập mật khẩu trực tiếp.
+4. Chạy acceptance Admicro với credential thật nhập trong UI: preview, extract, reconnect, retry và checkpoint theo ngày.
+5. Chạy live MCP với Codex/Claude, refresh/restart và project A/B theo deployment guide. Test SDK không thay thế acceptance này.
+6. Ghi nhận billing mode: `LICENSE` không tính phí connector/process run; dùng report hoặc `MCP_QUERY_RUN` để xác nhận một lần charge. `INTERNAL` kiểm tra connector consumption sau thành công. Preview, failed/cancelled run và retry không tạo charge trùng.
+7. Xác định Issue sở hữu MCP: `.changeset/10-mcp-2026-protocol.md` đang dùng số của Issue bảo mật; chưa đổi hoặc đoán số mới.
+8. Xác định Issue sở hữu bản sửa hành vi lưu Email trước khi tạo changeset theo release policy.
+9. Xác định Issue sở hữu bản sửa FormulaEditor trước khi tạo changeset theo release policy.
+
+## Data model và rủi ro còn cần xác thực
+
+Không thay schema ứng dụng, metric formula, timezone, sync cadence hoặc billing contract. Data Mart và run vẫn được phân tách bằng project; IDP giữ account, session và membership hiện có.
+
+Helper audit chỉ gửi `{ packageName: [installedVersion] }` tới npm advisory API. Kết quả gồm package name, advisory ID và severity; không gửi source, environment, credential hoặc database.
+
+- **Security:** source audit và runtime npm audit của candidate `db28eb2` đã đạt. Fresh login và live MCP authorization vẫn cần acceptance riêng; không đưa credential hoặc magic link vào log.
+- **Tenant isolation:** production project A/B acceptance chưa chạy; không suy ra pass từ tài khoản admin hoặc smoke readiness.
+- **Data sync:** các fixture Admicro của `db28eb2` đã đạt trong CI; chưa có acceptance provider thật trên candidate mới. Preview thành công không thay thế extract/checkpoint/retry.
+- **Billing:** chưa có live evidence về một lần charge, retry và cancellation trên candidate mới.
+
+Metric source, formula, grain, timezone và refresh contract nằm trong `docs/analytics/metric-dictionary.md`. Dữ liệu unavailable không được hiển thị như zero.
+
+## Tiếp tục kiểm thử webapp ngày 2026-10-02
+
+### MVP: bổ sung kiểm thử và phản hồi lỗi
+
+Working tree sau `5495246` bổ sung kiểm thử Google Sheets destination, membership editor/viewer và xóa insight từ cả danh sách lẫn chi tiết. Insight đang được report sử dụng giữ nguyên khi DELETE trả 400; giao diện hiển thị lý do từ API. Sau khi xóa report, DELETE insight thành công và GET trả 404.
+
+Lượt Chromium local sau bản sửa: **23 pass, 0 fail, 0 retry** (4,9 phút), trên SQLite mới và `IDP_PROVIDER=none`. Google Sheets edit dùng PUT thật, GET và reload giữ title; delete dùng DELETE thật rồi GET trả 404. Bản sửa đánh dấu destination đã được tải khi mở edit để thay đổi URL không kích hoạt GET thứ hai và xóa state hiện có. Unit regression có red/green: trước sửa 1 fail/2 pass do hai GET, sau sửa 3/3 pass. Focused Google Sheets đạt 2/2 trước khi chạy lại bộ 23 cases.
+
+Web lint, typecheck và Prettier đạt sau bản sửa; shared API error helper đạt 12/12. Log selected browser: `output/final-webapp-completion-browser-20261002.log`; log quality: `output/final-webapp-completion-lint-20261002.log` và `output/final-webapp-completion-typecheck-20261002.log`. CI/image/restore trên `5495246` chỉ chứng nhận SHA đó; CI cho source mới còn chờ.
+
+Data model giữ nguyên destination, credential và project ID hiện có. Folder của Google Sheets nằm trong `data_destination.config.folderId` và `folderUrl`; credentials fixture là dữ liệu giả trong DB test riêng. Không có migration, thay đổi biến môi trường production, metric formula/grain/timezone, sync cadence hay billing contract.
+
+### V1: acceptance còn chờ
+
+- Destination regression và selected suite local đã đạt; xác thực các gate bắt buộc trên SHA mới sau commit.
+- Xác định public Issue sở hữu trước khi tạo/đổi changeset. Đã chuẩn bị draft cho MCP, Email, FormulaEditor, insight deletion feedback và destination editing; chưa tạo Issue hoặc đoán số.
+- Fresh login/refresh/restart, live MCP OAuth và project A/B isolation, Admicro thật, billing consumption, canary và traffic rollback vẫn chưa có acceptance trên candidate mới.
+
+Role mocks chỉ xác thực UX, không thay thế backend authorization. Fake Google credentials không chứng nhận OAuth hoặc quyền provider. Restore boot với IDP none không chứng nhận authentication, sync, billing hoặc semantic/traffic rollback. Production SQLite tiếp tục yêu cầu một writer cho volume live.
+
+Hồ sơ local của continuation: `output/final-webapp-continuation-evidence-20261002.md`. Gate chưa xác thực được giữ mở.
+
+## Future
+
+- Avatar object storage, kiểm tra size/type và crop UI.
+- Template version, draft/published state, restore, audit log và optimistic locking.
+- MCP subscriptions, tasks, elicitation, resumability và shared multi-node sessions sau khi có implementation và acceptance riêng.
+
+Các mục future chưa nằm trong phạm vi bản vá release này.
