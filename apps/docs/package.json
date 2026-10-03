@@ -19,23 +19,21 @@
     "format": "prettier --write \"**/*.{ts,js,mjs,json}\" --ignore-path ../../.prettierignore",
     "format:check": "prettier --check \"**/*.{ts,js,mjs,json}\" --ignore-path ../../.prettierignore"
   },
-  "dependencies": {
-    "@astrojs/starlight": "^0.41.4",
-    "astro": "^7.1.3",
-    "sharp": "^0.35.0",
-    "starlight-auto-sidebar": "^0.4.0"
-  },
   "devDependencies": {
+    "@astrojs/starlight": "^0.41.4",
     "@owox/eslint-config": "*",
     "@owox/prettier-config": "*",
     "@types/js-yaml": "^4",
     "@types/papaparse": "^5",
+    "astro": "^7.1.3",
     "cookie": "^2.0.1",
     "glob": "^13",
     "globals": "^16",
     "js-yaml": "^4",
     "papaparse": "^5.5.3",
     "rehype-external-links": "^3.0.0",
+    "sharp": "^0.35.0",
+    "starlight-auto-sidebar": "^0.4.0",
     "starlight-links-validator": "^0.25.2"
   }
 }
