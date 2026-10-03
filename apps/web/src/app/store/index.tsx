@@ -66,9 +66,11 @@ export function AppBootstrap({ children }: { children: React.ReactNode }) {
   const hasEmptyProjectRoles = Array.isArray(user?.roles) && user.roles.length === 0;
 
   useEffect(() => {
-    if (status === AuthStatus.AUTHENTICATED && user?.projectId) {
-      dispatch(setProject({ id: user.projectId, title: user.projectTitle ?? null }));
-      if (!hasEmptyProjectRoles && flagsStatus === RequestStatus.IDLE) {
+    if (status === AuthStatus.AUTHENTICATED) {
+      if (user?.projectId) {
+        dispatch(setProject({ id: user.projectId, title: user.projectTitle ?? null }));
+      }
+      if ((!hasEmptyProjectRoles || !user.projectId) && flagsStatus === RequestStatus.IDLE) {
         void fetchFlags(dispatch);
       }
     }
@@ -77,8 +79,7 @@ export function AppBootstrap({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     const ready =
       status === AuthStatus.AUTHENTICATED &&
-      Boolean(user?.projectId) &&
-      (hasEmptyProjectRoles || flagsStatus === RequestStatus.LOADED);
+      ((hasEmptyProjectRoles && Boolean(user.projectId)) || flagsStatus === RequestStatus.LOADED);
     dispatch({ type: APP_SET_READY, payload: ready });
   }, [status, user?.projectId, hasEmptyProjectRoles, flagsStatus, dispatch]);
 
