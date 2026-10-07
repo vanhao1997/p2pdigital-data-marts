@@ -4,6 +4,7 @@ import express from 'express';
 import { Logger } from '@nestjs/common';
 import { loadEnv } from './load-env';
 import { registerPluginCollectionsBodyParser } from './config/plugin-collections-body-parser.config';
+import { assertStandaloneRuntime } from './config/standalone-runtime.config';
 
 async function setupIdp(app: express.Express) {
   const idpProvider = new NullIdpProvider();
@@ -14,12 +15,13 @@ async function setupIdp(app: express.Express) {
 }
 
 /**
- * Main function to bootstrap the application in standalone mode.
+ * Standalone development/test bootstrap. Production uses the configured IDP in owox serve.
  */
 export async function main() {
   const logger = new Logger('Bootstrap::main');
   loadEnv();
   try {
+    assertStandaloneRuntime(process.env);
     const app = express();
     registerPluginCollectionsBodyParser(app);
     app.set('trust proxy', 1);

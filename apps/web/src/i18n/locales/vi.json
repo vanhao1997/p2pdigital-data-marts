@@ -1239,7 +1239,19 @@
     "lastUpdated": "Cập nhật gần nhất",
     "runIssues": "Lượt chạy lỗi/cảnh báo",
     "nextAction": "Bước tiếp theo",
-    "viewRuns": "Xem lượt chạy"
+    "viewRuns": "Xem lượt chạy",
+    "lastUpdatedComplete": "Đã quét hết nguồn",
+    "lastUpdatedPartial": "Dữ liệu một phần hoặc đang chờ kiểm tra",
+    "lastUpdatedUnavailable": "Chưa có dữ liệu cập nhật từ API",
+    "runningRuns": "{{count}} lượt chạy đang xử lý",
+    "draftPublishedHint": "{{draft}} Data Mart bản nháp, {{published}} đã xuất bản",
+    "createDataMartAction": "Tạo Data Mart",
+    "openRunHistory": "Mở lịch sử chạy",
+    "createFirstDataMart": "Tạo Data Mart đầu tiên",
+    "reviewRunWarnings": "Xem các lượt chạy đang có cảnh báo",
+    "monitorRunHistory": "Tiếp tục theo dõi run history",
+    "createFirstHint": "Bắt đầu bằng việc tạo một Data Mart từ nguồn dữ liệu hiện có.",
+    "reviewRunHistoryHint": "Ưu tiên kiểm tra trạng thái chạy và dữ liệu mới nhất trước."
   },
   "dataMartEmptyState": {
     "illustrationLabel": "Minh họa tạo Data Mart",

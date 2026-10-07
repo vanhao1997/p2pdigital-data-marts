@@ -54,6 +54,7 @@ describe('ConnectorRunTriggerHandlerService', () => {
     } as unknown as EntityManager;
 
     const dataSource = {
+      options: { type: 'better-sqlite3' },
       transaction: jest
         .fn()
         .mockImplementation((fn: (em: EntityManager) => Promise<unknown>) => fn(mockManager)),
@@ -148,7 +149,7 @@ describe('ConnectorRunTriggerHandlerService', () => {
         innerJoin: jest.fn().mockReturnThis(),
         where: jest.fn().mockReturnThis(),
         andWhere: jest.fn().mockReturnThis(),
-        getCount: jest.fn().mockResolvedValue(3),
+        getCount: jest.fn().mockResolvedValue(4),
       };
       (mockManager.createQueryBuilder as jest.Mock).mockReturnValue(qb);
       (mockManager.update as jest.Mock).mockResolvedValue({ affected: 1 });

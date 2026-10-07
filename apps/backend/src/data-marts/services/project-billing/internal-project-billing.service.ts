@@ -205,22 +205,32 @@ export class InternalProjectBillingService extends ProjectBillingService {
 
   public async registerSheetsReportRunConsumption(
     report: Report,
+    reportRunId: string,
     sheetsDetails: SheetsReportDetails
   ): Promise<void> {
     await this.publish(
       RunKind.SHEETS_REPORT_RUN,
-      this.sheetsReportConsumptionPayload(report, sheetsDetails)
+      this.sheetsReportConsumptionPayload(report, reportRunId, sheetsDetails)
     );
   }
 
-  public async registerLookerReportRunConsumption(report: Report): Promise<void> {
-    await this.publish(RunKind.LOOKER_REPORT_RUN, this.baseReportConsumptionPayload(report));
+  public async registerLookerReportRunConsumption(
+    report: Report,
+    reportRunId: string
+  ): Promise<void> {
+    await this.publish(
+      RunKind.LOOKER_REPORT_RUN,
+      this.baseReportConsumptionPayload(report, reportRunId)
+    );
   }
 
-  public async registerEmailBasedReportRunConsumption(report: Report): Promise<void> {
+  public async registerEmailBasedReportRunConsumption(
+    report: Report,
+    reportRunId: string
+  ): Promise<void> {
     await this.publish(
       RunKind.EMAIL_BASED_REPORT_RUN,
-      this.baseReportConsumptionPayload(report),
+      this.baseReportConsumptionPayload(report, reportRunId),
       report.dataDestination.type
     );
   }

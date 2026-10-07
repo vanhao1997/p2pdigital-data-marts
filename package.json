@@ -122,7 +122,10 @@
     "sharp": "^0.35.0",
     "get-uri": {
       "basic-ftp": "6.2.1"
-    }
+    },
+    "proxy-addr": "^2.0.8",
+    "source-map-js": "^1.2.2",
+    "fast-copy": "^4.1.2"
   },
   "packageManager": "npm@10.9.8"
 }

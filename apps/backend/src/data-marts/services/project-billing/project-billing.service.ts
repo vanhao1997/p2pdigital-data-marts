@@ -83,12 +83,16 @@ export abstract class ProjectBillingService {
 
   abstract registerSheetsReportRunConsumption(
     report: Report,
+    reportRunId: string,
     sheetsDetails: SheetsReportDetails
   ): Promise<void>;
 
-  abstract registerLookerReportRunConsumption(report: Report): Promise<void>;
+  abstract registerLookerReportRunConsumption(report: Report, reportRunId: string): Promise<void>;
 
-  abstract registerEmailBasedReportRunConsumption(report: Report): Promise<void>;
+  abstract registerEmailBasedReportRunConsumption(
+    report: Report,
+    reportRunId: string
+  ): Promise<void>;
 
   /**
    * An Excel report is pulled by the workbook, so its run arrives over the same endpoint as a
@@ -115,30 +119,31 @@ export abstract class ProjectBillingService {
     };
   }
 
-  protected baseReportConsumptionPayload(report: Report) {
+  protected baseReportConsumptionPayload(report: Report, reportRunId: string) {
     return {
       ...this.baseDataMartConsumptionPayload(report.dataMart),
       dataDestinationId: report.dataDestination.id,
       dataDestinationType: report.dataDestination.type,
       reportId: report.id,
-      reportRunId: `${report.id}-${Date.now()}`,
+      reportRunId,
     };
   }
 
-  protected sheetsReportConsumptionPayload(report: Report, _sheetsDetails: SheetsReportDetails) {
+  protected sheetsReportConsumptionPayload(
+    report: Report,
+    reportRunId: string,
+    _sheetsDetails: SheetsReportDetails
+  ) {
     const reportConfig = report.destinationConfig as GoogleSheetsConfig;
     return {
-      ...this.baseReportConsumptionPayload(report),
+      ...this.baseReportConsumptionPayload(report, reportRunId),
       googleSheetsDocumentId: reportConfig.spreadsheetId,
       googleSheetsListId: reportConfig.sheetId,
     };
   }
 
   protected excelReportConsumptionPayload(report: Report, runId: string) {
-    return {
-      ...this.baseReportConsumptionPayload(report),
-      reportRunId: runId,
-    };
+    return this.baseReportConsumptionPayload(report, runId);
   }
 
   protected httpDataConsumptionPayload(dataMart: DataMart, runId: string) {

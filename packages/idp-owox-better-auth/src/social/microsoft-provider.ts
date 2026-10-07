@@ -1,5 +1,4 @@
 import { createServiceLogger } from '../core/logger.js';
-import { maskEmail } from '../utils/email-utils.js';
 import { Profile, SocialProvider, SocialUser } from './social-provider.js';
 
 export type MicrosoftProviderOptions = {
@@ -61,14 +60,7 @@ export class MicrosoftProvider implements SocialProvider {
       preferred_username?: string;
       name?: string;
     };
-    const profileForLog: Record<string, unknown> = { ...profile };
-    if (typeof p.email === 'string') {
-      profileForLog.email = maskEmail(p.email);
-    }
-    if (typeof p.preferred_username === 'string') {
-      profileForLog.preferred_username = maskEmail(p.preferred_username);
-    }
-    this.logger.info(`${this.providerId}-profile`, { profile: profileForLog });
+    this.logger.info(`${this.providerId}-profile`, summarizeMicrosoftProfileForLog(profile));
 
     const accountId = this.selectAccountId(p);
     if (!accountId) {
@@ -88,4 +80,25 @@ export class MicrosoftProvider implements SocialProvider {
       emailVerified: true,
     };
   }
+}
+
+export function summarizeMicrosoftProfileForLog(profile: Profile): Record<string, unknown> {
+  const p = profile as {
+    oid?: unknown;
+    tid?: unknown;
+    email?: unknown;
+    preferred_username?: unknown;
+    name?: unknown;
+  };
+
+  return {
+    profile: {
+      hasObjectId: typeof p.oid === 'string' && p.oid.length > 0,
+      hasTenantId: typeof p.tid === 'string' && p.tid.length > 0,
+      hasEmail: typeof p.email === 'string' && p.email.length > 0,
+      hasPreferredUsername:
+        typeof p.preferred_username === 'string' && p.preferred_username.length > 0,
+      hasName: typeof p.name === 'string' && p.name.length > 0,
+    },
+  };
 }

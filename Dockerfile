@@ -29,6 +29,7 @@ LABEL org.opencontainers.image.revision="${revision}"
 LABEL org.opencontainers.image.version="${version}"
 LABEL org.opencontainers.image.source="https://github.com/vanhao1997/p2pdigital-data-marts"
 
+ENV NODE_ENV=production
 ENV NODE_OPTIONS=--no-deprecation
 # Preserve the upstream image's root user and working directory so env-paths,
 # existing data volumes and relative SQLITE_DB_PATH values retain their paths.

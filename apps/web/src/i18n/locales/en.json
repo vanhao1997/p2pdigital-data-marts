@@ -1239,7 +1239,19 @@
     "lastUpdated": "Last updated",
     "runIssues": "Run issues",
     "nextAction": "Next action",
-    "viewRuns": "View runs"
+    "viewRuns": "View runs",
+    "lastUpdatedComplete": "All sources scanned",
+    "lastUpdatedPartial": "Partial data or pending verification",
+    "lastUpdatedUnavailable": "No API freshness data yet",
+    "runningRuns": "{{count}} run in progress",
+    "draftPublishedHint": "{{draft}} draft Data Mart, {{published}} published",
+    "createDataMartAction": "Create Data Mart",
+    "openRunHistory": "Open run history",
+    "createFirstDataMart": "Create the first Data Mart",
+    "reviewRunWarnings": "Review runs with warnings",
+    "monitorRunHistory": "Keep monitoring run history",
+    "createFirstHint": "Start by creating a Data Mart from an existing data source.",
+    "reviewRunHistoryHint": "Check run status and the latest data freshness first."
   },
   "dataMartEmptyState": {
     "illustrationLabel": "Data Mart creation illustration",

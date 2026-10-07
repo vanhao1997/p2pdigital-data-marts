@@ -287,7 +287,7 @@ describe('InternalProjectBillingService', () => {
       const service = buildService(PUBSUB_ENV);
       const report = fakeReport(DataDestinationType.GOOGLE_SHEETS);
 
-      await service.registerSheetsReportRunConsumption(report, {
+      await service.registerSheetsReportRunConsumption(report, 'data-mart-run-1', {
         googleSheetsDocumentTitle: 'Test Spreadsheet',
         googleSheetsListTitle: 'Sheet1',
       });
@@ -296,6 +296,7 @@ describe('InternalProjectBillingService', () => {
         'sheets-topic',
         expect.objectContaining({
           reportId: 'report-1',
+          reportRunId: 'data-mart-run-1',
           dataDestinationId: 'dest-1',
           dataDestinationType: DataDestinationType.GOOGLE_SHEETS,
           googleSheetsDocumentId: 'spreadsheet-1',
@@ -308,13 +309,22 @@ describe('InternalProjectBillingService', () => {
       const service = buildService(PUBSUB_ENV);
 
       await service.registerLookerReportRunConsumption(
-        fakeReport(DataDestinationType.LOOKER_STUDIO)
+        fakeReport(DataDestinationType.LOOKER_STUDIO),
+        'data-mart-run-2'
       );
 
-      expect(mockPublish).toHaveBeenCalledWith(
-        'looker-topic',
-        expect.objectContaining({ reportId: 'report-1' })
-      );
+      expect(mockPublish).toHaveBeenCalledWith('looker-topic', {
+        reportId: 'report-1',
+        reportRunId: 'data-mart-run-2',
+        dataDestinationId: 'dest-1',
+        dataDestinationType: DataDestinationType.LOOKER_STUDIO,
+        projectId: 'proj-1',
+        dataMartId: 'dm-1',
+        dataStorageId: 'storage-1',
+        dataStorageType: 'GOOGLE_BIGQUERY',
+        runTime: expect.any(String),
+        dedupeKey: expect.any(String),
+      });
     });
 
     it('publishes an Excel report run to the Excel topic, keyed by the run it was charged for', async () => {
@@ -337,6 +347,22 @@ describe('InternalProjectBillingService', () => {
       );
     });
 
+    it('keeps report consumption dedupe stable for one run and distinct across runs', async () => {
+      const service = buildService(PUBSUB_ENV);
+      const report = fakeReport(DataDestinationType.EMAIL);
+
+      await service.registerEmailBasedReportRunConsumption(report, 'data-mart-run-1');
+      await service.registerEmailBasedReportRunConsumption(report, 'data-mart-run-1');
+      await service.registerEmailBasedReportRunConsumption(report, 'data-mart-run-2');
+
+      const payloads = mockPublish.mock.calls.map(([, payload]) => payload);
+      expect(payloads[0].reportRunId).toBe('data-mart-run-1');
+      expect(payloads[1].reportRunId).toBe('data-mart-run-1');
+      expect(payloads[2].reportRunId).toBe('data-mart-run-2');
+      expect(payloads[0].dedupeKey).toBe(payloads[1].dedupeKey);
+      expect(payloads[0].dedupeKey).not.toBe(payloads[2].dedupeKey);
+    });
+
     it.each([
       [DataDestinationType.EMAIL, 'email-topic'],
       [DataDestinationType.SLACK, 'slack-topic'],
@@ -345,9 +371,15 @@ describe('InternalProjectBillingService', () => {
     ])('routes an email-based %s report run to %s', async (destinationType, topic) => {
       const service = buildService(PUBSUB_ENV);
 
-      await service.registerEmailBasedReportRunConsumption(fakeReport(destinationType));
+      await service.registerEmailBasedReportRunConsumption(
+        fakeReport(destinationType),
+        'data-mart-run-3'
+      );
 
-      expect(mockPublish).toHaveBeenCalledWith(topic, expect.anything());
+      expect(mockPublish).toHaveBeenCalledWith(
+        topic,
+        expect.objectContaining({ reportRunId: 'data-mart-run-3' })
+      );
     });
 
     it('swallows an unsupported email-based destination type without publishing', async () => {
@@ -355,7 +387,8 @@ describe('InternalProjectBillingService', () => {
 
       await expect(
         service.registerEmailBasedReportRunConsumption(
-          fakeReport(DataDestinationType.GOOGLE_SHEETS)
+          fakeReport(DataDestinationType.GOOGLE_SHEETS),
+          'data-mart-run-4'
         )
       ).resolves.toBeUndefined();
       expect(mockPublish).not.toHaveBeenCalled();

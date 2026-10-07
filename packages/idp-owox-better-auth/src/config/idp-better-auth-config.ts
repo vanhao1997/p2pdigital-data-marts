@@ -12,6 +12,7 @@ import { GoogleProvider } from '../social/google-provider.js';
 import { MicrosoftProvider } from '../social/microsoft-provider.js';
 import { BetterAuthConfig } from '../types/index.js';
 import { resolveNameWithFallback } from '../utils/email-utils.js';
+import { sanitizeLogMessage, summarizeBetterAuthArgs } from '../utils/log-sanitizer.js';
 import { isSecureOrigin } from '../utils/url-utils.js';
 
 /**
@@ -171,7 +172,10 @@ export async function createBetterAuthConfig(
           debug: LogLevel.DEBUG,
         };
         const logLevel = BA_LOG_LEVEL_MAP[level] ?? LogLevel.INFO;
-        betterAuthLogger.log(logLevel, message, { source: 'better-auth-internal', args });
+        betterAuthLogger.log(logLevel, sanitizeLogMessage(message), {
+          source: 'better-auth-internal',
+          ...summarizeBetterAuthArgs(args),
+        });
       },
     },
     onAPIError: {

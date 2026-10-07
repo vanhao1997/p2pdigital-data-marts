@@ -86,6 +86,7 @@ export default defineConfig({
       stderr: 'pipe',
       env: {
         NODE_ENV: 'test',
+        IDP_PROVIDER: 'none',
         DB_TYPE: process.env.DB_TYPE ?? 'sqlite',
         SQLITE_DB_PATH: sqliteDbPath,
         PORT: '3000',

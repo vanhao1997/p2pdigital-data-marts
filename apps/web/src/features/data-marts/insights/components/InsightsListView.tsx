@@ -35,12 +35,12 @@ import { useDataMartContext } from '../../edit/model';
 import { usePermissions } from '../../../../app/permissions';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@owox/ui/components/tooltip';
 import { formatDateShort, trackEvent } from '../../../../utils';
-import type { InsightTemplateEntity } from '../model';
 import {
+  INSIGHT_TEMPLATES_QUERY_KEY,
   insightTemplatesService,
   mapInsightTemplateFromDto,
+  removeInsightTemplateFromListCache,
   useInsightTemplates,
-  INSIGHT_TEMPLATES_QUERY_KEY,
 } from '../model';
 import { InsightRowActionsCell } from './InsightRowActionsCell';
 import { useTranslation } from 'react-i18next';
@@ -201,14 +201,7 @@ export default function InsightsListView() {
           label: deleteId,
           context: dataMart.id,
         });
-        await queryClient.cancelQueries({ queryKey: [INSIGHT_TEMPLATES_QUERY_KEY, dataMart.id] });
-        queryClient.setQueryData<InsightTemplateEntity[]>(
-          [INSIGHT_TEMPLATES_QUERY_KEY, dataMart.id],
-          prev => prev?.filter(item => item.id !== deleteId)
-        );
-        void queryClient.invalidateQueries({
-          queryKey: [INSIGHT_TEMPLATES_QUERY_KEY, dataMart.id],
-        });
+        await removeInsightTemplateFromListCache(queryClient, dataMart.id, deleteId);
         toast.success(t('insightsUi.deleted', 'Insight deleted'));
       } catch (error) {
         trackEvent({

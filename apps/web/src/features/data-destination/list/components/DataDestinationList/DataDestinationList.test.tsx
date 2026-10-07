@@ -1,6 +1,6 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { MemoryRouter, useLocation } from 'react-router';
+import { MemoryRouter, useLocation, useSearchParams } from 'react-router';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { AuthStatus } from '../../../../../features/idp/types';
 import { DataDestinationType } from '../../../shared';
@@ -75,13 +75,51 @@ vi.mock('../DataDestinationTable', () => ({
 }));
 
 vi.mock('../../../edit', () => ({
-  DataDestinationConfigSheet: ({ isOpen }: { isOpen: boolean }) =>
-    isOpen ? <div data-testid='destinationEditSheet' /> : null,
+  DataDestinationConfigSheet: ({ isOpen, onClose }: { isOpen: boolean; onClose?: () => void }) =>
+    isOpen ? (
+      <div data-testid='destinationEditSheet'>
+        <button type='button' onClick={onClose}>
+          Close destination
+        </button>
+      </div>
+    ) : null,
 }));
 
 function LocationSearch() {
   const { search } = useLocation();
   return <output data-testid='locationSearch'>{search}</output>;
+}
+
+function DeepLinkControls() {
+  const [, setSearchParams] = useSearchParams();
+  return (
+    <>
+      <button
+        type='button'
+        onClick={() => {
+          setSearchParams({ id: 'destination-1' });
+        }}
+      >
+        Open destination 1
+      </button>
+      <button
+        type='button'
+        onClick={() => {
+          setSearchParams({ id: 'destination-2' });
+        }}
+      >
+        Open destination 2
+      </button>
+      <button
+        type='button'
+        onClick={() => {
+          setSearchParams({ id: 'destination-1' });
+        }}
+      >
+        Return to destination 1
+      </button>
+    </>
+  );
 }
 
 describe('DataDestinationList', () => {
@@ -93,6 +131,16 @@ describe('DataDestinationList', () => {
         {
           id: 'destination-1',
           title: '[Ok OAuth] Sheets',
+          type: DataDestinationType.GOOGLE_SHEETS,
+          projectId: 'project-1',
+          credentials: {},
+          createdAt: new Date('2026-06-09T10:00:00.000Z'),
+          modifiedAt: new Date('2026-06-09T10:00:00.000Z'),
+          contexts: [],
+        },
+        {
+          id: 'destination-2',
+          title: 'Destination 2',
           type: DataDestinationType.GOOGLE_SHEETS,
           projectId: 'project-1',
           credentials: {},
@@ -121,6 +169,7 @@ describe('DataDestinationList', () => {
       >
         <MemoryRouter initialEntries={['/ui/project-1/data-destinations']}>
           <LocationSearch />
+          <DeepLinkControls />
           <DataDestinationList />
         </MemoryRouter>
       </QueryClientProvider>
@@ -201,5 +250,52 @@ describe('DataDestinationList', () => {
       expect(getDataDestinationById).toHaveBeenCalledWith('destination-1');
     });
     expect(screen.queryByTestId('destinationEditSheet')).not.toBeInTheDocument();
+  });
+
+  it('handles A/B/A deep-link transitions while keeping a manually closed id closed', async () => {
+    detailMocks.getDataDestinationById.mockImplementation(async (id: string) => ({ id }));
+
+    renderList();
+
+    fireEvent.click(screen.getByRole('button', { name: 'Open destination 1' }));
+    await screen.findByTestId('destinationEditSheet');
+    await waitFor(() => {
+      expect(detailMocks.getDataDestinationById).toHaveBeenCalledTimes(1);
+    });
+
+    fireEvent.click(screen.getByRole('button', { name: 'Open destination 2' }));
+    await waitFor(() => {
+      expect(detailMocks.getDataDestinationById).toHaveBeenCalledWith('destination-2');
+    });
+    expect(detailMocks.getDataDestinationById).toHaveBeenCalledTimes(2);
+
+    fireEvent.click(screen.getByRole('button', { name: 'Return to destination 1' }));
+    await waitFor(() => {
+      expect(detailMocks.getDataDestinationById).toHaveBeenCalledTimes(3);
+    });
+    expect(detailMocks.getDataDestinationById).toHaveBeenLastCalledWith('destination-1');
+
+    fireEvent.click(screen.getByRole('button', { name: 'Close destination' }));
+    await waitFor(() => {
+      expect(screen.queryByTestId('destinationEditSheet')).not.toBeInTheDocument();
+    });
+    await waitFor(() => {
+      expect(screen.getByTestId('locationSearch')).not.toHaveTextContent('id=');
+    });
+
+    fireEvent.click(screen.getByRole('button', { name: 'Return to destination 1' }));
+    await screen.findByTestId('destinationEditSheet');
+    await waitFor(() => {
+      expect(detailMocks.getDataDestinationById).toHaveBeenCalledTimes(4);
+    });
+
+    fireEvent.click(screen.getByRole('button', { name: 'Close destination' }));
+    await waitFor(() => {
+      expect(screen.queryByTestId('destinationEditSheet')).not.toBeInTheDocument();
+    });
+
+    fireEvent.click(screen.getByRole('button', { name: 'Edit [Ok OAuth] Sheets' }));
+    await screen.findByTestId('destinationEditSheet');
+    expect(detailMocks.getDataDestinationById).toHaveBeenCalledTimes(5);
   });
 });

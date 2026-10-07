@@ -27,6 +27,18 @@ Depending on the selected database type for the backend (`DB_TYPE`) and identity
 
 The complete list of all available environment variables is located in the [.env.example](https://github.com/vanhao1997/p2pdigital-data-marts/blob/main/.env.example) file in the project root directory.
 
+### Production identity provider
+
+Production requires an explicit `IDP_PROVIDER`: `better-auth` or `owox-better-auth`
+for authenticated deployments. `IDP_PROVIDER=none` is an explicit single-user mode
+that disables user authentication; do not use it for a multi-user SaaS.
+
+Start production with `owox serve` (or `owox serve --no-web-enabled` for API-only
+deployments). The legacy `npm run start:prod -w @owox/backend` script and direct
+`node dist/src/main.js` startup are restricted to development/test with
+the Null provider and reject a configured authenticated provider. This prevents
+the standalone test bootstrap from silently ignoring production identity settings.
+
 ### SQL parameter logging
 
 `TYPEORM_LOG_QUERY_PARAMETERS=false` is the secure default. Query parameters can contain credentials

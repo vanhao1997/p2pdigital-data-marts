@@ -9,3 +9,4 @@ export * from './services/insight-template-sources.service';
 export * from './hooks/useInsightTemplateSources';
 export * from './hooks/useInsightTemplateSourceSqlPreviewTrigger';
 export * from './hooks/useInsightTemplates';
+export * from './cache';

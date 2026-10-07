@@ -6,6 +6,7 @@ import { ProjectNotificationSettings } from '../entities/project-notification-se
 import { NotificationType } from '../enums/notification-type.enum';
 import { DEFAULT_GROUPING_DELAY_CRON } from '../enums/grouping-delay.enum';
 import { NOTIFICATION_DEFAULT_ENABLED } from '../enums/notification-type.enum';
+import { isMaskedWebhookUrl } from '../utils/webhook-url-mask.util';
 
 @Injectable()
 export class ProjectNotificationSettingsService {
@@ -76,7 +77,8 @@ export class ProjectNotificationSettingsService {
         enabled: data.enabled ?? false,
         receivers: data.receivers ?? [],
         optedOutReceivers: [],
-        webhookUrl: data.webhookUrl ?? null,
+        webhookUrl:
+          data.webhookUrl && !isMaskedWebhookUrl(data.webhookUrl) ? data.webhookUrl : null,
         groupingDelayCron: cron,
         lastRunAt: beingEnabled ? new Date() : null,
         nextRunAt: beingEnabled ? this.calculateNextRunTime(cron) : null,
@@ -100,7 +102,9 @@ export class ProjectNotificationSettingsService {
 
         settings.receivers = data.receivers;
       }
-      if (data.webhookUrl !== undefined) settings.webhookUrl = data.webhookUrl;
+      if (data.webhookUrl !== undefined && !isMaskedWebhookUrl(data.webhookUrl)) {
+        settings.webhookUrl = data.webhookUrl;
+      }
 
       const cronChanged =
         data.groupingDelayCron !== undefined &&

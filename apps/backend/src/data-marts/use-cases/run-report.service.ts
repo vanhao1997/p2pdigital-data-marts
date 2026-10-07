@@ -576,7 +576,7 @@ export class RunReportService {
     }
 
     this.logger.log(`Report ${reportRun.getReportId()} completed successfully`);
-    await this.registerReportRunConsumption(reportRun.getReport(), finalizeResult);
+    await this.registerReportRunConsumption(reportRun, finalizeResult);
   }
 
   private resolveRunKind(report: Report): RunKind {
@@ -591,9 +591,12 @@ export class RunReportService {
   }
 
   private async registerReportRunConsumption(
-    report: Report,
+    reportRun: ReportRun,
     finalizeResult?: ReportWriteFinalizeResult
   ): Promise<void> {
+    const report = reportRun.getReport();
+    const reportRunId = reportRun.getDataMartRun().id;
+
     try {
       if (this.resolveRunKind(report) === RunKind.SHEETS_REPORT_RUN) {
         const sheetsDetails = finalizeResult?.consumption?.googleSheets;
@@ -603,11 +606,15 @@ export class RunReportService {
           );
           return;
         }
-        await this.projectBillingService.registerSheetsReportRunConsumption(report, sheetsDetails);
+        await this.projectBillingService.registerSheetsReportRunConsumption(
+          report,
+          reportRunId,
+          sheetsDetails
+        );
         return;
       }
 
-      await this.projectBillingService.registerEmailBasedReportRunConsumption(report);
+      await this.projectBillingService.registerEmailBasedReportRunConsumption(report, reportRunId);
     } catch (error) {
       this.logger.warn(
         `Failed to register report consumption for ${report.id}: ${

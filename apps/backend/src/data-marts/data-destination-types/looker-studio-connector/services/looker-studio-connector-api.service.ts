@@ -450,7 +450,10 @@ export class LookerStudioConnectorApiService {
     const report = reportRun.getReport();
     if (!cachedReader.fromCache) {
       try {
-        await this.projectBillingService.registerLookerReportRunConsumption(report);
+        await this.projectBillingService.registerLookerReportRunConsumption(
+          report,
+          reportRun.getDataMartRun().id
+        );
       } catch (error) {
         this.logger.warn(
           `Failed to register Looker report consumption for ${report.id}: ${

@@ -3,6 +3,7 @@ import { ProjectNotificationSettings } from '../entities/project-notification-se
 import { ReceiverInfoApiDto } from '../dto/presentation/receiver-info-api.dto';
 import { NotificationSettingsItemResponseApiDto } from '../dto/presentation/notification-settings-item-response-api.dto';
 import { NOTIFICATION_TITLES } from '../enums/notification-type.enum';
+import { maskWebhookUrl } from '../utils/webhook-url-mask.util';
 
 type UserProjection = {
   userId: string;
@@ -38,7 +39,7 @@ export class NotificationSettingsMapper {
       title: NOTIFICATION_TITLES[entity.notificationType],
       enabled: entity.enabled,
       receivers,
-      webhookUrl: entity.webhookUrl,
+      webhookUrl: maskWebhookUrl(entity.webhookUrl),
       groupingDelayCron: entity.groupingDelayCron,
       lastRunAt: entity.lastRunAt?.toISOString() ?? null,
       nextRunAt: entity.nextRunAt?.toISOString() ?? null,

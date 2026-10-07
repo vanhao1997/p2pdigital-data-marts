@@ -47,6 +47,7 @@ describe('ReportRunTriggerHandlerService', () => {
     } as unknown as EntityManager;
 
     const dataSource = {
+      options: { type: 'better-sqlite3' },
       transaction: jest
         .fn()
         .mockImplementation((fn: (em: EntityManager) => Promise<unknown>) => fn(mockManager)),

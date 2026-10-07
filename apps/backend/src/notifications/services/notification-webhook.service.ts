@@ -1,12 +1,17 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { assertPublicHttpUrl, fetchPublicUrl } from '../../common/helpers/safe-url.helper';
+import {
+  assertPublicHttpUrl,
+  fetchPublicUrl,
+  UnsafeUrlError,
+} from '../../common/helpers/safe-url.helper';
 import { NotificationType } from '../enums/notification-type.enum';
 import { NotificationPendingQueue } from '../entities/notification-pending-queue.entity';
 import { ProjectNotificationSettings } from '../entities/project-notification-settings.entity';
 import { NOTIFICATION_DEFINITIONS } from '../definitions';
 import { NotificationContext } from '../types/notification-context';
 import { WebhookPayload } from '../types/notification-data.interface';
+import { maskWebhookUrl } from '../utils/webhook-url-mask.util';
 
 @Injectable()
 export class NotificationWebhookService {
@@ -27,7 +32,7 @@ export class NotificationWebhookService {
       await assertPublicHttpUrl(settings.webhookUrl);
     } catch (error) {
       this.logger.error(
-        `Blocked unsafe webhook URL for ${settings.notificationType}: ${error instanceof Error ? error.message : String(error)}`
+        `Blocked unsafe webhook URL for ${settings.notificationType}: ${this.formatWebhookError(error)}`
       );
       return;
     }
@@ -40,12 +45,12 @@ export class NotificationWebhookService {
 
     const appUrl = this.configService.get<string>('APP_URL');
     const payload = handler.getWebhookPayload(queueItem, { appUrl });
-    const label = `webhook to ${settings.webhookUrl}`;
+    const label = `webhook to ${maskWebhookUrl(settings.webhookUrl)}`;
 
     await this.withRetry(() => this.fetchWebhook(settings.webhookUrl!, payload), label);
 
     this.logger.log(
-      `Webhook sent to ${settings.webhookUrl} for ${settings.notificationType} notification`
+      `Webhook sent to ${maskWebhookUrl(settings.webhookUrl)} for ${settings.notificationType} notification`
     );
   }
 
@@ -84,7 +89,7 @@ export class NotificationWebhookService {
         return;
       } catch (error) {
         const isLastAttempt = attempt === NotificationWebhookService.MAX_ATTEMPTS;
-        const errorMessage = error instanceof Error ? error.message : String(error);
+        const errorMessage = this.formatWebhookError(error);
 
         if (isLastAttempt || !this.isTransientError(error)) {
           this.logger.error(
@@ -177,12 +182,26 @@ export class NotificationWebhookService {
         throw new Error(`HTTP ${response.status}: ${response.statusText}`);
       }
 
-      this.logger.log(`Test webhook sent successfully to ${webhookUrl}`);
+      this.logger.log(`Test webhook sent successfully to ${maskWebhookUrl(webhookUrl)}`);
     } catch (error) {
       clearTimeout(timeoutId);
-      const errorMessage = error instanceof Error ? error.message : String(error);
-      this.logger.error(`Failed to send test webhook to ${webhookUrl}: ${errorMessage}`);
-      throw error;
+      const errorMessage = this.formatWebhookError(error);
+      this.logger.error(
+        `Failed to send test webhook to ${maskWebhookUrl(webhookUrl)}: ${errorMessage}`
+      );
+      throw new Error(errorMessage);
     }
   }
+
+  private formatWebhookError(error: unknown): string {
+    if (error instanceof UnsafeUrlError) {
+      return `Unsafe URL (${error.reason})`;
+    }
+    if (error instanceof Error) {
+      return error.message.replace(webhookUrlPattern, value => maskWebhookUrl(value) ?? 'REDACTED');
+    }
+    return String(error).replace(webhookUrlPattern, value => maskWebhookUrl(value) ?? 'REDACTED');
+  }
 }
+
+const webhookUrlPattern = /https?:\/\/[^\s)]+/gi;

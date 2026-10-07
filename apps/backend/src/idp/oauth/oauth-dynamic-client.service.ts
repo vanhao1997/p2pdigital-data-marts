@@ -1,9 +1,10 @@
-import { BadRequestException, HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { randomUUID } from 'crypto';
 import type { McpScope } from '@owox/idp-protocol';
 import { z } from 'zod';
 import { OAuthClientRegistry } from './oauth-client.registry';
 import { OAuthConfigService } from './oauth-config.service';
+import { OAuthRegistrationRateLimiterService } from './oauth-registration-rate-limiter.service';
 import { OAuthRedirectUriPolicy } from './oauth-redirect-uri.policy';
 
 export interface OAuthDynamicClientRegistrationRequest {
@@ -38,20 +39,15 @@ export interface OAuthDynamicClientRegistrationResponse {
   expires_at: number;
 }
 
-const REGISTRATION_WINDOW_MS = 5 * 60 * 1_000;
-const MAX_REGISTRATIONS_PER_WINDOW = 10;
 const DYNAMIC_CLIENT_TTL_MS = 24 * 60 * 60 * 1_000;
-
-type RegistrationRateLimitState = { windowStart: number; count: number };
 
 @Injectable()
 export class OAuthDynamicClientService {
-  private readonly registrationAttempts = new Map<string, RegistrationRateLimitState>();
-
   constructor(
     private readonly config: OAuthConfigService,
     private readonly clientRegistry: OAuthClientRegistry,
-    private readonly redirectUriPolicy: OAuthRedirectUriPolicy
+    private readonly redirectUriPolicy: OAuthRedirectUriPolicy,
+    private readonly registrationRateLimiter: OAuthRegistrationRateLimiterService
   ) {}
 
   async register(
@@ -71,7 +67,7 @@ export class OAuthDynamicClientService {
 
     const redirectUris = this.redirectUriPolicy.validate(validRequest.redirect_uris);
     const redirectOriginKey = this.redirectOriginKey(validRequest.redirect_uris);
-    this.assertRegistrationRateLimit(sourceKey, resource, redirectOriginKey);
+    await this.registrationRateLimiter.assertAllowed(sourceKey, resource, redirectOriginKey);
 
     const responseTypes = validRequest.response_types ?? ['code'];
     if (responseTypes.some(value => value !== 'code')) {
@@ -119,41 +115,6 @@ export class OAuthDynamicClientService {
       scope: client.scopes.join(' '),
       expires_at: Math.floor(expiresAt.getTime() / 1000),
     };
-  }
-
-  private assertRegistrationRateLimit(
-    sourceKey: string,
-    resource: string,
-    originKey: string
-  ): void {
-    const now = Date.now();
-    if (this.registrationAttempts.size > 10_000) {
-      for (const [storedKey, state] of this.registrationAttempts) {
-        if (now - state.windowStart >= REGISTRATION_WINDOW_MS) {
-          this.registrationAttempts.delete(storedKey);
-        }
-      }
-    }
-    const key = `${sourceKey}|${resource}|${originKey}`;
-    const current = this.registrationAttempts.get(key);
-    if (!current || now - current.windowStart >= REGISTRATION_WINDOW_MS) {
-      this.registrationAttempts.set(key, { windowStart: now, count: 1 });
-      return;
-    }
-    if (current.count >= MAX_REGISTRATIONS_PER_WINDOW) {
-      const retryAfterSeconds = Math.max(
-        1,
-        Math.ceil((REGISTRATION_WINDOW_MS - (now - current.windowStart)) / 1_000)
-      );
-      throw new HttpException(
-        {
-          message: 'Too many dynamic client registration attempts',
-          retryAfterSeconds,
-        },
-        HttpStatus.TOO_MANY_REQUESTS
-      );
-    }
-    current.count += 1;
   }
 
   private redirectOriginKey(redirectUris: string[]): string {

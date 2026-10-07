@@ -3,6 +3,7 @@ import { TenantGuardService } from '../../idp/services/tenant-guard.service';
 import { ProjectNotificationSettingsService } from '../services/project-notification-settings.service';
 import { NotificationWebhookService } from '../services/notification-webhook.service';
 import { TestNotificationWebhookCommand } from '../dto/domain/test-notification-webhook.command';
+import { isMaskedWebhookUrl } from '../utils/webhook-url-mask.util';
 
 @Injectable()
 export class TestNotificationWebhookService {
@@ -14,14 +15,14 @@ export class TestNotificationWebhookService {
 
   async run(command: TestNotificationWebhookCommand): Promise<void> {
     this.tenantGuard.assertHttpProject(command.projectId);
+    const storedSetting = await this.settingsService.findByProjectIdAndType(
+      command.projectId,
+      command.notificationType
+    );
     const resolvedUrl =
-      command.webhookUrl ??
-      (
-        await this.settingsService.findByProjectIdAndType(
-          command.projectId,
-          command.notificationType
-        )
-      )?.webhookUrl;
+      command.webhookUrl && !isMaskedWebhookUrl(command.webhookUrl)
+        ? command.webhookUrl
+        : storedSetting?.webhookUrl;
 
     if (!resolvedUrl) {
       throw new BadRequestException('No webhook URL configured');

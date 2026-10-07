@@ -90,7 +90,7 @@ export function useEmailReportForm({
 }: UseEmailReportFormOptions) {
   const [formError, setFormError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const { updateReport, createReport, error: reportError, clearError } = useReport();
+  const { updateReportWithResult, createReportWithResult, clearError } = useReport();
 
   const form = useForm<EmailReportEditFormValues>({
     resolver: zodResolver(EmailReportEditFormSchema),
@@ -152,7 +152,7 @@ export function useEmailReportForm({
         clearError();
         setIsSubmitting(true);
 
-        let result;
+        let mutationResult;
         // Build templateSource from flat form fields
         const templateSource: TemplateSourceDto =
           data.templateSourceType === TemplateSourceTypeEnum.INSIGHT_TEMPLATE
@@ -177,7 +177,7 @@ export function useEmailReportForm({
         };
 
         if (mode === ReportFormMode.CREATE) {
-          result = await createReport({
+          mutationResult = await createReportWithResult({
             title: data.title,
             dataMartId,
             dataDestinationId: data.dataDestinationId,
@@ -198,7 +198,7 @@ export function useEmailReportForm({
             setFormError('Initial report is required for edit mode');
             return;
           }
-          result = await updateReport(initialReport.id, {
+          mutationResult = await updateReportWithResult(initialReport.id, {
             title: data.title,
             dataDestinationId: data.dataDestinationId,
             destinationConfig,
@@ -215,13 +215,13 @@ export function useEmailReportForm({
           });
         }
 
-        if (!result) {
-          setFormError(reportError ?? 'An error occurred while submitting the form');
+        if (!mutationResult.report) {
+          setFormError(mutationResult.error || 'An error occurred while submitting the form');
           return;
         }
 
         try {
-          await onAfterSubmit?.(result);
+          await onAfterSubmit?.(mutationResult.report);
         } catch (e) {
           console.error('onAfterSubmit failed', e);
         }
@@ -238,12 +238,11 @@ export function useEmailReportForm({
       mode,
       initialReport,
       dataMartId,
-      createReport,
-      updateReport,
+      createReportWithResult,
+      updateReportWithResult,
       onAfterSubmit,
       onSuccess,
       clearError,
-      reportError,
       pendingOwnerIdsRef,
     ]
   );

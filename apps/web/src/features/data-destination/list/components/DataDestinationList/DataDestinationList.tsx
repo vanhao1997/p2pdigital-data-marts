@@ -98,14 +98,14 @@ export const DataDestinationList = ({
   const { scope } = useProjectRoute();
 
   const { value: deepLinkId, setParam: setIdParam, removeParam: removeIdParam } = useUrlParam('id');
-  const hasAttemptedDeepLink = useRef(false);
+  const lastSeenDeepLinkId = useRef<string | null>(null);
 
   const handleEdit = useCallback(
     async (id: string) => {
       try {
         const dataDestination = await getDataDestinationById(id);
         if (!dataDestination) return;
-        hasAttemptedDeepLink.current = true;
+        lastSeenDeepLinkId.current = id;
         setIsEditSheetOpen(true);
         setIdParam(id);
       } catch {
@@ -124,19 +124,26 @@ export const DataDestinationList = ({
   }, [clearCurrentDataDestination, onCreateSheetClose, removeIdParam]);
 
   useEffect(() => {
-    if (!loading && dataDestinations.length > 0 && deepLinkId && !hasAttemptedDeepLink.current) {
-      const destination = dataDestinations.find(d => d.id === deepLinkId);
-      if (destination) {
-        void handleEdit(deepLinkId);
-      } else {
-        toast.error(
-          t('dataDestinationList.notFound', 'Destination not found by id {{id}}', {
-            id: deepLinkId,
-          })
-        );
-        removeIdParam();
-      }
-      hasAttemptedDeepLink.current = true;
+    if (!deepLinkId) {
+      lastSeenDeepLinkId.current = null;
+      return;
+    }
+    if (deepLinkId === lastSeenDeepLinkId.current || loading || dataDestinations.length === 0) {
+      return;
+    }
+
+    lastSeenDeepLinkId.current = deepLinkId;
+
+    const destination = dataDestinations.find(d => d.id === deepLinkId);
+    if (destination) {
+      void handleEdit(deepLinkId);
+    } else {
+      toast.error(
+        t('dataDestinationList.notFound', 'Destination not found by id {{id}}', {
+          id: deepLinkId,
+        })
+      );
+      removeIdParam();
     }
   }, [loading, dataDestinations, deepLinkId, removeIdParam, handleEdit, t]);
 
