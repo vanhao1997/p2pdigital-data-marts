@@ -78,6 +78,7 @@ export const dataStorageSetupOutputSchema = z
     storage_id: z.string(),
     title: z.string(),
     storage_type: z.nativeEnum(DataStorageType),
+    credential_id: z.string().optional().describe('Opaque reference, never a credential payload.'),
     credential_status: credentialStatusSchema,
     setup_required: z.boolean(),
     configuration_url: z.string().url(),

@@ -37,6 +37,7 @@ const storage = {
   storageId: 'storage-1',
   title: 'Warehouse',
   storageType: DataStorageType.GOOGLE_BIGQUERY,
+  credentialId: 'credential-1',
   credentialStatus: 'configured',
   setupRequired: false,
   credentials: 'must-not-leak',

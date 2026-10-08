@@ -14,6 +14,7 @@ export interface McpDataStorageSetup {
   storageId: string;
   title: string;
   storageType: DataStorageType;
+  credentialId?: string;
   credentialStatus: McpStorageCredentialStatus;
   setupRequired: boolean;
 }

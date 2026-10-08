@@ -29,7 +29,7 @@ const writeAnnotations = { readOnlyHint: false, destructiveHint: false, openWorl
 export class ListDataStoragesTool implements McpToolDefinition {
   readonly name = 'list_data_storages';
   readonly description =
-    'Lists warehouses accessible in the authenticated project, with credential setup status and web configuration URLs. Never guess storage IDs. No credentials or raw configuration are returned.';
+    'Lists warehouses accessible in the authenticated project, with credential setup status, authorized opaque credential IDs and web configuration URLs. Use the returned credential_id to configure its own storage after web authentication. Never guess IDs. No credential payloads or raw configuration are returned.';
   readonly zodSchema = emptySetupInputSchema.shape;
   readonly outputSchema = { data_storages: z.array(dataStorageSetupOutputSchema) };
   readonly annotations = { title: 'List Data Storages', ...readAnnotations };

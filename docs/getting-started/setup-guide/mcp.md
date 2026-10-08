@@ -166,6 +166,11 @@ provide `storage_id`, `title`, non-secret `config` and exactly one authorized
 `credential_id` or `source_storage_id`. Backend checks project, storage type
 and edit/copy permission.
 
+After completing web authentication, call `list_data_storages` again. A storage
+with a valid credential returns an opaque `credential_id` for configuring that
+same storage. This ID is a reference, not a secret, and still requires backend
+permission checks when used.
+
 When authentication is incomplete, open the setup URL in the web application
 and complete OAuth or manual credential entry there. Connector authentication
 uses the existing Data Mart setup UI and may reuse an authorized source Data

@@ -30,6 +30,9 @@ export class McpSetupStoragesMapper {
       storageId: dto.id,
       title: dto.title,
       storageType: dto.type,
+      ...(dto.credentialId && ['configured', 'expired'].includes(credentialStatus)
+        ? { credentialId: dto.credentialId }
+        : {}),
       credentialStatus,
       setupRequired: !dto.config || credentialStatus !== 'configured',
     };

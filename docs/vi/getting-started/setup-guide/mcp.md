@@ -66,6 +66,10 @@ tham chiếu `credential_id` hoặc `source_storage_id`. Backend kiểm tra
 project, loại storage, quyền sửa và quyền copy credential; scope `mcp:write`
 không thay thế quyền tài khoản.
 
+Sau khi xác thực trên web, gọi lại `list_data_storages`. Storage có credential
+hợp lệ trả `credential_id` để cấu hình chính storage đó; đây là ID tham chiếu,
+không phải secret. Backend vẫn kiểm tra quyền khi dùng ID.
+
 Nếu chưa có credential, mở URL setup do tool trả về để hoàn tất OAuth hoặc
 nhập credential trong webapp. Connector OAuth và token thủ công cũng thực
 hiện trong giao diện cấu hình Data Mart. Có thể tái sử dụng cấu hình/credential

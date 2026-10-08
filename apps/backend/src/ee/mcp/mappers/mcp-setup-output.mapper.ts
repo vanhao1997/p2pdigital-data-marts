@@ -12,6 +12,7 @@ export function mapStorageSetup(dto: McpDataStorageSetup, projectId: string, ori
     storage_id: dto.storageId,
     title: dto.title,
     storage_type: dto.storageType,
+    ...(dto.credentialId ? { credential_id: dto.credentialId } : {}),
     credential_status: dto.credentialStatus,
     setup_required: dto.setupRequired,
     configuration_url: joinPublicOrigin(

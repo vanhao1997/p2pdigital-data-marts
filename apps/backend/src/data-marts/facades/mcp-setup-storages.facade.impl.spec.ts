@@ -128,6 +128,7 @@ describe('McpSetupStoragesFacadeImpl', () => {
           storageId: 'target',
           title: 'Warehouse',
           storageType: DataStorageType.GOOGLE_BIGQUERY,
+          credentialId: 'credential-1',
           credentialStatus: 'configured',
           setupRequired: false,
         },

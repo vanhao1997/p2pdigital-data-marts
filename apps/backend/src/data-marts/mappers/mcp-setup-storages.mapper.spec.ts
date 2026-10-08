@@ -16,7 +16,7 @@ describe('McpSetupStoragesMapper', () => {
     });
   });
 
-  it('never forwards storage config, credential IDs, identities or entity internals', () => {
+  it('returns only the validated opaque credential reference and safe storage metadata', () => {
     const dto = new DataStorageDto(
       'storage',
       'Warehouse',
@@ -31,14 +31,17 @@ describe('McpSetupStoragesMapper', () => {
     );
     const result = mapper.toStorage(dto, 'configured');
     expect(Object.keys(result).sort()).toEqual([
+      'credentialId',
       'credentialStatus',
       'setupRequired',
       'storageId',
       'storageType',
       'title',
     ]);
-    expect(JSON.stringify(result)).not.toContain('private-reference');
+    expect(result.credentialId).toBe('private-reference');
     expect(JSON.stringify(result)).not.toContain('warehouse-project');
+    expect(mapper.toStorage(dto, 'unknown')).not.toHaveProperty('credentialId');
+    expect(mapper.toStorage(dto, 'missing')).not.toHaveProperty('credentialId');
   });
 
   it('removes secret defaults, placeholders, options and OAuth/env payloads at every level', () => {
