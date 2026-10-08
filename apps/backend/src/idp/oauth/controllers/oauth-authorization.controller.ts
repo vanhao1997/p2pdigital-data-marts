@@ -174,7 +174,11 @@ export class OAuthAuthorizationController {
       }
     }
 
-    const refreshToken = this.getCookieValue(request, 'refreshToken');
+    // Better Auth prefixes secure session cookies with `__Secure-` in HTTPS
+    // deployments. Accept both names so OAuth authorization works for native
+    // sessions and the legacy provider cookie contract.
+    const refreshCookieName = this.getRefreshCookieName(request);
+    const refreshToken = this.getCookieValue(request, refreshCookieName);
     if (!refreshToken) {
       this.redirectToSignIn(request, response);
       return null;
@@ -182,7 +186,7 @@ export class OAuthAuthorizationController {
 
     try {
       const auth = await provider.refreshToken(refreshToken);
-      this.persistRefreshTokenIfReturned(request, response, auth);
+      this.persistRefreshTokenIfReturned(request, response, auth, refreshCookieName);
 
       const payload = await provider.parseToken(auth.accessToken);
       if (!payload) {
@@ -226,22 +230,30 @@ export class OAuthAuthorizationController {
   private persistRefreshTokenIfReturned(
     request: Request,
     response: Response,
-    auth: AuthResult
+    auth: AuthResult,
+    cookieName: string
   ): void {
     if (!auth.refreshToken || auth.refreshTokenExpiresIn === undefined) {
       return;
     }
 
     const isSecure =
-      request.protocol !== 'http' &&
-      !(request.hostname === 'localhost' || request.hostname === '127.0.0.1');
+      cookieName === '__Secure-refreshToken' ||
+      (request.protocol !== 'http' &&
+        !(request.hostname === 'localhost' || request.hostname === '127.0.0.1'));
 
-    response.cookie('refreshToken', auth.refreshToken, {
+    response.cookie(cookieName, auth.refreshToken, {
       httpOnly: true,
       secure: isSecure,
       sameSite: 'lax',
       maxAge: auth.refreshTokenExpiresIn * 1000,
     });
+  }
+
+  private getRefreshCookieName(request: Request): '__Secure-refreshToken' | 'refreshToken' {
+    return request.cookies?.['__Secure-refreshToken'] !== undefined
+      ? '__Secure-refreshToken'
+      : 'refreshToken';
   }
 
   private redirectToSignIn(request: Request, response: Response): void {
@@ -273,6 +285,12 @@ export class OAuthAuthorizationController {
   private toAuthorizationContext(payload: Payload): AuthorizationContext {
     if (payload.authFlow === 'api_key') {
       throw new AuthorizationError('API key authentication is not allowed for OAuth authorization');
+    }
+
+    if (payload.authFlow === 'plugin' || payload.authFlow === 'mcp') {
+      throw new AuthorizationError(
+        'Delegated token authentication is not allowed for OAuth authorization'
+      );
     }
 
     return {

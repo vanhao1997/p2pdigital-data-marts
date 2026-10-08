@@ -251,6 +251,49 @@ describe('OAuthAuthorizationController', () => {
     );
   });
 
+  it('authorizes HTTPS Better Auth sessions with the secure cookie name', async () => {
+    const { controller, provider, oauthIdp } = createController();
+    const response = createResponse();
+    await controller.authorize(
+      {},
+      createRequest({
+        protocol: 'https',
+        hostname: 'digitalreport.p2pdigital.io.vn',
+        cookies: {
+          '__Secure-refreshToken': 'secure-session',
+          refreshToken: 'obsolete-session',
+        },
+      }),
+      response as unknown as Response
+    );
+    expect(provider.refreshToken).toHaveBeenCalledWith('secure-session');
+    expect(response.cookie).toHaveBeenCalledWith(
+      '__Secure-refreshToken',
+      'new-refresh-token',
+      expect.objectContaining({ secure: true, httpOnly: true })
+    );
+    expect(oauthIdp.createAuthorizationCode).toHaveBeenCalledWith(
+      authorizationRequest,
+      projectMember
+    );
+  });
+
+  it.each(['plugin', 'mcp'] as const)(
+    'rejects %s delegated access tokens for OAuth authorization',
+    async authFlow => {
+      const { controller, provider, oauthIdp } = createController();
+      provider.parseToken.mockResolvedValueOnce({ ...payload, authFlow });
+      await expect(
+        controller.authorize(
+          {},
+          createRequest({ headers: { 'x-owox-authorization': 'delegated-token' } }),
+          createResponse() as unknown as Response
+        )
+      ).rejects.toThrow(AuthorizationError);
+      expect(oauthIdp.createAuthorizationCode).not.toHaveBeenCalled();
+    }
+  );
+
   it('rejects API-key access tokens for OAuth authorization', async () => {
     const { controller, provider, oauthIdp } = createController();
     provider.parseToken.mockResolvedValueOnce({

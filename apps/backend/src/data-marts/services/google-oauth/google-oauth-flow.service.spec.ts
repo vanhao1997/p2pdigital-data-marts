@@ -23,12 +23,10 @@ describe('GoogleOAuthFlowService refresh secret redaction', () => {
       refreshAccessToken,
     }));
     const credentials = {
-      getById: jest
-        .fn()
-        .mockResolvedValue({
-          id: 'credential',
-          credentials: { refresh_token: secret, access_token: 'old-token' },
-        }),
+      getById: jest.fn().mockResolvedValue({
+        id: 'credential',
+        credentials: { refresh_token: secret, access_token: 'old-token' },
+      }),
       update: jest.fn().mockResolvedValue(undefined),
     };
     const config = {
