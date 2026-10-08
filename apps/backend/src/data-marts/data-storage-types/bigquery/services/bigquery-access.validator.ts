@@ -61,8 +61,8 @@ export class BigQueryAccessValidator implements DataStorageAccessValidator {
   ): Promise<ValidationResult> {
     const configOpt = BigQueryConfigSchema.safeParse(config);
     if (!configOpt.success) {
-      this.logger.warn('Invalid config', configOpt.error);
-      return new ValidationResult(false, 'Invalid config', { errors: configOpt.error.errors });
+      this.logger.warn('Invalid config');
+      return ValidationResult.failure('Invalid config');
     }
 
     const bigQueryConfig = configOpt.data;
@@ -76,33 +76,28 @@ export class BigQueryAccessValidator implements DataStorageAccessValidator {
         await apiAdapter.checkAccess();
         return new ValidationResult(true);
       } catch (error) {
-        this.logger.warn('OAuth access validation failed', error);
+        this.logger.warn('OAuth access validation failed');
         if (isInvalidGoogleAuthError(error)) {
           return ValidationResult.oauthReauthRequired(GOOGLE_OAUTH_REAUTH_MESSAGE);
         }
 
-        const errorMessage = error instanceof Error ? error.message : String(error);
-        return new ValidationResult(false, errorMessage);
+        return ValidationResult.failure('OAuth access validation failed');
       }
     }
 
     const credentialsOpt = BigQueryServiceAccountCredentialsSchema.safeParse(credentials);
     if (!credentialsOpt.success) {
-      this.logger.warn('Invalid credentials', credentialsOpt.error);
-      return new ValidationResult(false, 'Invalid credentials', {
-        errors: credentialsOpt.error.errors,
-      });
+      this.logger.warn('Invalid credentials');
+      return ValidationResult.failure('Invalid credentials');
     }
 
     const apiAdapter = new BigQueryApiAdapter(credentialsOpt.data, bigQueryConfig);
     try {
       await apiAdapter.checkAccess();
       return new ValidationResult(true);
-    } catch (error) {
-      this.logger.warn('Access validation failed', error);
-      return new ValidationResult(false, 'Access validation failed', {
-        error: error instanceof Error ? error.message : String(error),
-      });
+    } catch {
+      this.logger.warn('Access validation failed');
+      return ValidationResult.failure('Access validation failed');
     }
   }
 }

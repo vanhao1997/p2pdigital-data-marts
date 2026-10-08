@@ -18,6 +18,22 @@ import { SummarizeDataCatalogTool } from './summarize-data-catalog.tool';
 import { UpdateReportRunScheduleTool } from './update-report-run-schedule.tool';
 import { UpdateReportTool } from './update-report.tool';
 import { AddDestinationTool } from './add-destination.tool';
+import {
+  ListDataStoragesTool,
+  ListConnectorsTool,
+  GetConnectorSpecificationTool,
+  GetConnectorFieldsTool,
+  CreateDataStorageTool,
+  ConfigureDataStorageTool,
+  ValidateDataStorageTool,
+} from './storage-setup.tools';
+import {
+  CreateDataMartTool,
+  UpdateDataMartTool,
+  ValidateDataMartTool,
+  PublishDataMartTool,
+  GetDataMartSetupStatusTool,
+} from './data-mart-setup.tools';
 
 export const MCP_TOOL_PROVIDER_CLASSES: Array<Type<McpToolDefinition>> = [
   SummarizeDataCatalogTool,
@@ -38,6 +54,18 @@ export const MCP_TOOL_PROVIDER_CLASSES: Array<Type<McpToolDefinition>> = [
   AddDestinationTool,
   RunReportTool,
   GetReportRunStatusTool,
+  ListDataStoragesTool,
+  ListConnectorsTool,
+  GetConnectorSpecificationTool,
+  GetConnectorFieldsTool,
+  CreateDataStorageTool,
+  ConfigureDataStorageTool,
+  ValidateDataStorageTool,
+  CreateDataMartTool,
+  UpdateDataMartTool,
+  ValidateDataMartTool,
+  PublishDataMartTool,
+  GetDataMartSetupStatusTool,
 ];
 
 export const MCP_TOOL_DEFINITIONS_PROVIDER: Provider = {

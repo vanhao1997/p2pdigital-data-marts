@@ -8,6 +8,23 @@ const UNIQUE_COUNT_EXAMPLE_FIELD = 'orders__unique_count';
 const DISPLAY_FORM_NON_EXAMPLES = ['Orders Unique Count', '<Prefix> Unique Count'];
 
 describe('MCP instructions', () => {
+  it('requires context, discovery, draft validation and explicit publication for setup', () => {
+    expect(MCP_SYSTEM_INSTRUCTIONS).toContain(
+      'Call get_project_context before the first setup operation'
+    );
+    expect(MCP_SYSTEM_INSTRUCTIONS).toContain('Call list_data_storages and list_connectors');
+    expect(MCP_SYSTEM_INSTRUCTIONS).toContain(
+      'get_connector_specification and get_connector_fields'
+    );
+    expect(MCP_SYSTEM_INSTRUCTIONS).toContain('Create a DRAFT');
+    expect(MCP_SYSTEM_INSTRUCTIONS).toContain(
+      'only after the user explicitly requests publication'
+    );
+    expect(MCP_SYSTEM_INSTRUCTIONS).toContain('incremental run');
+    expect(MCP_SYSTEM_INSTRUCTIONS).toContain(
+      'For an explicit request to author a SQL Data Mart definition'
+    );
+  });
   it('returns the complete static system instructions', () => {
     const service = new McpInstructionsService();
 

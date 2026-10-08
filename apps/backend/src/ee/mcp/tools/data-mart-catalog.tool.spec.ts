@@ -202,6 +202,18 @@ describe('ListDataMartsTool', () => {
       'AddDestinationTool',
       'RunReportTool',
       'GetReportRunStatusTool',
+      'ListDataStoragesTool',
+      'ListConnectorsTool',
+      'GetConnectorSpecificationTool',
+      'GetConnectorFieldsTool',
+      'CreateDataStorageTool',
+      'ConfigureDataStorageTool',
+      'ValidateDataStorageTool',
+      'CreateDataMartTool',
+      'UpdateDataMartTool',
+      'ValidateDataMartTool',
+      'PublishDataMartTool',
+      'GetDataMartSetupStatusTool',
     ]);
     expect(registry.getTool('list_data_marts')).toBeDefined();
     expect(registry.getTool('query_data_mart')).toBeUndefined();

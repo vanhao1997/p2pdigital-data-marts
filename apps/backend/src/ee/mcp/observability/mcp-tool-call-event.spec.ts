@@ -18,6 +18,32 @@ function baseParams(
 }
 
 describe('buildMcpToolCallEvent', () => {
+  it.each([
+    'create_data_storage',
+    'configure_data_storage',
+    'create_data_mart',
+    'update_data_mart',
+  ])('never offloads arbitrary configuration or definition values for %s', toolName => {
+    const event = buildMcpToolCallEvent(
+      baseParams({
+        toolName,
+        input: {
+          storage_id: 'storage-1',
+          data_mart_id: 'dm-1',
+          title: 'sensitive-label',
+          config: { CustomProviderField: 'provider-secret' },
+          definition: {
+            connector: { source: { configuration: [{ UnusualSecret: 'provider-secret' }] } },
+          },
+        },
+        error: new Error('Invalid setup input'),
+      })
+    );
+    const blob = event.payload[OFFLOAD_KEY] as Record<string, unknown>;
+    expect(blob.arguments).toEqual({ storage_id: 'storage-1', data_mart_id: 'dm-1' });
+    expect(JSON.stringify(event)).not.toContain('provider-secret');
+    expect(JSON.stringify(event)).not.toContain('sensitive-label');
+  });
   it('успіх: OTel-conv поля + status ok + context', () => {
     const ev = buildMcpToolCallEvent({
       methodName: 'tools/call',
@@ -113,6 +139,25 @@ describe('buildMcpToolCallEvent', () => {
     const p = ev.payload as Record<string, unknown>;
     expect(p['error_type']).toBe('ToolError');
     expect(p['error_message']).toBe('tool returned isError');
+  });
+
+  it('does not persist raw setup failure messages in the event envelope', () => {
+    const ev = buildMcpToolCallEvent({
+      methodName: 'tools/call',
+      toolName: 'configure_data_storage',
+      input: {
+        storage_id: 'storage-1',
+        config: { projectId: 'warehouse-project' },
+      },
+      error: new Error('provider private_key=SETUP_CANARY'),
+      durationMs: 1,
+      context: ctx,
+    });
+    const payload = ev.payload as Record<string, unknown>;
+    expect(payload['error_message']).toBe(
+      'MCP setup operation failed. Check setup in the web application.'
+    );
+    expect(JSON.stringify(ev)).not.toContain('SETUP_CANARY');
   });
 
   it('redaction: auth-подібні ключі в args вирізаються', () => {

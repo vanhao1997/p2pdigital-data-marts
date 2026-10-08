@@ -54,6 +54,28 @@ const REDACTED = '[REDACTED]';
 const MAX_META_VALUE_LEN = 1024;
 const MAX_META_KEYS = 64;
 const MAX_REDACT_DEPTH = 16;
+const SETUP_MUTATION_TOOLS = new Set([
+  'create_data_storage',
+  'configure_data_storage',
+  'validate_data_storage',
+  'create_data_mart',
+  'update_data_mart',
+  'validate_data_mart',
+  'publish_data_mart',
+]);
+
+function safeArguments(toolName: string, input: unknown): unknown {
+  if (!SETUP_MUTATION_TOOLS.has(toolName)) return redact(input);
+  // Rejected connector input can contain provider-specific secret names that key redaction
+  // cannot recognize. Never offload setup configurations/definitions, even on failures.
+  if (!input || typeof input !== 'object') return {};
+  const values = input as Record<string, unknown>;
+  const output: Record<string, string> = {};
+  for (const key of ['storage_id', 'data_mart_id', 'source_storage_id', 'source_data_mart_id']) {
+    if (typeof values[key] === 'string') output[key] = values[key];
+  }
+  return output;
+}
 
 /** _meta keys that carry a stable conversation id, in priority order. */
 const CONVERSATION_ID_META_KEYS = ['openai/session'] as const;
@@ -117,11 +139,19 @@ function redact(value: unknown, depth = 0): unknown {
   return value;
 }
 
-function normalizeError(error: unknown): { type: string; message: string } {
+function normalizeError(toolName: string, error: unknown): { type: string; message: string } {
   const { type, message } =
     error instanceof Error
       ? { type: error.name, message: error.message }
       : { type: 'Error', message: String(error) };
+
+  if (SETUP_MUTATION_TOOLS.has(toolName)) {
+    return {
+      type,
+      message: 'MCP setup operation failed. Check setup in the web application.',
+    };
+  }
+
   // Cap length so a tool that throws a raw, verbose error (e.g. a DB dump) can't flood logs/OTLP.
   const capped =
     message.length > MAX_META_VALUE_LEN
@@ -178,7 +208,7 @@ export function buildMcpToolCallEvent(p: BuildMcpToolCallEventParams): McpToolCa
 
   if (status === 'error') {
     if (p.error != null) {
-      const err = normalizeError(p.error);
+      const err = normalizeError(p.toolName, p.error);
       payload.error_type = err.type;
       payload.error_message = err.message;
     } else {
@@ -202,7 +232,7 @@ export function buildMcpToolCallEvent(p: BuildMcpToolCallEventParams): McpToolCa
     mcp_tool_status: status,
     occurred_at: occurredAt.toISOString(),
     // Bulky (heterogeneous per tool → load into BQ JSON-typed columns).
-    arguments: redact(p.input),
+    arguments: safeArguments(p.toolName, p.input),
     result: redact(p.result?.structuredContent ?? p.result?.content),
   };
   if (p.executedSql) offload.sql = p.executedSql;

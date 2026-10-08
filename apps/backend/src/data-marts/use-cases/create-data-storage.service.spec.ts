@@ -61,6 +61,22 @@ describe('CreateDataStorageService', () => {
     jest.clearAllMocks();
   });
 
+  it('stores an optional caller-provided title in the initial insert', async () => {
+    const { service, dataStorageRepository } = createService();
+    await service.run(
+      new CreateDataStorageCommand(
+        'proj-1',
+        DataStorageType.GOOGLE_BIGQUERY,
+        'user-0',
+        undefined,
+        'Ads warehouse'
+      )
+    );
+    expect(dataStorageRepository.create).toHaveBeenCalledWith(
+      expect.objectContaining({ title: 'Ads warehouse' })
+    );
+  });
+
   it('should call syncOwners with creator userId when ownerIds not provided', async () => {
     const { service } = createService();
     const command = new CreateDataStorageCommand(

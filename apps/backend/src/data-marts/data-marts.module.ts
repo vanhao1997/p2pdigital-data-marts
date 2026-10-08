@@ -63,6 +63,12 @@ import { MCP_REPORTS_FACADE } from './facades/mcp-reports.facade';
 import { McpReportsFacadeImpl } from './facades/mcp-reports.facade.impl';
 import { MCP_SCHEDULED_TRIGGERS_FACADE } from './facades/mcp-scheduled-triggers.facade';
 import { McpScheduledTriggersFacadeImpl } from './facades/mcp-scheduled-triggers.facade.impl';
+import { MCP_SETUP_STORAGES_FACADE } from './facades/mcp-setup-storages.facade';
+import { McpSetupStoragesFacadeImpl } from './facades/mcp-setup-storages.facade.impl';
+import { McpSetupStoragesMapper } from './mappers/mcp-setup-storages.mapper';
+import { MCP_SETUP_DATA_MARTS_FACADE } from './facades/mcp-setup-data-marts.facade';
+import { McpSetupDataMartsFacadeImpl } from './facades/mcp-setup-data-marts.facade.impl';
+import { McpSetupDataMartsMapper } from './mappers/mcp-setup-data-marts.mapper';
 import { ListDataMartsByConnectorNameService } from './use-cases/list-data-marts-by-connector-name.service';
 import { ListProjectDataMartRunsService } from './use-cases/list-project-data-mart-runs.service';
 import { ListProjectInsightTemplatesService } from './use-cases/list-project-insight-templates.service';
@@ -616,6 +622,16 @@ import { ConfigurationVariableResolverService } from './services/configuration-v
       provide: MCP_SCHEDULED_TRIGGERS_FACADE,
       useClass: McpScheduledTriggersFacadeImpl,
     },
+    McpSetupStoragesMapper,
+    McpSetupDataMartsMapper,
+    {
+      provide: MCP_SETUP_STORAGES_FACADE,
+      useClass: McpSetupStoragesFacadeImpl,
+    },
+    {
+      provide: MCP_SETUP_DATA_MARTS_FACADE,
+      useClass: McpSetupDataMartsFacadeImpl,
+    },
     ListDataMartsByConnectorNameService,
     GetDataMartService,
     GetDataMartInputSourceChangeImpactService,
@@ -936,6 +952,8 @@ import { ConfigurationVariableResolverService } from './services/configuration-v
     MCP_DATA_DESTINATIONS_FACADE,
     MCP_REPORTS_FACADE,
     MCP_SCHEDULED_TRIGGERS_FACADE,
+    MCP_SETUP_STORAGES_FACADE,
+    MCP_SETUP_DATA_MARTS_FACADE,
     ContextAccessService,
     AdvancedSearchIndexSyncService,
   ],
