@@ -198,6 +198,46 @@ export async function readBrowserAccessToken(origin: string, session: CookieJar)
   return response.body.accessToken as string;
 }
 
+export async function createProjectWithSession(
+  origin: string,
+  session: CookieJar,
+  name: string
+): Promise<{ id: string; title: string }> {
+  const response = await fetchJson<JsonRecord>(`${origin}/auth/api/project-management/projects`, {
+    method: 'POST',
+    headers: session.headers({
+      'content-type': 'application/json',
+      origin,
+    }),
+    body: JSON.stringify({ name }),
+  });
+
+  expect(response.status).toBe(201);
+  expect(typeof response.body.id).toBe('string');
+  expect(typeof response.body.title).toBe('string');
+  return response.body as { id: string; title: string };
+}
+
+export async function selectProjectWithSession(
+  origin: string,
+  session: CookieJar,
+  projectId: string
+): Promise<void> {
+  const response = await fetchJson<JsonRecord>(
+    `${origin}/auth/api/project-management/projects/${projectId}/select`,
+    {
+      method: 'POST',
+      headers: session.headers({
+        'content-type': 'application/json',
+        origin,
+      }),
+    }
+  );
+
+  expect(response.status).toBe(200);
+  expect(response.body.id).toBe(projectId);
+}
+
 export async function createProjectMemberApiKey(
   origin: string,
   memberAccessToken: string
@@ -729,7 +769,7 @@ function formatExit(exit: { code: number | null; signal: NodeJS.Signals | null }
   return `code=${exit.code ?? 'null'} signal=${exit.signal ?? 'null'}`;
 }
 
-class CookieJar {
+export class CookieJar {
   private readonly cookies = new Map<string, string>();
 
   headers(init: HeadersInit = {}): Headers {

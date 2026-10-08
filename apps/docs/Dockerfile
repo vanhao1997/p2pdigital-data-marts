@@ -7,7 +7,8 @@ ENV NODE_ENV=production
 ENV DOCS_SITE=https://docs.p2pdigital.io.vn
 ENV DOCS_BASE=
 
-RUN npm ci
+# Static-site tooling is required in the build stage.
+RUN npm ci --include=dev
 RUN npm run build:docs
 
 FROM nginx:alpine

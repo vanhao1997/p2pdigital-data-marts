@@ -5,6 +5,7 @@ import { McpResourceResolverService } from '../../../mcp-resource/mcp-resource-r
 import { OAuthClientRegistry } from '../oauth-client.registry';
 import { OAuthConfigService } from '../oauth-config.service';
 import { OAuthDynamicClientService } from '../oauth-dynamic-client.service';
+import { OAuthRegistrationRateLimiterService } from '../oauth-registration-rate-limiter.service';
 import { OAuthRedirectUriPolicy } from '../oauth-redirect-uri.policy';
 import { OAuthRegistrationController } from './oauth-registration.controller';
 
@@ -36,6 +37,9 @@ function makeRequest(host = 'mcp.owox.com'): Request {
 }
 
 function makeController(config = makeConfig(), registry = makeClientRegistry()) {
+  const rateLimiter = {
+    assertAllowed: jest.fn().mockResolvedValue(undefined),
+  } as unknown as jest.Mocked<OAuthRegistrationRateLimiterService>;
   const resolver = new McpResourceResolverService(
     new ConfigService({
       MCP_PUBLIC_BASE_URL: 'https://mcp.owox.com',
@@ -44,11 +48,17 @@ function makeController(config = makeConfig(), registry = makeClientRegistry()) 
   );
   return {
     controller: new OAuthRegistrationController(
-      new OAuthDynamicClientService(config, registry, new OAuthRedirectUriPolicy(config)),
+      new OAuthDynamicClientService(
+        config,
+        registry,
+        new OAuthRedirectUriPolicy(config),
+        rateLimiter
+      ),
       resolver,
       config
     ),
     registry,
+    rateLimiter,
   };
 }
 
@@ -220,18 +230,40 @@ describe('OAuthRegistrationController', () => {
     expect(result.redirect_uris).toEqual(['https://claude.ai/api/mcp/auth_callback']);
   });
 
-  it('limits dynamic registrations per source, resource and redirect origin', async () => {
-    const { controller } = makeController();
+  it('passes source, resource and redirect origin to the registration limiter', async () => {
+    const { controller, rateLimiter } = makeController();
     const request = {
       redirect_uris: ['http://127.0.0.1:5555/callback'],
       token_endpoint_auth_method: 'none',
     };
 
-    for (let attempt = 0; attempt < 10; attempt += 1) {
-      await controller.register(request, makeRequest());
-    }
+    await controller.register(request, makeRequest());
 
-    const error = await controller.register(request, makeRequest()).catch(error => error);
+    expect(rateLimiter.assertAllowed).toHaveBeenCalledWith(
+      'unknown',
+      'https://mcp.owox.com/mcp',
+      'http://127.0.0.1:5555'
+    );
+  });
+
+  it('surfaces registration limiter rejections as 429', async () => {
+    const { controller, rateLimiter } = makeController();
+    rateLimiter.assertAllowed.mockRejectedValueOnce(
+      new HttpException(
+        { message: 'Too many dynamic client registration attempts', retryAfterSeconds: 300 },
+        HttpStatus.TOO_MANY_REQUESTS
+      )
+    );
+
+    const error = await controller
+      .register(
+        {
+          redirect_uris: ['http://127.0.0.1:5555/callback'],
+          token_endpoint_auth_method: 'none',
+        },
+        makeRequest()
+      )
+      .catch(error => error);
     expect(error).toBeInstanceOf(HttpException);
     expect((error as HttpException).getStatus()).toBe(HttpStatus.TOO_MANY_REQUESTS);
   });

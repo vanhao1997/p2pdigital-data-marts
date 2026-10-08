@@ -65,10 +65,16 @@ test('creates, reveals once, renames and revokes a license key', async ({ page }
   });
   await expect(editSheet.getByText(/only shown once, right after creation/i)).toBeVisible();
   await editSheet.locator('input[name="name"]').fill('Production EU');
-  // The details sheet keeps its content in a transform animation while the
-  // table refreshes. Force the already-visible submit control instead of
-  // waiting forever for Playwright's stability check.
-  await editSheet.getByRole('button', { name: 'Save', exact: true }).click({ force: true });
+  const saveButton = editSheet.getByRole('button', { name: 'Save', exact: true });
+  // Visibility alone can pass while the opening sheet is still off-screen.
+  // Keep Playwright's stability/actionability checks enabled for submission.
+  await expect(saveButton).toBeInViewport();
+  const updateResponse = page.waitForResponse(
+    response =>
+      response.request().method() === 'PATCH' && response.url().includes('/api/license-keys/')
+  );
+  await saveButton.click();
+  expect((await updateResponse).ok()).toBe(true);
   await expect(page.getByText('Production EU', { exact: true })).toBeVisible();
 
   const licenseKeyRow = page.getByRole('row').filter({ hasText: 'Production EU' });

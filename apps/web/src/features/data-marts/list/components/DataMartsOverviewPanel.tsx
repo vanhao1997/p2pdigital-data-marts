@@ -2,6 +2,7 @@ import { Button } from '@owox/ui/components/button';
 import { ArrowRight, Sparkles } from 'lucide-react';
 import { type ReactNode, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
+import type { TFunction } from 'i18next';
 import { Link } from 'react-router';
 import { DataLastUpdatedValue } from '../../shared/components/DataLastUpdatedValue';
 import type { DataMartListItem } from '../model/types';
@@ -30,8 +31,8 @@ export function DataMartsOverviewPanel({
 }: DataMartsOverviewPanelProps) {
   const { t } = useTranslation();
   const overview = useMemo(
-    () => buildOverview(items, qualitySummaries, onViewRuns, onCreateDataMart),
-    [items, qualitySummaries, onViewRuns, onCreateDataMart]
+    () => buildOverview(items, qualitySummaries, onViewRuns, onCreateDataMart, t),
+    [items, qualitySummaries, onViewRuns, onCreateDataMart, t]
   );
 
   return (
@@ -41,22 +42,22 @@ export function DataMartsOverviewPanel({
     >
       <div className='grid gap-3 lg:grid-cols-[1.2fr_1fr_1fr_1.1fr]'>
         <OverviewCard
-          label={t('dataMartsOverview.dataHealth', 'Tình trạng dữ liệu')}
+          label={t('dataMartsOverview.dataHealth', 'Data health')}
           value={overview.dataHealth}
-          hint={t('dataMartsOverview.dataHealthHint', '{{published}}/{{total}} đã xuất bản', {
+          hint={t('dataMartsOverview.dataHealthHint', '{{published}}/{{total}} published', {
             published: String(overview.publishedCount),
             total: String(overview.totalCount),
           })}
           tone={overview.publishedCount > 0 ? 'success' : 'warning'}
         />
         <OverviewCard
-          label={t('dataMartsOverview.lastUpdated', 'Lần cập nhật gần nhất')}
+          label={t('dataMartsOverview.lastUpdated', 'Last updated')}
           value={overview.lastUpdated}
           hint={overview.lastUpdatedHint}
           tone={overview.lastUpdatedIsKnown ? 'default' : 'warning'}
         />
         <OverviewCard
-          label={t('dataMartsOverview.runIssues', 'Lượt chạy lỗi/cảnh báo')}
+          label={t('dataMartsOverview.runIssues', 'Run issues')}
           value={overview.runIssues}
           hint={overview.runIssuesHint}
           tone={overview.runIssueCount > 0 ? 'danger' : 'success'}
@@ -65,7 +66,7 @@ export function DataMartsOverviewPanel({
           <div className='flex items-start justify-between gap-3'>
             <div className='min-w-0'>
               <div className='text-muted-foreground text-xs font-medium tracking-wide uppercase'>
-                {t('dataMartsOverview.nextAction', 'Bước tiếp theo')}
+                {t('dataMartsOverview.nextAction', 'Next action')}
               </div>
               <div className='text-foreground mt-2 text-sm font-medium'>{overview.nextAction}</div>
               <p className='text-muted-foreground mt-1 text-sm'>{overview.nextActionHint}</p>
@@ -80,7 +81,7 @@ export function DataMartsOverviewPanel({
               </Link>
             </Button>
             <Button asChild variant='outline' size='sm'>
-              <Link to={onViewRuns}>{t('dataMartsOverview.viewRuns', 'Xem lượt chạy')}</Link>
+              <Link to={onViewRuns}>{t('dataMartsOverview.viewRuns', 'View runs')}</Link>
             </Button>
           </div>
         </div>
@@ -114,8 +115,18 @@ function buildOverview(
   items: DataMartListItem[],
   qualitySummaries?: Partial<Record<string, DataQualityCompactSummary>>,
   onViewRuns = '/data-marts/runs',
-  onCreateDataMart = '/data-marts/create'
+  onCreateDataMart = '/data-marts/create',
+  t?: TFunction
 ) {
+  const translate =
+    t ??
+    ((_key: string, fallback: string, options?: Record<string, unknown>) => {
+      let value = fallback;
+      for (const [name, replacement] of Object.entries(options ?? {})) {
+        value = value.replace(`{{${name}}}`, String(replacement));
+      }
+      return value;
+    });
   const totalCount = items.length;
   const publishedCount = items.filter(
     item => (item.status as { code?: string } | undefined)?.code === DataMartStatus.PUBLISHED
@@ -150,17 +161,29 @@ function buildOverview(
 
   const lastUpdatedHint = hasLastUpdated
     ? latestDataLastUpdated.coverage === 'complete'
-      ? 'Đã quét hết nguồn'
-      : 'Dữ liệu một phần hoặc đang chờ kiểm tra'
-    : 'Chưa có dữ liệu cập nhật từ API';
+      ? translate('dataMartsOverview.lastUpdatedComplete', 'All sources scanned')
+      : translate('dataMartsOverview.lastUpdatedPartial', 'Partial data or pending verification')
+    : translate('dataMartsOverview.lastUpdatedUnavailable', 'No API freshness data yet');
 
   const runIssuesHint =
     runningCount > 0
-      ? `${runningCount} lượt chạy đang xử lý`
-      : `${draftCount} Data Mart bản nháp, ${publishedCount} đã xuất bản`;
+      ? translate('dataMartsOverview.runningRuns', '{{count}} run in progress', {
+          count: runningCount,
+        })
+      : translate(
+          'dataMartsOverview.draftPublishedHint',
+          '{{draft}} draft Data Mart, {{published}} published',
+          {
+            draft: draftCount,
+            published: publishedCount,
+          }
+        );
 
   const nextActionHref = totalCount === 0 ? onCreateDataMart : onViewRuns;
-  const nextActionButton = totalCount === 0 ? 'Tạo Data Mart' : 'Mở lịch sử chạy';
+  const nextActionButton =
+    totalCount === 0
+      ? translate('dataMartsOverview.createDataMartAction', 'Create Data Mart')
+      : translate('dataMartsOverview.openRunHistory', 'Open run history');
 
   return {
     totalCount,
@@ -175,14 +198,20 @@ function buildOverview(
     runIssueCount,
     nextAction:
       totalCount === 0
-        ? 'Tạo Data Mart đầu tiên'
+        ? translate('dataMartsOverview.createFirstDataMart', 'Create the first Data Mart')
         : runIssueCount > 0
-          ? 'Xem các lượt chạy đang có cảnh báo'
-          : 'Tiếp tục theo dõi run history',
+          ? translate('dataMartsOverview.reviewRunWarnings', 'Review runs with warnings')
+          : translate('dataMartsOverview.monitorRunHistory', 'Keep monitoring run history'),
     nextActionHint:
       totalCount === 0
-        ? 'Bắt đầu bằng việc tạo một Data Mart từ nguồn dữ liệu hiện có.'
-        : 'Ưu tiên kiểm tra trạng thái chạy và dữ liệu mới nhất trước.',
+        ? translate(
+            'dataMartsOverview.createFirstHint',
+            'Start by creating a Data Mart from an existing data source.'
+          )
+        : translate(
+            'dataMartsOverview.reviewRunHistoryHint',
+            'Check run status and the latest data freshness first.'
+          ),
     nextActionHref,
     nextActionButton,
   };

@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
+import { flushSync } from 'react-dom';
 import { Editor, type OnMount } from '@monaco-editor/react';
 import { cn } from '@owox/ui/lib/utils';
 import { useTheme } from 'next-themes';
@@ -317,7 +318,12 @@ export function FormulaEditor({
 
   const handleChange = (nextValue: string | undefined) => {
     const text = nextValue ?? '';
-    onChange({ text, refs: resolveAll(text, indexRef.current, referencesRef.current) });
+    // Monaco calls this from its native model listener, outside React's event system. Commit
+    // before the next keystroke: the controlled wrapper can otherwise write an older value prop
+    // back over newer model text, dropping characters and cancelling the active suggestions.
+    flushSync(() => {
+      onChange({ text, refs: resolveAll(text, indexRef.current, referencesRef.current) });
+    });
   };
 
   return (

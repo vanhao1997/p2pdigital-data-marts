@@ -11,6 +11,10 @@ import { trackEvent } from '../../../../../../utils';
 import { useRefreshSetupProgress } from '../../../../../../components/AppSidebar/SetupChecklist/useSetupProgress';
 import { ReportStatusEnum } from '../../enums';
 
+export type ReportMutationResult =
+  | { report: ReturnType<typeof mapReportDtoToEntity>; error: null }
+  | { report: null; error: string };
+
 export function useReport() {
   const { t } = useTranslation();
   const { state, dispatch, reportsRequestGenerationRef } = useReportContext();
@@ -137,8 +141,8 @@ export function useReport() {
     [dispatch, t]
   );
 
-  const createReport = useCallback(
-    async (data: CreateReportRequestDto) => {
+  const createReportWithResult = useCallback(
+    async (data: CreateReportRequestDto): Promise<ReportMutationResult> => {
       dispatch({ type: ReportActionType.CREATE_REPORT_START });
       try {
         const report = await reportService.createReport(data);
@@ -154,7 +158,7 @@ export function useReport() {
         });
         toast.success(t('uiFeedback.reportCreated'));
         refreshSetupProgress();
-        return mappedReport;
+        return { report: mappedReport, error: null };
       } catch (error) {
         const message =
           error instanceof Error ? error.message : t('reportStatus.errors.createReport');
@@ -169,14 +173,22 @@ export function useReport() {
           label: data.destinationConfig.type,
           error: message,
         });
-        return null;
+        return { report: null, error: message };
       }
     },
     [dispatch, refreshSetupProgress, t]
   );
 
-  const updateReport = useCallback(
-    async (id: string, data: UpdateReportRequestDto) => {
+  const createReport = useCallback(
+    async (data: CreateReportRequestDto) => {
+      const result = await createReportWithResult(data);
+      return result.report;
+    },
+    [createReportWithResult]
+  );
+
+  const updateReportWithResult = useCallback(
+    async (id: string, data: UpdateReportRequestDto): Promise<ReportMutationResult> => {
       dispatch({ type: ReportActionType.UPDATE_REPORT_START });
       try {
         const report = await reportService.updateReport(id, data);
@@ -192,7 +204,7 @@ export function useReport() {
           details: mappedReport.id,
         });
         toast.success(t('uiFeedback.reportUpdated'));
-        return mappedReport;
+        return { report: mappedReport, error: null };
       } catch (error) {
         const message =
           error instanceof Error ? error.message : t('reportStatus.errors.updateReport');
@@ -206,10 +218,18 @@ export function useReport() {
           action: 'UpdateError',
           error: message,
         });
-        return null;
+        return { report: null, error: message };
       }
     },
     [dispatch, t]
+  );
+
+  const updateReport = useCallback(
+    async (id: string, data: UpdateReportRequestDto) => {
+      const result = await updateReportWithResult(id, data);
+      return result.report;
+    },
+    [updateReportWithResult]
   );
 
   const deleteReport = useCallback(
@@ -352,6 +372,8 @@ export function useReport() {
     fetchReports,
     fetchReportsByDataMartId,
     fetchReportById,
+    createReportWithResult,
+    updateReportWithResult,
     createReport,
     updateReport,
     deleteReport,

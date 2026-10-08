@@ -151,6 +151,11 @@ describe('LookerStudioConnectorApiService', () => {
       createdById: 'user-1',
     }) as unknown as Report;
 
+  const createMockDataMartRun = () => ({
+    id: 'data-mart-run-1',
+    reportDefinition: {},
+  });
+
   const createMockResponse = (): Partial<Response> => ({
     json: jest.fn(),
     setHeader: jest.fn().mockReturnThis(),
@@ -266,6 +271,7 @@ describe('LookerStudioConnectorApiService', () => {
           markAsUnsuccessful: jest.fn(),
           getReport: jest.fn().mockReturnValue(createMockReport()),
           getReportId: jest.fn().mockReturnValue('report-1'),
+          getDataMartRun: jest.fn().mockReturnValue(createMockDataMartRun()),
         };
 
         reportRunService.create.mockResolvedValue(mockReportRun as any);
@@ -290,6 +296,7 @@ describe('LookerStudioConnectorApiService', () => {
           markAsUnsuccessful: jest.fn(),
           getReport: jest.fn().mockReturnValue(createMockReport()),
           getReportId: jest.fn().mockReturnValue('report-1'),
+          getDataMartRun: jest.fn().mockReturnValue(createMockDataMartRun()),
         };
 
         reportRunService.create.mockResolvedValue(mockReportRun as any);
@@ -314,6 +321,7 @@ describe('LookerStudioConnectorApiService', () => {
           markAsUnsuccessful: jest.fn(),
           getReport: jest.fn().mockReturnValue(createMockReport()),
           getReportId: jest.fn().mockReturnValue('report-1'),
+          getDataMartRun: jest.fn().mockReturnValue(createMockDataMartRun()),
         };
 
         reportRunService.create.mockResolvedValue(mockReportRun as any);
@@ -345,6 +353,7 @@ describe('LookerStudioConnectorApiService', () => {
           markAsUnsuccessful: jest.fn(),
           getReport: jest.fn().mockReturnValue(createMockReport()),
           getReportId: jest.fn().mockReturnValue('report-1'),
+          getDataMartRun: jest.fn().mockReturnValue(createMockDataMartRun()),
         };
 
         reportRunService.create.mockResolvedValue(mockReportRun as any);
@@ -356,7 +365,10 @@ describe('LookerStudioConnectorApiService', () => {
         await service.getDataStreaming(request, res as Response);
 
         expect(mockReportRun.markAsSuccess).toHaveBeenCalled();
-        expect(projectBilling.registerLookerReportRunConsumption).toHaveBeenCalled();
+        expect(projectBilling.registerLookerReportRunConsumption).toHaveBeenCalledWith(
+          expect.anything(),
+          'data-mart-run-1'
+        );
         expect(eventDispatcher.publishExternal).toHaveBeenCalled();
       });
 
@@ -375,6 +387,7 @@ describe('LookerStudioConnectorApiService', () => {
           markAsUnsuccessful: jest.fn(),
           getReport: jest.fn().mockReturnValue(createMockReport()),
           getReportId: jest.fn().mockReturnValue('report-1'),
+          getDataMartRun: jest.fn().mockReturnValue(createMockDataMartRun()),
         };
 
         reportRunService.create.mockResolvedValue(mockReportRun as any);
@@ -470,6 +483,7 @@ describe('LookerStudioConnectorApiService', () => {
           markAsUnsuccessful: jest.fn(),
           getReport: jest.fn().mockReturnValue(createMockReport()),
           getReportId: jest.fn().mockReturnValue('report-1'),
+          getDataMartRun: jest.fn().mockReturnValue(createMockDataMartRun()),
         };
         const mockContext = { schema: [], fieldIndexMap: [], rowLimit: 1000000, reader: {} };
 
@@ -498,6 +512,7 @@ describe('LookerStudioConnectorApiService', () => {
           markAsUnsuccessful: jest.fn(),
           getReport: jest.fn().mockReturnValue(createMockReport()),
           getReportId: jest.fn().mockReturnValue('report-1'),
+          getDataMartRun: jest.fn().mockReturnValue(createMockDataMartRun()),
         };
 
         reportRunService.create.mockResolvedValue(mockReportRun as any);
@@ -532,6 +547,7 @@ describe('LookerStudioConnectorApiService', () => {
           markAsUnsuccessful: jest.fn(),
           getReport: jest.fn().mockReturnValue(createMockReport()),
           getReportId: jest.fn().mockReturnValue('report-1'),
+          getDataMartRun: jest.fn().mockReturnValue(createMockDataMartRun()),
         };
 
         reportRunService.create.mockResolvedValue(mockReportRun as any);
@@ -547,7 +563,10 @@ describe('LookerStudioConnectorApiService', () => {
 
         expect(mockReportRun.markAsSuccess).toHaveBeenCalled();
         expect(reportRunService.finish).toHaveBeenCalled();
-        expect(projectBilling.registerLookerReportRunConsumption).toHaveBeenCalled();
+        expect(projectBilling.registerLookerReportRunConsumption).toHaveBeenCalledWith(
+          expect.anything(),
+          'data-mart-run-1'
+        );
         expect(eventDispatcher.publishExternal).toHaveBeenCalled();
       });
 
@@ -565,6 +584,7 @@ describe('LookerStudioConnectorApiService', () => {
           markAsUnsuccessful: jest.fn(),
           getReport: jest.fn().mockReturnValue(createMockReport()),
           getReportId: jest.fn().mockReturnValue('report-1'),
+          getDataMartRun: jest.fn().mockReturnValue(createMockDataMartRun()),
         };
 
         reportRunService.create.mockResolvedValue(mockReportRun as any);
@@ -584,7 +604,10 @@ describe('LookerStudioConnectorApiService', () => {
         expect(mockReportRun.markAsSuccess).toHaveBeenCalled();
         expect(mockReportRun.markAsUnsuccessful).not.toHaveBeenCalled();
         expect(reportRunService.finish).toHaveBeenCalled();
-        expect(projectBilling.registerLookerReportRunConsumption).toHaveBeenCalled();
+        expect(projectBilling.registerLookerReportRunConsumption).toHaveBeenCalledWith(
+          expect.anything(),
+          'data-mart-run-1'
+        );
         expect(eventDispatcher.publishExternal).toHaveBeenCalled();
         expect((service as any).logger.warn).toHaveBeenCalledWith(
           'Failed to register Looker report consumption for report-1: pubsub unavailable'
@@ -605,6 +628,7 @@ describe('LookerStudioConnectorApiService', () => {
           markAsUnsuccessful: jest.fn(),
           getReport: jest.fn().mockReturnValue(createMockReport()),
           getReportId: jest.fn().mockReturnValue('report-1'),
+          getDataMartRun: jest.fn().mockReturnValue(createMockDataMartRun()),
         };
 
         reportRunService.create.mockResolvedValue(mockReportRun as any);
@@ -697,6 +721,7 @@ describe('LookerStudioConnectorApiService', () => {
         markAsUnsuccessful: jest.fn(),
         getReport: jest.fn().mockReturnValue(mockReport),
         getReportId: jest.fn().mockReturnValue('report-1'),
+        getDataMartRun: jest.fn().mockReturnValue(createMockDataMartRun()),
       };
 
       reportService.getByIdAndLookerStudioSecret.mockResolvedValue(mockReport);

@@ -1,5 +1,5 @@
 import { renderHook, act } from '@testing-library/react';
-import { vi, describe, it, beforeEach, expect } from 'vitest';
+import { vi, describe, it, beforeEach, afterEach, expect } from 'vitest';
 
 vi.mock('sonner', () => ({
   __esModule: true,
@@ -40,6 +40,8 @@ const mockClearError = vi.fn();
 
 function setupUseReportMock(overrides: Partial<ReturnType<typeof useReport>> = {}) {
   (useReport as unknown as ReturnType<typeof vi.fn>).mockReturnValue({
+    createReportWithResult: mockCreateReport,
+    updateReportWithResult: mockUpdateReport,
     updateReport: mockUpdateReport,
     createReport: mockCreateReport,
     clearError: mockClearError,
@@ -98,8 +100,18 @@ function buildReport(overrides: Partial<DataMartReport> = {}): DataMartReport {
 beforeEach(() => {
   vi.clearAllMocks();
   setupUseReportMock();
-  mockCreateReport.mockResolvedValue(buildReport({ id: 'created-1' }));
-  mockUpdateReport.mockResolvedValue(buildReport({ id: 'updated-1' }));
+  mockCreateReport.mockResolvedValue({
+    report: buildReport({ id: 'created-1' }),
+    error: null,
+  });
+  mockUpdateReport.mockResolvedValue({
+    report: buildReport({ id: 'updated-1' }),
+    error: null,
+  });
+});
+
+afterEach(() => {
+  vi.restoreAllMocks();
 });
 
 const validEmailFormData = {
@@ -174,6 +186,248 @@ describe('useEmailReportForm — defaults', () => {
 });
 
 describe('useEmailReportForm — submission', () => {
+  it('keeps the form busy until onAfterSubmit settles, then calls success once', async () => {
+    let finishAfterSubmit!: () => void;
+    const afterSubmitPending = new Promise<void>(resolve => {
+      finishAfterSubmit = resolve;
+    });
+    const onAfterSubmit = vi.fn().mockReturnValue(afterSubmitPending);
+    const onSuccess = vi.fn();
+    const { result } = renderHook(() =>
+      useEmailReportForm({
+        initialReport: buildReport(),
+        mode: ReportFormMode.EDIT,
+        dataMartId: 'dm-1',
+        onAfterSubmit,
+        onSuccess,
+      })
+    );
+
+    let submission!: Promise<void>;
+    await act(async () => {
+      submission = result.current.onSubmit(validEmailFormData);
+    });
+
+    expect(result.current.isSubmitting).toBe(true);
+    expect(mockUpdateReport).toHaveBeenCalledTimes(1);
+    expect(onAfterSubmit).toHaveBeenCalledTimes(1);
+    expect(onSuccess).not.toHaveBeenCalled();
+
+    await act(async () => {
+      finishAfterSubmit();
+      await submission;
+    });
+
+    expect(result.current.isSubmitting).toBe(false);
+    expect(result.current.formError).toBeNull();
+    expect(onSuccess).toHaveBeenCalledTimes(1);
+    expect(mockUpdateReport).toHaveBeenCalledTimes(1);
+  });
+
+  it('accepts a saved report when the context still contains an earlier error', async () => {
+    setupUseReportMock({ error: 'An earlier report request failed' });
+    const onAfterSubmit = vi.fn().mockResolvedValue(undefined);
+    const onSuccess = vi.fn();
+    const { result } = renderHook(() =>
+      useEmailReportForm({
+        initialReport: buildReport(),
+        mode: ReportFormMode.EDIT,
+        dataMartId: 'dm-1',
+        onAfterSubmit,
+        onSuccess,
+      })
+    );
+
+    await act(async () => {
+      await result.current.onSubmit(validEmailFormData);
+    });
+
+    expect(mockClearError).toHaveBeenCalledTimes(1);
+    expect(mockUpdateReport).toHaveBeenCalledTimes(1);
+    expect(onAfterSubmit).toHaveBeenCalledTimes(1);
+    expect(onSuccess).toHaveBeenCalledTimes(1);
+    expect(result.current.formError).toBeNull();
+    expect(result.current.isSubmitting).toBe(false);
+  });
+
+  it('releases the form after a rejected report update', async () => {
+    mockUpdateReport.mockRejectedValueOnce(new Error('Report update failed'));
+    vi.spyOn(console, 'error').mockImplementation(() => undefined);
+    const onAfterSubmit = vi.fn();
+    const onSuccess = vi.fn();
+    const { result } = renderHook(() =>
+      useEmailReportForm({
+        initialReport: buildReport(),
+        mode: ReportFormMode.EDIT,
+        dataMartId: 'dm-1',
+        onAfterSubmit,
+        onSuccess,
+      })
+    );
+
+    await act(async () => {
+      await result.current.onSubmit(validEmailFormData);
+    });
+
+    expect(result.current.isSubmitting).toBe(false);
+    expect(result.current.formError).toBe('An error occurred while submitting the form');
+    expect(mockUpdateReport).toHaveBeenCalledTimes(1);
+    expect(onAfterSubmit).not.toHaveBeenCalled();
+    expect(onSuccess).not.toHaveBeenCalled();
+  });
+
+  it('releases the form after the report update returns a failed result', async () => {
+    mockUpdateReport.mockResolvedValueOnce({
+      report: null,
+      error: 'Backend validation: selected destination is unavailable',
+    });
+    const onAfterSubmit = vi.fn();
+    const onSuccess = vi.fn();
+    const { result } = renderHook(() =>
+      useEmailReportForm({
+        initialReport: buildReport(),
+        mode: ReportFormMode.EDIT,
+        dataMartId: 'dm-1',
+        onAfterSubmit,
+        onSuccess,
+      })
+    );
+
+    await act(async () => {
+      await result.current.onSubmit(validEmailFormData);
+    });
+
+    expect(result.current.isSubmitting).toBe(false);
+    expect(result.current.formError).toBe(
+      'Backend validation: selected destination is unavailable'
+    );
+    expect(mockUpdateReport).toHaveBeenCalledTimes(1);
+    expect(onAfterSubmit).not.toHaveBeenCalled();
+    expect(onSuccess).not.toHaveBeenCalled();
+  });
+
+  it('shows the current create error instead of a stale context error', async () => {
+    setupUseReportMock({ error: 'An earlier report request failed' });
+    mockCreateReport.mockResolvedValueOnce({
+      report: null,
+      error: 'Backend validation: selected destination is unavailable',
+    });
+    const { result } = renderHook(() =>
+      useEmailReportForm({
+        mode: ReportFormMode.CREATE,
+        dataMartId: 'dm-1',
+      })
+    );
+
+    await act(async () => {
+      await result.current.onSubmit(validEmailFormData);
+    });
+
+    expect(mockClearError).toHaveBeenCalledTimes(1);
+    expect(result.current.formError).toBe(
+      'Backend validation: selected destination is unavailable'
+    );
+    expect(result.current.isSubmitting).toBe(false);
+  });
+
+  it('shows a newer edit error after an earlier failed request', async () => {
+    mockUpdateReport
+      .mockResolvedValueOnce({
+        report: null,
+        error: 'First backend validation error',
+      })
+      .mockResolvedValueOnce({
+        report: null,
+        error: 'Second backend validation error',
+      });
+    const { result } = renderHook(() =>
+      useEmailReportForm({
+        initialReport: buildReport(),
+        mode: ReportFormMode.EDIT,
+        dataMartId: 'dm-1',
+      })
+    );
+
+    await act(async () => {
+      await result.current.onSubmit(validEmailFormData);
+    });
+    expect(result.current.formError).toBe('First backend validation error');
+
+    await act(async () => {
+      await result.current.onSubmit(validEmailFormData);
+    });
+    expect(result.current.formError).toBe('Second backend validation error');
+  });
+
+  it('releases the form when edit mode has no initial report', async () => {
+    const onSuccess = vi.fn();
+    const { result } = renderHook(() =>
+      useEmailReportForm({
+        mode: ReportFormMode.EDIT,
+        dataMartId: 'dm-1',
+        onSuccess,
+      })
+    );
+
+    await act(async () => {
+      await result.current.onSubmit(validEmailFormData);
+    });
+
+    expect(result.current.isSubmitting).toBe(false);
+    expect(result.current.formError).toBe('Initial report is required for edit mode');
+    expect(mockUpdateReport).not.toHaveBeenCalled();
+    expect(onSuccess).not.toHaveBeenCalled();
+  });
+
+  it('releases the form and preserves success after onAfterSubmit rejects', async () => {
+    const onAfterSubmit = vi.fn().mockRejectedValue(new Error('After submit failed'));
+    const onSuccess = vi.fn();
+    vi.spyOn(console, 'error').mockImplementation(() => undefined);
+    const { result } = renderHook(() =>
+      useEmailReportForm({
+        initialReport: buildReport(),
+        mode: ReportFormMode.EDIT,
+        dataMartId: 'dm-1',
+        onAfterSubmit,
+        onSuccess,
+      })
+    );
+
+    await act(async () => {
+      await result.current.onSubmit(validEmailFormData);
+    });
+
+    expect(result.current.isSubmitting).toBe(false);
+    expect(result.current.formError).toBeNull();
+    expect(mockUpdateReport).toHaveBeenCalledTimes(1);
+    expect(onAfterSubmit).toHaveBeenCalledTimes(1);
+    expect(onSuccess).toHaveBeenCalledTimes(1);
+  });
+
+  it('releases the form when the success callback throws a local exception', async () => {
+    const onSuccess = vi.fn(() => {
+      throw new Error('Success callback failed');
+    });
+    vi.spyOn(console, 'error').mockImplementation(() => undefined);
+    const { result } = renderHook(() =>
+      useEmailReportForm({
+        initialReport: buildReport(),
+        mode: ReportFormMode.EDIT,
+        dataMartId: 'dm-1',
+        onSuccess,
+      })
+    );
+
+    await act(async () => {
+      await result.current.onSubmit(validEmailFormData);
+    });
+
+    expect(result.current.isSubmitting).toBe(false);
+    expect(result.current.formError).toBe('An error occurred while submitting the form');
+    expect(mockUpdateReport).toHaveBeenCalledTimes(1);
+    expect(onSuccess).toHaveBeenCalledTimes(1);
+  });
+
   it('UPDATE: builds CUSTOM_MESSAGE destinationConfig and forwards output controls', async () => {
     const initial = buildReport({ id: 'r-42' });
     const preJoinRule: FilterRule = {

@@ -43,13 +43,16 @@ test.describe('Data Setup - Storage Card & Output Schema', () => {
 
     // Verify Output Schema CollapsibleCard section is visible.
     // CardTitle renders as a <div>, not a heading role.
-    // Use { exact: true } because "Output Schema" also appears in tooltip
+    // Use { exact: true } because "Output schema" also appears in tooltip
     // text and the empty state message "Output schema has no configured fields".
     const dataSetupContent = page.getByTestId(TESTIDS.datamartTabDataSetup);
-    await expect(dataSetupContent.getByText('Output Schema', { exact: true })).toBeVisible();
+    await expect(dataSetupContent.getByText('Output schema', { exact: true })).toBeVisible();
 
     // For a fresh DM with no definition, the schema section renders without errors.
     // The empty state shows a table with "Output schema has no configured fields".
+    await expect(
+      dataSetupContent.getByRole('cell', { name: 'Output schema has no configured fields' })
+    ).toBeVisible();
   });
 });
 
@@ -178,17 +181,18 @@ test.describe('Data Setup - Connector Definition', () => {
     // When Connector type is selected for a new DM, the ConnectorEditForm
     // auto-opens via autoOpen prop (no separate "Setup Connector" click needed).
     // Verify the wizard opens at Step 1 with the connector selection grid.
-    await expect(page.getByText('Choose Connector')).toBeVisible({
+    const wizard = page.getByRole('dialog', { name: 'Setup Connector' });
+    await expect(wizard.getByRole('heading', { name: 'Choose Connector' })).toBeVisible({
       timeout: 10000,
     });
 
     for (const hiddenConnector of HIDDEN_CONNECTOR_TITLES) {
-      await expect(page.getByText(hiddenConnector, { exact: true })).not.toBeVisible();
+      await expect(wizard.getByText(hiddenConnector, { exact: true })).not.toBeVisible();
     }
-    await expect(page.getByText('Admicro Ads', { exact: true })).toBeVisible();
+    await expect(wizard.getByText('Admicro Ads', { exact: true })).toBeVisible();
 
     // Verify the step indicator shows "Step 1 of 5"
-    await expect(page.getByText('Step 1 of 5')).toBeVisible();
+    await expect(wizard.getByText('Step 1 of 5')).toBeVisible();
   });
 
   test('completes GitHub connector wizard and verifies persistence after reload (DSET-06, DSET-07)', async ({
@@ -207,24 +211,26 @@ test.describe('Data Setup - Connector Definition', () => {
     // -----------------------------------------------------------------------
     // Step 1 of 5: Select Connector -- choose a visible connector from the grid
     // -----------------------------------------------------------------------
-    await expect(page.getByText('Choose Connector')).toBeVisible({
+    const wizard = page.getByRole('dialog', { name: 'Setup Connector' });
+    await expect(wizard.getByRole('heading', { name: 'Choose Connector' })).toBeVisible({
       timeout: 10000,
     });
-    await page.getByText('GitHub', { exact: true }).click();
+    await wizard.getByText('GitHub', { exact: true }).click();
 
     // Click Next to go to Step 2
-    const nextButton = page.getByRole('button', { name: 'Next' });
+    const nextButton = wizard.getByRole('button', { name: 'Next' });
     await expect(nextButton).toBeEnabled();
     await nextButton.click();
 
     // -----------------------------------------------------------------------
     // Step 2 of 5: Configuration
     // -----------------------------------------------------------------------
-    await expect(page.getByText('Configure Settings')).toBeVisible({
+    await expect(wizard.getByRole('heading', { name: 'Configure settings' })).toBeVisible({
       timeout: 10000,
     });
-    await page.getByLabel('Access Token *').fill('e2e-placeholder-token');
-    await page.getByLabel('Repository Name *').fill('owner/repository');
+    // Accessible names include the required marker and the label's help button.
+    await wizard.getByRole('textbox', { name: /^Access Token\b/ }).fill('e2e-placeholder-token');
+    await wizard.getByRole('textbox', { name: /^Repository Name\b/ }).fill('owner/repository');
     // Wait for Next to be enabled (configuration loaded and valid)
     await expect(nextButton).toBeEnabled({ timeout: 10000 });
     await nextButton.click();
@@ -232,9 +238,11 @@ test.describe('Data Setup - Connector Definition', () => {
     // -----------------------------------------------------------------------
     // Step 3 of 5: Select Nodes -- click "Repository Information"
     // -----------------------------------------------------------------------
-    await expect(page.getByText('Repository Information')).toBeVisible({ timeout: 10000 });
+    await expect(wizard.getByText('Repository Information', { exact: true })).toBeVisible({
+      timeout: 10000,
+    });
     // The node is rendered as AppWizardStepCardItem with type='radio'
-    await page.getByText('Repository Information').click();
+    await wizard.getByText('Repository Information', { exact: true }).click();
     await expect(nextButton).toBeEnabled();
     await nextButton.click();
 
@@ -244,7 +252,7 @@ test.describe('Data Setup - Connector Definition', () => {
     // We need at least one field selected for Next to be enabled.
     // -----------------------------------------------------------------------
     // Wait for fields to load. GitHub default fields provide a valid selection.
-    await expect(page.locator('input[value="id"]')).toBeVisible({ timeout: 10000 });
+    await expect(wizard.locator('input[value="id"]')).toBeVisible({ timeout: 10000 });
 
     await expect(nextButton).toBeEnabled();
     await nextButton.click();
@@ -253,19 +261,27 @@ test.describe('Data Setup - Connector Definition', () => {
     // Step 5 of 5: Target Setup -- for GOOGLE_BIGQUERY, needs Dataset name
     // and Table name. Both are pre-filled with defaults from the wizard.
     // -----------------------------------------------------------------------
-    await expect(page.getByText('Choose where to store your data')).toBeVisible({ timeout: 10000 });
+    await expect(wizard.getByText('Choose where to store your data')).toBeVisible({
+      timeout: 10000,
+    });
 
     // The Dataset name and Table name inputs should be pre-filled with defaults:
     // Dataset and table names are pre-filled from the selected connector/node.
     // The Save button (finishLabel = 'Save') should be enabled if target is valid.
-    const saveButton = page.getByRole('button', { name: 'Save' }).last();
+    const saveButton = wizard.getByRole('button', { name: 'Save', exact: true });
     await expect(saveButton).toBeEnabled({ timeout: 5000 });
 
     // Click Save to complete the wizard and auto-save the connector definition
+    const definitionSaved = page.waitForResponse(
+      response =>
+        new URL(response.url()).pathname === `/api/data-marts/${datamartId}/definition` &&
+        response.request().method() === 'PUT'
+    );
     await saveButton.click();
+    expect((await definitionSaved).ok()).toBeTruthy();
 
     // Wait for the wizard sheet to close
-    await expect(page.getByText('Choose where to store your data')).not.toBeVisible({
+    await expect(wizard).not.toBeVisible({
       timeout: 10000,
     });
 
@@ -273,7 +289,9 @@ test.describe('Data Setup - Connector Definition', () => {
     // After saving, the Input Source section shows the connector configuration.
     // The ConnectorConfigurationItem renders the connector's internal name "GitHub".
     const dataSetupContent = page.getByTestId(TESTIDS.datamartTabDataSetup);
-    await expect(dataSetupContent.getByText('GitHub')).toBeVisible({ timeout: 10000 });
+    await expect(dataSetupContent.getByText('GitHub', { exact: true })).toBeVisible({
+      timeout: 10000,
+    });
 
     // -----------------------------------------------------------------------
     // DSET-07: Verify persistence after reload
@@ -283,7 +301,9 @@ test.describe('Data Setup - Connector Definition', () => {
 
     // After reload, the connector definition should still be displayed.
     // The definition type selector will NOT appear since definition exists.
-    await expect(dataSetupContent.getByText('GitHub')).toBeVisible({ timeout: 10000 });
+    await expect(dataSetupContent.getByText('GitHub', { exact: true })).toBeVisible({
+      timeout: 10000,
+    });
 
     // Verify via API that the definition was saved with connector type
     const apiRes = await page.request.get(`/api/data-marts/${datamartId}`);

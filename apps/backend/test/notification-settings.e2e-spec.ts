@@ -148,7 +148,7 @@ describe('Notification Settings (e2e)', () => {
     // Flow: Auth → UpsertNotificationSettingService.run()
     //   → upsert({ webhookUrl: 'https://hooks.example.com/test' })
     //   → saves webhookUrl to DB
-    //   → 200 { webhookUrl: 'https://hooks.example.com/test' }
+    //   → 200 { webhookUrl: 'https://hooks.example.com/_redacted_' }
     it('sets a webhook URL', async () => {
       const res = await agent
         .put(`${BASE_URL}/FAILED_RUNS_ALL_DM`)
@@ -156,7 +156,7 @@ describe('Notification Settings (e2e)', () => {
         .send({ webhookUrl: 'https://hooks.example.com/test' });
 
       expect(res.status).toBe(200);
-      expect(res.body.webhookUrl).toBe('https://hooks.example.com/test');
+      expect(res.body.webhookUrl).toBe('https://hooks.example.com/_redacted_');
     });
 
     // NOTIF-07
@@ -240,7 +240,7 @@ describe('Notification Settings (e2e)', () => {
 
       expect(res.status).toBe(200);
       expect(res.body.enabled).toBe(true);
-      expect(res.body.webhookUrl).toBe('https://hooks.example.com/success');
+      expect(res.body.webhookUrl).toBe('https://hooks.example.com/_redacted_');
       expect(res.body.groupingDelayCron).toBe('0 */2 * * *');
     });
 
@@ -256,7 +256,7 @@ describe('Notification Settings (e2e)', () => {
         (s: Record<string, unknown>) => s.notificationType === 'SUCCESSFUL_RUNS_ALL_DM'
       );
       expect(successSetting.enabled).toBe(true);
-      expect(successSetting.webhookUrl).toBe('https://hooks.example.com/success');
+      expect(successSetting.webhookUrl).toBe('https://hooks.example.com/_redacted_');
       expect(successSetting.groupingDelayCron).toBe('0 */2 * * *');
     });
   });

@@ -21,7 +21,11 @@ export class NotificationSettingsItemResponseApiDto {
   @ApiProperty({ type: [ReceiverInfoApiDto] })
   receivers: ReceiverInfoApiDto[];
 
-  @ApiProperty({ required: false, nullable: true })
+  @ApiProperty({
+    required: false,
+    nullable: true,
+    description: 'Configured webhook URL with secret query/path values masked',
+  })
   webhookUrl?: string | null;
 
   @ApiProperty()

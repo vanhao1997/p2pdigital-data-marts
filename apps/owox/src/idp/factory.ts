@@ -27,7 +27,12 @@ export interface IdpFactoryOptions {
  */
 export class IdpFactory {
   static async createFromEnvironment(command: BaseCommand): Promise<IdpProvider> {
-    const providerType = (process.env.IDP_PROVIDER || IdpProviderType.None) as IdpProviderType;
+    const configuredProvider = process.env.IDP_PROVIDER?.trim();
+    if (process.env.NODE_ENV === 'production' && !configuredProvider) {
+      throw new Error('IDP_PROVIDER must be explicitly set in production.');
+    }
+
+    const providerType = (configuredProvider || IdpProviderType.None) as IdpProviderType;
     return this.createProvider(
       {
         provider: providerType,

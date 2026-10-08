@@ -1,6 +1,6 @@
 import { Inject, Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { DataSource, Repository } from 'typeorm';
+import { DataSource, EntityManager, Repository } from 'typeorm';
 import { ConfigService } from '@nestjs/config';
 import { SCHEDULER_FACADE, SchedulerFacade } from '../../common/scheduler/shared/scheduler.facade';
 import { TriggerStatus } from '../../common/scheduler/shared/entities/trigger-status';
@@ -124,20 +124,19 @@ export class ReportRunTriggerHandlerService extends BaseRunTriggerHandlerService
   }
 
   /**
-   * Claims a run slot using optimistic approach: claim first, then verify the limit.
-   * 1. Atomically set run status to RUNNING (UPDATE WHERE status=PENDING)
-   * 2. Count all RUNNING runs for the project
-   * 3. If over limit — throw (transaction rolls back, run returns to PENDING)
+   * Claims a run slot in one transaction.
    *
-   * TODO: This approach has a potential race condition under MySQL REPEATABLE READ isolation.
-   * Two workers may simultaneously claim slots and both pass the limit check because
-   * each transaction doesn't see the other's uncommitted UPDATE. Consider using
-   * SELECT ... FOR UPDATE with advisory locks or a semaphore table for strict enforcement.
+   * The run is moved from PENDING to RUNNING before the count, so the claimed run is
+   * included in the limit. MySQL/MariaDB use a pessimistic lock on every Data Mart in
+   * the project before the claim. That gives concurrent workers a common row set to
+   * serialize on under REPEATABLE READ without adding a semaphore table or migration.
    */
   private async claimRunSlotAtomically(dataMartRunId: string, projectId: string): Promise<void> {
     const maxRuns = this.configService.get<number>('MAX_REPORT_RUNS_PER_PROJECT', 1000);
 
     await this.dataSource.transaction(async manager => {
+      await this.serializeProjectSlotClaims(manager, projectId);
+
       const claimResult = await manager.update(
         DataMartRun,
         { id: dataMartRunId, status: DataMartRunStatus.PENDING },
@@ -156,12 +155,30 @@ export class ReportRunTriggerHandlerService extends BaseRunTriggerHandlerService
         .andWhere('run.type IN (:...types)', { types: REPORT_RUN_TYPES })
         .getCount();
 
-      if (activeCount >= maxRuns) {
+      if (activeCount > maxRuns) {
         throw new ConcurrencyLimitExceededException(
           `Project ${projectId} has reached the limit of ${maxRuns} concurrent report runs`
         );
       }
     });
+  }
+
+  private async serializeProjectSlotClaims(
+    manager: EntityManager,
+    projectId: string
+  ): Promise<void> {
+    const databaseType = this.dataSource.options?.type;
+    if (databaseType !== 'mysql' && databaseType !== 'mariadb') {
+      return;
+    }
+
+    await manager
+      .createQueryBuilder(DataMart, 'dm')
+      .select('dm.id')
+      .withDeleted()
+      .where('dm.projectId = :projectId', { projectId })
+      .setLock('pessimistic_write')
+      .getRawMany();
   }
 
   getTriggerRepository(): Repository<ReportRunTrigger> {

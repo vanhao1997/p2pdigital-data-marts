@@ -13,8 +13,8 @@ async function triggerManualRun(page: import('@playwright/test').Page, datamartI
   const detailsContainer = page.getByTestId(TESTIDS.datamartDetails);
   await detailsContainer.locator('button:has(svg.lucide-ellipsis-vertical)').click();
 
-  // Click "Manual Run..." menu item
-  await page.getByRole('menuitem', { name: /Manual Run/ }).click();
+  // Match the current English menu label exactly.
+  await page.getByRole('menuitem', { name: 'Manual run...', exact: true }).click();
 
   // Scope Run button to the sheet content to avoid ambiguity with other buttons
   const sheet = page.locator('[data-slot="sheet-content"]');

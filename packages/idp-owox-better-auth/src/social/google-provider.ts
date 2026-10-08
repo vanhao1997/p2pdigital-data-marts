@@ -1,5 +1,4 @@
 import { createServiceLogger } from '../core/logger.js';
-import { maskEmail } from '../utils/email-utils.js';
 import { Profile, SocialProvider, SocialUser } from './social-provider.js';
 
 export type GoogleProviderOptions = {
@@ -59,11 +58,7 @@ export class GoogleProvider implements SocialProvider {
       picture?: string;
       email_verified?: boolean;
     };
-    const profileForLog: Record<string, unknown> = { ...profile };
-    if (typeof p.email === 'string') {
-      profileForLog.email = maskEmail(p.email);
-    }
-    this.logger.info(`${this.providerId}-profile`, { profile: profileForLog });
+    this.logger.info(`${this.providerId}-profile`, summarizeGoogleProfileForLog(profile));
 
     const accountId = this.selectAccountId(p);
     if (!accountId) {
@@ -83,4 +78,26 @@ export class GoogleProvider implements SocialProvider {
       emailVerified: Boolean(p.email_verified),
     };
   }
+}
+
+export function summarizeGoogleProfileForLog(profile: Profile): Record<string, unknown> {
+  const p = profile as {
+    sub?: unknown;
+    email?: unknown;
+    name?: unknown;
+    given_name?: unknown;
+    picture?: unknown;
+    email_verified?: unknown;
+  };
+
+  return {
+    profile: {
+      hasAccountId: typeof p.sub === 'string' && p.sub.length > 0,
+      hasEmail: typeof p.email === 'string' && p.email.length > 0,
+      hasName: typeof p.name === 'string' && p.name.length > 0,
+      hasGivenName: typeof p.given_name === 'string' && p.given_name.length > 0,
+      hasImage: typeof p.picture === 'string' && p.picture.length > 0,
+      emailVerified: typeof p.email_verified === 'boolean' ? p.email_verified : undefined,
+    },
+  };
 }

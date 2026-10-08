@@ -172,7 +172,7 @@ describe('Notification Settings — multi-tenant isolation (e2e)', () => {
           groupingDelayCron: '0 * * * *',
         });
       expect(putA.status).toBe(200);
-      expect(putA.body.webhookUrl).toBe('https://hooks.example.com/tenant-a');
+      expect(putA.body.webhookUrl).toBe('https://hooks.example.com/_redacted_');
 
       // Tenant B re-reads and must NOT see tenant A's webhook or enabled flag.
       const getB = await agent.get(BASE_URL).set(headerForTenant('token-b'));

@@ -326,10 +326,14 @@ describe('RunReportService', () => {
     expect(projectBilling.verifyCanPerformOperations.mock.invocationCallOrder[0]).toBeLessThan(
       reportRunService.markAsStarted.mock.invocationCallOrder[0]
     );
-    expect(projectBilling.registerSheetsReportRunConsumption).toHaveBeenCalledWith(report, {
-      googleSheetsDocumentTitle: 'Test Spreadsheet',
-      googleSheetsListTitle: 'Sheet1',
-    });
+    expect(projectBilling.registerSheetsReportRunConsumption).toHaveBeenCalledWith(
+      report,
+      'data-mart-run-1',
+      {
+        googleSheetsDocumentTitle: 'Test Spreadsheet',
+        googleSheetsListTitle: 'Sheet1',
+      }
+    );
     expect(reportRunService.finish.mock.invocationCallOrder[0]).toBeLessThan(
       projectBilling.registerSheetsReportRunConsumption.mock.invocationCallOrder[0]
     );
@@ -363,7 +367,10 @@ describe('RunReportService', () => {
       await service.executeExistingRun('data-mart-run-1', 'project-1', 'user-1');
 
       expect(reportRunService.finish).toHaveBeenCalled();
-      expect(projectBilling.registerEmailBasedReportRunConsumption).toHaveBeenCalledWith(report);
+      expect(projectBilling.registerEmailBasedReportRunConsumption).toHaveBeenCalledWith(
+        report,
+        'data-mart-run-1'
+      );
       expect(reportRunService.finish.mock.invocationCallOrder[0]).toBeLessThan(
         projectBilling.registerEmailBasedReportRunConsumption.mock.invocationCallOrder[0]
       );

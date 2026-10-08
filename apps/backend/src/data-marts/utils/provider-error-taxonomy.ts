@@ -25,7 +25,10 @@ export interface ProviderErrorClassification {
 
 const SAFE_CODE_PATTERN = /^[A-Za-z][A-Za-z0-9_.:-]{0,254}$/;
 
-export function classifyProviderError(error: unknown, fallbackCode: string): ProviderErrorClassification {
+export function classifyProviderError(
+  error: unknown,
+  fallbackCode: string
+): ProviderErrorClassification {
   const direct = asRecord(error);
   const payload = asRecord(direct?.payload);
   const providerError = asRecord(payload?.error);
@@ -60,12 +63,22 @@ export function classifyProviderError(error: unknown, fallbackCode: string): Pro
   };
 }
 
-function providerFor(code: string | undefined, name: string | undefined, explicit: unknown): ProviderErrorProvider {
-  if (explicit === 'google' || explicit === 'facebook' || explicit === 'admicro' || explicit === 'generic') {
+function providerFor(
+  code: string | undefined,
+  name: string | undefined,
+  explicit: unknown
+): ProviderErrorProvider {
+  if (
+    explicit === 'google' ||
+    explicit === 'facebook' ||
+    explicit === 'admicro' ||
+    explicit === 'generic'
+  ) {
     return explicit;
   }
   const value = `${code ?? ''} ${name ?? ''}`.toLowerCase();
-  if (value.includes('google') || value.startsWith('bq_') || value.startsWith('sheets_')) return 'google';
+  if (value.includes('google') || value.startsWith('bq_') || value.startsWith('sheets_'))
+    return 'google';
   if (value.includes('facebook') || value.startsWith('fb_')) return 'facebook';
   if (value.includes('admicro')) return 'admicro';
   return 'generic';
@@ -84,7 +97,8 @@ function categoryFor({
 }): ProviderErrorCategory {
   const value = `${code ?? ''} ${name ?? ''}`.toLowerCase();
   if (blocked || value.includes('license') || value.includes('overdraft')) return 'billing';
-  if (value.includes('permission') || value.includes('forbidden') || status === 403) return 'permission';
+  if (value.includes('permission') || value.includes('forbidden') || status === 403)
+    return 'permission';
   if (
     value.includes('auth') ||
     value.includes('oauth') ||
@@ -93,7 +107,8 @@ function categoryFor({
   )
     return 'authentication';
   if (value.includes('rate') || value.includes('quota') || status === 429) return 'rate_limit';
-  if (value.includes('timeout') || value.includes('abort') || value.includes('deadline')) return 'timeout';
+  if (value.includes('timeout') || value.includes('abort') || value.includes('deadline'))
+    return 'timeout';
   if (status !== undefined && status >= 500) return 'unavailable';
   if (status !== undefined && status >= 400) return 'validation';
   if (value.includes('validation') || value.includes('invalid')) return 'validation';
@@ -115,13 +130,19 @@ function normalizeCode(value: string | undefined, fallbackCode: string): string 
 }
 
 function asRecord(value: unknown): Record<string, unknown> | undefined {
-  return typeof value === 'object' && value !== null ? (value as Record<string, unknown>) : undefined;
+  return typeof value === 'object' && value !== null
+    ? (value as Record<string, unknown>)
+    : undefined;
 }
 
 function firstString(...values: unknown[]): string | undefined {
-  return values.find((value): value is string => typeof value === 'string' && value.trim().length > 0);
+  return values.find(
+    (value): value is string => typeof value === 'string' && value.trim().length > 0
+  );
 }
 
 function firstNumber(...values: unknown[]): number | undefined {
-  return values.find((value): value is number => typeof value === 'number' && Number.isFinite(value));
+  return values.find(
+    (value): value is number => typeof value === 'number' && Number.isFinite(value)
+  );
 }

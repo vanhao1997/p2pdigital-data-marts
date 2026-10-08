@@ -5,12 +5,13 @@ import { app, listenHost } from '../src/server.js';
 describe('Admicro extractor HTTP contract', () => {
   it('exposes health without credentials', async () => {
     const response = await request(app).get('/healthz');
-    expect(response.status).toBe(503);
+    const hmacConfigured = Boolean(process.env.ADMICRO_EXTRACTOR_SHARED_SECRET);
+    expect(response.status).toBe(hmacConfigured ? 200 : 503);
     expect(response.body).toMatchObject({
-      ok: false,
+      ok: hmacConfigured,
       service: 'admicro-extractor',
       schemaVersion: '1',
-      hmacConfigured: false,
+      hmacConfigured,
     });
   });
 

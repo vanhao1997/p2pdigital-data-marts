@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen } from '@testing-library/react';
-import { useEffect } from 'react';
+import { act, render, screen } from '@testing-library/react';
+import { useEffect, useState } from 'react';
 import { FormulaEditor } from './FormulaEditor';
 import { WORD_TRIGGER_CHARACTERS } from './monaco-formula-completion.util';
 import type { ReferenceableField } from './formula-reference-index';
@@ -287,6 +287,37 @@ describe('FormulaEditor', () => {
   it('takes focus when it mounts', () => {
     render(<FormulaEditor value='' references={[]} index={index} onChange={vi.fn()} />);
     expect(mockState.focusCalls).toBeGreaterThan(0);
+  });
+
+  it('propagates each native edit before the next keyboard event reads controlled props', () => {
+    function ControlledEditor() {
+      const [buffer, setBuffer] = useState({
+        text: 'SUM(clicks)',
+        refs: [ref('clicks', 4, 10)],
+      });
+      return (
+        <FormulaEditor
+          value={buffer.text}
+          references={buffer.refs}
+          index={index}
+          onChange={setBuffer}
+        />
+      );
+    }
+
+    render(<ControlledEditor />);
+    // Monaco's native input listener runs outside React's event system. Its wrapper writes a
+    // changed value prop back into the model, so a queued stale prop can erase a newer character
+    // and cancel suggestions. Each event must commit before the next native edit arrives.
+    act(() => {
+      let text = 'SUM(clicks)';
+      for (const character of 'users') {
+        text += character;
+        const onChange = mockState.latestOnChange as (value: string) => void;
+        onChange(text);
+        expect(mockState.modelText).toBe(text);
+      }
+    });
   });
 
   // The only keyboard commit this editor has. `EditableText` binds Enter and Ctrl+Enter to the

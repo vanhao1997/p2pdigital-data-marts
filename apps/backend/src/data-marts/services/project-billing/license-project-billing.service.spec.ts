@@ -5,7 +5,9 @@ import {
   ProjectBinding,
 } from '../../../common/config/app-edition-config.service';
 import { ProjectOperationBlockedException } from '../../../common/exceptions/project-operation-blocked.exception';
+import { DataDestinationType } from '../../data-destination-types/enums/data-destination-type.enum';
 import { DataMart } from '../../entities/data-mart.entity';
+import { Report } from '../../entities/report.entity';
 import { ProjectBlockedReason } from '../../enums/project-blocked-reason.enum';
 import { LicenseProjectBillingService } from './license-project-billing.service';
 import { RunKind } from './project-billing.service';
@@ -23,6 +25,16 @@ function fakeDataMart(): DataMart {
     title: 'My DM',
     storage: { id: 'storage-1', title: 'BQ', type: 'GOOGLE_BIGQUERY' },
   } as unknown as DataMart;
+}
+
+function fakeReport(destinationType = DataDestinationType.EMAIL): Report {
+  return {
+    id: 'report-1',
+    title: 'My Report',
+    dataMart: fakeDataMart(),
+    dataDestination: { id: 'dest-1', title: 'Dest', type: destinationType },
+    destinationConfig: { spreadsheetId: 'spreadsheet-1', sheetId: 'sheet-1' },
+  } as unknown as Report;
 }
 
 function buildService(
@@ -138,6 +150,23 @@ describe('LicenseProjectBillingService', () => {
       expect(JSON.parse(init?.body as string)).toEqual({
         kind: RunKind.HTTP_DATA_RUN,
         payload: expect.objectContaining({ dataMartId: 'dm-1', reportRunId: 'run-1' }),
+      });
+    });
+
+    it('forwards report consumption with the persisted run id', async () => {
+      fetchWithBackoffMock.mockResolvedValue(jsonResponse({}));
+      const service = buildService();
+
+      await service.registerEmailBasedReportRunConsumption(fakeReport(), 'data-mart-run-1');
+
+      const [, init] = fetchWithBackoffMock.mock.calls[0];
+      expect(JSON.parse(init?.body as string)).toEqual({
+        kind: RunKind.EMAIL_BASED_REPORT_RUN,
+        payload: expect.objectContaining({
+          reportId: 'report-1',
+          reportRunId: 'data-mart-run-1',
+          dedupeKey: expect.any(String),
+        }),
       });
     });
 
