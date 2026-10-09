@@ -28,6 +28,8 @@ import { MCP_DATA_DESTINATIONS_FACADE } from '../../../data-marts/facades/mcp-da
 import { MCP_DATA_MARTS_FACADE } from '../../../data-marts/facades/mcp-data-marts.facade';
 import { MCP_REPORTS_FACADE } from '../../../data-marts/facades/mcp-reports.facade';
 import { MCP_SCHEDULED_TRIGGERS_FACADE } from '../../../data-marts/facades/mcp-scheduled-triggers.facade';
+import { MCP_SETUP_STORAGES_FACADE } from '../../../data-marts/facades/mcp-setup-storages.facade';
+import { MCP_SETUP_DATA_MARTS_FACADE } from '../../../data-marts/facades/mcp-setup-data-marts.facade';
 import { DataMartsModule } from '../../../data-marts/data-marts.module';
 import { MCP_PROJECT_CONTEXT_FACADE } from '../../../idp/facades/mcp-project-context.facade';
 import { IdpModule } from '../../../idp/idp.module';
@@ -52,6 +54,8 @@ describe('MCP tool providers', () => {
         MCP_DATA_DESTINATIONS_FACADE,
         MCP_REPORTS_FACADE,
         MCP_SCHEDULED_TRIGGERS_FACADE,
+        MCP_SETUP_STORAGES_FACADE,
+        MCP_SETUP_DATA_MARTS_FACADE,
       ])
     );
     expect(moduleMetadata(MODULE_METADATA.EXPORTS, IdpModule)).toContain(
@@ -72,6 +76,8 @@ describe('MCP tool providers', () => {
         { provide: MCP_DATA_DESTINATIONS_FACADE, useValue: {} },
         { provide: MCP_REPORTS_FACADE, useValue: {} },
         { provide: MCP_SCHEDULED_TRIGGERS_FACADE, useValue: {} },
+        { provide: MCP_SETUP_STORAGES_FACADE, useValue: {} },
+        { provide: MCP_SETUP_DATA_MARTS_FACADE, useValue: {} },
         { provide: MCP_PROJECT_CONTEXT_FACADE, useValue: {} },
         { provide: PROJECT_SETTINGS_FACADE, useValue: {} },
         { provide: SEARCH_FACADE, useValue: {} },
@@ -95,6 +101,24 @@ describe('MCP tool providers', () => {
       const toolNames = tools.map(tool => tool.name);
 
       expect(toolNames).toEqual(expect.arrayContaining(['run_report', 'get_report_run_status']));
+      expect(toolNames).toHaveLength(30);
+      expect(new Set(toolNames).size).toBe(30);
+      expect(toolNames).toEqual(
+        expect.arrayContaining([
+          'list_data_storages',
+          'list_connectors',
+          'get_connector_specification',
+          'get_connector_fields',
+          'create_data_storage',
+          'configure_data_storage',
+          'validate_data_storage',
+          'create_data_mart',
+          'update_data_mart',
+          'validate_data_mart',
+          'publish_data_mart',
+          'get_data_mart_setup_status',
+        ])
+      );
     } finally {
       await moduleRef.close();
     }

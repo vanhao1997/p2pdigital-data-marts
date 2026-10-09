@@ -89,6 +89,7 @@ jobs:
         run: |
           npm run test -w @owox/connectors
           npm run test -w @owox/admicro-extractor
+          npm run test -w @owox/idp-better-auth -- --runInBand
           npm run test -w @owox/idp-owox-better-auth
           npm run test -w owox
         env:
@@ -248,6 +249,14 @@ jobs:
             sleep 2
           done
           exit 1
+
+      - name: Smoke native Better Auth MCP in isolated runtime image
+        run: |
+          docker run --rm --network none --entrypoint node \
+            --volume "${GITHUB_WORKSPACE}/tools/mcp-native-runtime-smoke.mjs:/tmp/mcp-native-runtime-smoke.mjs:ro" \
+            -e MCP_SMOKE_EXPECTED_REVISION=${{ github.sha }} \
+            owox-runtime-smoke:${{ github.sha }} \
+            /tmp/mcp-native-runtime-smoke.mjs
 
       - name: Log in to GitHub Container Registry
         if: github.event_name != 'pull_request'

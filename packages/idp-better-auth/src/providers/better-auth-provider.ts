@@ -41,6 +41,7 @@ import { MagicLinkService } from '../services/magic-link-service.js';
 import { CryptoService } from '../services/crypto-service.js';
 import { AuthenticationService } from '../services/authentication-service.js';
 import { TokenService } from '../services/token-service.js';
+import { McpOAuthService } from '../services/mcp-oauth-service.js';
 import { UserManagementService } from '../services/user-management-service.js';
 import { RequestHandlerService } from '../services/request-handler-service.js';
 import { MiddlewareService } from '../services/middleware-service.js';
@@ -63,6 +64,7 @@ export class BetterAuthProvider
   // Services
   private readonly authenticationService: AuthenticationService;
   private readonly tokenService: TokenService;
+  private readonly mcpOAuthService: McpOAuthService;
   private readonly userManagementService: UserManagementService;
   private readonly requestHandlerService: RequestHandlerService;
   private readonly middlewareService: MiddlewareService;
@@ -88,6 +90,9 @@ export class BetterAuthProvider
     // Initialize all other business logic services
     this.authenticationService = new AuthenticationService(this.auth, cryptoService);
     this.tokenService = new TokenService(this.auth, cryptoService, this.userManagementService);
+    this.mcpOAuthService = new McpOAuthService(this.auth, context =>
+      this.resolveMcpProjectMember(context)
+    );
     this.requestHandlerService = new RequestHandlerService(this.auth);
     this.pageService = new PageService(
       this.authenticationService,
@@ -360,31 +365,49 @@ export class BetterAuthProvider
   }
 
   async createMcpOAuthAuthorizationCode(
-    _request: OAuthAuthorizationRequest,
-    _projectMember: McpOAuthProjectMemberContext
+    request: OAuthAuthorizationRequest,
+    projectMember: McpOAuthProjectMemberContext
   ): Promise<OAuthAuthorizationCode> {
-    throw new IdpOperationNotSupportedError('createMcpOAuthAuthorizationCode');
+    return this.mcpOAuthService.createAuthorizationCode(request, projectMember);
   }
 
   async exchangeMcpOAuthToken(
-    _request: OAuthTokenExchangeRequest
+    request: OAuthTokenExchangeRequest
   ): Promise<OAuthTokenExchangeResult> {
-    throw new IdpOperationNotSupportedError('exchangeMcpOAuthToken');
+    return this.mcpOAuthService.exchangeToken(request);
   }
 
   async verifyMcpAccessToken(
-    _token: string,
-    _resource: string,
-    _requiredScopes: McpScope[]
+    token: string,
+    resource: string,
+    requiredScopes: McpScope[]
   ): Promise<McpTokenPayload | null> {
-    return null;
+    return this.mcpOAuthService.verifyAccessToken(token, resource, requiredScopes);
   }
 
   async getMcpOAuthJwks(): Promise<OAuthJwksResult> {
-    throw new IdpOperationNotSupportedError('getMcpOAuthJwks');
+    // Opaque access tokens are verified against the grant store, not public keys.
+    return { keys: [] };
+  }
+
+  private async resolveMcpProjectMember(
+    context: McpOAuthProjectMemberContext
+  ): Promise<McpOAuthProjectMemberContext | null> {
+    const user = await this.store.getUserById(context.userId);
+    if (!user) return null;
+    const project = await this.getProjectForUser(context.userId, context.projectId);
+    if (project.status !== 'active' || project.archived || !project.roles?.length) return null;
+    return {
+      userId: user.id,
+      projectId: project.id,
+      email: user.email,
+      fullName: user.name || user.email,
+      roles: project.roles,
+    };
   }
 
   async revokeToken(token: string): Promise<void> {
+    if (token.startsWith('mcp_')) return this.mcpOAuthService.revoke(token);
     return this.tokenService.revokeToken(token);
   }
 

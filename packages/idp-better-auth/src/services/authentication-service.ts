@@ -4,6 +4,7 @@ import { AuthSession, SessionValidationResult } from '../types/auth-session.js';
 import { type Request, type Response, type NextFunction } from 'express';
 import type { UserManagementService } from './user-management-service.js';
 import { logger } from '../logger.js';
+import { resolveSignInRedirect } from './sign-in-redirect.js';
 
 export class AuthenticationService {
   private userManagementService?: UserManagementService;
@@ -226,7 +227,7 @@ export class AuthenticationService {
         response.headers.forEach((value: string, key: string) => {
           res.set(key, value);
         });
-        return res.redirect('/');
+        return res.redirect(resolveSignInRedirect(req.body?.redirect ?? req.query?.redirect));
       } else {
         // Redirect back to sign-in page with error message
         const errorMessage =

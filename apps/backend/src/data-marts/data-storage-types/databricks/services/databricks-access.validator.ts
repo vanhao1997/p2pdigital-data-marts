@@ -23,16 +23,14 @@ export class DatabricksAccessValidator implements DataStorageAccessValidator {
   ): Promise<ValidationResult> {
     const configOpt = DatabricksConfigSchema.safeParse(config);
     if (!configOpt.success) {
-      this.logger.log('Invalid config', configOpt.error);
-      return new ValidationResult(false, 'Invalid config', { errors: configOpt.error.errors });
+      this.logger.log('Invalid config');
+      return ValidationResult.failure('Invalid config');
     }
 
     const credentialsOpt = DatabricksCredentialsSchema.safeParse(credentials);
     if (!credentialsOpt.success) {
-      this.logger.log('Invalid credentials', credentialsOpt.error);
-      return new ValidationResult(false, 'Invalid credentials', {
-        errors: credentialsOpt.error.errors,
-      });
+      this.logger.log('Invalid credentials');
+      return ValidationResult.failure('Invalid credentials');
     }
 
     const apiAdapter = this.adapterFactory.create(credentialsOpt.data, configOpt.data);
@@ -40,16 +38,14 @@ export class DatabricksAccessValidator implements DataStorageAccessValidator {
       await apiAdapter.checkAccess();
       await apiAdapter.destroy();
       return new ValidationResult(true);
-    } catch (error) {
-      this.logger.log('Access validation failed', error);
+    } catch {
+      this.logger.log('Access validation failed');
       try {
         await apiAdapter.destroy();
       } catch {
         // Ignore errors during cleanup
       }
-      return new ValidationResult(false, 'Access validation failed', {
-        error: error instanceof Error ? error.message : String(error),
-      });
+      return ValidationResult.failure('Access validation failed');
     }
   }
 }

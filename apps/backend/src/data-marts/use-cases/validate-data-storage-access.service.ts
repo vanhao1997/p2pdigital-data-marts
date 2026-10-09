@@ -54,13 +54,13 @@ export class ValidateDataStorageAccessService {
           resolvedCredentials
         );
       } catch (error) {
-        this.logger.warn(`Failed to resolve credentials for storage ${dataStorage.id}`, error);
+        // Do not pass provider/credential errors as logger metadata: SDK errors may
+        // contain private keys, tokens, connection URLs, or provider payloads.
+        this.logger.warn(`Failed to resolve credentials for storage ${dataStorage.id}`);
         if (error instanceof CredentialsExpiredException) {
           return ValidationResult.oauthReauthRequired(GOOGLE_OAUTH_REAUTH_MESSAGE);
         }
-        return ValidationResult.failure(
-          error instanceof Error ? error.message : 'Failed to resolve credentials'
-        );
+        return ValidationResult.failure('Storage credentials could not be resolved.');
       }
     }
 

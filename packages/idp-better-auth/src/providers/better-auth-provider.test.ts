@@ -885,7 +885,7 @@ describe('BetterAuthProvider', () => {
   });
 
   describe('MCP OAuth', () => {
-    it('does not support MCP OAuth token issuing', async () => {
+    it('rejects malformed native grants and publishes no JWKS for opaque tokens', async () => {
       const provider = await createProvider();
 
       await expect(
@@ -905,7 +905,7 @@ describe('BetterAuthProvider', () => {
             roles: ['viewer'],
           }
         )
-      ).rejects.toBeInstanceOf(IdpOperationNotSupportedError);
+      ).rejects.toBeInstanceOf(AuthenticationError);
 
       await expect(
         provider.exchangeMcpOAuthToken({
@@ -916,11 +916,9 @@ describe('BetterAuthProvider', () => {
           resource: 'https://mcp.owox.com/mcp',
           codeVerifier: 'verifier-1',
         })
-      ).rejects.toBeInstanceOf(IdpOperationNotSupportedError);
+      ).rejects.toBeInstanceOf(AuthenticationError);
 
-      await expect(provider.getMcpOAuthJwks()).rejects.toBeInstanceOf(
-        IdpOperationNotSupportedError
-      );
+      await expect(provider.getMcpOAuthJwks()).resolves.toEqual({ keys: [] });
     });
 
     it('does not verify MCP access tokens', async () => {

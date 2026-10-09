@@ -120,6 +120,42 @@ describe('McpSdkServerFactory', () => {
     expect(handler).toHaveBeenCalledWith({ query: 'orders' }, context, undefined);
   });
 
+  it('rejects undeclared input fields without tightening output contracts sharing the same shape', async () => {
+    const sharedShape = { storage_id: z.string() };
+    const tool: McpToolDefinition = {
+      name: 'storage_setup',
+      description: 'Storage setup',
+      zodSchema: sharedShape,
+      outputSchema: sharedShape,
+      requiredScopes: ['mcp:read'],
+      handler: jest.fn(),
+    };
+    const McpSdkServerFactory = await loadFactory();
+    const factory = new McpSdkServerFactory(
+      new McpConfigService({ get: jest.fn() } as never),
+      new McpToolRegistry([tool]),
+      passthroughInstrumentation
+    );
+
+    factory.create(context);
+    const registration = mockRegisterTool.mock.calls[0][1];
+    const input = registration.inputSchema['~standard'];
+    const output = registration.outputSchema['~standard'];
+    await expect(
+      input.validate({ storage_id: 'storage-1', project_id: 'other-project' })
+    ).resolves.toEqual({
+      issues: expect.arrayContaining([expect.objectContaining({ code: 'unrecognized_keys' })]),
+    });
+    await expect(input.validate({ storage_id: 'storage-1' })).resolves.toEqual({
+      value: { storage_id: 'storage-1' },
+    });
+    await expect(
+      output.validate({ storage_id: 'storage-1', metadata: 'internal' })
+    ).resolves.toEqual({
+      value: { storage_id: 'storage-1' },
+    });
+  });
+
   it('routes every tool callback through instrumentation.wrap (choke point)', async () => {
     const wrapped = jest.fn();
     const wrap = jest.fn((_name: string, _cb: unknown) => wrapped);

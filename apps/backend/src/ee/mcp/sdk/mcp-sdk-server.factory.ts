@@ -31,6 +31,7 @@ type McpSdkToolRegistrar = {
 @Injectable()
 export class McpSdkServerFactory {
   private readonly schemaCache = new WeakMap<ZodRawShape, StandardSchemaWithJSON>();
+  private readonly inputSchemaCache = new WeakMap<ZodRawShape, StandardSchemaWithJSON>();
 
   constructor(
     private readonly config: McpConfigService,
@@ -77,7 +78,7 @@ export class McpSdkServerFactory {
         tool.name,
         {
           description: tool.description,
-          inputSchema: this.toStandardSchema(tool.zodSchema),
+          inputSchema: this.toStandardSchema(tool.zodSchema, true),
           ...(tool.outputSchema ? { outputSchema: this.toStandardSchema(tool.outputSchema) } : {}),
           ...(tool.annotations ? { annotations: tool.annotations } : {}),
         },
@@ -92,11 +93,12 @@ export class McpSdkServerFactory {
     return server;
   }
 
-  private toStandardSchema(shape: ZodRawShape): StandardSchemaWithJSON {
-    const cached = this.schemaCache.get(shape);
+  private toStandardSchema(shape: ZodRawShape, strictInput = false): StandardSchemaWithJSON {
+    const cache = strictInput ? this.inputSchemaCache : this.schemaCache;
+    const cached = cache.get(shape);
     if (cached) return cached;
 
-    const objectSchema = z.object(shape);
+    const objectSchema = strictInput ? z.object(shape).strict() : z.object(shape);
     // Preserve Zod 3 refinements/transforms at the business boundary while exposing SDK v2's
     // Standard Schema interface. Conversion is cached across per-request server instances.
     const jsonSchema = zodToJsonSchema(objectSchema as never, {
@@ -119,7 +121,7 @@ export class McpSdkServerFactory {
         },
       },
     };
-    this.schemaCache.set(shape, standardSchema);
+    cache.set(shape, standardSchema);
     return standardSchema;
   }
 

@@ -27,11 +27,11 @@ export interface DatabricksQueryCursor {
 class SilentDatabricksLogger implements IDBSQLLogger {
   private readonly logger = new Logger(SilentDatabricksLogger.name);
 
-  log(level: LogLevel, message: string) {
+  log(level: LogLevel, _message: string) {
     if (level === LogLevel.error) {
-      this.logger.error(message);
+      this.logger.error('Databricks driver error');
     } else if (level === LogLevel.warn) {
-      this.logger.warn(message);
+      this.logger.warn('Databricks driver warning');
     }
   }
 }
@@ -97,8 +97,8 @@ export class DatabricksApiAdapter {
       await this.client.close();
       this.isConnected = false;
       this.logger.debug('Databricks connection destroyed');
-    } catch (error) {
-      this.logger.error(`Failed to destroy connection: ${castError(error).message}`);
+    } catch {
+      this.logger.error('Failed to destroy Databricks connection');
     }
   }
 

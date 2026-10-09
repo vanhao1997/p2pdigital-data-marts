@@ -182,6 +182,11 @@
 
     // Show error message if present in URL
     const urlParams = new URLSearchParams(window.location.search);
+    const continuation = document.createElement('input');
+    continuation.type = 'hidden';
+    continuation.name = 'redirect';
+    continuation.value = urlParams.get('redirect') || '/';
+    document.getElementById('signInForm').appendChild(continuation);
     const error = urlParams.get('error');
     if (error) {
       const errorMessages = {

@@ -40,13 +40,23 @@ Each request creates a server bound to its authenticated project, client and
 scopes. Discovery and tool-list cache hints are `cacheScope: "private"` and
 `ttlMs: 0`. There is no shared session store and no cross-project result cache.
 
-OAuth keeps the existing code, token, refresh, project and audience bindings.
+OAuth keeps the existing code, token, refresh, project and audience bindings. Native Better Auth MCP grants are persisted separately from browser sessions; current user and project membership are rechecked on access and refresh, while browser sign-out alone does not revoke an issued MCP grant.
 DCR clients retain their persisted registry rows. CIMD clients use their full
 HTTPS metadata URL as their identity and resolve metadata through a bounded
 in-memory cache; they do not insert URL identifiers into the length-limited DCR
 table. No database migration is needed. Metadata is client configuration, never
 an authorization grant: each authorization still validates redirect URI, PKCE,
 resource, scopes and project membership.
+
+Native Better Auth stores SHA-256 identifiers and grant metadata in its existing
+verification table. Authorization codes expire after five minutes and are consumed
+atomically; access tokens expire after at most fifteen minutes. Refresh rotates
+with atomic single use and retains the original seven-day deadline. Refresh replay
+is rejected; it does not revoke an entire token family. This needs no new database
+migration or runtime environment variable. The production image gate runs
+`tools/mcp-native-runtime-smoke.mjs` with `--network none`, fresh SQLite databases
+and the real native provider. It tests OAuth and MCP setup without external
+credentials, provider sync or billing settlement.
 
 Configure CIMD using the documented
 [environment variables](./environment-variables.md). Review the HTTPS metadata

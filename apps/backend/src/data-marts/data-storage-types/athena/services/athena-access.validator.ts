@@ -31,16 +31,14 @@ export class AthenaAccessValidator implements DataStorageAccessValidator {
   ): Promise<ValidationResult> {
     const configOpt = AthenaConfigSchema.safeParse(config);
     if (!configOpt.success) {
-      this.logger.warn('Invalid config', configOpt.error);
-      return new ValidationResult(false, 'Invalid config', { errors: configOpt.error.errors });
+      this.logger.warn('Invalid config');
+      return ValidationResult.failure('Invalid config');
     }
 
     const credentialsOpt = AthenaCredentialsSchema.safeParse(credentials);
     if (!credentialsOpt.success) {
-      this.logger.warn('Invalid credentials', credentialsOpt.error);
-      return new ValidationResult(false, 'Invalid credentials', {
-        errors: credentialsOpt.error.errors,
-      });
+      this.logger.warn('Invalid credentials');
+      return ValidationResult.failure('Invalid credentials');
     }
 
     const athenaConfig: AthenaConfig = configOpt.data;
@@ -48,11 +46,9 @@ export class AthenaAccessValidator implements DataStorageAccessValidator {
     try {
       await apiAdapter.checkAccess(athenaConfig.outputBucket);
       return new ValidationResult(true);
-    } catch (error) {
-      this.logger.warn('Access validation failed', error);
-      return new ValidationResult(false, 'Access validation failed', {
-        error: error instanceof Error ? error.message : String(error),
-      });
+    } catch {
+      this.logger.warn('Access validation failed');
+      return ValidationResult.failure('Access validation failed');
     }
   }
 }

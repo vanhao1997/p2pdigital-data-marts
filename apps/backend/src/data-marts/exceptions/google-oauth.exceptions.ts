@@ -3,7 +3,7 @@ import { HttpException, HttpStatus, Logger } from '@nestjs/common';
 export class GoogleOAuthException extends HttpException {
   private static readonly logger = new Logger('GoogleOAuthException');
 
-  /** Internal details for logging only — never sent to the client. */
+  /** Internal diagnostic details — never sent to the client. */
   public readonly internalDetails?: unknown;
 
   constructor(
@@ -25,11 +25,20 @@ export class GoogleOAuthException extends HttpException {
     this.internalDetails = details;
 
     if (details) {
-      const logPayload = details instanceof Error ? details.stack : details;
+      const sensitiveCredentialOperation =
+        code === 'TOKEN_REFRESH_FAILED' || code === 'CREDENTIALS_EXPIRED';
+      const logPayload = sensitiveCredentialOperation
+        ? { statusCode, detailType: details instanceof Error ? 'Error' : 'provider_payload' }
+        : details instanceof Error
+          ? details.stack
+          : details;
+      const logMessage = sensitiveCredentialOperation
+        ? `[${code}] OAuth credential operation failed`
+        : `[${code}] ${message}`;
       if (statusCode >= 500) {
-        GoogleOAuthException.logger.error(`[${code}] ${message}`, logPayload);
+        GoogleOAuthException.logger.error(logMessage, logPayload);
       } else {
-        GoogleOAuthException.logger.warn(`[${code}] ${message}`, logPayload);
+        GoogleOAuthException.logger.warn(logMessage, logPayload);
       }
     }
   }

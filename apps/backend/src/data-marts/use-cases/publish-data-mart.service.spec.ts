@@ -8,15 +8,22 @@ import { PublishDataMartService } from './publish-data-mart.service';
 import { PublishDataMartCommand } from '../dto/domain/publish-data-mart.command';
 import { DataMartDefinitionType } from '../enums/data-mart-definition-type.enum';
 import { DataMartStatus } from '../enums/data-mart-status.enum';
+import { RunType } from '../../common/scheduler/shared/types';
 
 describe('PublishDataMartService', () => {
-  const createService = (options: { isValid: boolean } = { isValid: true }) => {
+  const createService = (
+    options: {
+      isValid?: boolean;
+      definitionType?: DataMartDefinitionType;
+      definition?: Record<string, unknown>;
+    } = { isValid: true }
+  ) => {
     const dataMart = {
       id: 'dm-1',
       projectId: 'proj-1',
       status: DataMartStatus.DRAFT,
-      definitionType: DataMartDefinitionType.TABLE,
-      definition: { tableName: 'my_table' },
+      definitionType: options.definitionType ?? DataMartDefinitionType.TABLE,
+      definition: options.definition ?? { tableName: 'my_table' },
       createdById: 'user-1',
     };
 
@@ -27,7 +34,7 @@ describe('PublishDataMartService', () => {
 
     const definitionValidatorFacade = {
       checkIsValid: jest.fn().mockImplementation(() => {
-        if (!options.isValid) {
+        if (options.isValid === false) {
           throw new BusinessViolationException('Storage validation failed');
         }
         return Promise.resolve();
@@ -68,6 +75,7 @@ describe('PublishDataMartService', () => {
       dataMartService,
       definitionValidatorFacade,
       dataMart,
+      connectorExecutionService,
       advancedSearchIndexSync,
     };
   };
@@ -103,14 +111,55 @@ describe('PublishDataMartService', () => {
     );
   });
 
-  it('should reject publish when storage validation fails', async () => {
-    const { service, dataMartService, advancedSearchIndexSync } = createService({
-      isValid: false,
+  it('does not start connector execution for non-connector Data Marts', async () => {
+    const { service, connectorExecutionService } = createService({ isValid: true });
+    const command = new PublishDataMartCommand('dm-1', 'proj-1', 'user-1', ['editor'], 'user-1');
+
+    await service.run(command);
+
+    expect(connectorExecutionService.run).not.toHaveBeenCalled();
+  });
+
+  it('starts exactly one incremental connector run after connector publish using the publish actor', async () => {
+    const { service, dataMart, connectorExecutionService } = createService({
+      isValid: true,
+      definitionType: DataMartDefinitionType.CONNECTOR,
+      definition: {
+        connector: {
+          source: { name: 'GoogleAds', node: 'campaigns', fields: ['id'], configuration: [] },
+          storage: { fullyQualifiedName: 'warehouse.dataset.table' },
+        },
+      },
     });
+    const command = new PublishDataMartCommand(
+      'dm-1',
+      'proj-1',
+      'user-1',
+      ['editor'],
+      'publish-actor'
+    );
+
+    await service.run(command);
+
+    expect(connectorExecutionService.run).toHaveBeenCalledTimes(1);
+    expect(connectorExecutionService.run).toHaveBeenCalledWith(
+      dataMart,
+      'publish-actor',
+      RunType.manual,
+      { runType: 'INCREMENTAL' }
+    );
+  });
+
+  it('should reject publish when storage validation fails', async () => {
+    const { service, dataMartService, connectorExecutionService, advancedSearchIndexSync } =
+      createService({
+        isValid: false,
+      });
     const command = new PublishDataMartCommand('dm-1', 'proj-1', 'user-1', ['editor'], 'user-1');
 
     await expect(service.run(command)).rejects.toThrow(BusinessViolationException);
     expect(dataMartService.save).not.toHaveBeenCalled();
+    expect(connectorExecutionService.run).not.toHaveBeenCalled();
     expect(advancedSearchIndexSync.scheduleReindex).not.toHaveBeenCalled();
   });
 });

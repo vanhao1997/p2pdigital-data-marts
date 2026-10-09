@@ -44,6 +44,7 @@ export class CreateDataStorageService {
 
     const entity = this.dataStorageRepository.create({
       type: command.type,
+      ...(command.title !== undefined ? { title: command.title } : {}),
       projectId: command.projectId,
       createdById: command.userId,
       availableForUse: true,
