@@ -106,7 +106,7 @@ When the MCP client first connects, it opens a browser window to complete OAuth 
 
 There is no separate permissions-consent screen. Once you sign in and select a project, the client receives an access token. It uses that token automatically for all subsequent requests. The token is bound to the project you selected and to the requested scope.
 
-Access tokens are short-lived, and the client refreshes them automatically in the background — you stay connected without signing in again. You only need to reconnect manually if the refresh fails — for example, after your OWOX session is revoked. You also reconnect manually when you want to switch projects.
+Access tokens are short-lived, and the client refreshes them automatically in the background — you stay connected without signing in again. Reconnect manually if the MCP grant is revoked, expires, project membership is removed, or refresh fails. Browser sign-out does not automatically revoke an already-issued MCP grant. Disconnecting clears the client's local credentials; the server grant may remain valid until it expires or the user loses access to the project. You also reconnect manually when you want to switch projects.
 
 ### Add project context for your assistant
 

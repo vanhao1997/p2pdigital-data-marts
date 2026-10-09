@@ -10,6 +10,7 @@ import { UserManagementService } from './user-management-service.js';
 import { CryptoService } from './crypto-service.js';
 import { BetterAuthConfig, Role } from '../types/index.js';
 import { logger } from '../logger.js';
+import { resolveSignInRedirect } from './sign-in-redirect.js';
 
 type ValidationResult = { success: true; userId: string } | { success: false; error: string };
 
@@ -25,7 +26,7 @@ export class PageService {
     try {
       const session = await this.authenticationService.getSession(req);
       if (session) {
-        res.redirect('/');
+        res.redirect(resolveSignInRedirect(req.query?.redirect));
         return;
       }
     } catch (error) {

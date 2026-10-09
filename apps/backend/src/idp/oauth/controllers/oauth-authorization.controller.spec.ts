@@ -52,13 +52,18 @@ describe('OAuthAuthorizationController', () => {
     roles: ['admin'],
   };
 
-  function createResponse(): jest.Mocked<Pick<Response, 'cookie' | 'redirect' | 'type' | 'send'>> {
+  function createResponse(): jest.Mocked<
+    Pick<Response, 'cookie' | 'redirect' | 'type' | 'send' | 'setHeader'>
+  > {
     return {
       cookie: jest.fn(),
       redirect: jest.fn(),
       type: jest.fn().mockReturnThis(),
       send: jest.fn(),
-    } as unknown as jest.Mocked<Pick<Response, 'cookie' | 'redirect' | 'type' | 'send'>>;
+      setHeader: jest.fn(),
+    } as unknown as jest.Mocked<
+      Pick<Response, 'cookie' | 'redirect' | 'type' | 'send' | 'setHeader'>
+    >;
   }
 
   function createRequest(overrides: Partial<Request> = {}) {

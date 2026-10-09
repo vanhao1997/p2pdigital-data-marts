@@ -52,6 +52,7 @@ export class TokenService {
   async introspectToken(token: string): Promise<Payload | null> {
     try {
       const cleanToken = token.replace('Bearer ', '');
+      if (cleanToken.startsWith('mcp_')) return null;
       const decrypted = await this.cryptoService.decrypt(cleanToken);
       const payload = JSON.parse(decrypted) as Payload;
 

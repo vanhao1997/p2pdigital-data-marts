@@ -7,6 +7,7 @@ import {
   Query,
   Req,
   Res,
+  UseFilters,
 } from '@nestjs/common';
 import type { Request, Response } from 'express';
 import {
@@ -26,8 +27,10 @@ import { OAuthProjectMemberResolver } from '../oauth-project-member.resolver';
 import { OAuthRequestValidator } from '../oauth-request.validator';
 import { OAuthConfigService } from '../oauth-config.service';
 import { isClientMetadataId } from '../oauth-client-metadata.service';
+import { OAuthExceptionFilter } from '../oauth-exception.filter';
 
 @Controller('/oauth')
+@UseFilters(OAuthExceptionFilter)
 export class OAuthAuthorizationController {
   private readonly logger = new Logger(OAuthAuthorizationController.name);
 
@@ -47,6 +50,8 @@ export class OAuthAuthorizationController {
     @Req() request: Request,
     @Res() response: Response
   ): Promise<void> {
+    response.setHeader('Cache-Control', 'no-store');
+    response.setHeader('Referrer-Policy', 'no-referrer');
     const validated = await this.validator.validateAuthorizationRequest(query);
     const authorizationRequest = validated.request;
     const resourceContext = validated.resourceContext;

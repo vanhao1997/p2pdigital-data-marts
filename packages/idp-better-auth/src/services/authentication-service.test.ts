@@ -341,6 +341,27 @@ describe('AuthenticationService', () => {
   });
 
   describe('signInMiddleware', () => {
+    it.each([
+      [
+        '/oauth/authorize?client_id=native&state=original',
+        '/oauth/authorize?client_id=native&state=original',
+      ],
+      ['//evil.test/callback', '/'],
+    ])('validates submitted OAuth continuation %s', async (redirect, expected) => {
+      const service = new AuthenticationService(createAuthMock() as never, cryptoService);
+      const req = createMockRequest(
+        {},
+        {
+          body: { email: 'test@example.com', password: 'pass123', redirect },
+        }
+      );
+      const { res } = createMockResponse();
+
+      await service.signInMiddleware(req, res, jest.fn<NextFunction>());
+
+      expect(res.redirect).toHaveBeenCalledWith(expected);
+    });
+
     it('should redirect to / on successful login', async () => {
       const responseHeaders = new Headers();
       responseHeaders.set('set-cookie', 'refreshToken=abc');

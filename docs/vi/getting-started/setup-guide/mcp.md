@@ -13,7 +13,7 @@ MCP cho phép Codex, Claude hoặc client tương thích khám phá dữ liệu,
 4. Chọn project cần cấp quyền và xác nhận scope được yêu cầu.
 5. Quay lại client, kiểm tra connector đã ở trạng thái Connected.
 
-Token OAuth có thời hạn ngắn và client sẽ tự refresh. Nếu session bị revoke hoặc refresh thất bại, hãy ngắt kết nối rồi thực hiện lại flow.
+Token OAuth có thời hạn ngắn và client sẽ tự refresh. Nếu grant bị revoke, hết hạn, membership bị gỡ hoặc refresh thất bại, hãy ngắt kết nối rồi thực hiện lại flow. Đăng xuất trình duyệt không tự thu hồi grant MCP đã cấp. Ngắt kết nối client xóa credential lưu tại client; grant phía server vẫn có thể tồn tại đến khi hết hạn hoặc tài khoản mất quyền trong project.
 
 ### Codex với DigitalReport
 
