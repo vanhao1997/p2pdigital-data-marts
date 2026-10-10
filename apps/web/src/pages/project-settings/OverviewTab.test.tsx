@@ -161,6 +161,10 @@ describe('OverviewTab project status', () => {
     fireEvent.click(screen.getByTitle('Copy project-mcp-url to clipboard'));
 
     expect(clipboard.handleCopy).toHaveBeenCalledWith(mcpServerUrl, 'project-mcp-url');
+    expect(screen.getByRole('link', { name: 'MCP & ChatGPT guide' })).toHaveAttribute(
+      'href',
+      '/ui/blocked-project/project-settings/mcp'
+    );
   });
 
   it('renders MCP server settings before legacy platform settings', () => {

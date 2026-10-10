@@ -176,6 +176,7 @@ export function ProjectSettingsPage() {
 
   const navigation: TabLink[] = [
     { name: t('projectSettingsPage.tabs.overview', 'Overview'), path: '.', end: true },
+    { name: t('projectSettingsPage.tabs.mcp'), path: 'mcp', end: false },
     { name: t('projectSettingsPage.tabs.members', 'Members'), path: 'members', end: false },
     { name: t('projectSettingsPage.tabs.contexts', 'Contexts'), path: 'contexts', end: false },
     ...(isOwoxIdpProvider
@@ -248,7 +249,7 @@ export function ProjectSettingsPage() {
   return (
     <MembersSettingsProvider value={providerValue}>
       <div className='min-w-0 px-4 py-6 sm:px-6 lg:px-8 xl:px-12'>
-        <div className='mb-4 flex items-center gap-4'>
+        <div className='mb-4 flex items-center gap-4 pl-6 md:pl-0'>
           <span className='text-2xl font-medium'>
             {t('projectSettingsPage.title', 'Project settings')}
           </span>
