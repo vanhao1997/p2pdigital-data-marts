@@ -20,7 +20,6 @@ jest.mock('../../../report-run-logging/log-blended-sql', () => ({
 // Import after mocking
 import { logBlendedSqlIfNeeded } from '../../../report-run-logging/log-blended-sql';
 import { SystemTimeService } from '../../../../common/scheduler/services/system-time.service';
-import { BlendedReportDataService } from '../../../services/blended-report-data.service';
 import { LookerStudioReportRunService } from '../../../services/looker-studio-report-run.service';
 import {
   ProjectBillingService,
@@ -42,7 +41,6 @@ describe('LookerStudioConnectorApiService', () => {
   let reportRunService: jest.Mocked<LookerStudioReportRunService>;
   let projectBilling: jest.Mocked<ProjectBillingService>;
   let eventDispatcher: jest.Mocked<{ publishExternal: jest.Mock }>;
-  let blendedReportDataService: jest.Mocked<BlendedReportDataService>;
   let systemTimeService: jest.Mocked<SystemTimeService>;
 
   const originalEnv = process.env;
@@ -83,9 +81,6 @@ describe('LookerStudioConnectorApiService', () => {
       publishExternal: jest.fn(),
     };
 
-    blendedReportDataService = {
-      resolveBlendingDecision: jest.fn().mockResolvedValue({ needsBlending: false }),
-    } as unknown as jest.Mocked<BlendedReportDataService>;
     (logBlendedSqlIfNeeded as jest.Mock).mockReset();
 
     systemTimeService = {
@@ -101,7 +96,6 @@ describe('LookerStudioConnectorApiService', () => {
       eventDispatcher as any,
       reportRunService,
       projectBilling,
-      blendedReportDataService,
       systemTimeService,
       { getProjectMemberOrThrow: jest.fn().mockResolvedValue({ role: 'admin' }) } as never
     );
@@ -744,7 +738,6 @@ describe('LookerStudioConnectorApiService', () => {
 
       await service.getData(createMockRequest(false));
 
-      expect(blendedReportDataService.resolveBlendingDecision).not.toHaveBeenCalled();
       expect(logBlendedSqlIfNeeded).toHaveBeenCalledWith(
         decision,
         expect.objectContaining({ log: expect.any(Function), asArrays: expect.any(Function) })

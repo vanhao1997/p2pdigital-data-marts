@@ -10,7 +10,6 @@ import {
   UpdateContextRequestApiDto,
 } from '../dto/presentation/context-api.dto';
 import { ContextMapper } from '../mappers/context.mapper';
-import { ContextAccessService } from '../services/context/context-access.service';
 import { ContextService } from '../services/context/context.service';
 import { SetContextMembersService } from '../use-cases/contexts/set-context-members.service';
 import {
@@ -27,7 +26,6 @@ import {
 export class ContextController {
   constructor(
     private readonly contextService: ContextService,
-    private readonly contextAccessService: ContextAccessService,
     private readonly contextMapper: ContextMapper,
     private readonly setContextMembersService: SetContextMembersService
   ) {}

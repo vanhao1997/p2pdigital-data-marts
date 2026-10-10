@@ -14,7 +14,6 @@ import {
   ReportRunLogger,
 } from '../../../report-run-logging/report-run-logger';
 import { resolveBlendableSchemaAccessor } from '../../../services/blendable-schema.service';
-import { BlendedReportDataService } from '../../../services/blended-report-data.service';
 import { IdpProjectionsFacade } from '../../../../idp/facades/idp-projections.facade';
 import {
   ProjectBillingService,
@@ -80,7 +79,6 @@ export class LookerStudioConnectorApiService {
     private readonly eventDispatcher: OwoxEventDispatcher,
     private readonly lookerStudioReportRunService: LookerStudioReportRunService,
     private readonly projectBillingService: ProjectBillingService,
-    private readonly blendedReportDataService: BlendedReportDataService,
     private readonly systemTimeService: SystemTimeService,
     private readonly idpProjectionsFacade: IdpProjectionsFacade
   ) {}
