@@ -6,7 +6,10 @@ import {
   SidebarHeader,
   SidebarGroupContent,
   SidebarRail,
+  useSidebar,
 } from '@owox/ui/components/sidebar';
+import { useEffect } from 'react';
+import { useLocation } from 'react-router';
 import { SidebarProjectMenu } from './ProjectMenu';
 import { UserMenu } from './UserMenu';
 import { ActionButton } from './ActionButton';
@@ -25,6 +28,13 @@ interface AppSidebarProps {
 
 export function AppSidebar({ variant = 'inset', collapsible = 'icon' }: AppSidebarProps) {
   const setupChecklistVisibility = useSetupChecklistVisibility();
+  const { key: locationKey } = useLocation();
+  const { setOpenMobile } = useSidebar();
+
+  useEffect(() => {
+    setOpenMobile(false);
+  }, [locationKey, setOpenMobile]);
+
   return (
     <Sidebar variant={variant} collapsible={collapsible}>
       <SidebarHeader>

@@ -2906,6 +2906,16 @@
     "details": "Error details"
   },
   "projectsPage": {
+    "dataMarts": "Data Marts",
+    "connectors": "Connectors",
+    "runningSyncs": "Running syncs",
+    "overviewUnavailable": "Project details unavailable",
+    "refresh": "Refresh project details",
+    "noDataMarts": "No visible Data Marts",
+    "noConnectors": "No connectors configured",
+    "moreDataMarts": "View all (+{{count}} more)",
+    "draft": "Draft",
+    "published": "Published",
     "title": "Projects",
     "subtitle": "Manage up to 20 Projects. Archived Projects remain readable but are read-only.",
     "newProjectName": "New project name",

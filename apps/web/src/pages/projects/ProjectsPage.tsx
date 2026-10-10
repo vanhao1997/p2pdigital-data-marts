@@ -8,6 +8,7 @@ import { useProjects } from '../../features/idp/hooks/useProjects';
 import { buildProjectPath } from '../../utils/path';
 import { useFlags } from '../../app/store/hooks';
 import { checkVisible } from '../../utils/check-visible';
+import { ProjectOverviewDetails } from '../../features/projects/components/ProjectOverviewDetails';
 import {
   Dialog,
   DialogContent,
@@ -96,11 +97,11 @@ export function ProjectsPage() {
     }
   }
 
-  async function handleSelect(projectId: string) {
+  async function handleSelect(projectId: string, path = '/data-marts') {
     setPendingAction(`select:${projectId}`);
     try {
       if (canManageProjects) await selectProject(projectId);
-      void navigate(buildProjectPath(projectId, '/data-marts'));
+      void navigate(buildProjectPath(projectId, path));
     } catch (e) {
       setMessage(e instanceof Error ? e.message : t('projectsPage.selectFailed'));
     } finally {
@@ -109,7 +110,7 @@ export function ProjectsPage() {
   }
 
   return (
-    <main className='mx-auto max-w-3xl p-4 sm:p-8'>
+    <main className='mx-auto w-full max-w-5xl p-4 sm:p-8'>
       <h1 className='mb-2 text-2xl font-semibold'>{t('projectsPage.title')}</h1>
       <p className='text-muted-foreground mb-6 text-sm'>{t('projectsPage.subtitle')}</p>
       {canManageProjects ? (
@@ -138,71 +139,81 @@ export function ProjectsPage() {
       )}
       {message && <p className='text-destructive mb-4 text-sm'>{message}</p>}
       {error && <p className='text-destructive mb-4 text-sm'>{error.message}</p>}
-      <div className='space-y-3'>
+      <div className='grid gap-4 lg:grid-cols-2'>
         {projects.map(project => (
           <section
             key={project.id}
-            className='flex flex-col items-stretch justify-between gap-4 rounded-lg border p-4 sm:flex-row sm:items-center'
+            aria-label={project.title}
+            className='min-w-0 space-y-4 rounded-lg border p-4'
           >
-            <div>
-              <div className='font-medium'>{project.title}</div>
-              <div className='text-muted-foreground text-xs'>
-                {project.archived
-                  ? t('projectsPage.archivedReadOnly')
-                  : project.id === '0'
-                    ? t('projectsPage.defaultProject')
-                    : t('projectsPage.active')}
+            <div className='flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between'>
+              <div className='min-w-0'>
+                <h2 className='font-medium break-words'>{project.title}</h2>
+                <div className='text-muted-foreground text-xs'>
+                  {project.archived
+                    ? t('projectsPage.archivedReadOnly')
+                    : project.id === '0'
+                      ? t('projectsPage.defaultProject')
+                      : t('projectsPage.active')}
+                </div>
               </div>
-            </div>
-            <div className='flex flex-wrap gap-2'>
-              {canManageProjects &&
-                (project.archived ? (
+              <div className='flex flex-wrap gap-2'>
+                {canManageProjects &&
+                  (project.archived ? (
+                    <Button
+                      variant='outline'
+                      onClick={() => {
+                        void handleArchive(project.id, true);
+                      }}
+                      disabled={pendingAction !== null}
+                    >
+                      {pendingAction === `unarchive:${project.id}`
+                        ? t('projectsPage.saving')
+                        : t('projectsPage.unarchive')}
+                    </Button>
+                  ) : (
+                    <Button
+                      variant='outline'
+                      onClick={() => {
+                        void handleArchive(project.id, false);
+                      }}
+                      disabled={pendingAction !== null}
+                    >
+                      {pendingAction === `archive:${project.id}`
+                        ? t('projectsPage.saving')
+                        : t('projectsPage.archive')}
+                    </Button>
+                  ))}
+                {canManageProjects && (
                   <Button
                     variant='outline'
                     onClick={() => {
-                      void handleArchive(project.id, true);
+                      handleRename(project.id);
                     }}
                     disabled={pendingAction !== null}
                   >
-                    {pendingAction === `unarchive:${project.id}`
-                      ? t('projectsPage.saving')
-                      : t('projectsPage.unarchive')}
+                    {t('projectsPage.rename')}
                   </Button>
-                ) : (
-                  <Button
-                    variant='outline'
-                    onClick={() => {
-                      void handleArchive(project.id, false);
-                    }}
-                    disabled={pendingAction !== null}
-                  >
-                    {pendingAction === `archive:${project.id}`
-                      ? t('projectsPage.saving')
-                      : t('projectsPage.archive')}
-                  </Button>
-                ))}
-              {canManageProjects && (
+                )}
                 <Button
-                  variant='outline'
                   onClick={() => {
-                    handleRename(project.id);
+                    void handleSelect(project.id);
                   }}
                   disabled={pendingAction !== null}
                 >
-                  {t('projectsPage.rename')}
+                  {pendingAction === `select:${project.id}`
+                    ? t('projectsPage.loading')
+                    : t('projectsPage.open')}
                 </Button>
-              )}
-              <Button
-                onClick={() => {
-                  void handleSelect(project.id);
-                }}
-                disabled={pendingAction !== null}
-              >
-                {pendingAction === `select:${project.id}`
-                  ? t('projectsPage.loading')
-                  : t('projectsPage.open')}
-              </Button>
+              </div>
             </div>
+            <ProjectOverviewDetails
+              projectId={project.id}
+              disabled={pendingAction !== null}
+              onOpen={path => {
+                void handleSelect(project.id, path);
+              }}
+            />
           </section>
         ))}
       </div>
