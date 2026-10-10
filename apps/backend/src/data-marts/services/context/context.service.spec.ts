@@ -37,7 +37,6 @@ describe('ContextService', () => {
     const storageContextRepository = createMockRepository();
     const destinationContextRepository = createMockRepository();
     const memberRoleContextRepository = createMockRepository();
-    const memberRoleScopeRepository = createMockRepository();
     const userProvisioningContextSettingsContextRepository = createMockRepository();
 
     const contextMapper = new ContextMapper();
@@ -55,7 +54,6 @@ describe('ContextService', () => {
       storageContextRepository as never,
       destinationContextRepository as never,
       memberRoleContextRepository as never,
-      memberRoleScopeRepository as never,
       userProvisioningContextSettingsContextRepository as never,
       contextMapper,
       userProjectionsFetcherService as never
@@ -68,7 +66,6 @@ describe('ContextService', () => {
       storageContextRepository,
       destinationContextRepository,
       memberRoleContextRepository,
-      memberRoleScopeRepository,
       userProvisioningContextSettingsContextRepository,
       contextMapper,
       userProjectionsFetcherService,

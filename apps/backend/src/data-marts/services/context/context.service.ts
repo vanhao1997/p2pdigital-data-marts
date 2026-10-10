@@ -54,8 +54,6 @@ export class ContextService {
     private readonly destinationContextRepository: Repository<DestinationContext>,
     @InjectRepository(MemberRoleContext)
     private readonly memberRoleContextRepository: Repository<MemberRoleContext>,
-    @InjectRepository(MemberRoleScope)
-    private readonly memberRoleScopeRepository: Repository<MemberRoleScope>,
     @InjectRepository(UserProvisioningContextSettingsContext)
     private readonly userProvisioningContextSettingsContextRepository: Repository<UserProvisioningContextSettingsContext>,
     private readonly contextMapper: ContextMapper,

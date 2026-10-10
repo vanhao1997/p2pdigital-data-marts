@@ -1,5 +1,5 @@
 // connector-storage-config.service.ts
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 
 // @ts-expect-error - Package lacks TypeScript declarations
 import { Core } from '@owox/connectors';
@@ -32,8 +32,6 @@ import { GoogleOAuthConfigService } from '../google-oauth/google-oauth-config.se
 
 @Injectable()
 export class ConnectorStorageConfigService {
-  private readonly logger = new Logger(ConnectorStorageConfigService.name);
-
   constructor(
     private readonly storageCredentialsResolver: DataStorageCredentialsResolver,
     private readonly googleOAuthConfigService: GoogleOAuthConfigService
