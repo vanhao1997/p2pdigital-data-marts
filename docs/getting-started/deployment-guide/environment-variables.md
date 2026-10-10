@@ -226,6 +226,9 @@ owox serve --env-file custom.env --port 3030
 - **MCP_DYNAMIC_CLIENT_ALLOWED_REDIRECT_ORIGINS**: Comma-separated HTTPS origins allowed as OAuth redirect targets for dynamic MCP clients.
   - Loopback HTTP redirects for desktop/CLI clients are always allowed.
   - Example for Claude web: `https://claude.ai`
+  - Example for ChatGPT web: `https://chatgpt.com`. Copy the exact redirect URI
+    from the connection's management page; authorization still requires it to
+    match the registered client or validated CIMD document, not just its origin.
   - Default: empty.
 
 - **MCP_DYNAMIC_CLIENT_REGISTRATION_ENABLED**: Enables the public MCP OAuth dynamic
@@ -237,6 +240,11 @@ owox serve --env-file custom.env --port 3030
 - **MCP_CLIENT_METADATA_DOCUMENT_ENABLED**: Enables OAuth Client ID Metadata
   Documents (CIMD) for MCP clients whose `client_id` is an HTTPS metadata URL.
   Defaults to `true`; set `false` only when an operator needs to disable CIMD.
+  The token endpoint supports public-client authentication (`none`) with PKCE.
+  CIMD documents may advertise multiple supported authentication methods;
+  clients must select `none` from the intersection with the server's methods.
+  A legacy preference for `private_key_jwt` does not imply server support for
+  signed client assertions when `none` is also advertised.
 
 - **MCP_CLIENT_METADATA_ALLOWED_ORIGINS**: Optional comma-separated HTTPS origins
   allowed to host CIMD documents. Empty means any public HTTPS origin is
