@@ -49,6 +49,9 @@ jobs:
       - name: Install dependencies
         run: npm ci --prefer-offline --no-audit --no-fund --loglevel error
 
+      - name: Validate release changelog normalization
+        run: node --test tools/fix-changelog-headings.test.mjs
+
       - name: Run ESLint
         run: npm run lint
 

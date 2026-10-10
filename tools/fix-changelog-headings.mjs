@@ -1,6 +1,8 @@
 // @ts-check
 import fs from 'node:fs';
 import path from 'path';
+import { applyFixes } from 'markdownlint';
+import { lint } from 'markdownlint/sync';
 
 // File scanning constants
 const EXCLUDED_DIRS = new Set([
@@ -174,8 +176,20 @@ function fixHeadings(filePath) {
       }
     }
 
+    const versioned = lines.join('\n');
+    // Changesets can remove heading spacing from historical nested release notes.
+    const spacingErrors = lint({
+      strings: { changelog: versioned },
+      config: { default: false, MD022: true },
+    }).changelog;
+    const fixed = applyFixes(versioned, spacingErrors);
+    if (fixed !== versioned) {
+      changed = true;
+      changesCount += spacingErrors.length;
+    }
+
     if (changed) {
-      fs.writeFileSync(filePath, lines.join('\n'), 'utf8');
+      fs.writeFileSync(filePath, fixed, 'utf8');
       console.log(`✅ Fixed ${changesCount} heading(s) in: ${filePath}`);
       return true;
     } else {
