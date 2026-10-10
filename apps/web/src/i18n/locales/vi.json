@@ -2906,6 +2906,16 @@
     "details": "Chi tiết lỗi"
   },
   "projectsPage": {
+    "dataMarts": "Data Marts",
+    "connectors": "Connectors",
+    "runningSyncs": "Sync đang chạy",
+    "overviewUnavailable": "Không tải được chi tiết dự án",
+    "refresh": "Tải lại chi tiết dự án",
+    "noDataMarts": "Chưa có Data Marts được phép xem",
+    "noConnectors": "Chưa cấu hình connector",
+    "moreDataMarts": "Xem tất cả (+{{count}} mục)",
+    "draft": "Bản nháp",
+    "published": "Đã xuất bản",
     "title": "Dự án",
     "subtitle": "Quản lý tối đa 20 dự án. Các dự án đã lưu trữ vẫn có thể đọc nhưng ở chế độ chỉ đọc.",
     "newProjectName": "Tên dự án mới",

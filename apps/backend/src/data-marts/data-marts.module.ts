@@ -25,6 +25,10 @@ import { HttpDataColumnResolver } from './services/http-data/http-data-column-re
 import { HttpDataColumnValidator } from './services/http-data/http-data-column-validator.service';
 import { MarkdownParserController } from './controllers/markdown-parser.controller';
 import { ProjectDataMartRunsController } from './controllers/project-data-mart-runs.controller';
+import { ProjectOverviewController } from './controllers/project-overview.controller';
+import { GetProjectOverviewService } from './use-cases/get-project-overview.service';
+import { ProjectOverviewRepository } from './repositories/project-overview.repository';
+import { ProjectOverviewMapper } from './mappers/project-overview.mapper';
 import { ProjectInsightTemplatesController } from './controllers/project-insight-templates.controller';
 import { ProjectReportsController } from './controllers/project-reports.controller';
 import { ProjectScheduledTriggersController } from './controllers/project-scheduled-triggers.controller';
@@ -523,6 +527,7 @@ import { ConfigurationVariableResolverService } from './services/configuration-v
     IdpModule,
   ],
   controllers: [
+    ProjectOverviewController,
     DataQualityBatchController,
     DataQualityController,
     ProjectDataMartRunsController,
@@ -562,6 +567,9 @@ import { ConfigurationVariableResolverService } from './services/configuration-v
     ConfigurationVariableController,
   ],
   providers: [
+    GetProjectOverviewService,
+    ProjectOverviewRepository,
+    ProjectOverviewMapper,
     PluginEntityAuthorizationFacadeImpl,
     {
       provide: PLUGIN_ENTITY_AUTHORIZATION_FACADE,
