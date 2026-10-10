@@ -60,7 +60,6 @@ function buildServices() {
   const storageOwnerRepo = createMockRepository();
   const destOwnerRepo = createMockRepository();
   const reportOwnerRepo = createMockRepository();
-  const reportRepo = createMockRepository();
 
   const contextMapper = new ContextMapper();
   const userProjectionsFetcherService = {
@@ -77,7 +76,6 @@ function buildServices() {
     storageContextRepo as never,
     destContextRepo as never,
     memberRoleContextRepo as never,
-    memberRoleScopeRepo as never,
     userProvisioningContextSettingsContextRepo as never,
     contextMapper,
     userProjectionsFetcherService as never
@@ -106,7 +104,6 @@ function buildServices() {
     storageOwnerRepo as never,
     destOwnerRepo as never,
     reportOwnerRepo as never,
-    reportRepo as never,
     contextAccessService
   );
 
@@ -133,7 +130,6 @@ function buildServices() {
     storageOwnerRepo,
     destOwnerRepo,
     reportOwnerRepo,
-    reportRepo,
   };
 }
 

@@ -46,7 +46,6 @@ describe('AccessDecisionService – Context Gate (Stage 4)', () => {
       repo() as never, // storageOwnerRepository
       repo() as never, // destinationOwnerRepository
       repo() as never, // reportOwnerRepository
-      repo() as never, // reportRepository
       contextAccessService as unknown as ContextAccessService
     );
 

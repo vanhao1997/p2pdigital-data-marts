@@ -7,7 +7,7 @@ import { Repository } from 'typeorm';
 import { Transactional } from 'typeorm-transactional';
 import { DataDestination } from '../entities/data-destination.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import { BadRequestException, ForbiddenException, Injectable, Logger } from '@nestjs/common';
+import { BadRequestException, ForbiddenException, Injectable } from '@nestjs/common';
 import { OwoxEventDispatcher } from '../../common/event-dispatcher/owox-event-dispatcher';
 import { DataDestinationDto } from '../dto/domain/data-destination.dto';
 import { DataDestinationMapper } from '../mappers/data-destination.mapper';
@@ -35,8 +35,6 @@ import { SearchableEntityType } from '../../common/search/search.facade';
 
 @Injectable()
 export class CreateDataDestinationService {
-  private readonly logger = new Logger(CreateDataDestinationService.name);
-
   constructor(
     @InjectRepository(DataDestination)
     private readonly repository: Repository<DataDestination>,

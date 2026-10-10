@@ -1,4 +1,4 @@
-import { Injectable, ForbiddenException, BadRequestException, Logger } from '@nestjs/common';
+import { Injectable, ForbiddenException, BadRequestException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Transactional } from 'typeorm-transactional';
@@ -24,8 +24,6 @@ const LEGACY_DATA_MART_INITIAL_QUERY = 'SELECT 1';
 
 @Injectable()
 export class CreateDataMartService {
-  private readonly logger = new Logger(CreateDataMartService.name);
-
   constructor(
     private readonly dataMartService: DataMartService,
     private readonly dataStorageService: DataStorageService,

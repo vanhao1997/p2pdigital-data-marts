@@ -75,7 +75,7 @@ export class DataStorageIndexableSource implements IndexableSource {
 
   constructor(
     @InjectRepository(DataStorage) private readonly dataStorageRepo: Repository<DataStorage>,
-    private readonly contextAccessService: ContextAccessService
+    contextAccessService: ContextAccessService
   ) {
     this.accessPredicateProvider = new EntityAccessPredicateProvider({
       repo: dataStorageRepo,

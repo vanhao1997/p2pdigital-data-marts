@@ -83,7 +83,7 @@ export class DataDestinationIndexableSource implements IndexableSource {
   constructor(
     @InjectRepository(DataDestination)
     private readonly destinationRepo: Repository<DataDestination>,
-    private readonly contextAccessService: ContextAccessService
+    contextAccessService: ContextAccessService
   ) {
     this.accessPredicateProvider = new EntityAccessPredicateProvider({
       repo: destinationRepo,
