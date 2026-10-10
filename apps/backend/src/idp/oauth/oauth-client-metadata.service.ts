@@ -16,6 +16,7 @@ const OAuthClientMetadataDocumentSchema = z.object({
   grant_types: z.array(z.string().min(1)).optional(),
   response_types: z.array(z.string().min(1)).optional(),
   token_endpoint_auth_method: z.string().min(1).optional(),
+  token_endpoint_auth_methods_supported: z.array(z.string().min(1)).min(1).optional(),
   scope: z.string().optional(),
 });
 
@@ -290,7 +291,11 @@ export class OAuthClientMetadataService {
       throw new BadRequestException('client metadata response_types supports only code');
     }
 
-    if ((value.token_endpoint_auth_method ?? 'none') !== 'none') {
+    // Plural metadata describes capabilities; the legacy singular field is a preference.
+    const authMethods = value.token_endpoint_auth_methods_supported ?? [
+      value.token_endpoint_auth_method ?? 'none',
+    ];
+    if (!authMethods.includes('none')) {
       throw new BadRequestException(
         'client metadata token_endpoint_auth_method supports only none'
       );

@@ -71,7 +71,10 @@ deployment automation.
 - Builds and smokes the sidecar image through `/healthz`.
 - Pushes both images to GHCR with immutable `sha-<git-sha>` tags on `main` and manual runs.
 - Triggers Coolify after all checks and image pushes pass when `COOLIFY_DEPLOY_ENABLED=true` on
-  `main`; `workflow_dispatch` can also trigger an explicit deployment.
+  `main`; `workflow_dispatch` can also request a deployment. Both paths require MySQL for the
+  application, plugin collections and native Better Auth databases. SQLite, blank/default or
+  unknown storage stops the workflow before PATCH or deploy; use a controlled stopped-writer
+  rollout with a fresh app/auth backup instead. Do not enable automatic deploy for SQLite.
 
 CI builds the monorepo before creating the runtime image. The main Dockerfile uses a clean Node.js
 base and the staged context, preserving workspace links, the CLI manifest and both CommonJS/ESM
@@ -95,6 +98,9 @@ private GHCR packages. The two UUIDs must identify different applications. Befor
 application, the workflow reads both resources and requires `build_pack=dockerimage`. It then updates
 only image and healthcheck fields, sending `health_check_port` as a JSON string (`"8091"` or `"3000"`),
 and reads each resource back to verify the exact image SHA tag and all requested healthcheck settings.
+Both resources use a self-contained `cmd` healthcheck with Node `fetch`, an exact HTTP 200 check,
+and a four-second timeout. This does not require `curl`, `wget`, or a host-mounted script; the
+slim main image does not include those HTTP CLI tools.
 It starts the sidecar before the main runtime and waits for both Coolify deployments to reach
 `finished`. It does not use the `docker_tag` deploy parameter because Coolify reserves that parameter
 for Docker Image preview deployments with a pull-request ID. Coolify does not rebuild repository
@@ -117,8 +123,10 @@ Protect `main` with a pull request requirement, at least one approving review, s
 dismissal when new commits arrive, and no routine bypass for administrators. Require the stable
 `Lint, test, and build`, `E2E API Tests`, `E2E Browser Tests`, `Audit all`, root quality, and docs
 quality checks once their names have been confirmed in a green PR run. Leave
-`COOLIFY_DEPLOY_ENABLED` unset until at least one green run exists, then enable it for automatic
-deployments from `main`. Use `workflow_dispatch` for controlled redeploys or rollback validation.
+`COOLIFY_DEPLOY_ENABLED` unset until at least one green run and rollback rehearsal exist, then
+enable it only for deployments whose app, plugin collections and native auth databases use MySQL.
+SQLite deployments remain manual with job drain, stopped-writer backup and single-writer checks.
+`workflow_dispatch` does not bypass these storage requirements.
 
 The `Release PR` workflow needs repository **Actions → General → Workflow permissions → Allow GitHub
 Actions to create and approve pull requests**. It uses a custom Changesets version command so
@@ -146,7 +154,7 @@ sequentially and should only advance cursor state after every node and scope for
 
 ## Monitoring plan
 
-Coolify healthchecks:
+Coolify command healthchecks use Node to request:
 
 - Main runtime: `GET /health/ready`.
 - Admicro sidecar: `GET /healthz`.

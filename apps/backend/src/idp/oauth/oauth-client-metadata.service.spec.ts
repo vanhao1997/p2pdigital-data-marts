@@ -82,6 +82,66 @@ describe('OAuth CIMD boundary', () => {
     });
   });
 
+  it.each([
+    { token_endpoint_auth_methods_supported: ['none', 'private_key_jwt'] },
+    {
+      token_endpoint_auth_method: 'private_key_jwt',
+      token_endpoint_auth_methods_supported: ['none', 'private_key_jwt'],
+    },
+    {
+      token_endpoint_auth_method: 'private_key_jwt',
+      token_endpoint_auth_methods_supported: ['private_key_jwt', 'none'],
+    },
+  ])('selects supported public-client authentication from capabilities %j', async metadata => {
+    fetchMock.mockImplementation(async () => response(metadata));
+    await expect(service.resolve(clientId)).resolves.toMatchObject({
+      clientId,
+      redirectUris: [redirectUri],
+      scopes: ['mcp:read', 'mcp:write'],
+    });
+  });
+
+  it('validates the published ChatGPT CIMD shape without weakening authorization checks', async () => {
+    const chatGptClientId = 'https://chatgpt.com/oauth/client.json';
+    const chatGptRedirectUri = 'https://chatgpt.com/connector_platform_oauth_redirect';
+    const { validator } = createService({
+      MCP_CLIENT_METADATA_ALLOWED_ORIGINS: 'https://chatgpt.com',
+      MCP_DYNAMIC_CLIENT_ALLOWED_REDIRECT_ORIGINS: 'https://chatgpt.com',
+    });
+    fetchMock.mockImplementation(async () =>
+      response({
+        client_id: chatGptClientId,
+        client_name: 'ChatGPT',
+        redirect_uris: [chatGptRedirectUri],
+        token_endpoint_auth_method: 'private_key_jwt',
+        token_endpoint_auth_methods_supported: ['none', 'private_key_jwt'],
+      })
+    );
+    const authorization = {
+      response_type: 'code',
+      client_id: chatGptClientId,
+      redirect_uri: chatGptRedirectUri,
+      resource,
+      scope: 'mcp:read',
+      state: 'state',
+      code_challenge: 'challenge',
+      code_challenge_method: 'S256',
+    };
+    await expect(validator.validateAuthorizationRequest(authorization)).resolves.toMatchObject({
+      request: { clientId: chatGptClientId, redirectUri: chatGptRedirectUri, resource },
+    });
+    for (const invalid of [
+      { code_challenge_method: 'plain' },
+      { redirect_uri: 'https://chatgpt.com/other-callback' },
+      { resource: 'https://other.example/mcp' },
+      { scope: 'admin' },
+    ]) {
+      await expect(
+        validator.validateAuthorizationRequest({ ...authorization, ...invalid })
+      ).rejects.toThrow();
+    }
+  });
+
   it.each(['no-store', 'no-cache', 'max-age=0'])(
     'refetches documents with Cache-Control %s',
     async cacheControl => {
@@ -141,6 +201,15 @@ describe('OAuth CIMD boundary', () => {
     { grant_types: ['client_credentials'] },
     { response_types: [] },
     { token_endpoint_auth_method: 'client_secret_post' },
+    { token_endpoint_auth_method: 'private_key_jwt' },
+    { token_endpoint_auth_methods_supported: ['private_key_jwt'] },
+    {
+      token_endpoint_auth_method: 'none',
+      token_endpoint_auth_methods_supported: ['private_key_jwt'],
+    },
+    { token_endpoint_auth_methods_supported: [] },
+    { token_endpoint_auth_methods_supported: [''] },
+    { token_endpoint_auth_methods_supported: 'none' },
     { scope: 'admin' },
     { scope: '' },
   ])('rejects invalid metadata %j', async invalid => {
