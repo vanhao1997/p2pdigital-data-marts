@@ -27,7 +27,7 @@ for (const viewport of [
     test.setTimeout(90_000);
     await page.setViewportSize(viewport);
     const storage = await apiHelpers.createStorage();
-    const marts = [];
+    const marts: { id: string }[] = [];
     for (let i = 0; i < 7; i++)
       marts.push(
         await apiHelpers.createDataMart(
