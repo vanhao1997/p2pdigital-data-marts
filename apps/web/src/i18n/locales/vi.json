@@ -3485,6 +3485,7 @@
     "resendFailed": "Không thể gửi lại lời mời",
     "tabs": {
       "overview": "Tổng quan",
+      "mcp": "MCP & ChatGPT",
       "members": "Thành viên",
       "contexts": "Ngữ cảnh",
       "credit": "Mức tiêu thụ tín dụng",
@@ -3493,6 +3494,73 @@
       "notifications": "Thông báo",
       "variables": "Biến cấu hình"
     }
+  },
+  "mcpGuide": {
+    "title": "Kết nối ChatGPT với DigitalReport",
+    "intro": "Thiết lập MCP qua OAuth, sau đó tạo Data Mart bản nháp từ connector có sẵn. Không cần cung cấp API key OpenAI.",
+    "projectEntry": "Hướng dẫn MCP & ChatGPT",
+    "project": "Dự án hiện tại",
+    "archived": "Dự án đã lưu trữ, chỉ đọc. Khôi phục dự án trước khi tạo hoặc sửa Data Mart.",
+    "connectionTitle": "Thông tin kết nối",
+    "serverName": "Tên plugin",
+    "copyEndpoint": "Sao chép Server URL",
+    "publishedEndpoint": "Đây là endpoint công khai của DigitalReport, không phải URL được tạo từ mã dự án. Nếu dùng bản tự triển khai, hãy lấy endpoint từ quản trị viên trước khi kết nối.",
+    "endpointNotice": "Có URL không đồng nghĩa OAuth đã sẵn sàng. Máy chủ cần cho phép callback ChatGPT; nếu bị từ chối redirect, dừng kết nối và liên hệ quản trị viên.",
+    "stepsTitle": "1. Kết nối trên ChatGPT web",
+    "openChatGpt": "Mở ChatGPT Plugins",
+    "steps": {
+      "open": "Đăng nhập ChatGPT, mở Plugins, bấm dấu + rồi chọn Add custom MCP server. Nếu không thấy mục này, kiểm tra quyền tài khoản và chính sách workspace.",
+      "server": "Đặt tên DigitalReport. Dán Server URL ở trên vào phần Connection.",
+      "auth": "Chọn OAuth. Chọn CIMD nếu máy chủ hỗ trợ và giao diện có tùy chọn; không tự điền Client ID hoặc Client Secret, không chọn No authentication.",
+      "consent": "Đọc cảnh báo, chọn Create as a plugin. Khi được yêu cầu xác thực, đăng nhập DigitalReport, chọn đúng dự án và kiểm tra quyền mcp:read / mcp:write trước khi đồng ý. Chỉ cấp quyền ghi nếu cần tạo hoặc sửa dữ liệu.",
+      "install": "Cài đặt plugin trong danh sách plugin cá nhân hoặc workspace. Hoàn tất OAuth nếu ChatGPT yêu cầu ở bước này.",
+      "chat": "Mở chat mới, gõ @ và chọn DigitalReport. Yêu cầu get_project_context, đối chiếu current_project.id với mã dự án trên trang này trước mọi thao tác ghi. Nếu sai, kết nối lại với đúng dự án."
+    },
+    "promptsTitle": "2. Tạo và kiểm tra Data Mart",
+    "promptNotice": "Thay tên Data Mart và connector theo nhu cầu. ChatGPT phải dùng danh sách connector/storage thật; không đoán ID, node hay field. Chỉ duyệt thao tác ghi sau khi đã kiểm tra đầu vào.",
+    "draftTitle": "Tạo bản nháp từ connector",
+    "copyDraft": "Sao chép prompt tạo bản nháp",
+    "draftPrompt": "Dùng plugin DigitalReport.\nGọi get_project_context và xác nhận current_project.id là {{projectId}}. Nếu khác, dừng.\nGọi list_data_storages và list_connectors.\nTôi muốn tạo draft Data Mart \"Admicro Daily\" từ AdmicroAds. Nếu connector không có, dừng và báo lại.\nCho tôi chọn storage từ danh sách. Nếu chưa có storage, trả link để tôi thiết lập trong webapp.\nLấy get_connector_specification và get_connector_fields trước khi dựng definition_type=CONNECTOR; không đoán ID, node hoặc field.\nThiếu credential thì trả link để tôi hoàn tất trong webapp; không yêu cầu dán bí mật vào chat.\nChưa publish, chưa chạy sync, chưa tạo lịch.\nTrả data_mart_id và URL của draft.",
+    "validationTitle": "Sau khi hoàn tất credential trong webapp",
+    "copyValidation": "Sao chép prompt kiểm tra",
+    "validationPrompt": "Dùng plugin DigitalReport.\nGọi get_project_context và xác nhận current_project.id là {{projectId}}. Nếu khác, dừng.\nKiểm tra get_data_mart_setup_status cho Data Mart <DATA_MART_ID>; hỏi tôi ID nếu chưa biết.\nValidate storage và Data Mart bằng validate_data_storage, validate_data_mart sau khi tôi xác nhận.\nBáo rõ cấu hình còn thiếu và kết quả validation.\nChưa publish, chưa chạy sync, chưa tạo lịch.",
+    "openDataMarts": "Mở Data Mart để kiểm tra",
+    "acceptance": "Hoàn tất khi get_project_context trả đúng dự án, bản nháp xuất hiện trong webapp và validation thành công. Publish là bước riêng, cần xác nhận sau khi kiểm tra cấu hình và chi phí.",
+    "safetyTitle": "Trước khi cấp quyền hoặc publish",
+    "safety": {
+      "credentials": "Nhập password, API key, service-account JSON và refresh token chỉ qua trang thiết lập trong webapp. Không dán vào ChatGPT; kiểm tra tên miền của link thiết lập trước khi mở.",
+      "permissions": "OAuth scope không thay thế quyền thành viên hoặc quyền trên tài nguyên. Luôn kiểm tra đúng dự án; quyền mcp:write không giúp truy cập dữ liệu của dự án khác.",
+      "privacy": "Mô tả, metadata và kết quả dữ liệu do MCP trả về có thể được gửi sang OpenAI. Chỉ kết nối máy chủ tin cậy và dữ liệu được tổ chức cho phép chia sẻ.",
+      "sync": "Tạo draft không tự publish hay đồng bộ. Validate có thể gọi API nguồn/kho dữ liệu và phát sinh phí bên nhà cung cấp. Publish connector có thể chạy incremental sync ngay, ghi vào kho và phát sinh mức tiêu thụ; chỉ duyệt khi đã kiểm tra đầu vào, quyền và chi phí.",
+      "capabilities": "MCP cấu hình Data Mart bằng connector đã có trên máy chủ; không tự phát triển tích hợp provider mới. Nếu connector không xuất hiện trong list_connectors, chọn nguồn khác hoặc liên hệ quản trị viên."
+    },
+    "troubleshootingTitle": "Khi gặp lỗi",
+    "troubleshooting": {
+      "missing": {
+        "title": "Không thấy Add custom MCP server",
+        "body": "Kiểm tra tài khoản, quyền workspace và hạn chế bảo mật của ChatGPT. Tính năng có thể không khả dụng với tài khoản hiện tại. Không đổi sang No authentication để vượt hạn chế."
+      },
+      "redirect": {
+        "title": "Callback hoặc redirect bị từ chối",
+        "body": "Gửi thông báo lỗi và callback URI hiển thị trong ChatGPT cho quản trị viên, không gửi token. Quản trị viên cần kiểm tra origin callback trong MCP_DYNAMIC_CLIENT_ALLOWED_REDIRECT_ORIGINS và triển khai lại khi đổi cấu hình. Không tắt kiểm tra redirect hoặc OAuth."
+      },
+      "unauthorized": {
+        "title": "401 Unauthorized",
+        "body": "Mở trực tiếp /mcp trong trình duyệt khi chưa đăng nhập có thể trả 401, đây không phải bài kiểm tra kết nối. Trong ChatGPT, kết nối lại OAuth và đăng nhập đúng tài khoản; không dùng token sao chép từ trình duyệt."
+      },
+      "forbidden": {
+        "title": "403 Forbidden hoặc sai dự án",
+        "body": "Gọi get_project_context để kiểm tra dự án đã cấp quyền. Kết nối lại nếu sai dự án; nhờ quản trị viên kiểm tra vai trò, quyền tài nguyên và scope. Không thử ID của dự án khác để vượt quyền."
+      },
+      "tools": {
+        "title": "Không thấy tool tạo Data Mart",
+        "body": "Mở trang chi tiết plugin trong cài đặt ChatGPT, refresh danh sách tools và kiểm tra các tools đã bật. Nếu vẫn thiếu create_data_mart, máy chủ có thể chưa triển khai bộ setup tools; liên hệ quản trị viên."
+      }
+    },
+    "openaiDocs": "OpenAI Docs",
+    "productDocs": "Tài liệu MCP đầy đủ",
+    "copied": "Đã sao chép",
+    "copyFailed": "Không thể sao chép. Hãy chọn và sao chép nội dung thủ công."
   },
   "projectOverview": {
     "aboutTooltip": "Về dự án này",

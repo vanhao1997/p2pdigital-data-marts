@@ -62,6 +62,7 @@ export function docsPathForRoute(pathname: string): DocsPath {
     return 'notifications/notification-settings';
   }
   if (projectRoute.startsWith('project-settings/variables')) return 'project-administration';
+  if (projectRoute.startsWith('project-settings/mcp')) return 'getting-started/setup-guide/mcp';
   if (projectRoute.startsWith('project-settings/credit')) {
     return 'getting-started/billing/consumption-units';
   }

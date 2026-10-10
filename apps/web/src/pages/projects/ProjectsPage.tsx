@@ -4,6 +4,7 @@ import { toast } from 'sonner';
 import { Button } from '@owox/ui/components/button';
 import { Input } from '@owox/ui/components/input';
 import { useTranslation } from 'react-i18next';
+import { Plug } from 'lucide-react';
 import { useProjects } from '../../features/idp/hooks/useProjects';
 import { buildProjectPath } from '../../utils/path';
 import { useFlags } from '../../app/store/hooks';
@@ -214,6 +215,16 @@ export function ProjectsPage() {
                 void handleSelect(project.id, path);
               }}
             />
+            <Button
+              variant='ghost'
+              size='sm'
+              className='max-w-full whitespace-normal'
+              disabled={pendingAction !== null}
+              onClick={() => void handleSelect(project.id, '/project-settings/mcp')}
+            >
+              <Plug className='size-4 shrink-0' />
+              {t('mcpGuide.projectEntry')}
+            </Button>
           </section>
         ))}
       </div>

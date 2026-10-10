@@ -41,6 +41,11 @@ const VariablesTab = lazy(() =>
     default: module.VariablesTab,
   }))
 );
+const McpGuideTab = lazy(() =>
+  import('../../pages/project-settings/McpGuideTab').then(module => ({
+    default: module.McpGuideTab,
+  }))
+);
 
 function lazyElement(element: ReactNode) {
   return <Suspense fallback={<RouteLoading />}>{element}</Suspense>;
@@ -85,6 +90,11 @@ export const projectSettingsRoutes: RouteObject[] = [
   {
     path: 'variables',
     element: lazyElement(<VariablesTab />),
+    errorElement: <LayoutErrorBoundary />,
+  },
+  {
+    path: 'mcp',
+    element: lazyElement(<McpGuideTab />),
     errorElement: <LayoutErrorBoundary />,
   },
 ];

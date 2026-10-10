@@ -12,6 +12,7 @@ describe('contextual documentation links', () => {
     ['/ui/0/project-settings/contexts', 'project/contexts'],
     ['/ui/0/project-settings/notifications', 'notifications/notification-settings'],
     ['/ui/0/project-settings/variables', 'project-administration'],
+    ['/ui/0/project-settings/mcp', 'getting-started/setup-guide/mcp'],
     ['/ui/0/project-settings/credit', 'getting-started/billing/consumption-units'],
     ['/ui/0/me/api-keys', 'api/api-keys'],
   ] as const)('maps %s to %s', (route, docsPath) => {
