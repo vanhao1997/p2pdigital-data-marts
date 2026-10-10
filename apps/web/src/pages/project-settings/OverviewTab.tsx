@@ -350,6 +350,17 @@ export function OverviewTab() {
                   iconOnly={true}
                 />
               </div>
+              <Button
+                asChild
+                variant='outline'
+                size='sm'
+                className='w-fit max-w-full whitespace-normal'
+              >
+                <Link to={scope('/project-settings/mcp')}>
+                  <Plug className='size-4 shrink-0' />
+                  {t('mcpGuide.projectEntry')}
+                </Link>
+              </Button>
             </div>
           </CollapsibleCardContent>
           <CollapsibleCardFooter></CollapsibleCardFooter>

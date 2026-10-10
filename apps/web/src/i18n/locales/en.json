@@ -3485,6 +3485,7 @@
     "resendFailed": "Failed to resend invitation",
     "tabs": {
       "overview": "Overview",
+      "mcp": "MCP & ChatGPT",
       "members": "Members",
       "contexts": "Contexts",
       "credit": "Credit consumption",
@@ -3493,6 +3494,73 @@
       "notifications": "Notifications",
       "variables": "Variables"
     }
+  },
+  "mcpGuide": {
+    "title": "Connect ChatGPT to DigitalReport",
+    "intro": "Connect MCP with OAuth, then create a draft Data Mart from an existing connector. No OpenAI API key is required.",
+    "projectEntry": "MCP & ChatGPT guide",
+    "project": "Current project",
+    "archived": "This project is archived and read-only. Restore it before creating or editing Data Marts.",
+    "connectionTitle": "Connection details",
+    "serverName": "Plugin name",
+    "copyEndpoint": "Copy Server URL",
+    "publishedEndpoint": "This is DigitalReport's published endpoint, not a URL generated from the project ID. For a self-hosted installation, obtain the endpoint from your administrator before connecting.",
+    "endpointNotice": "An endpoint URL does not prove OAuth readiness. The server must allow ChatGPT callbacks. If a redirect is rejected, stop connecting and contact your administrator.",
+    "stepsTitle": "1. Connect on ChatGPT web",
+    "openChatGpt": "Open ChatGPT Plugins",
+    "steps": {
+      "open": "Sign in to ChatGPT and open Plugins. Use the + menu to add a custom MCP server. If the option is missing, check account access and workspace policies.",
+      "server": "Name the plugin DigitalReport. Paste the Server URL above into Connection.",
+      "auth": "Choose OAuth. Use CIMD if the server supports it and the option is available. Do not invent a Client ID or Client Secret, or choose No authentication.",
+      "consent": "Review the warning and create the plugin. When authentication is requested, sign in to DigitalReport, select the correct project and review mcp:read / mcp:write before consenting. Grant write access only when you need to create or modify data.",
+      "install": "Install the plugin from your personal or workspace plugins. Complete OAuth if ChatGPT requests it at this stage.",
+      "chat": "Start a new chat and select DigitalReport using @. Ask for get_project_context and match current_project.id with the project ID on this page before any write action. Reconnect to the correct project if they differ."
+    },
+    "promptsTitle": "2. Create and validate a Data Mart",
+    "promptNotice": "Replace the Data Mart and connector names as needed. ChatGPT must use the actual connector/storage catalog, never guess IDs, nodes or fields. Review inputs before approving write actions.",
+    "draftTitle": "Create a connector draft",
+    "copyDraft": "Copy draft prompt",
+    "draftPrompt": "Use the DigitalReport plugin.\nCall get_project_context and confirm current_project.id is {{projectId}}. Stop if it differs.\nCall list_data_storages and list_connectors.\nCreate a draft Data Mart named \"Admicro Daily\" from AdmicroAds. If the connector is unavailable, stop and tell me.\nLet me select a storage from the list. If none exists, return a webapp setup link.\nFetch get_connector_specification and get_connector_fields before constructing definition_type=CONNECTOR; never guess IDs, nodes or fields.\nIf credentials are missing, return a webapp setup link; do not ask me to paste secrets into chat.\nDo not publish, run sync or create schedules.\nReturn data_mart_id and the draft URL.",
+    "validationTitle": "After completing credentials in the webapp",
+    "copyValidation": "Copy validation prompt",
+    "validationPrompt": "Use the DigitalReport plugin.\nCall get_project_context and confirm current_project.id is {{projectId}}. Stop if it differs.\nCheck get_data_mart_setup_status for Data Mart <DATA_MART_ID>; ask me for the ID if unknown.\nValidate storage and Data Mart with validate_data_storage and validate_data_mart after my confirmation.\nReport missing configuration and validation results.\nDo not publish, run sync or create schedules.",
+    "openDataMarts": "Open Data Marts to verify",
+    "acceptance": "Done when get_project_context returns the correct project, the draft appears in the webapp and validation succeeds. Publish is a separate step requiring confirmation after reviewing configuration and costs.",
+    "safetyTitle": "Before granting access or publishing",
+    "safety": {
+      "credentials": "Enter passwords, API keys, service-account JSON and refresh tokens only through webapp setup pages, never in ChatGPT. Verify the setup link's domain before opening it.",
+      "permissions": "OAuth scopes do not replace project membership or resource permissions. Verify the project; mcp:write does not grant access to another project's data.",
+      "privacy": "Descriptions, metadata and query results returned by MCP may be sent to OpenAI. Connect only trusted servers and data your organization permits sharing.",
+      "sync": "Creating a draft does not publish or sync it. Validation may call source/warehouse APIs and incur provider charges. Publishing a connector can immediately start an incremental sync, write to the warehouse and consume usage. Approve only after reviewing inputs, permissions and costs.",
+      "capabilities": "MCP configures Data Marts using connectors already deployed on the server; it does not develop new provider integrations. If a connector is absent from list_connectors, choose another source or contact your administrator."
+    },
+    "troubleshootingTitle": "Troubleshooting",
+    "troubleshooting": {
+      "missing": {
+        "title": "Add custom MCP server is missing",
+        "body": "Check ChatGPT account access, workspace permissions and security restrictions. The feature may be unavailable for your account. Do not switch to No authentication to bypass restrictions."
+      },
+      "redirect": {
+        "title": "Callback or redirect rejected",
+        "body": "Send the error and the callback URI shown in ChatGPT to your administrator, never tokens. The administrator must check the callback origin in MCP_DYNAMIC_CLIENT_ALLOWED_REDIRECT_ORIGINS and redeploy if configuration changes. Do not disable redirect checks or OAuth."
+      },
+      "unauthorized": {
+        "title": "401 Unauthorized",
+        "body": "Opening /mcp directly in a browser without authentication may return 401; this is not a connection test. In ChatGPT, reconnect OAuth using the correct account. Do not copy browser tokens."
+      },
+      "forbidden": {
+        "title": "403 Forbidden or wrong project",
+        "body": "Call get_project_context to check the authorized project. Reconnect if it is wrong; ask your administrator to check roles, resource permissions and scopes. Do not try another project's IDs to bypass permissions."
+      },
+      "tools": {
+        "title": "Data Mart creation tools are missing",
+        "body": "Open plugin details in ChatGPT settings, refresh tools and check which tools are enabled. If create_data_mart is still missing, the server may not have deployed the setup tools. Contact your administrator."
+      }
+    },
+    "openaiDocs": "OpenAI Docs",
+    "productDocs": "Full MCP documentation",
+    "copied": "Copied",
+    "copyFailed": "Could not copy. Select and copy the content manually."
   },
   "projectOverview": {
     "aboutTooltip": "About this project",
