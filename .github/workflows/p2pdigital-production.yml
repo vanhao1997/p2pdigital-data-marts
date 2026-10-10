@@ -52,6 +52,9 @@ jobs:
       - name: Validate release changelog normalization
         run: node --test tools/fix-changelog-headings.test.mjs
 
+      - name: Validate Coolify deployment safeguards
+        run: node --test tools/coolify-deployment-settings.test.mjs
+
       - name: Run ESLint
         run: npm run lint
 
@@ -305,6 +308,14 @@ jobs:
       (github.event_name == 'workflow_dispatch' && inputs.deploy_to_coolify))
 
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
       - name: Trigger Coolify deployments
         env:
           COOLIFY_URL: ${{ secrets.COOLIFY_URL }}
@@ -384,6 +395,24 @@ jobs:
             echo "Coolify preflight passed for ${name}: Docker Image application."
           }
 
+          assert_rolling_deployment_supported() {
+            local uuid="$1"
+            local response_file
+            response_file="$(mktemp)"
+            if ! api_request \
+              GET \
+              "${COOLIFY_URL%/}/api/v1/applications/${uuid}/envs" \
+              "${COOLIFY_API_TOKEN}" \
+              "${response_file}"; then
+              rm -f "${response_file}"
+              return 1
+            fi
+            local result=0
+            node tools/coolify-deployment-settings.mjs rolling-check "${response_file}" || result=$?
+            rm -f "${response_file}"
+            return "${result}"
+          }
+
           configure_resource() {
             local name="$1"
             local uuid="$2"
@@ -393,17 +422,19 @@ jobs:
             local image_name="${image%:*}"
             local response_file
             response_file="$(mktemp)"
+            local healthcheck
+            healthcheck="$(node tools/coolify-deployment-settings.mjs healthcheck "${health_path}" "${health_port}")"
             local payload
             payload="$(jq -cn \
               --arg image "${image_name}" \
               --arg tag "${IMAGE_TAG}" \
               --arg health_path "${health_path}" \
               --arg health_port "${health_port}" \
-              '{
+              --argjson healthcheck "${healthcheck}" \
+              '$healthcheck + {
                 docker_registry_image_name: $image,
                 docker_registry_image_tag: $tag,
                 health_check_enabled: true,
-                health_check_type: "http",
                 health_check_path: $health_path,
                 health_check_port: $health_port,
                 health_check_scheme: "http",
@@ -489,6 +520,8 @@ jobs:
           # a source-build resource to the Docker Image build pack.
           preflight_resource "Admicro sidecar" "${COOLIFY_ADMICRO_RESOURCE_UUID}"
           preflight_resource "main runtime" "${COOLIFY_MAIN_RESOURCE_UUID}"
+          # Rolling deployment must not start a second SQLite app/auth writer.
+          assert_rolling_deployment_supported "${COOLIFY_MAIN_RESOURCE_UUID}"
           configure_resource "Admicro sidecar" "${COOLIFY_ADMICRO_RESOURCE_UUID}" "${SIDECAR_IMAGE}" "/healthz" "8091"
           configure_resource "main runtime" "${COOLIFY_MAIN_RESOURCE_UUID}" "${RUNTIME_IMAGE}" "/health/ready" "3000"
           deploy_resource "Admicro sidecar" "${COOLIFY_ADMICRO_RESOURCE_UUID}"
