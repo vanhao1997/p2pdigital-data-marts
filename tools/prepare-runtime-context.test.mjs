@@ -4,7 +4,7 @@ import { tmpdir } from 'node:os';
 import { dirname, join } from 'node:path';
 import test from 'node:test';
 
-import { prepareRuntimeContext } from './prepare-runtime-context.mjs';
+import { prepareRuntimeContext, RUNTIME_FILES } from './prepare-runtime-context.mjs';
 
 const runtimeManifests = {
   'apps/owox': { name: 'owox', bin: { owox: './bin/run.js' } },
@@ -81,6 +81,7 @@ async function fixture(t) {
     'packages/internal-helpers/dist-cjs/index.js': 'module.exports = {};\n',
   };
   for (const [path, contents] of Object.entries(files)) await write(join(root, path), contents);
+  for (const path of RUNTIME_FILES) await write(join(root, path), '#!/usr/bin/env node\n');
   await writeJson(join(root, 'packages/internal-helpers/dist-cjs/package.json'), {
     type: 'commonjs',
   });
@@ -120,6 +121,7 @@ test('stages unchanged lockfile, all workspace manifests, CLI and both module fo
   for (const path of [
     'package.json',
     'package-lock.json',
+    'deploy/healthchecks/http-healthcheck.cjs',
     'packages/ui/package.json',
     'apps/owox/bin/run.js',
     'apps/owox/oclif.manifest.json',
@@ -140,6 +142,14 @@ test('stages unchanged lockfile, all workspace manifests, CLI and both module fo
   for (const path of ['.env', 'packages/ui/src/index.js', 'node_modules/host-only/index.js']) {
     await assert.rejects(readFile(join(output, path)), { code: 'ENOENT' });
   }
+});
+
+test('missing runtime healthcheck asset preserves an existing context', async t => {
+  const { root, output } = await fixture(t);
+  await preserveContext(output);
+  await rm(join(root, 'deploy/healthchecks/http-healthcheck.cjs'));
+  await assert.rejects(prepareRuntimeContext(root, output), /ENOENT/);
+  await assertPreserved(output);
 });
 
 test('rejects checkout, output root and nested destinations before deleting existing files', async t => {

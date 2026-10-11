@@ -212,8 +212,9 @@ jobs:
             -e PUBLIC_ORIGIN=http://127.0.0.1:3000 \
             owox-runtime-smoke:${{ github.sha }}
           trap 'docker logs owox-runtime-smoke || true; docker rm -f owox-runtime-smoke || true' EXIT
+          docker exec owox-runtime-smoke test -x /usr/local/bin/owox-http-healthcheck.cjs
           for attempt in {1..60}; do
-            if curl --fail --silent http://127.0.0.1:3000/health/ready >/dev/null; then
+            if docker exec owox-runtime-smoke node /usr/local/bin/owox-http-healthcheck.cjs /health/ready 3000; then
               docker exec owox-runtime-smoke node -e '
                 const { createRequire } = require("node:module");
                 createRequire("/usr/local/lib/node_modules/owox/packages/connectors/package.json")("@owox/internal-helpers");
@@ -237,8 +238,9 @@ jobs:
             -e ADMICRO_EXTRACTOR_SHARED_SECRET=smoke-secret \
             admicro-extractor-smoke:${{ github.sha }}
           trap 'docker logs admicro-extractor-smoke || true; docker rm -f admicro-extractor-smoke || true' EXIT
+          docker exec admicro-extractor-smoke test -x /usr/local/bin/owox-http-healthcheck.cjs
           for attempt in {1..30}; do
-            if curl --fail --silent http://127.0.0.1:8091/healthz >/dev/null; then
+            if docker exec admicro-extractor-smoke node /usr/local/bin/owox-http-healthcheck.cjs /healthz 8091; then
               docker exec admicro-extractor-smoke node -e '
                 const { chromium } = require("playwright");
                 (async () => {
