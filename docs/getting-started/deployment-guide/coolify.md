@@ -99,8 +99,14 @@ application, the workflow reads both resources and requires `build_pack=dockerim
 only image and healthcheck fields, sending `health_check_port` as a JSON string (`"8091"` or `"3000"`),
 and reads each resource back to verify the exact image SHA tag and all requested healthcheck settings.
 Both resources use a self-contained `cmd` healthcheck with Node `fetch`, an exact HTTP 200 check,
-and a four-second timeout. This does not require `curl`, `wget`, or a host-mounted script; the
-slim main image does not include those HTTP CLI tools.
+and a four-second timeout. The command is
+`node /usr/local/bin/owox-http-healthcheck.cjs <path> <default-port>` because Coolify validates command
+healthchecks with a restricted character pattern (`^[a-zA-Z0-9 \-_.\/:=@,+]+$`); inline
+`node -e` JavaScript is rejected by that validator. The script is bundled in both images, so the
+deployment does not require `curl`, `wget`, or a host-mounted script; the slim main image does not
+include those HTTP CLI tools.
+The probe respects the runtime `PORT` value and uses the supplied default only when `PORT` is
+unset or empty. Invalid ports, redirects, non-200 responses, and timed-out requests fail the probe.
 It starts the sidecar before the main runtime and waits for both Coolify deployments to reach
 `finished`. It does not use the `docker_tag` deploy parameter because Coolify reserves that parameter
 for Docker Image preview deployments with a pull-request ID. Coolify does not rebuild repository
@@ -158,6 +164,10 @@ Coolify command healthchecks use Node to request:
 
 - Main runtime: `GET /health/ready`.
 - Admicro sidecar: `GET /healthz`.
+
+Both commands run the image-bundled `/usr/local/bin/owox-http-healthcheck.cjs` script. If a legacy
+resource still points to a host-mounted fallback such as `/opt/p2pdigital-healthcheck.cjs`, replace it
+with the bundled command when deploying an image that contains this script.
 
 Production smoke after each deploy:
 

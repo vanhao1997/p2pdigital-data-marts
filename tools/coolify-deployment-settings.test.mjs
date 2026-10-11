@@ -11,13 +11,21 @@ import { promisify } from 'node:util';
 import test from 'node:test';
 import {
   assertRollingDeploymentSupported,
+  COOLIFY_HEALTHCHECK_COMMAND_PATTERN,
   createCommandHealthcheck,
+  RUNTIME_HEALTHCHECK_COMMAND,
 } from './coolify-deployment-settings.mjs';
 
 const exec = promisify(execFile);
 const require = createRequire(import.meta.url);
 const { load } = createRequire(require.resolve('markdownlint-cli2'))('js-yaml');
 const cli = fileURLToPath(new URL('./coolify-deployment-settings.mjs', import.meta.url));
+const bundledHealthcheck = fileURLToPath(
+  new URL('../deploy/healthchecks/http-healthcheck.cjs', import.meta.url)
+);
+const sidecarHealthcheck = fileURLToPath(
+  new URL('../apps/admicro-extractor/healthcheck.cjs', import.meta.url)
+);
 const row = (key, value, flags = {}) => ({
   key,
   value,
@@ -116,6 +124,17 @@ test('rejects unknown storage types and shell input in probe settings', () => {
   }
 });
 
+test('emits a Coolify regex-safe bundled healthcheck command', () => {
+  const settings = createCommandHealthcheck('/health/ready', 3000);
+  assert.deepEqual(settings, {
+    health_check_type: 'cmd',
+    health_check_command: `${RUNTIME_HEALTHCHECK_COMMAND} /health/ready 3000`,
+  });
+  assert.match(settings.health_check_command, COOLIFY_HEALTHCHECK_COMMAND_PATTERN);
+  assert.ok(!settings.health_check_command.includes('node -e'));
+  assert.ok(!settings.health_check_command.includes('"'));
+});
+
 async function probe(t, handler) {
   const server = createServer(handler);
   server.listen(0, '127.0.0.1');
@@ -125,16 +144,58 @@ async function probe(t, handler) {
     server.close();
   });
   const settings = createCommandHealthcheck('/health/ready', server.address().port);
-  const script = settings.health_check_command.slice('node -e "'.length, -1);
-  return () => exec(process.execPath, ['-e', script], { timeout: 7000 });
+  assert.match(settings.health_check_command, COOLIFY_HEALTHCHECK_COMMAND_PATTERN);
+  assert.equal(
+    settings.health_check_command,
+    `${RUNTIME_HEALTHCHECK_COMMAND} /health/ready ${server.address().port}`
+  );
+  return () =>
+    exec(process.execPath, [bundledHealthcheck, '/health/ready', String(server.address().port)], {
+      timeout: 7000,
+      env: { ...process.env, PORT: '' },
+    });
 }
 
-test('Node command succeeds on HTTP 200 without curl/wget or a mounted file', async t => {
+test('bundled Node command succeeds on HTTP 200 without curl/wget', async t => {
   const run = await probe(t, (req, res) => {
     assert.equal(req.url, '/health/ready');
     res.end('ok');
   });
   await run();
+});
+
+test('both bundled probes preserve the runtime PORT override', async t => {
+  const server = createServer((req, res) => {
+    assert.equal(req.url, '/health/ready');
+    res.end('ok');
+  });
+  server.listen(0, '127.0.0.1');
+  await once(server, 'listening');
+  t.after(() => {
+    server.closeAllConnections();
+    server.close();
+  });
+  for (const script of [bundledHealthcheck, sidecarHealthcheck]) {
+    await exec(process.execPath, [script, '/health/ready', '0'], {
+      timeout: 7000,
+      env: { ...process.env, PORT: String(server.address().port) },
+    });
+    for (const port of ['bad', ' ', '0', '65536', '1.5']) {
+      await assert.rejects(
+        exec(process.execPath, [script, '/health/ready', '3000'], {
+          env: { ...process.env, PORT: port },
+        }),
+        { code: 1 }
+      );
+    }
+  }
+});
+
+test('main and standalone sidecar probes stay identical', async () => {
+  assert.equal(
+    await readFile(bundledHealthcheck, 'utf8'),
+    await readFile(sidecarHealthcheck, 'utf8')
+  );
 });
 
 test('CLI returns safe command JSON for both deployment probes', async () => {
@@ -143,7 +204,9 @@ test('CLI returns safe command JSON for both deployment probes', async () => {
     ['/healthz', 8091],
   ]) {
     const { stdout } = await exec(process.execPath, [cli, 'healthcheck', path, String(port)]);
-    assert.deepEqual(JSON.parse(stdout), createCommandHealthcheck(path, port));
+    const settings = JSON.parse(stdout);
+    assert.deepEqual(settings, createCommandHealthcheck(path, port));
+    assert.match(settings.health_check_command, COOLIFY_HEALTHCHECK_COMMAND_PATTERN);
   }
 });
 
@@ -172,6 +235,20 @@ test('Node command fails on HTTP errors, network failures and stalled readiness'
   await assert.rejects(stalled(), { code: 1 });
 });
 
+test('probe rejects other successful statuses and redirects to HTTP 200', async t => {
+  for (const status of [201, 204, 301, 302, 307, 308]) {
+    const run = await probe(t, (req, res) => {
+      if (req.url === '/redirect-target') {
+        res.end('ok');
+        return;
+      }
+      res.writeHead(status, { Location: '/redirect-target' });
+      res.end();
+    });
+    await assert.rejects(run(), { code: 1 });
+  }
+});
+
 test('workflow checks storage before PATCH or deploy and uses command healthchecks', async () => {
   const workflow = load(
     await readFile(
@@ -196,4 +273,50 @@ test('workflow checks storage before PATCH or deploy and uses command healthchec
       step => step.run === 'node --test tools/coolify-deployment-settings.test.mjs'
     )
   );
+  const imageSteps = workflow.jobs.images.steps;
+  const mainSmoke = imageSteps.find(step => step.name === 'Smoke main runtime healthcheck').run;
+  const sidecarSmoke = imageSteps.find(
+    step => step.name === 'Smoke Admicro sidecar healthcheck'
+  ).run;
+  assert.ok(
+    mainSmoke.includes(
+      'docker exec owox-runtime-smoke node /usr/local/bin/owox-http-healthcheck.cjs /health/ready 3000'
+    )
+  );
+  assert.ok(
+    sidecarSmoke.includes(
+      'docker exec admicro-extractor-smoke node /usr/local/bin/owox-http-healthcheck.cjs /healthz 8091'
+    )
+  );
+  assert.ok(!mainSmoke.includes('curl --fail --silent http://127.0.0.1:3000'));
+  assert.ok(!sidecarSmoke.includes('curl --fail --silent http://127.0.0.1:8091'));
+});
+
+test('runtime Dockerfiles use the bundled healthcheck script', async () => {
+  const [main, sidecar] = await Promise.all([
+    readFile(new URL('../Dockerfile', import.meta.url), 'utf8'),
+    readFile(new URL('../apps/admicro-extractor/Dockerfile', import.meta.url), 'utf8'),
+  ]);
+  assert.ok(
+    main.includes(
+      'COPY deploy/healthchecks/http-healthcheck.cjs /usr/local/bin/owox-http-healthcheck.cjs'
+    )
+  );
+  assert.ok(
+    main.includes(
+      'HEALTHCHECK --interval=30s --timeout=5s --start-period=20s --retries=3 CMD node /usr/local/bin/owox-http-healthcheck.cjs /health/ready 3000'
+    )
+  );
+  assert.ok(sidecar.includes('COPY healthcheck.cjs /usr/local/bin/owox-http-healthcheck.cjs'));
+  assert.ok(
+    sidecar.includes(
+      'HEALTHCHECK --interval=30s --timeout=5s --start-period=15s --retries=3 CMD node /usr/local/bin/owox-http-healthcheck.cjs /healthz 8091'
+    )
+  );
+  const mainHealthcheck = main.split('\n').find(line => line.startsWith('HEALTHCHECK '));
+  const sidecarHealthcheck = sidecar.split('\n').find(line => line.startsWith('HEALTHCHECK '));
+  assert.ok(mainHealthcheck);
+  assert.ok(sidecarHealthcheck);
+  assert.ok(!mainHealthcheck.includes('node -e'));
+  assert.ok(!sidecarHealthcheck.includes('node -e'));
 });

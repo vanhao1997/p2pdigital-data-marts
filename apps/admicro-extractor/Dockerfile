@@ -10,8 +10,10 @@ LABEL org.opencontainers.image.source="https://github.com/vanhao1997/p2pdigital-
 COPY package.json package-lock.json ./
 RUN npm ci --omit=dev --ignore-scripts
 COPY src ./src
+COPY healthcheck.cjs /usr/local/bin/owox-http-healthcheck.cjs
+RUN chmod +x /usr/local/bin/owox-http-healthcheck.cjs
 ENV NODE_ENV=production
 ENV PORT=8091
 EXPOSE 8091
-HEALTHCHECK --interval=30s --timeout=5s --start-period=15s --retries=3 CMD node -e "const port=process.env.PORT||8091;fetch('http://127.0.0.1:'+port+'/healthz').then(r=>{if(!r.ok)process.exit(1)}).catch(()=>process.exit(1))"
+HEALTHCHECK --interval=30s --timeout=5s --start-period=15s --retries=3 CMD node /usr/local/bin/owox-http-healthcheck.cjs /healthz 8091
 CMD ["node", "src/server.js"]

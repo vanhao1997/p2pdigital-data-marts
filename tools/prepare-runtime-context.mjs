@@ -14,6 +14,7 @@ export const RUNTIME_ARTIFACTS = Object.freeze({
   'packages/idp-owox-better-auth': ['dist'],
   'packages/internal-helpers': ['dist', 'dist-cjs'],
 });
+export const RUNTIME_FILES = Object.freeze(['deploy/healthchecks/http-healthcheck.cjs']);
 
 function containedPath(root, entry) {
   const target = resolve(root, entry);
@@ -177,7 +178,7 @@ export async function prepareRuntimeContext(repositoryRoot, destination) {
     }
   }
 
-  for (const filename of ['package.json', 'package-lock.json']) {
+  for (const filename of ['package.json', 'package-lock.json', ...RUNTIME_FILES]) {
     await validateArtifact(join(root, filename));
   }
   for (const workspace of workspaces.keys()) {
@@ -187,6 +188,10 @@ export async function prepareRuntimeContext(repositoryRoot, destination) {
   await rm(output, { recursive: true, force: true });
   await mkdir(output, { recursive: true });
   for (const filename of ['package.json', 'package-lock.json']) {
+    await copyArtifact(join(root, filename), join(output, filename));
+  }
+  for (const filename of RUNTIME_FILES) {
+    await mkdir(dirname(join(output, filename)), { recursive: true });
     await copyArtifact(join(root, filename), join(output, filename));
   }
   for (const workspace of workspaces.keys()) {

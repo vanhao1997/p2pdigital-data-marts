@@ -2,16 +2,20 @@ import { readFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
+export const COOLIFY_HEALTHCHECK_COMMAND_PATTERN = /^[a-zA-Z0-9 \-_./:=@,+]+$/;
+export const RUNTIME_HEALTHCHECK_COMMAND = 'node /usr/local/bin/owox-http-healthcheck.cjs';
+
 export function createCommandHealthcheck(path, port) {
   if (!/^\/[a-z0-9/-]+$/.test(path) || !Number.isInteger(port) || port < 1 || port > 65535) {
     throw new Error('Invalid loopback healthcheck path or port.');
   }
-  const script =
-    `fetch('http://127.0.0.1:${port}${path}',{signal:AbortSignal.timeout(4000)})` +
-    '.then(r=>process.exit(r.status===200?0:1)).catch(()=>process.exit(1))';
+  const command = `${RUNTIME_HEALTHCHECK_COMMAND} ${path} ${port}`;
+  if (!COOLIFY_HEALTHCHECK_COMMAND_PATTERN.test(command)) {
+    throw new Error('Invalid Coolify command healthcheck.');
+  }
   return {
     health_check_type: 'cmd',
-    health_check_command: `node -e "${script}"`,
+    health_check_command: command,
   };
 }
 
