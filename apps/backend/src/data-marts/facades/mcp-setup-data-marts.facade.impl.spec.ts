@@ -59,7 +59,10 @@ describe('McpSetupDataMartsFacadeImpl', () => {
   const runs = { run: jest.fn() };
   const storages = { getByProjectIdAndId: jest.fn() };
   const warehouseCredentials = { getById: jest.fn() };
-  const connectors = { getConnectorSpecification: jest.fn() };
+  const connectors = {
+    getConnectorSpecification: jest.fn(),
+    getConnectorFieldsSchema: jest.fn(),
+  };
   const secrets = { mask: jest.fn() };
   const credentials = { getCredentialsById: jest.fn() };
   const access = { canAccess: jest.fn() };
@@ -94,6 +97,9 @@ describe('McpSetupDataMartsFacadeImpl', () => {
           },
         ],
       },
+    ]);
+    connectors.getConnectorFieldsSchema.mockResolvedValue([
+      { name: 'campaign', fields: [{ name: 'id' }] },
     ]);
     secrets.mask.mockImplementation(value => Promise.resolve(value));
     access.canAccess.mockResolvedValue(true);
@@ -242,6 +248,37 @@ describe('McpSetupDataMartsFacadeImpl', () => {
       })
     ).rejects.toBeInstanceOf(BadRequestException);
     expect(create.run).not.toHaveBeenCalled();
+  });
+
+  it.each([
+    { node: 'unknown', fields: ['id'] },
+    { node: 'campaign', fields: ['unknown'] },
+    { node: 'campaign', fields: ['id', 'impressions'] },
+  ])('rejects unsupported connector selection before creating or updating: %j', async selection => {
+    connectors.getConnectorFieldsSchema.mockResolvedValue([
+      { name: 'campaign', fields: [{ name: 'id' }] },
+      { name: 'ad', fields: [{ name: 'impressions' }] },
+    ]);
+    const definition = connectorDefinition();
+    Object.assign(definition.connector.source, selection);
+    await expect(
+      facade.createDataMart({
+        ...actor,
+        title: 'Draft',
+        storageId: 'storage-a',
+        definitionType: DataMartDefinitionType.CONNECTOR,
+        definition,
+      })
+    ).rejects.toBeInstanceOf(BadRequestException);
+    await expect(
+      facade.updateDataMart({
+        ...request,
+        definitionType: DataMartDefinitionType.CONNECTOR,
+        definition,
+      })
+    ).rejects.toBeInstanceOf(BadRequestException);
+    expect(create.run).not.toHaveBeenCalled();
+    expect(updateDefinition.run).not.toHaveBeenCalled();
   });
 
   it('accepts opaque saved-variable markers for the existing resolver', async () => {
@@ -513,6 +550,35 @@ describe('McpSetupDataMartsFacadeImpl', () => {
     get.run.mockResolvedValue(draft({ definitionType: undefined, definition: undefined }));
     await expect(facade.publishDataMart(request)).rejects.toThrow('Data Mart has no definition');
     expect(publish.run).not.toHaveBeenCalled();
+  });
+
+  it('preserves validation and publish for existing dynamic fields previewed in the web app', async () => {
+    const definition = connectorDefinition({
+      _id: 'config-a',
+      _secrets_id: 'credential-a',
+      ColumnIDs: '7',
+    });
+    Object.assign(definition.connector.source, {
+      name: 'AdmicroAds',
+      node: 'campaign',
+      fields: ['day', 'admicro_column_7'],
+    });
+    const mart = draft({ definitionType: DataMartDefinitionType.CONNECTOR, definition });
+    get.run.mockResolvedValue(mart);
+    publish.run.mockResolvedValue({ ...mart, status: DataMartStatus.PUBLISHED });
+    credentials.getCredentialsById.mockResolvedValue({
+      projectId: 'project-a',
+      dataMartId: mart.id,
+      connectorName: 'AdmicroAds',
+      expiresAt: null,
+    });
+    expect(await facade.validateDataMart(request)).toMatchObject({ valid: true });
+    expect(await facade.publishDataMart(request)).toMatchObject({
+      status: 'PUBLISHED',
+      connectorRunMayStart: true,
+    });
+    expect(connectors.getConnectorFieldsSchema).not.toHaveBeenCalled();
+    expect(publish.run).toHaveBeenCalled();
   });
 
   it('validates SQL before publish and blocks an invalid query', async () => {

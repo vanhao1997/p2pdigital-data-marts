@@ -3520,7 +3520,7 @@
     "promptNotice": "Replace the Data Mart and connector names as needed. ChatGPT must use the actual connector/storage catalog, never guess IDs, nodes or fields. Review inputs before approving write actions.",
     "draftTitle": "Create a connector draft",
     "copyDraft": "Copy draft prompt",
-    "draftPrompt": "Use the DigitalReport plugin.\nCall get_project_context and confirm current_project.id is {{projectId}}. Stop if it differs.\nCall list_data_storages and list_connectors.\nCreate a draft Data Mart named \"Admicro Daily\" from AdmicroAds. If the connector is unavailable, stop and tell me.\nLet me select a storage from the list. If none exists, return a webapp setup link.\nFetch get_connector_specification and get_connector_fields before constructing definition_type=CONNECTOR; never guess IDs, nodes or fields.\nIf credentials are missing, return a webapp setup link; do not ask me to paste secrets into chat.\nDo not publish, run sync or create schedules.\nReturn data_mart_id and the draft URL.",
+    "draftPrompt": "Use the DigitalReport plugin.\nCall get_project_context and confirm current_project.id is {{projectId}}. Stop if it differs.\nCall list_data_storages and list_connectors. Ask which platform connector I want; use its exact name from the catalog. If unavailable, stop and tell me.\nLet me select a storage and confirm the warehouse target (project.dataset.table for BigQuery). Never guess a dataset/table or use destinationName alone. If no storage exists, return a webapp setup link.\nFetch get_connector_specification and get_connector_fields, then let me confirm the node, fields and non-secret settings.\nUse create_connector to create a new connector draft. If I provide an existing empty draft or connector Data Mart ID, use configure_connector instead; preserve its configuration IDs and confirm any removed configurations. On setup_error, continue with the returned data_mart_id, never create a duplicate.\nIf credentials are missing, return a webapp setup link; do not ask me to paste secrets into chat.\nDo not publish, run sync or create schedules.\nReturn data_mart_id, connector name, setup status and the draft URL.",
     "validationTitle": "After completing credentials in the webapp",
     "copyValidation": "Copy validation prompt",
     "validationPrompt": "Use the DigitalReport plugin.\nCall get_project_context and confirm current_project.id is {{projectId}}. Stop if it differs.\nCheck get_data_mart_setup_status for Data Mart <DATA_MART_ID>; ask me for the ID if unknown.\nValidate storage and Data Mart with validate_data_storage and validate_data_mart after my confirmation.\nReport missing configuration and validation results.\nDo not publish, run sync or create schedules.",
@@ -3554,7 +3554,7 @@
       },
       "tools": {
         "title": "Data Mart creation tools are missing",
-        "body": "Open plugin details in ChatGPT settings, refresh tools and check which tools are enabled. If create_data_mart is still missing, the server may not have deployed the setup tools. Contact your administrator."
+        "body": "Open plugin details in ChatGPT settings, refresh tools and check which tools are enabled. If create_connector or configure_connector is missing, the server may need an update. Existing versions can use create_data_mart/update_data_mart with definition_type=CONNECTOR. Contact your administrator."
       }
     },
     "openaiDocs": "OpenAI Docs",

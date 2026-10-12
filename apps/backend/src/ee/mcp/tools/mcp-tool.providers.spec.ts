@@ -101,8 +101,8 @@ describe('MCP tool providers', () => {
       const toolNames = tools.map(tool => tool.name);
 
       expect(toolNames).toEqual(expect.arrayContaining(['run_report', 'get_report_run_status']));
-      expect(toolNames).toHaveLength(30);
-      expect(new Set(toolNames).size).toBe(30);
+      expect(toolNames).toHaveLength(32);
+      expect(new Set(toolNames).size).toBe(32);
       expect(toolNames).toEqual(
         expect.arrayContaining([
           'list_data_storages',
@@ -117,6 +117,8 @@ describe('MCP tool providers', () => {
           'validate_data_mart',
           'publish_data_mart',
           'get_data_mart_setup_status',
+          'create_connector',
+          'configure_connector',
         ])
       );
     } finally {

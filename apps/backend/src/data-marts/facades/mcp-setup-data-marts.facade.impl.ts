@@ -454,6 +454,7 @@ export class McpSetupDataMartsFacadeImpl implements McpSetupDataMartsFacade {
       const specification = await this.connectorService.getConnectorSpecification(
         definition.connector.source.name
       );
+      await this.assertConnectorFields(definition);
       const sensitiveFields = this.sensitiveFields(specification);
       for (const config of definition.connector.source.configuration) {
         this.assertSafeConfiguration(config, sensitiveFields);
@@ -467,6 +468,18 @@ export class McpSetupDataMartsFacadeImpl implements McpSetupDataMartsFacade {
       return definition;
     } catch (error) {
       throw this.safeException(error);
+    }
+  }
+
+  private async assertConnectorFields(definition: ConnectorDefinition): Promise<void> {
+    const source = definition.connector.source;
+    const fieldsSchema = await this.connectorService.getConnectorFieldsSchema(source.name);
+    const node = fieldsSchema.find(candidate => candidate.name === source.node);
+    const supportedFields = new Set(node?.fields?.map(field => field.name));
+    if (!node || source.fields.some(field => !supportedFields.has(field))) {
+      throw new BadRequestException(
+        'Connector node or fields are not supported by the installed provider'
+      );
     }
   }
 

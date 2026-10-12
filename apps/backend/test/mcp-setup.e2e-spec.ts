@@ -115,13 +115,13 @@ describe('MCP setup tools through the authenticated API (e2e)', () => {
     expect(Boolean(body.error) || body.result?.isError === true).toBe(true);
   }
 
-  it('lists all 30 registered tools with setup schemas', async () => {
+  it('lists all 32 registered tools with setup schemas', async () => {
     const body = await rpc('read-a', 'tools/list');
     const tools = body.result.tools as Array<{
       name: string;
       inputSchema: { properties: Record<string, unknown> };
     }>;
-    expect(tools).toHaveLength(30);
+    expect(tools).toHaveLength(32);
     expect(tools.map(tool => tool.name)).toEqual(
       expect.arrayContaining([
         'list_data_storages',
@@ -136,11 +136,19 @@ describe('MCP setup tools through the authenticated API (e2e)', () => {
         'validate_data_mart',
         'publish_data_mart',
         'get_data_mart_setup_status',
+        'create_connector',
+        'configure_connector',
       ])
     );
     expect(
       tools.find(tool => tool.name === 'create_data_mart')!.inputSchema.properties
     ).not.toHaveProperty('project_id');
+    for (const name of ['create_connector', 'configure_connector']) {
+      const schema = tools.find(tool => tool.name === name)!.inputSchema;
+      expect(schema.properties).toHaveProperty('connector_name');
+      expect(schema.properties).toHaveProperty('fully_qualified_name');
+      expect(schema.properties).not.toHaveProperty('project_id');
+    }
   });
 
   it('rejects read-only scope, viewer mutation and model-supplied project override', async () => {
@@ -232,6 +240,198 @@ describe('MCP setup tools through the authenticated API (e2e)', () => {
       expect(fields.fields).toEqual(expect.any(Array));
     }
   });
+
+  const connectorInput = {
+    connector_name: 'BankOfCanada',
+    node: 'observations/group',
+    fields: ['date', 'label', 'rate'],
+    configuration: [{ ReimportLookbackWindow: 2 }],
+    fully_qualified_name: 'fixture.dataset.rates',
+  };
+
+  it.each(['BankOfCanada', 'FacebookMarketing', 'GoogleAds', 'TikTokAds', 'LinkedInAds'])(
+    'creates a %s connector draft using native catalog metadata without syncing',
+    async connectorName => {
+      const spec = success(
+        await call('read-a', 'get_connector_specification', { connector_name: connectorName })
+      );
+      expect(spec.specification).toEqual(expect.any(Array));
+      const metadata = success(
+        await call('read-a', 'get_connector_fields', { connector_name: connectorName })
+      ).fields as Array<{ name: string; fields?: Array<{ name: string }> }>;
+      const node = metadata.find(group => group.fields && group.fields.length > 0)!;
+      expect(node).toBeDefined();
+      const created = success(
+        await call('write-a', 'create_connector', {
+          title: `Fixture ${connectorName}`,
+          storage_id: storageA,
+          connector_name: connectorName,
+          node: node.name,
+          fields: [node.fields![0].name],
+          configuration: [{}],
+          fully_qualified_name: `fixture.dataset.${connectorName.toLowerCase()}`,
+        })
+      );
+      expect(created).toMatchObject({
+        status: 'DRAFT',
+        definition_type: 'CONNECTOR',
+        connector: { name: connectorName, configuration_ids: [expect.any(String)] },
+      });
+      expect(created).not.toHaveProperty('setup_error');
+      expect(created).not.toHaveProperty('latest_run');
+      expect(created).not.toHaveProperty('definition');
+      const status = success(
+        await call('read-a', 'get_data_mart_setup_status', { data_mart_id: created.data_mart_id })
+      );
+      expect(status).toMatchObject({
+        data_mart_id: created.data_mart_id,
+        definition_type: 'CONNECTOR',
+      });
+      expect(
+        await app.get(DataSource).query('SELECT COUNT(*) AS count FROM data_mart_run')
+      ).toEqual([{ count: 0 }]);
+    }
+  );
+
+  it('configures an existing empty draft without creating a duplicate or starting a run', async () => {
+    const draft = success(
+      await call('write-a', 'create_data_mart', { title: 'Resume connector', storage_id: storageA })
+    );
+    const before = await app.get(DataSource).query('SELECT COUNT(*) AS count FROM data_mart');
+    const configured = success(
+      await call('write-a', 'configure_connector', {
+        data_mart_id: draft.data_mart_id,
+        ...connectorInput,
+      })
+    );
+    expect(configured).toMatchObject({
+      data_mart_id: draft.data_mart_id,
+      status: 'DRAFT',
+      definition_type: 'CONNECTOR',
+      credential_status: 'missing',
+      setup_required: true,
+      connector: { name: 'BankOfCanada' },
+    });
+    expect(configured).not.toHaveProperty('setup_error');
+    expect(configured).not.toHaveProperty('latest_run');
+    expect(await app.get(DataSource).query('SELECT COUNT(*) AS count FROM data_mart')).toEqual(
+      before
+    );
+    const status = success(
+      await call('read-a', 'get_data_mart_setup_status', { data_mart_id: draft.data_mart_id })
+    );
+    expect(status.connector).toEqual(configured.connector);
+    const definition = await app
+      .get(DataSource)
+      .query('SELECT definition FROM data_mart WHERE id = ?', [draft.data_mart_id]);
+    expect(JSON.parse(definition[0].definition)).toMatchObject({
+      connector: {
+        source: {
+          name: 'BankOfCanada',
+          node: 'observations/group',
+          fields: ['date', 'label', 'rate'],
+        },
+        storage: { fullyQualifiedName: connectorInput.fully_qualified_name },
+      },
+    });
+  });
+
+  it('rejects connector creation with insufficient access, foreign storage, unknown provider or secrets', async () => {
+    const args = { title: 'Denied connector', storage_id: storageA, ...connectorInput };
+    const before = await app.get(DataSource).query('SELECT COUNT(*) AS count FROM data_mart');
+    denied(await call('read-a', 'create_connector', args));
+    denied(await call('viewer-a', 'create_connector', args));
+    denied(await call('write-a', 'create_connector', { ...args, project_id: 'project-b' }));
+    denied(await call('write-a', 'create_connector', { ...args, storage_id: storageB }));
+    denied(
+      await call('write-a', 'create_connector', { ...args, connector_name: 'UninstalledProvider' })
+    );
+    denied(
+      await call('write-a', 'create_connector', {
+        ...args,
+        configuration: [{ AccessToken: canary }],
+      })
+    );
+    denied(
+      await call('write-a', 'create_connector', {
+        ...args,
+        configuration: [{ _source_credential_id: canary }],
+      })
+    );
+    expect(await app.get(DataSource).query('SELECT COUNT(*) AS count FROM data_mart')).toEqual(
+      before
+    );
+  });
+
+  it('rejects unauthorized connector updates and leaves the saved definition intact', async () => {
+    const created = success(
+      await call('write-a', 'create_connector', {
+        title: 'Protected connector',
+        storage_id: storageA,
+        ...connectorInput,
+      })
+    );
+    const args = { data_mart_id: created.data_mart_id, ...connectorInput };
+    const foreignSource = success(
+      await call('write-b', 'create_connector', {
+        title: 'Foreign source connector',
+        storage_id: storageB,
+        ...connectorInput,
+      })
+    );
+    denied(await call('read-a', 'configure_connector', args));
+    denied(await call('viewer-a', 'configure_connector', args));
+    denied(await call('write-b', 'configure_connector', args));
+    denied(
+      await call('write-a', 'configure_connector', {
+        ...args,
+        source_data_mart_id: foreignSource.data_mart_id,
+        source_configuration_id: (foreignSource.connector as { configuration_ids: string[] })
+          .configuration_ids[0],
+      })
+    );
+    denied(
+      await call('write-a', 'configure_connector', {
+        ...args,
+        configuration: [{ Password: canary }],
+      })
+    );
+    const status = success(
+      await call('read-a', 'get_data_mart_setup_status', { data_mart_id: created.data_mart_id })
+    );
+    expect(status).toMatchObject({ status: 'DRAFT', connector: created.connector });
+  });
+
+  it.each([{ node: 'not-a-provider-node' }, { fields: ['not-a-provider-field'] }])(
+    'rejects invalid catalog selections without creating a draft or modifying an existing one: %j',
+    async selection => {
+      const args = { title: 'Invalid selection', storage_id: storageA, ...connectorInput };
+      const before = await app.get(DataSource).query('SELECT COUNT(*) AS count FROM data_mart');
+      denied(await call('write-a', 'create_connector', { ...args, ...selection }));
+      expect(await app.get(DataSource).query('SELECT COUNT(*) AS count FROM data_mart')).toEqual(
+        before
+      );
+      const created = success(await call('write-a', 'create_connector', args));
+      const stored = await app
+        .get(DataSource)
+        .query('SELECT definition FROM data_mart WHERE id = ?', [created.data_mart_id]);
+      denied(
+        await call('write-a', 'configure_connector', {
+          data_mart_id: created.data_mart_id,
+          ...connectorInput,
+          ...selection,
+        })
+      );
+      expect(
+        await app
+          .get(DataSource)
+          .query('SELECT definition FROM data_mart WHERE id = ?', [created.data_mart_id])
+      ).toEqual(stored);
+      expect(
+        await app.get(DataSource).query('SELECT COUNT(*) AS count FROM data_mart_run')
+      ).toEqual([{ count: 0 }]);
+    }
+  );
 
   it('creates and updates a draft through existing persistence without publishing', async () => {
     const created = success(

@@ -53,6 +53,8 @@ tạo thêm tích hợp nhà cung cấp.
 | `list_connectors`             | Khám phá các connector backend đang cung cấp.                              |
 | `get_connector_specification` | Xem metadata cấu hình, các trường bắt buộc và lựa chọn xác thực.           |
 | `get_connector_fields`        | Xem node và field connector hỗ trợ.                                        |
+| `create_connector`            | Tạo connector nền tảng dưới dạng Data Mart `CONNECTOR` bản nháp.           |
+| `configure_connector`         | Hoàn tất draft trống hoặc thay thế definition của Data Mart connector.     |
 | `create_data_storage`         | Tạo storage và trả ID cùng URL hoàn tất cấu hình.                          |
 | `configure_data_storage`      | Lưu cấu hình không chứa secret và tham chiếu credential đã được cấp quyền. |
 | `validate_data_storage`       | Kiểm tra quyền truy cập/kết nối theo luồng validation hiện có.             |
@@ -81,6 +83,52 @@ Prompt ví dụ:
 
 > Liệt kê storage và connector của project. Tạo storage BigQuery tên Marketing,
 > rồi đưa tôi link để hoàn tất xác thực. Chưa tạo lịch hoặc chạy sync.
+
+### Tạo connector cho các nền tảng
+
+Connector được lưu trong definition của Data Mart, không phải một tài nguyên
+kết nối riêng. `create_connector` tạo Data Mart kiểu `CONNECTOR` ở trạng thái
+`DRAFT`. Nếu đã có draft trống hoặc Data Mart connector, dùng
+`configure_connector` với ID đó để tránh tạo bản trùng.
+
+1. Gọi `get_project_context`, `list_data_storages` và `list_connectors`.
+   Chọn đúng tên provider từ catalog của bản triển khai. Các nền tảng có thể
+   gồm Facebook/Meta, Google Ads, TikTok Ads, LinkedIn Ads/Pages, Shopify và
+   Admicro; không giả định mọi nền tảng đều đã được cài đặt.
+2. Lấy `get_connector_specification` và `get_connector_fields`, xác nhận node,
+   fields và cấu hình không chứa secret.
+3. Cho người dùng chọn bảng đích `fully_qualified_name`, dạng
+   `project.dataset.table` với BigQuery. Không đoán dataset/bảng, không dùng
+   riêng `destinationName`. Các tools này không tạo dataset hay cấp quyền kho.
+4. Gọi `create_connector` với `title`, `storage_id`, `connector_name`, `node`,
+   `fields`, `configuration`, `fully_qualified_name`. Để sửa draft đã có, dùng
+   `configure_connector` với `data_mart_id` thay cho title/storage.
+5. Thiếu OAuth/token/mật khẩu thì hoàn tất trong `configuration_url` của
+   webapp. Có thể tái sử dụng `source_data_mart_id` và
+   `source_configuration_id` nếu nguồn cùng project, cùng provider và người
+   dùng có quyền copy credential. Không gửi secret qua chat/MCP.
+6. Sau khi được xác nhận, validate storage và Data Mart. Publish cần yêu cầu
+   riêng; tạo/sửa connector không tự validate, chạy sync hoặc tạo lịch.
+
+`configuration` thay thế toàn bộ danh sách cấu hình nguồn. Khi sửa, giữ `_id`
+của cấu hình đã có từ `get_data_mart_setup_status` để bảo toàn credential hợp
+lệ. Xác nhận trước khi bỏ cấu hình cũ. Sửa connector đã publish không dừng các
+lịch sync đang tồn tại. Nếu có `setup_error`, tiếp tục với `data_mart_id` đã
+trả, không tạo draft khác. Tools chỉ dùng provider có sẵn, không phát triển
+tích hợp nền tảng mới.
+
+Node/field do MCP tạo hoặc thay cấu hình phải có trong catalog đã cài đặt.
+Field động lấy từ preview có xác thực cần thiết lập trong webapp; các tools
+này chưa tạo field động. Validate/publish definition đã tạo trong webapp vẫn
+giữ hành vi hiện có.
+
+Prompt ví dụ:
+
+> Dùng MCP DigitalReport và xác nhận project. Liệt kê connector nền tảng cùng
+> storage để tôi chọn. Lấy specification và fields, cho tôi xác nhận node,
+> fields và bảng đích. Dùng create_connector để tạo draft; nếu tôi cung cấp ID
+> draft đã có, dùng configure_connector. Trả link để hoàn tất credential.
+> Chưa validate, publish, chạy sync hoặc tạo lịch.
 
 ## Tạo và sửa Data Mart
 

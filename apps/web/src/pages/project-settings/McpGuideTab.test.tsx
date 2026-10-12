@@ -95,6 +95,21 @@ describe('McpGuideTab', () => {
     expect(screen.getAllByText(/current_project.id is project-b/)).toHaveLength(2);
   });
 
+  it('guides platform connector creation and resumes existing drafts with a confirmed target', async () => {
+    renderGuide();
+    fireEvent.click(screen.getByRole('button', { name: 'Copy draft prompt' }));
+    await waitFor(() => {
+      expect(clipboard.copyToClipboard).toHaveBeenCalled();
+    });
+    const prompt = clipboard.copyToClipboard.mock.calls.at(-1)![0] as string;
+    expect(prompt).toContain('which platform connector I want');
+    expect(prompt).toContain('project.dataset.table');
+    expect(prompt).toContain('create_connector');
+    expect(prompt).toContain('configure_connector');
+    expect(prompt).toContain('never create a duplicate');
+    expect(prompt).toContain('do not ask me to paste secrets into chat');
+  });
+
   it('shows clipboard failure without claiming success', async () => {
     clipboard.copyToClipboard.mockResolvedValue(false);
     renderGuide();

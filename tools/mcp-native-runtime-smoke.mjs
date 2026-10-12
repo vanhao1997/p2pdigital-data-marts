@@ -401,7 +401,7 @@ async function main() {
   const unauthenticated = await fetch(`${origin}/mcp`, { method: 'POST', body: '{}' });
   check(unauthenticated.status === 401, 'mcp-unauthenticated-denied');
   const readList = await rpc(origin, readToken, 'tools/list');
-  check(readList.result.tools.length === 30, 'read-token-tools-list-30');
+  check(readList.result.tools.length === 32, 'read-token-tools-list-32');
   const projectContext = structured(await callTool(origin, readToken, 'get_project_context'));
   check(projectContext.current_project.id === '0', 'mcp-authenticated-project-context');
   expectDenied(
@@ -415,7 +415,7 @@ async function main() {
   stage = 'oauth-write';
   const writeTokenA = await oauthToken(origin, session, 'mcp:read mcp:write');
   const writeList = await rpc(origin, writeTokenA, 'tools/list');
-  check(writeList.result.tools.length === 30, 'write-token-tools-list-30');
+  check(writeList.result.tools.length === 32, 'write-token-tools-list-32');
   const storage = structured(
     await callTool(origin, writeTokenA, 'create_data_storage', {
       storage_type: 'GOOGLE_BIGQUERY',
@@ -472,6 +472,65 @@ async function main() {
   );
   check(status.data_mart_id === dataMartId && status.storage_id === storageId, 'draft-status');
 
+  const connectorCatalog = structured(await callTool(origin, writeTokenA, 'list_connectors'));
+  check(
+    connectorCatalog.connectors.some(connector => connector.name === 'FacebookMarketing'),
+    'facebook-connector-installed'
+  );
+  const facebookFields = structured(
+    await callTool(origin, writeTokenA, 'get_connector_fields', {
+      connector_name: 'FacebookMarketing',
+    })
+  );
+  const facebookNode = facebookFields.fields.find(group => group.fields?.length > 0);
+  check(Boolean(facebookNode), 'facebook-connector-fields');
+  const connectorDraft = structured(
+    await callTool(origin, writeTokenA, 'create_connector', {
+      title: 'Facebook Fixture Draft',
+      storage_id: storageId,
+      connector_name: 'FacebookMarketing',
+      node: facebookNode.name,
+      fields: [facebookNode.fields[0].name],
+      configuration: [{}],
+      fully_qualified_name: 'fixture.dataset.facebookmarketing',
+    })
+  );
+  check(
+    connectorDraft.status === 'DRAFT' &&
+      connectorDraft.definition_type === 'CONNECTOR' &&
+      connectorDraft.connector?.name === 'FacebookMarketing' &&
+      !connectorDraft.setup_error &&
+      !connectorDraft.latest_run,
+    'facebook-connector-draft-created'
+  );
+  const connectorStatus = structured(
+    await callTool(origin, writeTokenA, 'get_data_mart_setup_status', {
+      data_mart_id: connectorDraft.data_mart_id,
+    })
+  );
+  check(
+    connectorStatus.data_mart_id === connectorDraft.data_mart_id &&
+      connectorStatus.definition_type === 'CONNECTOR',
+    'facebook-connector-draft-status'
+  );
+  const configuredConnector = structured(
+    await callTool(origin, writeTokenA, 'configure_connector', {
+      data_mart_id: connectorDraft.data_mart_id,
+      connector_name: 'FacebookMarketing',
+      node: facebookNode.name,
+      fields: [facebookNode.fields[0].name],
+      configuration: connectorDraft.connector.configuration_ids.map(id => ({ _id: id })),
+      fully_qualified_name: 'fixture.dataset.facebookmarketing_updated',
+    })
+  );
+  check(
+    configuredConnector.data_mart_id === connectorDraft.data_mart_id &&
+      configuredConnector.status === 'DRAFT' &&
+      !configuredConnector.setup_error &&
+      !configuredConnector.latest_run,
+    'facebook-connector-draft-configured'
+  );
+
   stage = 'cross-project';
   const project = await jsonRequest(`${origin}/auth/api/project-management/projects`, {
     method: 'POST',
@@ -491,7 +550,8 @@ async function main() {
   );
   receipt.checks.nativeOAuthReplayAndRefresh = true;
   receipt.checks.oauthDcrPkce = true;
-  receipt.checks.mcpToolsList30 = true;
+  receipt.checks.mcpToolsList32 = true;
+  receipt.checks.facebookConnectorDraft = true;
   receipt.checks.readOnlyMutationDenied = true;
   receipt.checks.storageDraftUpdateStatus = true;
   receipt.checks.plaintextSecretRejected = true;

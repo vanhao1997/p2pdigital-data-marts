@@ -23,6 +23,8 @@ describe('buildMcpToolCallEvent', () => {
     'configure_data_storage',
     'create_data_mart',
     'update_data_mart',
+    'create_connector',
+    'configure_connector',
   ])('never offloads arbitrary configuration or definition values for %s', toolName => {
     const event = buildMcpToolCallEvent(
       baseParams({
@@ -32,11 +34,12 @@ describe('buildMcpToolCallEvent', () => {
           data_mart_id: 'dm-1',
           title: 'sensitive-label',
           config: { CustomProviderField: 'provider-secret' },
+          configuration: [{ UnusualSecret: 'provider-secret' }],
           definition: {
             connector: { source: { configuration: [{ UnusualSecret: 'provider-secret' }] } },
           },
         },
-        error: new Error('Invalid setup input'),
+        error: new Error('Invalid setup input: provider-secret'),
       })
     );
     const blob = event.payload[OFFLOAD_KEY] as Record<string, unknown>;
