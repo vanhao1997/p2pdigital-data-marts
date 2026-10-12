@@ -17,6 +17,10 @@ describe('MCP instructions', () => {
       'get_connector_specification and get_connector_fields'
     );
     expect(MCP_SYSTEM_INSTRUCTIONS).toContain('Create a DRAFT');
+    expect(MCP_SYSTEM_INSTRUCTIONS).toContain('prefer create_connector');
+    expect(MCP_SYSTEM_INSTRUCTIONS).toContain('use configure_connector');
+    expect(MCP_SYSTEM_INSTRUCTIONS).toContain('Ask the user to select the target before writing');
+    expect(MCP_SYSTEM_INSTRUCTIONS).toContain('not development of new integrations');
     expect(MCP_SYSTEM_INSTRUCTIONS).toContain(
       'only after the user explicitly requests publication'
     );

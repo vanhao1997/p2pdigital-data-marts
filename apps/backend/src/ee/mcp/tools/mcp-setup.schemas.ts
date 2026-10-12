@@ -72,6 +72,37 @@ export const updateDataMartInputSchema = z
   })
   .strict();
 
+const connectorDefinitionInputShape = {
+  connector_name: setupIdSchema.describe('Exact provider name from list_connectors.'),
+  node: setupIdSchema.describe('Exact node from get_connector_fields.'),
+  fields: z
+    .array(setupIdSchema)
+    .min(1)
+    .describe('Native field names from the selected connector node.'),
+  configuration: ConnectorSourceSchema.shape.configuration.describe(
+    'Non-secret source settings from get_connector_specification. Keep _id when editing an existing configuration; complete credentials in the web app.'
+  ),
+  fully_qualified_name: setupIdSchema.describe(
+    'User-confirmed warehouse target, such as project.dataset.table for BigQuery. Never use destinationName alone.'
+  ),
+  source_data_mart_id: setupIdSchema.optional(),
+  source_configuration_id: setupIdSchema.optional(),
+};
+export const createConnectorInputSchema = z
+  .object({
+    title: setupTitleSchema,
+    storage_id: setupIdSchema,
+    description: z.string().max(10000).optional(),
+    ...connectorDefinitionInputShape,
+  })
+  .strict();
+export const configureConnectorInputSchema = z
+  .object({
+    data_mart_id: setupIdSchema,
+    ...connectorDefinitionInputShape,
+  })
+  .strict();
+
 export const credentialStatusSchema = z.enum(['missing', 'configured', 'expired', 'unknown']);
 export const dataStorageSetupOutputSchema = z
   .object({

@@ -133,10 +133,10 @@ To switch projects, disconnect, then reconnect and sign in again. If you use the
 
 ## Available tools
 
-Once connected, the MCP server exposes thirty tools across two scopes:
+Once connected, the MCP server exposes thirty-two tools across two scopes:
 
 - **`mcp:read`**: discovery and status tools — `summarize_data_catalog`, `get_project_context`, `list_data_marts`, `get_relevant_data_marts_by_prompt`, `get_data_mart_details_by_id`, `list_destinations`, `get_data_mart_reports`, `list_report_run_schedules`, `get_report_run_status`, `list_data_storages`, `list_connectors`, `get_connector_specification`, `get_connector_fields`, `get_data_mart_setup_status`.
-- **`mcp:write`**: tools that create, change, validate, run, or bill something — `query_data_mart`, `add_destination`, `add_report`, `update_report`, `delete_report`, `create_report_run_schedule`, `update_report_run_schedule`, `delete_report_run_schedule`, `run_report`, `create_data_storage`, `configure_data_storage`, `validate_data_storage`, `create_data_mart`, `update_data_mart`, `validate_data_mart`, `publish_data_mart`. `query_data_mart` and the report-run schedule mutation tools also require `mcp:read`. `query_data_mart` reads data rows, records each call in Run History, and costs [credits](../billing/consumption-units.md) per call. Your MCP client may ask you to confirm before it calls one of these. OAuth scopes do not replace project roles or resource permissions.
+- **`mcp:write`**: tools that create, change, validate, run, or bill something — `query_data_mart`, `add_destination`, `add_report`, `update_report`, `delete_report`, `create_report_run_schedule`, `update_report_run_schedule`, `delete_report_run_schedule`, `run_report`, `create_data_storage`, `configure_data_storage`, `validate_data_storage`, `create_data_mart`, `update_data_mart`, `validate_data_mart`, `publish_data_mart`, `create_connector`, `configure_connector`. `query_data_mart` and the report-run schedule mutation tools also require `mcp:read`. `query_data_mart` reads data rows, records each call in Run History, and costs [credits](../billing/consumption-units.md) per call. Your MCP client may ask you to confirm before it calls one of these. OAuth scopes do not replace project roles or resource permissions.
 
 ### Connection and Data Mart setup
 
@@ -150,6 +150,8 @@ credential stores as the web application.
 | `list_connectors`             | List installed connector providers.                                                 |
 | `get_connector_specification` | Inspect configuration metadata without secret values or OAuth environment payloads. |
 | `get_connector_fields`        | Inspect supported connector nodes and fields.                                       |
+| `create_connector`            | Create a platform connector as a CONNECTOR Data Mart draft.                         |
+| `configure_connector`         | Configure an existing empty draft or replace an existing connector definition.      |
 | `create_data_storage`         | Create a supported storage and return its ID and setup URL.                         |
 | `configure_data_storage`      | Save non-secret configuration with authorized credential references.                |
 | `validate_data_storage`       | Validate storage access through the existing validator.                             |
@@ -178,6 +180,56 @@ Mart/configuration. Never submit passwords, API keys, service-account JSON,
 refresh tokens or other credential payloads in MCP arguments or chat.
 A credential ID being present does not establish successful authentication;
 check status and validate before continuing.
+
+### Create a platform connector
+
+A connector connection is stored in its Data Mart definition; it is not a
+separate connection entity. `create_connector` creates this `CONNECTOR` Data
+Mart in `DRAFT` status. `configure_connector` completes a draft already created
+by `create_data_mart`, or edits a connector Data Mart without creating another
+one. Both tools reuse the same project/resource permissions and credential
+stores as the web application.
+
+1. Call `get_project_context`, `list_data_storages` and `list_connectors`.
+   Select the exact installed provider name. Available providers may include
+   Facebook/Meta, Google Ads, TikTok Ads, LinkedIn Ads/Pages, Shopify and Admicro;
+   the returned catalog is authoritative for this deployment.
+2. Call `get_connector_specification` and `get_connector_fields`. Confirm the
+   node, native fields and non-secret settings. Do not create a new provider or
+   invent its supported fields.
+3. Ask the user to select the warehouse target. Supply `fully_qualified_name`,
+   such as `project.dataset.table` for BigQuery. A metadata `destinationName`
+   alone is not a fully qualified target. These tools do not create warehouse
+   datasets or grant warehouse access.
+4. Call `create_connector` with `title`, `storage_id`, `connector_name`, `node`,
+   `fields`, `configuration` and `fully_qualified_name`. For an existing draft,
+   use `configure_connector` with `data_mart_id` instead of title/storage.
+5. Complete missing OAuth/manual credentials in `configuration_url`. An
+   authorized source Data Mart can be reused via `source_data_mart_id` and
+   `source_configuration_id`; credentials must belong to the same project and
+   provider, and the actor must have credential-copy access.
+6. After confirmation, validate storage and Data Mart. Publish is a separate
+   explicit operation; neither connector setup tool validates or starts sync.
+
+`configuration` is the complete source configuration list. When editing, keep
+the existing `_id` values returned by `get_data_mart_setup_status` to preserve
+authorized credentials. Confirm replacements that remove configurations.
+Editing a published connector does not stop its existing scheduled runs.
+MCP-authored node/field selections must match the installed catalog. Dynamic
+fields discovered through authenticated web preview are not authored by these
+tools; complete that setup in the web app. Validation/publication of existing
+web-created definitions keeps its existing behavior.
+If a setup step fails after creation, inspect `setup_error` and continue with
+the returned `data_mart_id`, never create a duplicate.
+
+Example prompt:
+
+> Use the DigitalReport MCP server and confirm my project. Show installed
+> connectors and let me choose a platform and storage. Fetch the specification
+> and fields, then ask me to confirm the node, fields and warehouse target.
+> Create a draft with create_connector, or use configure_connector if I supply
+> an existing draft ID. Return its setup URL for missing credentials.
+> Do not publish, validate, run sync or create schedules yet.
 
 `create_data_mart` requires `title` and `storage_id`. An optional definition uses
 the paired `definition_type` and `definition` inputs. Supported definition types

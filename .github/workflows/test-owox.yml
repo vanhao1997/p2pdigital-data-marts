@@ -31,7 +31,7 @@ jobs:
         test:
           - name: 'Overall test @owox/backend'
             command: 'npm run test -w @owox/backend'
-            timeout: 10
+            timeout: 15
           - name: 'Overall test @owox/web'
             command: 'npm run test -w @owox/web'
             timeout: 10

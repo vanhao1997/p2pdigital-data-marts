@@ -3520,7 +3520,7 @@
     "promptNotice": "Thay tên Data Mart và connector theo nhu cầu. ChatGPT phải dùng danh sách connector/storage thật; không đoán ID, node hay field. Chỉ duyệt thao tác ghi sau khi đã kiểm tra đầu vào.",
     "draftTitle": "Tạo bản nháp từ connector",
     "copyDraft": "Sao chép prompt tạo bản nháp",
-    "draftPrompt": "Dùng plugin DigitalReport.\nGọi get_project_context và xác nhận current_project.id là {{projectId}}. Nếu khác, dừng.\nGọi list_data_storages và list_connectors.\nTôi muốn tạo draft Data Mart \"Admicro Daily\" từ AdmicroAds. Nếu connector không có, dừng và báo lại.\nCho tôi chọn storage từ danh sách. Nếu chưa có storage, trả link để tôi thiết lập trong webapp.\nLấy get_connector_specification và get_connector_fields trước khi dựng definition_type=CONNECTOR; không đoán ID, node hoặc field.\nThiếu credential thì trả link để tôi hoàn tất trong webapp; không yêu cầu dán bí mật vào chat.\nChưa publish, chưa chạy sync, chưa tạo lịch.\nTrả data_mart_id và URL của draft.",
+    "draftPrompt": "Dùng plugin DigitalReport.\nGọi get_project_context và xác nhận current_project.id là {{projectId}}. Nếu khác, dừng.\nGọi list_data_storages và list_connectors. Hỏi tôi muốn kết nối nền tảng nào; dùng đúng tên connector trong catalog. Nếu không có, dừng và báo lại.\nCho tôi chọn storage và xác nhận bảng đích (project.dataset.table với BigQuery). Không đoán dataset/bảng hoặc dùng riêng destinationName. Nếu chưa có storage, trả link để tôi thiết lập trong webapp.\nLấy get_connector_specification và get_connector_fields, rồi cho tôi xác nhận node, fields và cấu hình không chứa secret.\nDùng create_connector để tạo connector draft mới. Nếu tôi cung cấp ID của draft trống hoặc Data Mart connector đã có, dùng configure_connector; giữ ID cấu hình và xác nhận trước khi bỏ cấu hình cũ. Nếu có setup_error, tiếp tục với data_mart_id đã trả, không tạo bản trùng.\nThiếu credential thì trả link để tôi hoàn tất trong webapp; không yêu cầu dán bí mật vào chat.\nChưa publish, chưa chạy sync, chưa tạo lịch.\nTrả data_mart_id, tên connector, trạng thái setup và URL của draft.",
     "validationTitle": "Sau khi hoàn tất credential trong webapp",
     "copyValidation": "Sao chép prompt kiểm tra",
     "validationPrompt": "Dùng plugin DigitalReport.\nGọi get_project_context và xác nhận current_project.id là {{projectId}}. Nếu khác, dừng.\nKiểm tra get_data_mart_setup_status cho Data Mart <DATA_MART_ID>; hỏi tôi ID nếu chưa biết.\nValidate storage và Data Mart bằng validate_data_storage, validate_data_mart sau khi tôi xác nhận.\nBáo rõ cấu hình còn thiếu và kết quả validation.\nChưa publish, chưa chạy sync, chưa tạo lịch.",
@@ -3554,7 +3554,7 @@
       },
       "tools": {
         "title": "Không thấy tool tạo Data Mart",
-        "body": "Mở trang chi tiết plugin trong cài đặt ChatGPT, refresh danh sách tools và kiểm tra các tools đã bật. Nếu vẫn thiếu create_data_mart, máy chủ có thể chưa triển khai bộ setup tools; liên hệ quản trị viên."
+        "body": "Mở trang chi tiết plugin trong cài đặt ChatGPT, refresh danh sách tools và kiểm tra các tools đã bật. Nếu thiếu create_connector hoặc configure_connector, máy chủ có thể cần cập nhật. Bản cũ vẫn dùng create_data_mart/update_data_mart với definition_type=CONNECTOR. Liên hệ quản trị viên."
       }
     },
     "openaiDocs": "OpenAI Docs",

@@ -62,6 +62,8 @@ const SETUP_MUTATION_TOOLS = new Set([
   'update_data_mart',
   'validate_data_mart',
   'publish_data_mart',
+  'create_connector',
+  'configure_connector',
 ]);
 
 function safeArguments(toolName: string, input: unknown): unknown {

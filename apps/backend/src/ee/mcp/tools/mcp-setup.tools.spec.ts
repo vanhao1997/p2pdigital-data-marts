@@ -22,6 +22,7 @@ import {
   PublishDataMartTool,
   GetDataMartSetupStatusTool,
 } from './data-mart-setup.tools';
+import { CreateConnectorTool, ConfigureConnectorTool } from './connector-setup.tools';
 
 const context: McpAuthContext = {
   projectId: 'project-1',
@@ -179,6 +180,33 @@ describe('MCP setup tools', () => {
       input: { data_mart_id: 'dm-1' },
       scope: 'mcp:read',
     },
+    {
+      tool: new CreateConnectorTool(dataMartFacade, origin),
+      method: 'createDataMart',
+      input: {
+        title: 'Bank of Canada rates',
+        storage_id: 'storage-1',
+        connector_name: 'BankOfCanada',
+        node: 'observations/group',
+        fields: ['date', 'label', 'rate'],
+        configuration: [{ ReimportLookbackWindow: 2 }],
+        fully_qualified_name: 'warehouse.dataset.rates',
+      },
+      scope: 'mcp:write',
+    },
+    {
+      tool: new ConfigureConnectorTool(dataMartFacade, origin),
+      method: 'updateDataMart',
+      input: {
+        data_mart_id: 'dm-1',
+        connector_name: 'BankOfCanada',
+        node: 'observations/group',
+        fields: ['date', 'label', 'rate'],
+        configuration: [{ _id: 'config-1', ReimportLookbackWindow: 2 }],
+        fully_qualified_name: 'warehouse.dataset.rates',
+      },
+      scope: 'mcp:write',
+    },
   ];
 
   beforeEach(() => jest.clearAllMocks());
@@ -225,6 +253,69 @@ describe('MCP setup tools', () => {
       )
     ).rejects.toThrow();
     expect(facade.configureDataStorage).not.toHaveBeenCalled();
+  });
+
+  it.each(cases.filter(item => item.tool.name.endsWith('_connector')))(
+    '$tool.name maps platform inputs to the canonical connector pipeline without publishing',
+    async ({ tool, method, input }) => {
+      await tool.handler(
+        { ...input, source_data_mart_id: 'source-mart', source_configuration_id: 'source-config' },
+        context
+      );
+      expect(facade[method]).toHaveBeenCalledWith(
+        expect.objectContaining({
+          definitionType: DataMartDefinitionType.CONNECTOR,
+          definition: {
+            connector: {
+              source: {
+                name: input.connector_name,
+                node: input.node,
+                fields: input.fields,
+                configuration: input.configuration,
+              },
+              storage: { fullyQualifiedName: input.fully_qualified_name },
+            },
+          },
+          sourceDataMartId: 'source-mart',
+          sourceConfigurationId: 'source-config',
+        })
+      );
+      expect(facade.validateDataMart).not.toHaveBeenCalled();
+      expect(facade.publishDataMart).not.toHaveBeenCalled();
+    }
+  );
+
+  it.each(cases.filter(item => item.tool.name.endsWith('_connector')))(
+    '$tool.name requires a complete target, node, field selection and configuration',
+    async ({ tool, method, input }) => {
+      for (const patch of [
+        { fully_qualified_name: '' },
+        { fully_qualified_name: undefined },
+        { node: '' },
+        { fields: [] },
+        { fields: [''] },
+        { configuration: [] },
+      ]) {
+        await expect(tool.handler({ ...input, ...patch }, context)).rejects.toThrow();
+      }
+      expect(facade[method]).not.toHaveBeenCalled();
+    }
+  );
+
+  it('preserves a partial connector creation result so the assistant can resume the saved ID', async () => {
+    const testCase = cases.find(item => item.tool.name === 'create_connector')!;
+    facade.createDataMart.mockResolvedValueOnce({
+      ...dataMart,
+      setupRequired: true,
+      setupError: { code: 'DATA_MART_SETUP_INCOMPLETE', message: 'Resume this draft.' },
+    });
+    const result = await testCase.tool.handler(testCase.input, context);
+    expect(result.structuredContent).toMatchObject({
+      data_mart_id: 'dm-1',
+      setup_required: true,
+      setup_error: { code: 'DATA_MART_SETUP_INCOMPLETE' },
+    });
+    expect(facade.createDataMart).toHaveBeenCalledTimes(1);
   });
 
   it('requires one storage credential source before the facade', async () => {

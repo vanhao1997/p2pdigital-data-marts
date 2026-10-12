@@ -34,6 +34,7 @@ import {
   PublishDataMartTool,
   GetDataMartSetupStatusTool,
 } from './data-mart-setup.tools';
+import { CreateConnectorTool, ConfigureConnectorTool } from './connector-setup.tools';
 
 export const MCP_TOOL_PROVIDER_CLASSES: Array<Type<McpToolDefinition>> = [
   SummarizeDataCatalogTool,
@@ -66,6 +67,8 @@ export const MCP_TOOL_PROVIDER_CLASSES: Array<Type<McpToolDefinition>> = [
   ValidateDataMartTool,
   PublishDataMartTool,
   GetDataMartSetupStatusTool,
+  CreateConnectorTool,
+  ConfigureConnectorTool,
 ];
 
 export const MCP_TOOL_DEFINITIONS_PROVIDER: Provider = {

@@ -55,7 +55,7 @@ describe('Native Better Auth MCP OAuth (e2e)', () => {
       ];
       const readList = await rpc(app.origin, readToken.access_token, 'tools/list');
       const readTools = (readList.result as { tools: Array<{ name: string }> }).tools;
-      expect(readTools).toHaveLength(30);
+      expect(readTools).toHaveLength(32);
       expect(readTools.map(tool => tool.name)).toEqual(
         expect.arrayContaining(['get_project_context', 'create_data_storage'])
       );
@@ -125,7 +125,7 @@ describe('Native Better Auth MCP OAuth (e2e)', () => {
 
       const writeAccessToken = String(refreshed.body.access_token);
       const writeList = await rpc(app.origin, writeAccessToken, 'tools/list');
-      expect((writeList.result as { tools: unknown[] }).tools).toHaveLength(30);
+      expect((writeList.result as { tools: unknown[] }).tools).toHaveLength(32);
       const storage = success(
         await callTool(app.origin, writeAccessToken, 'create_data_storage', {
           storage_type: 'GOOGLE_BIGQUERY',
