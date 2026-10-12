@@ -1,4 +1,4 @@
-import { Inject, Injectable, Logger } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { TypeResolver } from '../../common/resolver/type-resolver';
 import { DATA_STORAGE_REPORT_READER_RESOLVER } from '../data-storage-types/data-storage-providers';
 import { DataStorageType } from '../data-storage-types/enums/data-storage-type.enum';
@@ -27,8 +27,6 @@ export type ReportTotals = Record<string, number | string | boolean | null>;
  */
 @Injectable()
 export class ReportTotalsService {
-  private readonly logger = new Logger(ReportTotalsService.name);
-
   constructor(
     @Inject(DATA_STORAGE_REPORT_READER_RESOLVER)
     private readonly reportReaderResolver: TypeResolver<DataStorageType, DataStorageReportReader>,

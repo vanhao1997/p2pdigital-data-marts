@@ -1,4 +1,4 @@
-import { Inject, Injectable, Logger, OnModuleInit } from '@nestjs/common';
+import { Inject, Injectable, OnModuleInit } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { SCHEDULER_FACADE, SchedulerFacade } from '../../common/scheduler/shared/scheduler.facade';
@@ -15,8 +15,6 @@ function getErrorCode(error: unknown): string | undefined {
 export class SchemaActualizeTriggerHandlerService
   implements TriggerHandler<SchemaActualizeTrigger>, OnModuleInit
 {
-  private readonly logger = new Logger(SchemaActualizeTriggerHandlerService.name);
-
   constructor(
     @InjectRepository(SchemaActualizeTrigger)
     private readonly repository: Repository<SchemaActualizeTrigger>,

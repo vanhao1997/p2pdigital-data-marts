@@ -1,4 +1,4 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { IsNull, LessThanOrEqual, Repository } from 'typeorm';
 import { CronJob } from 'cron';
@@ -10,8 +10,6 @@ import { isMaskedWebhookUrl } from '../utils/webhook-url-mask.util';
 
 @Injectable()
 export class ProjectNotificationSettingsService {
-  private readonly logger = new Logger(ProjectNotificationSettingsService.name);
-
   constructor(
     @InjectRepository(ProjectNotificationSettings)
     private readonly repository: Repository<ProjectNotificationSettings>

@@ -21,7 +21,6 @@ describe('AccessDecisionService — E2E sharing flows', () => {
     const storageOwnerRepository = { count: jest.fn() };
     const destinationOwnerRepository = { count: jest.fn() };
     const reportOwnerRepository = { count: jest.fn() };
-    const reportRepository = { findOne: jest.fn() };
     const contextAccessService = {
       getRoleScope: jest.fn().mockResolvedValue(RoleScope.ENTIRE_PROJECT),
       hasContextOverlap: jest.fn().mockResolvedValue(true),
@@ -36,7 +35,6 @@ describe('AccessDecisionService — E2E sharing flows', () => {
       storageOwnerRepository as never,
       destinationOwnerRepository as never,
       reportOwnerRepository as never,
-      reportRepository as never,
       contextAccessService as unknown as ContextAccessService
     );
 
@@ -50,7 +48,6 @@ describe('AccessDecisionService — E2E sharing flows', () => {
       storageOwnerRepository,
       destinationOwnerRepository,
       reportOwnerRepository,
-      reportRepository,
       contextAccessService,
     };
   };

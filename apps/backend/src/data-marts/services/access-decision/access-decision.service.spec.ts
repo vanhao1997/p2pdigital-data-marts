@@ -34,10 +34,6 @@ describe('AccessDecisionService', () => {
     const reportOwnerRepository = {
       count: jest.fn(),
     };
-    const reportRepository = {
-      findOne: jest.fn(),
-    };
-
     const contextAccessService = {
       getRoleScope: jest.fn().mockResolvedValue(RoleScope.ENTIRE_PROJECT),
       hasContextOverlap: jest.fn().mockResolvedValue(true),
@@ -52,7 +48,6 @@ describe('AccessDecisionService', () => {
       storageOwnerRepository as never,
       destinationOwnerRepository as never,
       reportOwnerRepository as never,
-      reportRepository as never,
       contextAccessService as unknown as ContextAccessService
     );
 
@@ -66,7 +61,6 @@ describe('AccessDecisionService', () => {
       storageOwnerRepository,
       destinationOwnerRepository,
       reportOwnerRepository,
-      reportRepository,
       contextAccessService,
     };
   };

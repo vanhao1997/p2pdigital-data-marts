@@ -9,7 +9,6 @@ import { DataMartBusinessOwner } from '../../entities/data-mart-business-owner.e
 import { StorageOwner } from '../../entities/storage-owner.entity';
 import { DestinationOwner } from '../../entities/destination-owner.entity';
 import { ReportOwner } from '../../entities/report-owner.entity';
-import { Report } from '../../entities/report.entity';
 import { ACCESS_MATRIX } from './access-matrix.config';
 import { EntityType, Action, Role, OwnerStatus, SharingState } from './access-decision.types';
 import { ContextAccessService } from '../context/context-access.service';
@@ -39,8 +38,6 @@ export class AccessDecisionService {
     private readonly destinationOwnerRepository: Repository<DestinationOwner>,
     @InjectRepository(ReportOwner)
     private readonly reportOwnerRepository: Repository<ReportOwner>,
-    @InjectRepository(Report)
-    private readonly reportRepository: Repository<Report>,
     @Inject(forwardRef(() => ContextAccessService))
     private readonly contextAccessService: ContextAccessService
   ) {

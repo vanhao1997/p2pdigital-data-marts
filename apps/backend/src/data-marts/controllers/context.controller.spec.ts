@@ -39,17 +39,6 @@ describe('ContextController', () => {
       validateContextIds: jest.fn().mockResolvedValue(undefined),
     };
 
-    const contextAccessService = {
-      getRoleScope: jest.fn(),
-      getMemberContextIds: jest.fn(),
-      updateDataMartContexts: jest.fn(),
-      updateStorageContexts: jest.fn(),
-      updateDestinationContexts: jest.fn(),
-      updateMember: jest.fn(),
-      removeMemberBindings: jest.fn(),
-      setContextMembers: jest.fn(),
-    };
-
     const contextMapper = {
       toApiResponse: jest.fn((dto: ContextDto) => ({
         id: dto.id,
@@ -68,7 +57,6 @@ describe('ContextController', () => {
 
     const controller = new ContextController(
       contextService as never,
-      contextAccessService as never,
       contextMapper as never,
       setContextMembersService as never
     );
@@ -76,7 +64,6 @@ describe('ContextController', () => {
     return {
       controller,
       contextService,
-      contextAccessService,
       contextMapper,
       setContextMembersService,
     };

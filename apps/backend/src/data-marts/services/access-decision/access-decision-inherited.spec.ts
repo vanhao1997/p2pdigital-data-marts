@@ -17,7 +17,6 @@ describe('AccessDecisionService — inherited entity access (DM Trigger, Report)
     const storageOwnerRepository = { count: jest.fn() };
     const destinationOwnerRepository = { count: jest.fn() };
     const reportOwnerRepository = { count: jest.fn() };
-    const reportRepository = { findOne: jest.fn() };
     const contextAccessService = {
       getRoleScope: jest.fn().mockResolvedValue(RoleScope.ENTIRE_PROJECT),
       hasContextOverlap: jest.fn().mockResolvedValue(true),
@@ -32,7 +31,6 @@ describe('AccessDecisionService — inherited entity access (DM Trigger, Report)
       storageOwnerRepository as never,
       destinationOwnerRepository as never,
       reportOwnerRepository as never,
-      reportRepository as never,
       contextAccessService as unknown as ContextAccessService
     );
 
@@ -41,7 +39,6 @@ describe('AccessDecisionService — inherited entity access (DM Trigger, Report)
       dataMartRepository,
       dataMartTechnicalOwnerRepository,
       dataMartBusinessOwnerRepository,
-      reportRepository,
       reportOwnerRepository,
       dataDestinationRepository,
       contextAccessService,
