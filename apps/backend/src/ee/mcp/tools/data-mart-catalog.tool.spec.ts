@@ -214,6 +214,8 @@ describe('ListDataMartsTool', () => {
       'ValidateDataMartTool',
       'PublishDataMartTool',
       'GetDataMartSetupStatusTool',
+      'CreateConnectorTool',
+      'ConfigureConnectorTool',
     ]);
     expect(registry.getTool('list_data_marts')).toBeDefined();
     expect(registry.getTool('query_data_mart')).toBeUndefined();
