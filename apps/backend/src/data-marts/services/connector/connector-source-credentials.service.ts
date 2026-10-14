@@ -72,12 +72,11 @@ export class ConnectorSourceCredentialsService {
   }
 
   /**
-   * List non-deleted credentials visible to one project. Callers must map the
+   * List non-deleted credentials visible to projects. Callers must map the
    * result to a safe DTO; this method is intentionally backend-only.
    */
-  async getCredentialsByProjectId(projectId: string): Promise<ConnectorSourceCredentials[]> {
+  async getCredentialsByProjectId(_projectId: string): Promise<ConnectorSourceCredentials[]> {
     return this.connectorSourceCredentialsRepository.find({
-      where: { projectId },
       order: { createdAt: 'DESC' },
     });
   }
