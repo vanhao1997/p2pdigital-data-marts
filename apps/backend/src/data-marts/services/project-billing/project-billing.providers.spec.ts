@@ -3,7 +3,6 @@ import {
   LicenseContext,
   ProjectBinding,
 } from '../../../common/config/app-edition-config.service';
-import { ProjectOperationBlockedException } from '../../../common/exceptions/project-operation-blocked.exception';
 import { InternalProjectBillingService } from './internal-project-billing.service';
 import { LicenseProjectBillingService } from './license-project-billing.service';
 import { ProjectBillingService, RunKind } from './project-billing.service';
@@ -98,12 +97,11 @@ describe('RestrictedProjectBillingService', () => {
     RunKind.SHEETS_REPORT_RUN,
     RunKind.LOOKER_REPORT_RUN,
     RunKind.EMAIL_BASED_REPORT_RUN,
+    RunKind.EXCEL_REPORT_RUN,
     RunKind.HTTP_DATA_RUN,
     RunKind.MCP_QUERY_RUN,
-  ])('denies %s', async runKind => {
-    await expect(service.verifyCanPerformOperations('proj-1', runKind)).rejects.toBeInstanceOf(
-      ProjectOperationBlockedException
-    );
+  ])('allows %s on self-hosted deployments', async runKind => {
+    await expect(service.verifyCanPerformOperations('proj-1', runKind)).resolves.toBeUndefined();
   });
 
   it.each([RunKind.CONNECTOR_RUN, RunKind.DATA_QUALITY_RUN, RunKind.AI_PROCESS_RUN])(
