@@ -155,6 +155,7 @@ export function OverviewTab() {
     isLoading: isProjectSettingsLoading,
     error: projectSettingsError,
     updateDescription,
+    updateLogo,
   } = useProjectSettings(projectId);
   const projectStatus = useMemo<ProjectStatus | undefined>(() => {
     if (!projectId) {
@@ -188,39 +189,47 @@ export function OverviewTab() {
           </CollapsibleCardHeaderTitle>
         </CollapsibleCardHeader>
         <CollapsibleCardContent>
-          <div className='grid grid-cols-1 gap-3 sm:grid-cols-3'>
-            <DescriptionCard
-              label={t('projectOverview.projectName')}
-              value={user?.projectTitle ?? '—'}
+          <div className='flex flex-col gap-3'>
+            <ProjectLogoCard
+              logoUrl={projectSettings.logoUrl ?? null}
+              projectTitle={user?.projectTitle ?? ''}
+              readOnly={!isAdmin || isProjectSettingsLoading}
+              onUpdate={updateLogo}
             />
-            <DescriptionCard
-              label={t('projectOverview.projectId')}
-              value={
-                <div className='flex items-center gap-2'>
-                  <span className='font-mono text-xs break-all'>{projectId || '—'}</span>
-                  {projectId && (
-                    <CopyButton
-                      text={projectId}
-                      section='project-id'
-                      variant={CopyButtonVariant.DEFAULT}
-                      copiedSection={copiedSection}
-                      onCopy={handleCopy}
-                      iconOnly={true}
-                    />
-                  )}
-                </div>
-              }
-            />
-            <DescriptionCard
-              label={t('projectOverview.status')}
-              value={
-                callState === RequestStatus.LOADED ? (
-                  <ProjectStatusBadge status={projectStatus} />
-                ) : (
-                  '—'
-                )
-              }
-            />
+            <div className='grid grid-cols-1 gap-3 sm:grid-cols-3'>
+              <DescriptionCard
+                label={t('projectOverview.projectName')}
+                value={user?.projectTitle ?? '—'}
+              />
+              <DescriptionCard
+                label={t('projectOverview.projectId')}
+                value={
+                  <div className='flex items-center gap-2'>
+                    <span className='font-mono text-xs break-all'>{projectId || '—'}</span>
+                    {projectId && (
+                      <CopyButton
+                        text={projectId}
+                        section='project-id'
+                        variant={CopyButtonVariant.DEFAULT}
+                        copiedSection={copiedSection}
+                        onCopy={handleCopy}
+                        iconOnly={true}
+                      />
+                    )}
+                  </div>
+                }
+              />
+              <DescriptionCard
+                label={t('projectOverview.status')}
+                value={
+                  callState === RequestStatus.LOADED ? (
+                    <ProjectStatusBadge status={projectStatus} />
+                  ) : (
+                    '—'
+                  )
+                }
+              />
+            </div>
           </div>
         </CollapsibleCardContent>
         <CollapsibleCardFooter></CollapsibleCardFooter>
@@ -459,6 +468,146 @@ function DescriptionCard({ label, value }: { label: string; value: React.ReactNo
         {label}
       </span>
       <span className='text-foreground text-sm font-medium'>{value}</span>
+    </div>
+  );
+}
+
+function resizeImageFileToDataUrl(file: File, maxSize = 128): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onerror = () => reject(new Error('Không thể đọc tệp hình ảnh'));
+    reader.onload = () => {
+      const result = typeof reader.result === 'string' ? reader.result : '';
+      if (file.type === 'image/svg+xml' || result.length <= 64_000) {
+        resolve(result);
+        return;
+      }
+      const img = new Image();
+      img.onerror = () => resolve(result);
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        const scale = Math.min(1, maxSize / Math.max(img.width || 1, img.height || 1));
+        canvas.width = Math.max(1, Math.round(img.width * scale));
+        canvas.height = Math.max(1, Math.round(img.height * scale));
+        const ctx = canvas.getContext('2d');
+        if (!ctx) {
+          resolve(result);
+          return;
+        }
+        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+        resolve(canvas.toDataURL('image/png'));
+      };
+      img.src = result;
+    };
+    reader.readAsDataURL(file);
+  });
+}
+
+function ProjectLogoCard({
+  logoUrl,
+  projectTitle,
+  readOnly,
+  onUpdate,
+}: {
+  logoUrl: string | null;
+  projectTitle: string;
+  readOnly: boolean;
+  onUpdate: (nextLogoUrl: string | null) => Promise<void>;
+}) {
+  const { t } = useTranslation();
+  const [urlInput, setUrlInput] = useState(logoUrl ?? '');
+  const [saving, setSaving] = useState(false);
+
+  useEffect(() => {
+    setUrlInput(logoUrl ?? '');
+  }, [logoUrl]);
+
+  const handleSave = async (next: string | null) => {
+    if (saving || readOnly) return;
+    setSaving(true);
+    try {
+      await onUpdate(next);
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    event.target.value = '';
+    if (!file) return;
+    const dataUrl = await resizeImageFileToDataUrl(file);
+    setUrlInput(dataUrl);
+    await handleSave(dataUrl);
+  };
+
+  return (
+    <div className='flex w-full flex-col gap-3 rounded-md border-b border-gray-200 bg-white p-4 transition-shadow duration-200 hover:shadow-xs sm:flex-row sm:items-center sm:justify-between dark:border-0 dark:bg-white/2'>
+      <div className='flex items-center gap-4'>
+        <div className='flex size-14 shrink-0 items-center justify-center overflow-hidden rounded-lg border bg-gray-50 dark:bg-white/10'>
+          <img
+            src={logoUrl || '/favicon.png'}
+            alt={projectTitle || 'Project logo'}
+            referrerPolicy='no-referrer'
+            className='size-10 rounded object-contain'
+          />
+        </div>
+        <div className='flex flex-col gap-1'>
+          <span className='text-muted-foreground text-xs font-medium tracking-wide uppercase'>
+            {t('projectOverview.projectLogo', 'Logo dự án (Avatar)')}
+          </span>
+          <span className='text-muted-foreground text-xs'>
+            {t(
+              'projectOverview.projectLogoDescription',
+              'Tải ảnh lên từ máy tính (PNG, JPG, WebP, SVG) hoặc nhập URL hình ảnh để tuỳ chỉnh biểu tượng dự án.'
+            )}
+          </span>
+        </div>
+      </div>
+      {!readOnly && (
+        <div className='flex flex-wrap items-center gap-2'>
+          <label className='border-input bg-background hover:bg-accent hover:text-accent-foreground inline-flex h-8 cursor-pointer items-center justify-center rounded-md border px-3 text-xs font-medium shadow-2xs transition-colors'>
+            {t('projectOverview.uploadLogo', 'Tải ảnh lên')}
+            <input
+              type='file'
+              accept='image/*'
+              className='hidden'
+              disabled={saving}
+              onChange={e => void handleFileChange(e)}
+            />
+          </label>
+          <input
+            type='text'
+            value={urlInput.startsWith('data:image/') ? '' : urlInput}
+            onChange={e => setUrlInput(e.target.value)}
+            placeholder={t('projectOverview.logoUrlPlaceholder', 'Hoặc dán URL hình ảnh (https://...)')}
+            disabled={saving}
+            className='border-input bg-background h-8 w-56 rounded-md border px-2.5 text-xs outline-hidden focus:ring-1'
+          />
+          <Button
+            type='button'
+            size='sm'
+            disabled={saving || !urlInput.trim() || urlInput.trim() === (logoUrl ?? '')}
+            onClick={() => void handleSave(urlInput.trim())}
+          >
+            {saving ? t('common.saving', 'Đang lưu...') : t('projectOverview.saveLogo', 'Lưu logo')}
+          </Button>
+          {logoUrl && (
+            <Button
+              type='button'
+              variant='outline'
+              size='sm'
+              disabled={saving}
+              onClick={() => {
+                setUrlInput('');
+                void handleSave(null);
+              }}
+            >
+              {t('projectOverview.removeLogo', 'Xóa logo')}
+            </Button>
+          )}
+        </div>
+      )}
     </div>
   );
 }
