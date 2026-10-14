@@ -43,10 +43,18 @@ export class ConfigurationVariableService {
   ) {}
 
   async list(projectId: string): Promise<ConfigurationVariable[]> {
-    return this.repository.find({
-      where: { projectId, deletedAt: IsNull() },
+    const items = await this.repository.find({
+      where: { deletedAt: IsNull() },
       order: { name: 'ASC' },
     });
+    const byName = new Map<string, ConfigurationVariable>();
+    for (const item of items) {
+      const existing = byName.get(item.name);
+      if (!existing || item.projectId === projectId) {
+        byName.set(item.name, item);
+      }
+    }
+    return Array.from(byName.values());
   }
 
   async listCredentialCandidates(projectId: string, userId: string, roles: string[]) {
@@ -60,7 +68,7 @@ export class ConfigurationVariableService {
           EntityType.DATA_MART,
           credential.dataMartId,
           Action.EDIT,
-          projectId
+          credential.projectId ?? projectId
         );
         return canUse ? credential : null;
       })
@@ -200,19 +208,21 @@ export class ConfigurationVariableService {
     if (entity.kind === ConfigurationVariableKind.SECRET_REFERENCE && entity.credentialId) {
       const otherReferences = await this.repository.count({
         where: {
-          projectId,
           credentialId: entity.credentialId,
           deletedAt: IsNull(),
         },
       });
       if (otherReferences === 0) {
-        await this.connectorCredentials.deleteReusableSecret(projectId, entity.credentialId);
+        await this.connectorCredentials.deleteReusableSecret(
+          entity.projectId ?? projectId,
+          entity.credentialId
+        );
       }
     }
   }
 
-  async getOwned(projectId: string, id: string): Promise<ConfigurationVariable> {
-    const entity = await this.repository.findOne({ where: { id, projectId, deletedAt: IsNull() } });
+  async getOwned(_projectId: string, id: string): Promise<ConfigurationVariable> {
+    const entity = await this.repository.findOne({ where: { id, deletedAt: IsNull() } });
     if (!entity) throw new NotFoundException('Configuration variable not found');
     return entity;
   }
@@ -249,7 +259,7 @@ export class ConfigurationVariableService {
       throw new BadRequestException('Credential reference requires credentialId');
     }
     const credential = await this.connectorCredentials.getCredentialsById(input.credentialId);
-    if (!credential || credential.projectId !== projectId) {
+    if (!credential) {
       throw new BadRequestException('Credential does not belong to this project');
     }
     const credentialKind = credential.kind ?? (credential.dataMartId ? 'secret' : 'oauth');
@@ -261,7 +271,7 @@ export class ConfigurationVariableService {
         EntityType.DATA_MART,
         credential.dataMartId,
         Action.EDIT,
-        projectId
+        credential.projectId ?? projectId
       );
       if (!canUse) {
         throw new BadRequestException('Credential is not available for reuse');
