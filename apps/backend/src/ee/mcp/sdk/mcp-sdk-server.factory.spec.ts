@@ -5,8 +5,10 @@ import type { McpToolDefinition } from '../tools/mcp-tool.definition';
 import { McpToolRegistry } from '../tools/mcp-tool.registry';
 
 const mockRegisterTool = jest.fn();
+const mockRegisterPrompt = jest.fn();
 const mockServer = {
   registerTool: mockRegisterTool,
+  registerPrompt: mockRegisterPrompt,
 };
 const mockMcpServer = jest.fn(() => mockServer);
 
@@ -28,6 +30,7 @@ describe('McpSdkServerFactory', () => {
   beforeEach(() => {
     jest.resetModules();
     mockRegisterTool.mockClear();
+    mockRegisterPrompt.mockClear();
     mockMcpServer.mockClear();
     jest.doMock('@modelcontextprotocol/server', () => ({
       McpServer: mockMcpServer,
@@ -39,7 +42,7 @@ describe('McpSdkServerFactory', () => {
     return module.McpSdkServerFactory;
   };
 
-  it('creates SDK server and registers active MCP tools', async () => {
+  it('creates SDK server and registers active MCP tools and built-in prompts', async () => {
     const handler = jest.fn().mockResolvedValue({ content: [{ type: 'text', text: 'ok' }] });
     const outputSchema = { items: z.array(z.string()) };
     const annotations = {
@@ -72,7 +75,10 @@ describe('McpSdkServerFactory', () => {
       { name: 'owox-mcp', version: '0.1.0' },
       expect.objectContaining({
         supportedProtocolVersions: expect.arrayContaining(['2026-07-28', '2025-11-25']),
-        capabilities: { tools: { listChanged: false } },
+        capabilities: {
+          tools: { listChanged: false },
+          prompts: { listChanged: false },
+        },
       })
     );
     expect(mockRegisterTool).toHaveBeenCalledWith(
@@ -83,6 +89,15 @@ describe('McpSdkServerFactory', () => {
         outputSchema: expect.objectContaining({ '~standard': expect.any(Object) }),
         annotations,
       },
+      expect.any(Function)
+    );
+    expect(mockRegisterPrompt).toHaveBeenCalledWith(
+      'phan-tich-hieu-qua-chien-dich',
+      expect.objectContaining({
+        title: expect.any(String),
+        description: expect.any(String),
+        argsSchema: expect.objectContaining({ '~standard': expect.any(Object) }),
+      }),
       expect.any(Function)
     );
 
