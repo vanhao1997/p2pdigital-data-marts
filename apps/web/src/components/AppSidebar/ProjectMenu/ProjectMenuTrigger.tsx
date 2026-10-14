@@ -1,8 +1,10 @@
+import { useEffect, useState } from 'react';
 import { DropdownMenuTrigger } from '@owox/ui/components/dropdown-menu';
 import { ChevronDown, LockKeyhole } from 'lucide-react';
 import { Logo } from '../../Logo';
 import { useProject } from '../../../app/store/hooks';
 import { useUser, useProjects } from '../../../features/idp/hooks';
+import { projectSettingsApiService } from '../../../features/project-settings/overview/services';
 import { useTranslation } from 'react-i18next';
 
 interface ProjectMenuTriggerProps {
@@ -14,7 +16,42 @@ export function ProjectMenuTrigger({ isOpen }: ProjectMenuTriggerProps) {
   const user = useUser();
   const { projects } = useProjects();
   const { t } = useTranslation();
-  const isArchived = projects.some(project => project.id === user?.projectId && project.archived);
+  const [logoUrl, setLogoUrl] = useState<string | null>(null);
+  const projectId = user?.projectId ?? '';
+  const isArchived = projects.some(project => project.id === projectId && project.archived);
+
+  useEffect(() => {
+    let cancelled = false;
+    if (!projectId) {
+      setLogoUrl(null);
+      return;
+    }
+    void projectSettingsApiService
+      .getSettings()
+      .then(settings => {
+        if (!cancelled) {
+          setLogoUrl(settings.logoUrl ?? null);
+        }
+      })
+      .catch(() => {
+        if (!cancelled) {
+          setLogoUrl(null);
+        }
+      });
+
+    const handleLogoUpdated = (event: Event) => {
+      const detail = (event as CustomEvent<{ projectId?: string; logoUrl?: string | null }>).detail;
+      if (detail && detail.projectId === projectId) {
+        setLogoUrl(detail.logoUrl ?? null);
+      }
+    };
+    window.addEventListener('project-logo-updated', handleLogoUpdated);
+    return () => {
+      cancelled = true;
+      window.removeEventListener('project-logo-updated', handleLogoUpdated);
+    };
+  }, [projectId]);
+
   return (
     <DropdownMenuTrigger asChild>
       <button
@@ -28,8 +65,17 @@ export function ProjectMenuTrigger({ isOpen }: ProjectMenuTriggerProps) {
         data-state={isOpen ? 'open' : 'closed'}
         className={`peer/menu-button ring-sidebar-ring active:bg-sidebar-accent active:text-sidebar-accent-foreground data-[active=true]:bg-sidebar-accent data-[active=true]:text-sidebar-accent-foreground data-[state=open]:hover:bg-sidebar-accent data-[state=open]:hover:text-sidebar-accent-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground flex h-12 w-full items-center gap-2 overflow-hidden rounded-md p-2 text-left text-sm outline-hidden transition-[width,height,padding] group-has-data-[sidebar=menu-action]/menu-item:pr-8 group-data-[collapsible=icon]:size-8! group-data-[collapsible=icon]:p-0! focus-visible:ring-2 disabled:pointer-events-none disabled:opacity-50 aria-disabled:pointer-events-none aria-disabled:opacity-50 [&>span:last-child]:truncate [&>svg]:size-4 [&>svg]:shrink-0`}
       >
-        <div className='text-sidebar-primary-foreground flex aspect-square size-8 items-center justify-center rounded-md border bg-white dark:bg-white/10'>
-          <Logo width={24} height={24} />
+        <div className='text-sidebar-primary-foreground flex aspect-square size-8 items-center justify-center overflow-hidden rounded-md border bg-white dark:bg-white/10'>
+          {logoUrl ? (
+            <img
+              src={logoUrl}
+              alt={title ?? ''}
+              referrerPolicy='no-referrer'
+              className='size-6 rounded object-contain'
+            />
+          ) : (
+            <Logo width={24} height={24} />
+          )}
         </div>
 
         <div className='grid flex-1 text-left text-sm leading-tight'>
