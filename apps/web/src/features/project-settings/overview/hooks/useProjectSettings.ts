@@ -9,9 +9,10 @@ interface UseProjectSettingsResult {
   isLoading: boolean;
   error: string | null;
   updateDescription: (description: string | null) => Promise<void>;
+  updateLogo: (logoUrl: string | null) => Promise<void>;
 }
 
-const EMPTY_SETTINGS: ProjectSettings = { description: null };
+const EMPTY_SETTINGS: ProjectSettings = { description: null, logoUrl: null };
 
 export function useProjectSettings(projectId: string): UseProjectSettingsResult {
   const { t } = useTranslation();
@@ -81,5 +82,35 @@ export function useProjectSettings(projectId: string): UseProjectSettingsResult 
     [t]
   );
 
-  return { settings, isLoading, error, updateDescription };
+  const updateLogo = useCallback(
+    async (logoUrl: string | null) => {
+      const requestProjectId = activeProjectIdRef.current;
+
+      try {
+        const updated = await projectSettingsApiService.updateLogo(logoUrl);
+        if (activeProjectIdRef.current === requestProjectId) {
+          setSettings(updated);
+          setError(null);
+          window.dispatchEvent(
+            new CustomEvent('project-logo-updated', {
+              detail: { projectId: requestProjectId, logoUrl: updated.logoUrl ?? null },
+            })
+          );
+          toast.success(t('projectOverview.logoUpdated', 'Đã cập nhật logo dự án'));
+        }
+      } catch (cause) {
+        const message =
+          cause instanceof Error
+            ? cause.message
+            : t('projectOverview.logoUpdateFailed', 'Không thể cập nhật logo dự án');
+        if (activeProjectIdRef.current === requestProjectId) {
+          toast.error(message);
+        }
+        throw cause;
+      }
+    },
+    [t]
+  );
+
+  return { settings, isLoading, error, updateDescription, updateLogo };
 }
