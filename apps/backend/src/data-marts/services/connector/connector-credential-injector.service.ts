@@ -69,7 +69,10 @@ export class ConnectorCredentialInjectorService {
           return obj;
         }
 
-        if (credentialsEntity.projectId !== projectId) {
+        if (
+          credentialsEntity.projectId !== projectId &&
+          (credentialsEntity.dataMartId || !credentialsEntity.kind)
+        ) {
           this.logger.warn(
             `OAuth credentials ${credentialId} belong to project ${credentialsEntity.projectId}, not ${projectId}. Skipping injection.`
           );
@@ -227,7 +230,10 @@ export class ConnectorCredentialInjectorService {
         return config;
       }
 
-      if (secretsEntity.projectId !== projectId) {
+      if (
+        secretsEntity.projectId !== projectId &&
+        (secretsEntity.dataMartId || !secretsEntity.kind)
+      ) {
         this.logger.warn(
           `Secrets ${secretsId} belong to project ${secretsEntity.projectId}, not ${projectId}. Skipping injection.`
         );
