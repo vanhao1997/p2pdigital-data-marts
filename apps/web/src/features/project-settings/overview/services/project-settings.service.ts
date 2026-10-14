@@ -1,5 +1,9 @@
 import { ApiService } from '../../../../services';
-import type { ProjectSettings, UpdateProjectDescriptionRequest } from '../types';
+import type {
+  ProjectSettings,
+  UpdateProjectDescriptionRequest,
+  UpdateProjectLogoRequest,
+} from '../types';
 
 export class ProjectSettingsApiService extends ApiService {
   constructor() {
@@ -13,6 +17,11 @@ export class ProjectSettingsApiService extends ApiService {
   async updateDescription(description: string | null): Promise<ProjectSettings> {
     const request: UpdateProjectDescriptionRequest = { description };
     return this.put<ProjectSettings>('/description', request);
+  }
+
+  async updateLogo(logoUrl: string | null): Promise<ProjectSettings> {
+    const request: UpdateProjectLogoRequest = { logoUrl };
+    return this.put<ProjectSettings>('/logo', request);
   }
 }
 
