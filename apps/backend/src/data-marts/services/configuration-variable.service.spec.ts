@@ -1,4 +1,4 @@
-import { BadRequestException, ConflictException } from '@nestjs/common';
+import { ConflictException } from '@nestjs/common';
 import { QueryFailedError } from 'typeorm';
 import { ConfigurationVariableKind } from '../enums/configuration-variable-kind.enum';
 import { ConfigurationVariableService } from './configuration-variable.service';
@@ -127,8 +127,8 @@ describe('ConfigurationVariableService', () => {
     );
   });
 
-  it('rejects a credential reference from another project', async () => {
-    const { service, connectorCredentials } = make();
+  it('allows a credential reference from another project', async () => {
+    const { service, connectorCredentials, repository } = make();
     connectorCredentials.getCredentialsById.mockResolvedValue({
       id: 'credential-1',
       projectId: 'project-2',
@@ -142,7 +142,13 @@ describe('ConfigurationVariableService', () => {
         kind: ConfigurationVariableKind.CREDENTIAL_REFERENCE,
         credentialId: 'credential-1',
       })
-    ).rejects.toBeInstanceOf(BadRequestException);
+    ).resolves.toEqual(
+      expect.objectContaining({
+        name: 'AdsOAuth',
+        credentialId: 'credential-1',
+      })
+    );
+    expect(repository.save).toHaveBeenCalled();
   });
 
   it('maps a concurrent duplicate insert to a conflict response', async () => {
