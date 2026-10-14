@@ -8,6 +8,8 @@ export class ProjectSettings {
   @Column({ type: 'text', nullable: true })
   description: string | null;
 
+  logoUrl?: string | null;
+
   @CreateDateColumn()
   createdAt: Date;
 
