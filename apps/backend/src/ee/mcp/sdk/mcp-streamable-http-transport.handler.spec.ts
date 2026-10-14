@@ -113,7 +113,7 @@ describe('McpStreamableHttpTransportHandler protocol integration', () => {
       cacheScope: 'private',
       _meta: { 'io.modelcontextprotocol/serverInfo': { name: 'owox-mcp', version: '0.1.0' } },
     });
-    expect(Object.keys(res.body.result.capabilities)).toEqual(['tools']);
+    expect(Object.keys(res.body.result.capabilities)).toEqual(['tools', 'prompts']);
     expect(res.headers['mcp-session-id']).toBeUndefined();
   });
 
