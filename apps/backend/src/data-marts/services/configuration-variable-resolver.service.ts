@@ -300,7 +300,7 @@ export class ConfigurationVariableResolverService {
 
   private async getReferenceCredential(
     variable: ConfigurationVariable,
-    projectId: string,
+    _projectId: string,
     connectorName: string,
     kind: ConfigurationVariableKind
   ) {
@@ -313,7 +313,6 @@ export class ConfigurationVariableResolverService {
     const credentialKind = credential?.kind ?? (credential?.dataMartId ? 'secret' : 'oauth');
     if (
       !credential ||
-      credential.projectId !== projectId ||
       credential.connectorName !== connectorName ||
       credentialKind !== expectedCredentialKind
     ) {
