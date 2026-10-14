@@ -21,10 +21,13 @@ export class ProjectSettingsMapper {
   }
 
   toDomainDto(projectId: string, entity: ProjectSettings | null): ProjectSettingsDto {
-    return new ProjectSettingsDto(projectId, entity?.description ?? null);
+    return new ProjectSettingsDto(projectId, entity?.description ?? null, entity?.logoUrl);
   }
 
   toResponse(dto: ProjectSettingsDto): ProjectSettingsResponseApiDto {
-    return { description: dto.description };
+    return {
+      description: dto.description,
+      logoUrl: dto.logoUrl ?? null,
+    };
   }
 }
