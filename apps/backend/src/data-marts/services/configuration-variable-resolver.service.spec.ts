@@ -1,4 +1,3 @@
-import { BadRequestException } from '@nestjs/common';
 import { ConfigurationVariableResolverService } from './configuration-variable-resolver.service';
 import { ConfigurationVariableKind } from '../enums/configuration-variable-kind.enum';
 
@@ -67,11 +66,11 @@ describe('ConfigurationVariableResolverService', () => {
     ).resolves.toEqual({ AuthType: { _source_credential_id: 'credential-1' } });
   });
 
-  it('rejects a credential reference from another project', async () => {
+  it('resolves a shared credential reference from another project', async () => {
     const { service, variables, credentials } = make();
     variables.resolve.mockResolvedValue({
       id: 'var-1',
-      projectId: 'project-1',
+      projectId: 'project-2',
       kind: ConfigurationVariableKind.SECRET_REFERENCE,
       credentialId: 'credential-1',
     });
@@ -85,7 +84,7 @@ describe('ConfigurationVariableResolverService', () => {
 
     await expect(
       service.resolveConnectorConfig({ _secrets_variable_id: 'var-1' }, 'project-1', 'GoogleAds')
-    ).rejects.toBeInstanceOf(BadRequestException);
+    ).resolves.toEqual({ _secrets_id: 'credential-1' });
   });
 
   it('keeps an opaque runtime reference and expands a reusable secret only for save', async () => {
