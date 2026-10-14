@@ -19,4 +19,9 @@ export class UpdateProjectDescriptionService {
     );
     return this.mapper.toDomainDto(command.projectId, settings);
   }
+
+  async updateLogo(projectId: string, logoUrl: string | null): Promise<ProjectSettingsDto> {
+    const settings = await this.projectSettingsService.saveLogo(projectId, logoUrl);
+    return this.mapper.toDomainDto(projectId, settings);
+  }
 }
