@@ -46,4 +46,23 @@ export class ProjectSettingsController {
     const settings = await this.updateProjectDescriptionService.run(command);
     return this.mapper.toResponse(settings);
   }
+
+  @Auth(Role.admin(Strategy.INTROSPECT))
+  @Put('logo')
+  @ApiOperation({ summary: 'Update the project logo (avatar)' })
+  @ApiOkResponse({
+    description: 'The updated project settings.',
+    type: ProjectSettingsResponseApiDto,
+  })
+  async updateLogo(
+    @AuthContext() context: AuthorizationContext,
+    @Body() body: Record<string, unknown>
+  ): Promise<ProjectSettingsResponseApiDto> {
+    const rawLogo = typeof body?.logoUrl === 'string' ? body.logoUrl : null;
+    const settings = await this.updateProjectDescriptionService.updateLogo(
+      context.projectId,
+      rawLogo
+    );
+    return this.mapper.toResponse(settings);
+  }
 }
