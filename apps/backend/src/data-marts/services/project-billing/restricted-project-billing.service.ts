@@ -1,20 +1,16 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { ProjectOperationBlockedException } from '../../../common/exceptions/project-operation-blocked.exception';
-import { ProjectBlockedReason } from '../../enums/project-blocked-reason.enum';
-import { isReportRun, ProjectBillingService, RunKind } from './project-billing.service';
+import { ProjectBillingService, RunKind } from './project-billing.service';
 
 /**
- * Applied when no valid managed license is present. Report Runs are denied; Process Runs
- * keep executing unbilled, which is what a deployment without Cloud billing already does.
+ * Applied when no valid managed license is present. Both Report Runs and Process Runs
+ * execute unbilled on self-hosted deployments without Cloud billing.
  */
 @Injectable()
 export class RestrictedProjectBillingService extends ProjectBillingService {
   private readonly logger = new Logger(RestrictedProjectBillingService.name);
 
-  public async verifyCanPerformOperations(projectId: string, runKind: RunKind): Promise<void> {
-    if (isReportRun(runKind)) {
-      throw new ProjectOperationBlockedException([ProjectBlockedReason.LICENSE_REQUIRED]);
-    }
+  public async verifyCanPerformOperations(_projectId: string, _runKind: RunKind): Promise<void> {
+    return;
   }
 
   public async registerConnectorRunConsumption(): Promise<void> {
