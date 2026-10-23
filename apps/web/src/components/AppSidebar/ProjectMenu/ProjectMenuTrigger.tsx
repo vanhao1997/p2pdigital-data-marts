@@ -40,8 +40,8 @@ export function ProjectMenuTrigger({ isOpen }: ProjectMenuTriggerProps) {
       });
 
     const handleLogoUpdated = (event: Event) => {
-      const detail = (event as CustomEvent<{ projectId?: string; logoUrl?: string | null }>).detail;
-      if (detail && detail.projectId === projectId) {
+      const detail = (event as CustomEvent<{ projectId?: string; logoUrl?: string | null } | undefined>).detail;
+      if (detail?.projectId === projectId) {
         setLogoUrl(detail.logoUrl ?? null);
       }
     };

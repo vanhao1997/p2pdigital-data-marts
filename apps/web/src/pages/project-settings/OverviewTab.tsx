@@ -475,7 +475,9 @@ function DescriptionCard({ label, value }: { label: string; value: React.ReactNo
 function resizeImageFileToDataUrl(file: File, maxSize = 128): Promise<string> {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
-    reader.onerror = () => reject(new Error('Không thể đọc tệp hình ảnh'));
+    reader.onerror = () => {
+      reject(new Error('Không thể đọc tệp hình ảnh'));
+    };
     reader.onload = () => {
       const result = typeof reader.result === 'string' ? reader.result : '';
       if (file.type === 'image/svg+xml' || result.length <= 64_000) {
@@ -483,7 +485,9 @@ function resizeImageFileToDataUrl(file: File, maxSize = 128): Promise<string> {
         return;
       }
       const img = new Image();
-      img.onerror = () => resolve(result);
+      img.onerror = () => {
+        resolve(result);
+      };
       img.onload = () => {
         const canvas = document.createElement('canvas');
         const scale = Math.min(1, maxSize / Math.max(img.width || 1, img.height || 1));
@@ -546,7 +550,7 @@ function ProjectLogoCard({
       <div className='flex items-center gap-4'>
         <div className='flex size-14 shrink-0 items-center justify-center overflow-hidden rounded-lg border bg-gray-50 dark:bg-white/10'>
           <img
-            src={logoUrl || '/favicon.png'}
+            src={logoUrl ?? '/favicon.png'}
             alt={projectTitle || 'Project logo'}
             referrerPolicy='no-referrer'
             className='size-10 rounded object-contain'
@@ -579,7 +583,9 @@ function ProjectLogoCard({
           <input
             type='text'
             value={urlInput.startsWith('data:image/') ? '' : urlInput}
-            onChange={e => setUrlInput(e.target.value)}
+            onChange={e => {
+              setUrlInput(e.target.value);
+            }}
             placeholder={t('projectOverview.logoUrlPlaceholder', 'Hoặc dán URL hình ảnh (https://...)')}
             disabled={saving}
             className='border-input bg-background h-8 w-56 rounded-md border px-2.5 text-xs outline-hidden focus:ring-1'

@@ -77,7 +77,9 @@ export function LookerStudioReportCard({
               )}
               <div
                 className='mt-2 flex flex-wrap items-center gap-2'
-                onClick={e => e.stopPropagation()}
+                onClick={e => {
+                  e.stopPropagation();
+                }}
               >
                 <a
                   href='https://lookerstudio.google.com/reporting/ad3501fd-54fe-4519-9b7a-6f240b3c76e3/page/azjBB'
