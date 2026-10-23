@@ -106,11 +106,11 @@ const ScheduleTypeField: FC<ScheduleTypeFieldProps> = ({
 
   return (
     <div className='space-y-2'>
-      <div className='flex items-center justify-between'>
+      <div className='flex flex-wrap items-center justify-between gap-1.5'>
         <Label>{t('scheduleConfig.type', 'Type')}</Label>
         {/* Quick presets */}
         {!disabled && (
-          <div className='flex gap-1'>
+          <div className='flex flex-wrap gap-1'>
             {SCHEDULE_PRESETS.map(preset => (
               <kbd
                 key={preset.label}
@@ -177,11 +177,11 @@ interface TimeFieldProps {
 const TimeField: FC<TimeFieldProps> = ({ value, onChange, disabled }) => {
   const { t } = useTranslation();
   return (
-    <div className='space-y-2'>
+    <div className='shrink-0 space-y-2'>
       <Label>{t('scheduleConfig.time', 'Time')}</Label>
       <div className='flex items-center gap-2'>
         <Input
-          className={'w-24'}
+          className='w-32'
           type='time'
           value={value}
           onChange={e => {
