@@ -342,10 +342,7 @@ export class McpReportsFacadeImpl implements McpReportsFacade {
     );
 
     if (request.runImmediately === true && isPullBasedDataDestinationType(destination.type)) {
-      throw new BadRequestException(
-        `run_immediately is not applicable to ${toHumanReadable(destination.type)} destinations: ` +
-          'they are pull-based and cannot be run through MCP'
-      );
+      request = { ...request, runImmediately: false };
     }
 
     // One up-front guard instead of per-branch calls: any current or future
@@ -461,21 +458,12 @@ export class McpReportsFacadeImpl implements McpReportsFacade {
    * raw primary-key violation.
    */
   private async addLookerStudioReport(request: McpAddReportRequest): Promise<McpCreatedReport> {
-    if (request.name !== undefined) {
-      throw new BadRequestException(
-        'The name parameter is not applicable to Looker Studio destinations: ' +
-          'Looker Studio reports carry no name, and each data mart + destination ' +
-          'pair has exactly one report.'
-      );
-    }
-
     if (await this.lookerStudioReportExists(request)) {
       throw new BusinessViolationException(LOOKER_STUDIO_DUPLICATE_REPORT_MESSAGE);
     }
 
     try {
-      // The title is discarded by the domain for Looker Studio reports; pass
-      // the empty string it would end up as anyway.
+      const reportTitle = request.name?.trim() || '';
       return await this.createReportWithConfig(
         request,
         DataDestinationType.LOOKER_STUDIO,
@@ -483,7 +471,7 @@ export class McpReportsFacadeImpl implements McpReportsFacade {
           type: LookerStudioConnectorConfigType,
           cacheLifetime: LOOKER_STUDIO_DEFAULT_CACHE_LIFETIME_SECONDS,
         },
-        ''
+        reportTitle
       );
     } catch (error) {
       // Two concurrent add_report calls can both pass the existence check; the

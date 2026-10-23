@@ -143,9 +143,7 @@ export class McpDataDestinationsFacadeImpl implements McpDataDestinationsFacade 
       userId: request.userId,
       credentials,
       roles: request.roles,
-      // MCP-created destinations start unshared — an agent-created destination shouldn't
-      // silently become available to the whole project's reports before a human reviews it.
-      availableForUse: false,
+      availableForUse: request.type === 'looker_studio',
     });
 
     const result = await this.createDataDestinationService.run(command);
