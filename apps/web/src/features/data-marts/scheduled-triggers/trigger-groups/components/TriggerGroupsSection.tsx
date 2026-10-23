@@ -188,18 +188,20 @@ export function TriggerGroupsSection({
             )}
           </div>
 
-          <Button
-            type='button'
-            variant='outline'
-            size='sm'
-            onClick={() => {
-              onRequestCreateGroup();
-            }}
-            data-testid='createTriggerGroupInlineBtn'
-          >
-            <Plus className='h-3.5 w-3.5' />
-            {isVi ? 'Thêm Bộ Trigger nhóm' : 'New Trigger Group'}
-          </Button>
+          {groups.length > 0 && (
+            <Button
+              type='button'
+              variant='default'
+              size='sm'
+              onClick={() => {
+                onRequestCreateGroup();
+              }}
+              data-testid='createTriggerGroupBtn'
+            >
+              <Plus className='h-3.5 w-3.5' />
+              {isVi ? 'Tạo Bộ Trigger nhóm' : 'Create Trigger Group'}
+            </Button>
+          )}
         </div>
 
         {groups.length === 0 ? (
@@ -224,7 +226,7 @@ export function TriggerGroupsSection({
               onClick={() => {
                 onRequestCreateGroup();
               }}
-              data-testid='emptyStateCreateTriggerGroupBtn'
+              data-testid='createTriggerGroupBtn'
             >
               <Plus className='h-4 w-4' />
               {isVi ? 'Tạo Bộ Trigger nhóm' : 'Create Trigger Group'}

@@ -2,10 +2,9 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useParams } from 'react-router';
 import type { ColumnDef } from '@tanstack/react-table';
 import { Badge } from '@owox/ui/components/badge';
-import { Button } from '@owox/ui/components/button';
 import RelativeTime from '@owox/ui/components/common/relative-time';
 import { SkeletonList } from '@owox/ui/components/common/skeleton-list';
-import { Layers, Plus } from 'lucide-react';
+import { Layers } from 'lucide-react';
 import { extractApiError } from '../../../app/api';
 import { ConnectorContextProvider } from '../../../features/connectors/shared/model/context';
 import { useConnector } from '../../../features/connectors/shared/model/hooks/useConnector';
@@ -584,24 +583,8 @@ function DataMartSchedulesPageContent() {
 
   return (
     <div className='dm-page' data-testid='dataMartSchedulesPage'>
-      <header className='dm-page-header flex flex-wrap items-center justify-between gap-3'>
+      <header className='dm-page-header'>
         <h1 className='dm-page-header-title'>{t('projectDataMartPages.triggersTitle')}</h1>
-        <Button
-          type='button'
-          variant='default'
-          size='sm'
-          onClick={() => {
-            handleOpenCreateGroup();
-          }}
-          data-testid='createTriggerGroupBtn'
-        >
-          <Layers className='h-4 w-4' />
-          <span>
-            {isVi
-              ? 'Tạo Bộ Trigger nhóm'
-              : 'Create Trigger Group'}
-          </span>
-        </Button>
       </header>
 
       <div className='dm-page-content'>
@@ -659,22 +642,6 @@ function DataMartSchedulesPageContent() {
                       />
                       <ProjectDataMartTableSearch value={searchQuery} onChange={setSearchQuery} />
                     </>
-                  )}
-                  renderToolbarRight={() => (
-                    <Button
-                      type='button'
-                      variant='outline'
-                      size='sm'
-                      onClick={() => {
-                        handleOpenCreateGroup();
-                      }}
-                      data-testid='toolbarCreateTriggerGroupBtn'
-                    >
-                      <Plus className='h-4 w-4' />
-                      <span className='hidden sm:inline'>
-                        {isVi ? 'Bộ Trigger nhóm mới' : 'New Trigger Group'}
-                      </span>
-                    </Button>
                   )}
                   renderEmptyState={() => (
                     <div

@@ -36,7 +36,6 @@ function DataMartTriggersInner({
   onCloseFormSheet,
   isGroupSheetOpen,
   editingGroup,
-  onOpenCreateGroup,
   onOpenEditGroup,
   onCloseGroupSheet,
 }: {
@@ -47,7 +46,6 @@ function DataMartTriggersInner({
   onCloseFormSheet: () => void;
   isGroupSheetOpen: boolean;
   editingGroup: TriggerGroup | null;
-  onOpenCreateGroup: () => void;
   onOpenEditGroup: (group: TriggerGroup) => void;
   onCloseGroupSheet: () => void;
 }) {
@@ -87,17 +85,6 @@ function DataMartTriggersInner({
             </Badge>
           </div>
           <div className='flex items-center gap-2'>
-            <Button
-              type='button'
-              variant='ghost'
-              size='sm'
-              className='h-7 px-2 text-xs'
-              onClick={onOpenCreateGroup}
-              data-testid='bannerCreateTriggerGroupBtn'
-            >
-              <Plus className='h-3.5 w-3.5' />
-              {isVi ? 'Tạo Bộ Trigger nhóm mới' : 'Create Trigger Group'}
-            </Button>
             <Button type='button' variant='outline' size='sm' className='h-7 px-2.5 text-xs' asChild>
               <Link to={scope('/data-marts/schedules')} data-testid='manageAllTriggerGroupsLink'>
                 {isVi ? 'Quản lý tất cả Bộ Trigger nhóm' : 'Manage all Trigger Groups'}
@@ -258,7 +245,6 @@ export default function DataMartTriggersContent() {
                   onCloseFormSheet={handleCloseFormSheet}
                   isGroupSheetOpen={isGroupSheetOpen}
                   editingGroup={editingGroup}
-                  onOpenCreateGroup={handleOpenCreateGroup}
                   onOpenEditGroup={handleOpenEditGroup}
                   onCloseGroupSheet={handleCloseGroupSheet}
                 />
