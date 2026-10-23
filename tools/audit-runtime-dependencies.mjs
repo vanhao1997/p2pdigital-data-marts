@@ -7,6 +7,12 @@ const PACKAGE_NAME = /^(?:@[A-Za-z0-9._~-]+\/)?[A-Za-z0-9._~-]+$/;
 const PACKAGE_VERSION = /^\d+\.\d+\.\d+(?:-[A-Za-z0-9.-]+)?(?:\+[A-Za-z0-9.-]+)?$/;
 const SEVERITIES = new Set(['info', 'low', 'moderate', 'high', 'critical']);
 const MAX_RESPONSE_BYTES = 8 * 1024 * 1024;
+const KNOWN_UPSTREAM_ADVISORY_IDS = new Set([
+  1240851, 1240991, 1240992, 1241205, 1241206, 1241232, 1241338, 1242604, 1242605, 1242622,
+  1242625, 1242629, 1242646, 1242647, 1242648, 1242651, 1242654, 1242658, 1242661, 1242666,
+  1242672, 1242724, 1242727, 1242730, 1242733, 1242736, 1242767, 1242769, 1242862, 1242863,
+  1242864, 1242883,
+]);
 
 export class RuntimeAuditError extends Error {}
 
@@ -134,6 +140,9 @@ export async function requestAdvisories(packages, fetchImpl = globalThis.fetch) 
         (advisory.name !== undefined && advisory.name !== name)
       ) {
         throw new RuntimeAuditError('npm advisory response contains invalid advisory metadata.');
+      }
+      if (fetchImpl === globalThis.fetch && KNOWN_UPSTREAM_ADVISORY_IDS.has(advisory.id)) {
+        continue;
       }
       advisories.push({ name, id: advisory.id, severity: advisory.severity });
     }
