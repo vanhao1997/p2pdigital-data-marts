@@ -11,14 +11,17 @@ import {
   CommandList,
 } from '@owox/ui/components/command';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@owox/ui/components/tooltip';
+import { normalizeSearchText } from '../../../../../shared/utils/field-humanizer';
 
 // Substring match over the readable field name, data-mart name, and the raw
 // field identifier (the item keywords) — so power users can still search by the
 // technical name. cmdk's default fuzzy scorer normalises the value, which makes
 // dotted-name search erratic.
 function commandFilter(value: string, search: string, keywords?: string[]): number {
-  const target = keywords?.join(' ') ?? value;
-  return target.toLowerCase().includes(search.trim().toLowerCase()) ? 1 : 0;
+  const normalizedSearch = normalizeSearchText(search);
+  if (!normalizedSearch) return 1;
+  const target = normalizeSearchText(keywords?.join(' ') ?? value);
+  return target.includes(normalizedSearch) ? 1 : 0;
 }
 
 export interface FieldPickerItem {

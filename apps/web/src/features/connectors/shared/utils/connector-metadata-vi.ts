@@ -562,4 +562,163 @@ export const connectorMetadataVi: Record<string, string> = {
   'Your X Ads API Access Token Secret': 'Bí mật mã truy cập API quảng cáo X của bạn',
   'Your X Ads API Consumer Key': 'Khóa người tiêu dùng API quảng cáo X của bạn',
   'Your X Ads API Consumer Secret': 'Mã bí mật người tiêu dùng API quảng cáo X của bạn',
+  'Google Analytics 4': 'Google Analytics 4 (GA4)',
+  'Import Google Analytics 4 (GA4) traffic acquisition, pages, events, and device/geography metrics into your data warehouse.':
+    'Đồng bộ lưu lượng truy cập (Traffic Acquisition), trang đích, sự kiện (Events) và thiết bị/địa lý từ Google Analytics 4 (GA4) về kho dữ liệu BigQuery.',
+  'GA4 Property ID': 'ID Tài sản GA4 (Property ID)',
+  'Google Analytics 4 numeric Property ID (e.g. 548808026, or comma-separated IDs like 548808026, 538951926)':
+    'Mã Property ID dạng số của Google Analytics 4 (ví dụ: 548808026, hoặc nhiều ID cách nhau bằng dấu phẩy như 548808026, 538951926)',
+  'Enter GA4 Property ID (e.g. 548808026)': 'Nhập GA4 Property ID (ví dụ: 548808026)',
+  'Google Service Account JSON key file content. Grant Viewer access on the GA4 Property to the service account email.':
+    'Nội dung JSON key của Google Service Account. Hãy cấp quyền Người xem (Viewer) trên tài sản GA4 cho email của Service Account.',
+  'Google OAuth2 Refresh Token with analytics.readonly scope':
+    'Google OAuth2 Refresh Token có quyền analytics.readonly',
+  'List of fields to fetch from Google Analytics 4 Data API':
+    'Danh sách các trường dữ liệu cần lấy từ Google Analytics 4 Data API',
+  'Number of days to look back when reimporting GA4 data':
+    'Số ngày nhìn lại (lookback window) khi cập nhật lại dữ liệu GA4',
+  'GA4 Traffic Acquisition Daily': 'GA4 - Lưu lượng truy cập theo ngày (Traffic Acquisition)',
+  'Daily sessions, users, views, engaged sessions, engagement rate, conversions, and revenue by channel group, source, medium, and campaign.':
+    'Số phiên, người dùng, lượt xem trang, phiên tương tác, tỷ lệ tương tác, chuyển đổi và doanh thu hàng ngày theo nhóm kênh, nguồn/phương tiện và chiến dịch.',
+  'GA4 Pages & Screens Daily': 'GA4 - Hiệu suất Trang & Màn hình theo ngày (Pages & Screens)',
+  'Daily page views, active users, sessions, engagement duration, and conversions by hostname, page path, page title, and landing page.':
+    'Lượt xem trang, người dùng hoạt động, số phiên, thời lượng tương tác và chuyển đổi hàng ngày theo tên miền, đường dẫn trang, tiêu đề trang và trang đích.',
+  'GA4 Events Daily': 'GA4 - Sự kiện theo ngày (Events)',
+  'Daily event count, active users, events per user, conversions, and revenue by event name.':
+    'Tổng số lần kích hoạt sự kiện, người dùng hoạt động, số sự kiện/người dùng, chuyển đổi và doanh thu hàng ngày theo tên sự kiện.',
+  'GA4 Device & Geography Daily': 'GA4 - Thiết bị & Địa lý theo ngày (Tech & Geography)',
+  'Daily active users, new users, sessions, engaged sessions, page views, and conversions by device category, OS, browser, country, and city.':
+    'Người dùng hoạt động, người dùng mới, số phiên, lượt xem trang và chuyển đổi hàng ngày theo loại thiết bị, hệ điều hành, trình duyệt, quốc gia và thành phố.',
+  'Store IDs': 'ID Cửa hàng (Store ID)',
+  'Optional TikTok Shop Store ID(s) to filter GMV Max data. Leave empty to automatically use all GMV Max authorized shops.':
+    'ID Cửa hàng TikTok Shop tùy chọn để lọc dữ liệu GMV Max. Để trống để tự động lấy tất cả cửa hàng được cấp quyền GMV Max.',
+  'Promotion Type': 'Loại chiến dịch (Promotion Type)',
+  'GMV Max campaign promotion type: PRODUCT, LIVE, or BOTH':
+    'Loại chiến dịch GMV Max: PRODUCT (Sản phẩm), LIVE (Livestream) hoặc BOTH (Cả hai)',
+  'Campaign Name Filter': 'Lọc tên chiến dịch',
+  'Optional campaign name substring filter for GMV Max reports':
+    'Chuỗi ký tự tùy chọn để lọc theo tên chiến dịch GMV Max',
+  'GMV Max Report': 'Báo cáo hiệu suất GMV Max',
+  'Daily TikTok GMV Max campaign performance — cost, orders, gross revenue, ROI, net cost, Product GMV Max, and LIVE GMV Max metrics.':
+    'Hiệu suất chiến dịch TikTok GMV Max hàng ngày — chi phí, đơn hàng, doanh thu gộp, ROI, chi phí ròng, chỉ số Sản phẩm (PRODUCT) và Livestream (LIVE).',
+  'GMV Max Stores': 'Danh sách cửa hàng TikTok Shop (GMV Max)',
+  'TikTok Shops visible to your advertiser account — store name, GMV Max availability, status, and authorization details.':
+    'Danh sách các cửa hàng TikTok Shop liên kết với tài khoản quảng cáo — tên cửa hàng, trạng thái khả dụng GMV Max và thông tin ủy quyền.',
+  'TikTok Shop Name': 'Tên cửa hàng TikTok Shop',
+  'TikTok Shop Store ID': 'ID cửa hàng TikTok Shop (Store ID)',
+  'Campaign Name (GMV Max)': 'Tên chiến dịch (GMV Max)',
+  'GMV Max Promotion Type (PRODUCT or LIVE)': 'Loại chiến dịch GMV Max (PRODUCT hoặc LIVE)',
+  'Campaign Operation Status': 'Trạng thái hoạt động chiến dịch',
+  'Whether the TikTok Shop is eligible and available for GMV Max':
+    'Cửa hàng TikTok Shop có đủ điều kiện và khả dụng cho GMV Max hay không',
+  'TikTok Shop Store Status': 'Trạng thái cửa hàng TikTok Shop',
+  'Authorized Business Center ID': 'ID Trung tâm doanh nghiệp (BC ID) được ủy quyền',
+  'Exclusive Authorized Advertiser ID for GMV Max':
+    'ID Nhà quảng cáo được ủy quyền độc quyền cho GMV Max',
+  'GMV Max - Cost (ALL | API metric: cost)': 'GMV Max - Chi phí (ALL | API metric: cost)',
+  'GMV Max - Orders (SKU) (ALL | API metric: orders)':
+    'GMV Max - Số đơn hàng (SKU) (ALL | API metric: orders)',
+  'GMV Max - Cost / Order (ALL | API metric: cost_per_order)':
+    'GMV Max - Chi phí / Đơn hàng (ALL | API metric: cost_per_order)',
+  'GMV Max - Gross Revenue (ALL | API metric: gross_revenue)':
+    'GMV Max - Doanh thu gộp (ALL | API metric: gross_revenue)',
+  'GMV Max - ROI (ALL | API metric: roi)': 'GMV Max - ROI (ALL | API metric: roi)',
+  'GMV Max - Net Cost (ALL | API metric: net_cost)':
+    'GMV Max - Chi phí ròng (ALL | API metric: net_cost)',
+  'GMV Max - Product Impressions (PRODUCT | API metric: product_impressions)':
+    'GMV Max - Lượt hiển thị sản phẩm (PRODUCT | API metric: product_impressions)',
+  'GMV Max - Product Clicks (PRODUCT | API metric: product_clicks)':
+    'GMV Max - Lượt nhấp sản phẩm (PRODUCT | API metric: product_clicks)',
+  'GMV Max - Product Click Rate (PRODUCT | API metric: product_click_rate)':
+    'GMV Max - Tỷ lệ nhấp sản phẩm (PRODUCT | API metric: product_click_rate)',
+  'GMV Max - Ad Click Rate (PRODUCT | API metric: ad_click_rate)':
+    'GMV Max - Tỷ lệ nhấp quảng cáo (PRODUCT | API metric: ad_click_rate)',
+  'GMV Max - Ad Conversion Rate (PRODUCT | API metric: ad_conversion_rate)':
+    'GMV Max - Tỷ lệ chuyển đổi quảng cáo (PRODUCT | API metric: ad_conversion_rate)',
+  'GMV Max - Video Rate 2s (PRODUCT | API metric: ad_video_view_rate_2s)':
+    'GMV Max - Tỷ lệ xem video 2s (PRODUCT | API metric: ad_video_view_rate_2s)',
+  'GMV Max - Video Rate 6s (PRODUCT | API metric: ad_video_view_rate_6s)':
+    'GMV Max - Tỷ lệ xem video 6s (PRODUCT | API metric: ad_video_view_rate_6s)',
+  'GMV Max - Video Rate 25% (PRODUCT | API metric: ad_video_view_rate_p25)':
+    'GMV Max - Tỷ lệ xem video 25% (PRODUCT | API metric: ad_video_view_rate_p25)',
+  'GMV Max - Video Rate 50% (PRODUCT | API metric: ad_video_view_rate_p50)':
+    'GMV Max - Tỷ lệ xem video 50% (PRODUCT | API metric: ad_video_view_rate_p50)',
+  'GMV Max - Video Rate 75% (PRODUCT | API metric: ad_video_view_rate_p75)':
+    'GMV Max - Tỷ lệ xem video 75% (PRODUCT | API metric: ad_video_view_rate_p75)',
+  'GMV Max - Video Rate 100% (PRODUCT | API metric: ad_video_view_rate_p100)':
+    'GMV Max - Tỷ lệ xem video 100% (PRODUCT | API metric: ad_video_view_rate_p100)',
+  'GMV Max - LIVE Views (LIVE | API metric: live_views)':
+    'GMV Max - Lượt xem LIVE (LIVE | API metric: live_views)',
+  'GMV Max - Cost / LIVE View (LIVE | API metric: cost_per_live_view)':
+    'GMV Max - Chi phí / Lượt xem LIVE (LIVE | API metric: cost_per_live_view)',
+  'GMV Max - LIVE Views 10s (LIVE | API metric: 10_second_live_views)':
+    'GMV Max - Lượt xem LIVE 10s (LIVE | API metric: 10_second_live_views)',
+  'GMV Max - Cost / LIVE View 10s (LIVE | API metric: cost_per_10_second_live_views)':
+    'GMV Max - Chi phí / Lượt xem LIVE 10s (LIVE | API metric: cost_per_10_second_live_views)',
+  'GMV Max - LIVE Follows (LIVE | API metric: live_follows)':
+    'GMV Max - Lượt follow từ LIVE (LIVE | API metric: live_follows)',
+  // Connector Node Overviews (Facebook, LinkedIn, Reddit, Shopify)
+  'Ad Account User': 'Người dùng tài khoản quảng cáo',
+  'Ad Account': 'Tài khoản quảng cáo',
+  'Ad Accounts': 'Danh sách tài khoản quảng cáo',
+  'Ad Creatives': 'Mẫu quảng cáo (Creatives)',
+  'Ad Creative': 'Mẫu quảng cáo (Creative)',
+  Creatives: 'Mẫu quảng cáo (Creatives)',
+  Ads: 'Quảng cáo',
+  Ad: 'Quảng cáo',
+  'Ad Set': 'Nhóm quảng cáo (Ad Set)',
+  'Ad Groups': 'Nhóm quảng cáo (Ad Groups)',
+  'Ad Campaign': 'Chiến dịch quảng cáo',
+  'Campaign Groups': 'Nhóm chiến dịch',
+  'Ad Insights': 'Báo cáo hiệu quả quảng cáo',
+  'Ad Insights by Age and Gender': 'Báo cáo hiệu quả quảng cáo theo độ tuổi và giới tính',
+  'Ad Insights by Country': 'Báo cáo hiệu quả quảng cáo theo quốc gia',
+  'Ad Insights by Device Platform': 'Báo cáo hiệu quả quảng cáo theo nền tảng thiết bị',
+  'Ad Insights by Link URL Asset': 'Báo cáo hiệu quả quảng cáo theo URL liên kết',
+  'Ad Insights by Product ID': 'Báo cáo hiệu quả quảng cáo theo mã sản phẩm',
+  'Ad Insights by Publisher Platform and Position':
+    'Báo cáo hiệu quả quảng cáo theo nền tảng phát hành và vị trí',
+  'Ad Insights by Region': 'Báo cáo hiệu quả quảng cáo theo khu vực',
+  'Ad Insights by Ad Set': 'Báo cáo hiệu quả quảng cáo theo nhóm quảng cáo',
+  'Ad Insights by Campaign': 'Báo cáo hiệu quả quảng cáo theo chiến dịch',
+  'Ad Analytics': 'Phân tích hiệu quả quảng cáo',
+  'LinkedIn Follower Statistics': 'Thống kê người theo dõi LinkedIn',
+  'LinkedIn Time-Bound Follower Statistics': 'Thống kê người theo dõi LinkedIn theo thời gian',
+  'Custom Audiences': 'Đối tượng tùy chỉnh',
+  'Funding Instruments': 'Phương thức thanh toán',
+  'Lead Gen Forms': 'Biểu mẫu thu thập khách hàng tiềm năng',
+  'Ad Performance by Ad Group': 'Hiệu suất quảng cáo theo nhóm quảng cáo',
+  'Ad Performance by Campaign': 'Hiệu suất quảng cáo theo chiến dịch',
+  'Ad Performance by DMA': 'Hiệu suất quảng cáo theo khu vực thị trường (DMA)',
+  'Ad Performance by Interest': 'Hiệu suất quảng cáo theo sở thích',
+  'Ad Performance by Keyword': 'Hiệu suất quảng cáo theo từ khóa',
+  'Ad Performance by Placement': 'Hiệu suất quảng cáo theo vị trí hiển thị',
+  'Ad Performance by Account': 'Hiệu suất quảng cáo theo tài khoản',
+  'Ad Performance by Community': 'Hiệu suất quảng cáo theo cộng đồng',
+  'Abandoned Checkouts': 'Giỏ hàng thanh toán bị bỏ dở',
+  Articles: 'Bài viết (Articles)',
+  Blogs: 'Danh mục Blog',
+  Collections: 'Bộ sưu tập sản phẩm',
+  Customers: 'Khách hàng',
+  'Discount Codes': 'Mã giảm giá',
+  'Fulfillment Orders': 'Đơn xử lý giao hàng',
+  'Inventory Items': 'Mặt hàng tồn kho',
+  Locations: 'Địa điểm kho hàng',
+  Orders: 'Đơn hàng',
+  Products: 'Sản phẩm',
+  'Product Variants': 'Biến thể sản phẩm',
+  Pages: 'Trang nội dung',
+  Shop: 'Thông tin cửa hàng',
+  'Tender Transactions': 'Giao dịch thanh toán',
+  'Article Metafields': 'Trường mở rộng (Metafields) của Bài viết',
+  'Blog Metafields': 'Trường mở rộng (Metafields) của Blog',
+  'Collection Metafields': 'Trường mở rộng (Metafields) của Bộ sưu tập',
+  'Customer Metafields': 'Trường mở rộng (Metafields) của Khách hàng',
+  'Location Metafields': 'Trường mở rộng (Metafields) của Địa điểm',
+  'Order Metafields': 'Trường mở rộng (Metafields) của Đơn hàng',
+  'Page Metafields': 'Trường mở rộng (Metafields) của Trang',
+  'Product Variant Metafields': 'Trường mở rộng (Metafields) của Biến thể sản phẩm',
+  'Product Metafields': 'Trường mở rộng (Metafields) của Sản phẩm',
+  'Shop Metafields': 'Trường mở rộng (Metafields) của Cửa hàng',
 };
+

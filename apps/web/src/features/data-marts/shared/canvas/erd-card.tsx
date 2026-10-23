@@ -2,6 +2,7 @@ import type { DataMartDefinitionType } from '../enums/data-mart-definition-type.
 import { DataMartDefinitionTypeModel } from '../types/data-mart-definition-type.model';
 import { definitionTypeAccent } from './definition-type-accent';
 import { OWOX_GREEN_BASE, OWOX_YELLOW_BASE } from './owox-palette';
+import { isVietnameseLocale } from '../../../../shared/utils/field-humanizer';
 
 interface ErdStatusDotProps {
   isDraft: boolean;
@@ -15,7 +16,8 @@ interface ErdStatusDotProps {
 
 /** Published/draft status dot used in ERD card headers. */
 export function ErdStatusDot({ isDraft, decorative = false }: ErdStatusDotProps) {
-  const label = isDraft ? 'Draft' : 'Published';
+  const isVi = isVietnameseLocale();
+  const label = isDraft ? (isVi ? 'Bản nháp' : 'Draft') : isVi ? 'Đã xuất bản' : 'Published';
   return (
     <span className='inline-flex shrink-0 items-center' title={label}>
       <span

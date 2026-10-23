@@ -13,6 +13,10 @@ import type {
 } from '../model/types';
 import { DataQualityFieldPicker } from './DataQualityFieldPicker';
 import { DataQualityRuleEditor } from './DataQualityRuleEditor';
+import {
+  humanizeFieldName,
+  isVietnameseLocale,
+} from '../../../../shared/utils/field-humanizer';
 
 interface DataQualityFieldChecksProps {
   rules: EffectiveDataQualityRuleConfig[];
@@ -20,6 +24,7 @@ interface DataQualityFieldChecksProps {
   displayedRuleKeys: string[];
   selectableFields: DataQualitySelectableField[];
   fieldTypes?: Record<string, string>;
+  fieldAliases?: Record<string, string>;
   disabled: boolean;
   onAddCheck: (ruleKey: string) => void;
   onChange: (key: string, next: DataQualityRuleConfig) => void;
@@ -31,6 +36,7 @@ export function DataQualityFieldChecks({
   displayedRuleKeys,
   selectableFields,
   fieldTypes = {},
+  fieldAliases = {},
   disabled,
   onAddCheck,
   onChange,
@@ -69,11 +75,19 @@ export function DataQualityFieldChecks({
               .filter((value): value is DataQualityRuleConfig => value !== undefined);
             const enabledCount = values.filter(value => value.enabled).length;
 
+            const alias = fieldAliases[group.fieldPathKey];
+            const displayFieldLabel =
+              alias && alias !== group.label
+                ? `${alias} (${group.label})`
+                : isVietnameseLocale()
+                  ? humanizeFieldName(group.label, { locale: 'vi', includeTechnicalName: true })
+                  : group.label;
+
             return (
               <DataQualityFieldGroup
                 key={group.fieldPathKey}
                 fieldPathKey={group.fieldPathKey}
-                fieldLabel={group.label}
+                fieldLabel={displayFieldLabel}
                 rules={group.rules}
                 draft={draft}
                 enabledCount={enabledCount}

@@ -21,7 +21,11 @@ import { OpenIssueLink, StepperHeroBlock } from '../components';
 import type { ConnectorListItem } from '../../../../shared/model/types/connector';
 import { Unplug } from 'lucide-react';
 import { DATA_LEVEL_CONFIG_KEY } from '../../../../shared/constants/connector-config';
-import { localizeConnectorField } from '../../../../shared/utils/connector-metadata';
+import {
+  localizeConnectorField,
+  translateConnectorMetadata,
+} from '../../../../shared/utils/connector-metadata';
+import { normalizeSearchText } from '../../../../../../shared/utils/field-humanizer';
 
 interface FieldsSelectionStepProps {
   connector: ConnectorListItem;
@@ -88,9 +92,14 @@ export function FieldsSelectionStep({
 
   const filteredFields = useMemo(() => {
     const query = filterText.toLowerCase().trim();
+    const normalizedQuery = normalizeSearchText(filterText);
     const filtered = availableFields.filter(
       field =>
-        field.name.toLowerCase().includes(query) || field.label?.toLowerCase().includes(query)
+        field.name.toLowerCase().includes(query) ||
+        Boolean(field.label?.toLowerCase().includes(query)) ||
+        (normalizedQuery.length > 0 &&
+          (normalizeSearchText(field.name).includes(normalizedQuery) ||
+            (field.label ? normalizeSearchText(field.label).includes(normalizedQuery) : false)))
     );
 
     const comparator = (a: { name: string }, b: { name: string }) => {
@@ -298,7 +307,7 @@ export function FieldsSelectionStep({
             selected: selectedTotalCount,
             total: availableFieldNames.length,
             itemLabel: resolvedItemLabel,
-            field: selectedField,
+            field: translateConnectorMetadata(selectedFieldData?.overview) ?? selectedField,
           })}
         >
           {showDataLevelFieldsTip && (

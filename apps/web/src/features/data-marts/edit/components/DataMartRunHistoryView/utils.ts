@@ -10,6 +10,27 @@ import type { LogEntry } from './types';
 import { LogLevel } from './types';
 import i18n from '../../../../../i18n';
 import { localizeOperationalError } from '../../../../../shared/utils/localize-operational-error';
+import {
+  humanizeFieldName,
+  isVietnameseLocale,
+} from '../../../../../shared/utils/field-humanizer';
+
+const LOG_TYPE_LABELS_VI: Record<string, string> = {
+  updateCurrentStatus: 'Cập nhật trạng thái',
+  setConnectorState: 'Lưu trạng thái kết nối',
+  startTask: 'Bắt đầu tác vụ',
+  finishTask: 'Hoàn tất tác vụ',
+  logMessage: 'Thông tin',
+  info: 'Thông tin',
+  INFO: 'Thông tin',
+  debug: 'Gỡ lỗi',
+  DEBUG: 'Gỡ lỗi',
+  warn: 'Cảnh báo',
+  WARN: 'Cảnh báo',
+  WARNING: 'Cảnh báo',
+  error: 'Lỗi',
+  ERROR: 'Lỗi',
+};
 
 // Mirrors ConnectorMessageType.WARNING ('addWarningToCurrentStatus') from the backend enum —
 // the web app has no shared reference to it, since logs/errors arrive as raw JSON strings.
@@ -174,7 +195,14 @@ export const getDisplayType = (logEntry: LogEntry): string => {
   }
   if (logEntry.metadata?.type === OPERATIONAL_ERROR_TYPE) return i18n.t('runHistory.error');
   if (logEntry.metadata?.type) {
-    return logEntry.metadata.type as string;
+    const rawType = String(logEntry.metadata.type);
+    if (isVietnameseLocale()) {
+      return LOG_TYPE_LABELS_VI[rawType] ?? humanizeFieldName(rawType, { locale: 'vi' });
+    }
+    return rawType;
+  }
+  if (isVietnameseLocale()) {
+    return LOG_TYPE_LABELS_VI[logEntry.level] ?? logEntry.level;
   }
   return logEntry.level;
 };

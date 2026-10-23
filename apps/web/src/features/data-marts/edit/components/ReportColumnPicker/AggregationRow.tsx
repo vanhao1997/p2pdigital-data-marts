@@ -7,6 +7,10 @@ import type { ReportAggregateFunction } from '../../../shared/types/relationship
 import { aggregateFunctionLabel } from '../../../shared/utils/aggregation-labels';
 import { AggregationEditorPopover, type AggregationDraft } from './AggregationEditorPopover';
 import { useTranslation } from 'react-i18next';
+import {
+  humanizeFieldName,
+  isVietnameseLocale,
+} from '../../../../../shared/utils/field-humanizer';
 
 interface AggregationRowProps {
   rule: AggregationRule;
@@ -44,6 +48,9 @@ export function AggregationRow({
   const { t } = useTranslation();
   const [editing, setEditing] = useState(false);
   const isOrphaned = allowedAggregations.length === 0;
+  const resolvedLabel =
+    displayLabel ??
+    (isVietnameseLocale() ? humanizeFieldName(rule.column, { locale: 'vi' }) : rule.column);
 
   return (
     <div
@@ -67,7 +74,7 @@ export function AggregationRow({
             </span>
           )}
           <span className={cn(isOrphaned && 'text-red-700 line-through dark:text-red-300')}>
-            {displayLabel ?? rule.column}
+            {resolvedLabel}
           </span>
         </div>
         {!isOrphaned && dataMartName && (

@@ -1028,6 +1028,8 @@
     "availableAggregationsAria": "Các phép tổng hợp khả dụng",
     "availableAggregationsHelp": "Các phép tổng hợp khả dụng — những hàm báo cáo có thể áp dụng cho trường này. Mặc định theo kiểu dữ liệu; xóa hết để không cho phép tổng hợp.",
     "primaryKeyHelp": "Trường này thuộc Khóa chính đầu ra",
+    "autoFormatAliases": "Tự động đặt bí danh chuẩn",
+    "autoFormatAliasesHelp": "Tự động điền tên hiển thị dễ hiểu cho các trường chưa có bí danh",
     "generateAliases": "Tạo bí danh cho tất cả trường",
     "generateFieldAliases": "Tạo bí danh trường",
     "unsupportedType": "Kiểu lược đồ không được hỗ trợ",
@@ -1278,6 +1280,10 @@
     "tiktok": {
       "title": "TikTok Ads",
       "datamartTitle": "Data Mart TikTok Ads"
+    },
+    "tiktokGmvMax": {
+      "title": "TikTok GMV Max",
+      "datamartTitle": "Data Mart TikTok GMV Max"
     },
     "microsoft": {
       "title": "Microsoft Ads",
@@ -2917,7 +2923,7 @@
     "draft": "Bản nháp",
     "published": "Đã xuất bản",
     "title": "Dự án",
-    "subtitle": "Quản lý tối đa 20 dự án. Các dự án đã lưu trữ vẫn có thể đọc nhưng ở chế độ chỉ đọc.",
+    "subtitle": "Quản lý tối đa 100 dự án. Các dự án đã lưu trữ vẫn có thể đọc nhưng ở chế độ chỉ đọc.",
     "newProjectName": "Tên dự án mới",
     "create": "Tạo mới",
     "noProjectsYet": "Chưa tham gia dự án nào.",
@@ -2927,19 +2933,31 @@
     "unarchive": "Bỏ lưu trữ",
     "archive": "Lưu trữ",
     "rename": "Đổi tên",
+    "delete": "Xoá dự án",
     "open": "Mở",
     "creating": "Đang tạo...",
     "saving": "Đang lưu...",
+    "deleting": "Đang xoá...",
     "loading": "Đang tải...",
     "created": "Đã tạo dự án",
     "renamed": "Đã đổi tên dự án",
     "archived": "Đã lưu trữ dự án",
     "unarchived": "Đã khôi phục dự án",
+    "deleted": "Đã xoá vĩnh viễn dự án và giải phóng dung lượng ổ đĩa",
     "updateFailed": "Không thể cập nhật dự án",
     "createFailed": "Không thể tạo dự án",
     "renameFailed": "Không thể đổi tên dự án",
+    "deleteFailed": "Không thể xoá dự án",
     "selectFailed": "Không thể chọn dự án",
-    "managementUnavailable": "Nhà cung cấp danh tính đã cấu hình không hỗ trợ tạo và quản lý vòng đời dự án."
+    "deleteConfirmTitle": "Xoá vĩnh viễn dự án và giải phóng ổ đĩa",
+    "deleteConfirmDescription": "Thao tác này sẽ xoá vĩnh viễn dự án \"{{name}}\" cùng toàn bộ dữ liệu liên quan (Data Marts, Connectors, Storages, Destinations, Reports, lịch sử chạy) và thực hiện dọn dẹp cơ sở dữ liệu (VACUUM) để giải phóng dung lượng ổ đĩa. Thao tác này không thể hoàn tác.",
+    "deleteConfirmButton": "Xoá hết dự án & dữ liệu",
+    "managementUnavailable": "Nhà cung cấp danh tính đã cấu hình không hỗ trợ tạo và quản lý vòng đời dự án.",
+    "mcpGlobalTitle": "Kết nối MCP toàn hệ thống (Tất cả dự án)",
+    "mcpGlobalSubtitle": "Sử dụng một địa chỉ MCP Server duy nhất cho toàn bộ hệ thống để truy vấn, tổng hợp và quản lý Data Mart, Storage, Connector trên tất cả các dự án mà không cần kết nối riêng lẻ từng dự án.",
+    "mcpGlobalCopyUrl": "Sao chép MCP URL",
+    "mcpGlobalCopied": "Đã sao chép địa chỉ MCP Server",
+    "mcpGlobalGuide": "Hướng dẫn kết nối MCP & ChatGPT"
   },
   "apiKeysPage": {
     "title": "Mã API của tôi",
@@ -3496,40 +3514,40 @@
     }
   },
   "mcpGuide": {
-    "title": "Kết nối ChatGPT với DigitalReport",
-    "intro": "Thiết lập MCP qua OAuth, sau đó tạo Data Mart bản nháp từ connector có sẵn. Không cần cung cấp API key OpenAI.",
-    "projectEntry": "Hướng dẫn MCP & ChatGPT",
-    "project": "Dự án hiện tại",
-    "archived": "Dự án đã lưu trữ, chỉ đọc. Khôi phục dự án trước khi tạo hoặc sửa Data Mart.",
-    "connectionTitle": "Thông tin kết nối",
+    "title": "Kết nối MCP & ChatGPT toàn hệ thống DigitalReport",
+    "intro": "Thiết lập kết nối MCP một lần duy nhất qua OAuth để truy vấn và quản lý toàn bộ các dự án trên hệ thống (Data Marts, Storages, Connectors) mà không cần kết nối riêng lẻ từng dự án.",
+    "projectEntry": "Kết nối MCP toàn hệ thống",
+    "project": "Phạm vi kết nối: Toàn bộ hệ thống (Tất cả dự án)",
+    "archived": "Dự án hiện tại đã lưu trữ (chỉ đọc), nhưng kết nối MCP vẫn hoạt động bình thường với các dự án khác trên hệ thống.",
+    "connectionTitle": "Thông tin kết nối chung toàn hệ thống",
     "serverName": "Tên plugin",
     "copyEndpoint": "Sao chép Server URL",
-    "publishedEndpoint": "Đây là endpoint công khai của DigitalReport, không phải URL được tạo từ mã dự án. Nếu dùng bản tự triển khai, hãy lấy endpoint từ quản trị viên trước khi kết nối.",
-    "endpointNotice": "Có URL không đồng nghĩa OAuth đã sẵn sàng. Máy chủ cần cho phép callback ChatGPT; nếu bị từ chối redirect, dừng kết nối và liên hệ quản trị viên.",
-    "stepsTitle": "1. Kết nối trên ChatGPT web",
+    "publishedEndpoint": "Đây là endpoint MCP dùng chung cho toàn bộ hệ thống DigitalReport (hỗ trợ tất cả dự án chỉ với 1 lần kết nối).",
+    "endpointNotice": "Một kết nối OAuth duy nhất tại địa chỉ này cho phép trợ lý AI làm việc xuyên suốt tất cả các dự án mà tài khoản của bạn có quyền truy cập.",
+    "stepsTitle": "1. Kết nối trên ChatGPT web / Claude / Cursor",
     "openChatGpt": "Mở ChatGPT Plugins",
     "steps": {
       "open": "Đăng nhập ChatGPT, mở Plugins, bấm dấu + rồi chọn Add custom MCP server. Nếu không thấy mục này, kiểm tra quyền tài khoản và chính sách workspace.",
-      "server": "Đặt tên DigitalReport. Dán Server URL ở trên vào phần Connection.",
+      "server": "Đặt tên DigitalReport. Dán Server URL dùng chung ở trên vào phần Connection.",
       "auth": "Chọn OAuth. Chọn CIMD nếu máy chủ hỗ trợ và giao diện có tùy chọn; không tự điền Client ID hoặc Client Secret, không chọn No authentication.",
-      "consent": "Đọc cảnh báo, chọn Create as a plugin. Khi được yêu cầu xác thực, đăng nhập DigitalReport, chọn đúng dự án và kiểm tra quyền mcp:read / mcp:write trước khi đồng ý. Chỉ cấp quyền ghi nếu cần tạo hoặc sửa dữ liệu.",
+      "consent": "Đọc cảnh báo, chọn Create as a plugin. Khi được yêu cầu xác thực, đăng nhập DigitalReport và kiểm tra quyền mcp:read / mcp:write trước khi đồng ý. Một kết nối duy nhất sẽ tự động cấp quyền làm việc trên tất cả dự án của bạn.",
       "install": "Cài đặt plugin trong danh sách plugin cá nhân hoặc workspace. Hoàn tất OAuth nếu ChatGPT yêu cầu ở bước này.",
-      "chat": "Mở chat mới, gõ @ và chọn DigitalReport. Yêu cầu get_project_context, đối chiếu current_project.id với mã dự án trên trang này trước mọi thao tác ghi. Nếu sai, kết nối lại với đúng dự án."
+      "chat": "Mở chat mới, gõ @ và chọn DigitalReport. Bạn chỉ cần gọi theo Tên dự án (ví dụ: \"Selavia Phú Quốc\", \"M Riverside\", \"P2P Digital\" hoặc \"tất cả dự án\") mà không cần nhớ mã ID kỹ thuật."
     },
-    "promptsTitle": "2. Tạo và kiểm tra Data Mart",
-    "promptNotice": "Thay tên Data Mart và connector theo nhu cầu. ChatGPT phải dùng danh sách connector/storage thật; không đoán ID, node hay field. Chỉ duyệt thao tác ghi sau khi đã kiểm tra đầu vào.",
-    "draftTitle": "Tạo bản nháp từ connector",
+    "promptsTitle": "2. Tạo và kiểm tra Data Mart theo Tên dự án",
+    "promptNotice": "Chỉ cần nhập Tên dự án, Tên báo cáo hoặc Tên connector (ví dụ: Selavia Phú Quốc, M Riverside, P2P Digital). Trợ lý AI sẽ tự động tra cứu theo tên mà không cần mã ID.",
+    "draftTitle": "Tạo bản nháp từ connector (Theo Tên dự án)",
     "copyDraft": "Sao chép prompt tạo bản nháp",
-    "draftPrompt": "Dùng plugin DigitalReport.\nGọi get_project_context và xác nhận current_project.id là {{projectId}}. Nếu khác, dừng.\nGọi list_data_storages và list_connectors.\nTôi muốn tạo draft Data Mart \"Admicro Daily\" từ AdmicroAds. Nếu connector không có, dừng và báo lại.\nCho tôi chọn storage từ danh sách. Nếu chưa có storage, trả link để tôi thiết lập trong webapp.\nLấy get_connector_specification và get_connector_fields trước khi dựng definition_type=CONNECTOR; không đoán ID, node hoặc field.\nThiếu credential thì trả link để tôi hoàn tất trong webapp; không yêu cầu dán bí mật vào chat.\nChưa publish, chưa chạy sync, chưa tạo lịch.\nTrả data_mart_id và URL của draft.",
+    "draftPrompt": "Dùng plugin DigitalReport.\nTìm dự án theo tên \"{{projectTitle}}\" (hoặc hỏi tôi tên dự án muốn thao tác; tự động tra cứu theo tên dự án, không yêu cầu mã ID).\nGọi list_data_storages và list_connectors cho dự án \"{{projectTitle}}\". Hỏi tôi muốn kết nối nền tảng nào; dùng đúng tên connector trong catalog.\nCho tôi chọn kho BigQuery của dự án và xác nhận bảng đích (project.dataset.table). Nếu chưa có kho dữ liệu, trả link để tôi thiết lập trong webapp.\nLấy get_connector_specification và get_connector_fields, rồi cho tôi xác nhận node, fields và cấu hình không chứa secret.\nDùng create_connector (truyền project_name=\"{{projectTitle}}\") để tạo connector draft mới. Nếu tôi cung cấp tên Data Mart bản nháp đã có, tự động tìm theo tên và dùng configure_connector.\nThiếu credential thì trả link để tôi hoàn tất trong webapp; không yêu cầu dán bí mật vào chat.\nChưa publish, chưa chạy sync, chưa tạo lịch.\nTrả tên dự án, tên Data Mart, tên connector, trạng thái setup và URL của draft.",
     "validationTitle": "Sau khi hoàn tất credential trong webapp",
     "copyValidation": "Sao chép prompt kiểm tra",
-    "validationPrompt": "Dùng plugin DigitalReport.\nGọi get_project_context và xác nhận current_project.id là {{projectId}}. Nếu khác, dừng.\nKiểm tra get_data_mart_setup_status cho Data Mart <DATA_MART_ID>; hỏi tôi ID nếu chưa biết.\nValidate storage và Data Mart bằng validate_data_storage, validate_data_mart sau khi tôi xác nhận.\nBáo rõ cấu hình còn thiếu và kết quả validation.\nChưa publish, chưa chạy sync, chưa tạo lịch.",
+    "validationPrompt": "Dùng plugin DigitalReport.\nTrong dự án \"{{projectTitle}}\", kiểm tra get_data_mart_setup_status theo Tên Data Mart vừa tạo (hỏi tôi tên Data Mart nếu chưa biết, tự động tìm theo tên không cần ID).\nValidate kho lưu trữ và Data Mart bằng validate_data_storage, validate_data_mart sau khi tôi xác nhận.\nBáo rõ cấu hình còn thiếu và kết quả validation.\nChưa publish, chưa chạy sync, chưa tạo lịch.",
     "openDataMarts": "Mở Data Mart để kiểm tra",
-    "acceptance": "Hoàn tất khi get_project_context trả đúng dự án, bản nháp xuất hiện trong webapp và validation thành công. Publish là bước riêng, cần xác nhận sau khi kiểm tra cấu hình và chi phí.",
+    "acceptance": "Hoàn tất khi bản nháp xuất hiện trong dự án mục tiêu trên webapp và validation thành công. Publish là bước riêng, cần xác nhận sau khi kiểm tra cấu hình và chi phí.",
     "safetyTitle": "Trước khi cấp quyền hoặc publish",
     "safety": {
       "credentials": "Nhập password, API key, service-account JSON và refresh token chỉ qua trang thiết lập trong webapp. Không dán vào ChatGPT; kiểm tra tên miền của link thiết lập trước khi mở.",
-      "permissions": "OAuth scope không thay thế quyền thành viên hoặc quyền trên tài nguyên. Luôn kiểm tra đúng dự án; quyền mcp:write không giúp truy cập dữ liệu của dự án khác.",
+      "permissions": "OAuth scope kết hợp với quyền thành viên của bạn trên từng dự án. Bạn có thể truy cập tất cả các dự án mà tài khoản của bạn là thành viên thông qua cùng một kết nối MCP.",
       "privacy": "Mô tả, metadata và kết quả dữ liệu do MCP trả về có thể được gửi sang OpenAI. Chỉ kết nối máy chủ tin cậy và dữ liệu được tổ chức cho phép chia sẻ.",
       "sync": "Tạo draft không tự publish hay đồng bộ. Validate có thể gọi API nguồn/kho dữ liệu và phát sinh phí bên nhà cung cấp. Publish connector có thể chạy incremental sync ngay, ghi vào kho và phát sinh mức tiêu thụ; chỉ duyệt khi đã kiểm tra đầu vào, quyền và chi phí.",
       "capabilities": "MCP cấu hình Data Mart bằng connector đã có trên máy chủ; không tự phát triển tích hợp provider mới. Nếu connector không xuất hiện trong list_connectors, chọn nguồn khác hoặc liên hệ quản trị viên."
@@ -3549,12 +3567,12 @@
         "body": "Mở trực tiếp /mcp trong trình duyệt khi chưa đăng nhập có thể trả 401, đây không phải bài kiểm tra kết nối. Trong ChatGPT, kết nối lại OAuth và đăng nhập đúng tài khoản; không dùng token sao chép từ trình duyệt."
       },
       "forbidden": {
-        "title": "403 Forbidden hoặc sai dự án",
-        "body": "Gọi get_project_context để kiểm tra dự án đã cấp quyền. Kết nối lại nếu sai dự án; nhờ quản trị viên kiểm tra vai trò, quyền tài nguyên và scope. Không thử ID của dự án khác để vượt quyền."
+        "title": "403 Forbidden hoặc cần chuyển dự án",
+        "body": "Yêu cầu trợ lý AI gọi list_projects để xem danh sách Tên các dự án bạn có quyền truy cập, và chỉ định trực tiếp theo Tên dự án (ví dụ: \"Selavia Phú Quốc\", \"M Riverside\" hoặc \"tất cả dự án\")."
       },
       "tools": {
         "title": "Không thấy tool tạo Data Mart",
-        "body": "Mở trang chi tiết plugin trong cài đặt ChatGPT, refresh danh sách tools và kiểm tra các tools đã bật. Nếu vẫn thiếu create_data_mart, máy chủ có thể chưa triển khai bộ setup tools; liên hệ quản trị viên."
+        "body": "Mở trang chi tiết plugin trong cài đặt ChatGPT, refresh danh sách tools và kiểm tra các tools đã bật. Nếu thiếu create_connector hoặc configure_connector, máy chủ có thể cần cập nhật. Bản cũ vẫn dùng create_data_mart/update_data_mart với definition_type=CONNECTOR. Liên hệ quản trị viên."
       }
     },
     "openaiDocs": "OpenAI Docs",
@@ -3582,9 +3600,9 @@
     "description": "Mô tả",
     "businessContextDescription": "Mô tả ngữ cảnh nghiệp vụ, mục tiêu, thuật ngữ và quy ước của dự án. Mô tả này được chia sẻ với các trợ lý AI đã kết nối qua MCP. Không đưa thông tin bí mật vào đây.",
     "descriptionPlaceholder": "Thêm mô tả cho dự án này...",
-    "mcpTooltip": "URL máy chủ MCP riêng cho dự án",
-    "mcpTitle": "Máy chủ MCP",
-    "mcpDescription": "Với dự án đơn, hãy dùng máy chủ MCP P2PDigital đã phát hành trong Claude, Codex, ChatGPT và các công cụ tương tự. Với quy trình nhiều dự án, hãy dùng URL riêng của dự án này làm máy chủ MCP tùy chỉnh. Xem",
+    "mcpTooltip": "URL máy chủ MCP toàn hệ thống (hỗ trợ tất cả dự án)",
+    "mcpTitle": "Máy chủ MCP toàn hệ thống (Tất cả dự án)",
+    "mcpDescription": "Sử dụng một địa chỉ MCP Server duy nhất cho toàn bộ hệ thống trong Claude, Codex, ChatGPT và các công cụ tương tự. Hỗ trợ truy vấn và thao tác xuyên suốt tất cả các dự án qua tham số project_id hoặc list_projects. Xem",
     "mcpGuide": "hướng dẫn thiết lập MCP",
     "legacyTooltip": "Mở toàn bộ cài đặt dự án trên platform.p2pdigital.vn",
     "legacyTitle": "Cài đặt nền tảng cũ",

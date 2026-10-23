@@ -1,10 +1,16 @@
 import { cn } from '@owox/ui/lib/utils';
+import { Button } from '@owox/ui/components/button';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@owox/ui/components/tooltip';
 import type { ColumnDef, Row, Table } from '@tanstack/react-table';
-import { EyeOff, Sigma } from 'lucide-react';
+import { EyeOff, Sigma, Wand2 } from 'lucide-react';
 import type { ComponentType } from 'react';
 import { useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
+import {
+  generateUniqueFieldAliases,
+  humanizeFieldName,
+  isVietnameseLocale,
+} from '../../../../../../shared/utils/field-humanizer';
 import type { SortingStrategy } from '@dnd-kit/sortable';
 import type { BaseSchemaField } from '../../../../shared/types/data-mart-schema.types';
 import { DataMartSchemaFieldStatus } from '../../../../shared/types/data-mart-schema.types';
@@ -293,6 +299,47 @@ export function BaseSchemaTable<T extends BaseSchemaField>({
     [fields, onFieldsChange]
   );
 
+  const rootEditableFields = (schemaFields as readonly T[] | undefined) ?? fields;
+  const hasMissingAliases = useMemo(() => {
+    const checkList = (nodes: readonly (BaseSchemaField & { fields?: readonly BaseSchemaField[] })[]): boolean =>
+      nodes.some(field => {
+        const name = field.name.trim();
+        const alias = field.alias?.trim();
+        const isUnaliasedOrDefault =
+          Boolean(name) &&
+          (!alias ||
+            (alias.toLowerCase() === name.toLowerCase() &&
+              humanizeFieldName(name).toLowerCase() !== name.toLowerCase()));
+        return isUnaliasedOrDefault || (field.fields ? checkList(field.fields) : false);
+      });
+    return checkList(rootEditableFields as readonly (BaseSchemaField & { fields?: readonly BaseSchemaField[] })[]);
+  }, [rootEditableFields]);
+
+  const handleAutoFormatAliases = useCallback(() => {
+    if (!onFieldsChange) return;
+    type MaybeNestedField = T & { fields?: MaybeNestedField[] };
+    const formatList = (nodes: readonly MaybeNestedField[]): { next: MaybeNestedField[]; changed: boolean } => {
+      const generated = generateUniqueFieldAliases(nodes);
+      let changed = generated.size > 0;
+      const next = nodes.map(field => {
+        const nextAlias = generated.get(field.name);
+        const childResult = field.fields ? formatList(field.fields) : undefined;
+        if (childResult?.changed) changed = true;
+        if (!nextAlias && !childResult?.changed) return field;
+        return {
+          ...field,
+          ...(nextAlias ? { alias: nextAlias } : {}),
+          ...(childResult?.changed ? { fields: childResult.next } : {}),
+        };
+      });
+      return { next, changed };
+    };
+    const { next, changed } = formatList(rootEditableFields as readonly MaybeNestedField[]);
+    if (changed) {
+      onFieldsChange(next);
+    }
+  }, [onFieldsChange, rootEditableFields]);
+
   // Define common columns
   const baseColumns = useMemo<ColumnDef<T>[]>(
     () => [
@@ -433,6 +480,30 @@ export function BaseSchemaTable<T extends BaseSchemaField>({
 
               <TooltipContent>{t('schemaUi.alternativeName')}</TooltipContent>
             </Tooltip>
+            {onFieldsChange && (
+              <div className='opacity-0 transition-opacity group-hover:opacity-100 focus-within:opacity-100'>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button
+                      type='button'
+                      variant='ghost'
+                      size='icon-sm'
+                      disabled={!hasMissingAliases}
+                      onClick={handleAutoFormatAliases}
+                      aria-label={t('schemaUi.autoFormatAliases', 'Auto-format field aliases')}
+                    >
+                      <Wand2 className='h-3.5 w-3.5' />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    {t(
+                      'schemaUi.autoFormatAliasesHelp',
+                      'Automatically fill empty aliases with readable labels'
+                    )}
+                  </TooltipContent>
+                </Tooltip>
+              </div>
+            )}
             {schemaToolbar.showAiHelper && (
               <div
                 className={cn(
@@ -456,14 +527,27 @@ export function BaseSchemaTable<T extends BaseSchemaField>({
           if (aliasColumnCell) {
             return aliasColumnCell({ row, updateField });
           }
-          const fname = fields[row.index]?.name;
+          const fname = fields[row.index]?.name ?? '';
+          const rawAlias = asString(row.getValue('alias'));
+          const isVi = isVietnameseLocale();
+          const aliasPlaceholder =
+            fname && isVi ? humanizeFieldName(fname, { locale: 'vi' }) : '-';
+          const effectiveAlias =
+            isVi &&
+            fname !== '' &&
+            rawAlias.trim().toLowerCase() === fname.trim().toLowerCase() &&
+            aliasPlaceholder.toLowerCase() !== fname.trim().toLowerCase()
+              ? ''
+              : rawAlias;
           return (
             <EditableText
-              value={row.getValue('alias')}
+              value={effectiveAlias}
               onValueChange={value => {
                 updateField(row.index, { alias: value } as Partial<T>);
               }}
-              placeholder='-'
+              placeholder={aliasPlaceholder}
+              saveButtonText={t('common.apply', 'Apply')}
+              cancelButtonText={t('common.cancel', 'Cancel')}
               editorAction={renderFieldAliasAi(aiHelper, fname)}
             />
           );
@@ -509,6 +593,8 @@ export function BaseSchemaTable<T extends BaseSchemaField>({
               }}
               minRows={5}
               placeholder='-'
+              saveButtonText={t('common.apply', 'Apply')}
+              cancelButtonText={t('common.cancel', 'Cancel')}
               editorAction={renderFieldDescriptionAi(aiHelper, fname)}
             />
           );
@@ -547,6 +633,8 @@ export function BaseSchemaTable<T extends BaseSchemaField>({
       fields,
       updateField,
       handleDeleteRow,
+      hasMissingAliases,
+      handleAutoFormatAliases,
       onFieldsChange,
       calculatedFieldIssues,
       nameColumnHeader,

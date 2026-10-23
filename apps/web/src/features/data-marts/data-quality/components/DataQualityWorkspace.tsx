@@ -46,6 +46,10 @@ import { DataQualityFieldChecks } from './DataQualityFieldChecks';
 import { DataQualityResultCard } from './DataQualityResultCard';
 import { DataQualityRuleEditor } from './DataQualityRuleEditor';
 import { DataQualitySummaryPanel } from './DataQualitySummaryPanel';
+import {
+  humanizeFieldName,
+  isVietnameseLocale,
+} from '../../../../shared/utils/field-humanizer';
 
 interface QualityGuardRegistration {
   changeLabel: string;
@@ -58,6 +62,7 @@ interface QualityGuardRegistration {
 interface DataQualitySchemaFieldMetadata {
   name: string;
   type: string;
+  alias?: string;
   fields?: DataQualitySchemaFieldMetadata[];
 }
 
@@ -214,12 +219,23 @@ export function DataQualityWorkspace({
     [baseline, draft]
   );
   const fieldTypes = useMemo(() => getDataQualityFieldTypes(schemaFields), [schemaFields]);
+  const fieldAliases = useMemo(() => getDataQualityFieldAliases(schemaFields), [schemaFields]);
   const selectableFields = useMemo(() => {
-    return getSelectableDataQualityFields(fieldRules, displayedRuleKeys).map(field => ({
-      ...field,
-      type: fieldTypes[field.fieldPathKey],
-    }));
-  }, [displayedRuleKeys, fieldRules, fieldTypes]);
+    return getSelectableDataQualityFields(fieldRules, displayedRuleKeys).map(field => {
+      const alias = fieldAliases[field.fieldPathKey];
+      const label =
+        alias && alias !== field.label
+          ? `${alias} (${field.label})`
+          : isVietnameseLocale()
+            ? humanizeFieldName(field.label, { locale: 'vi', includeTechnicalName: true })
+            : field.label;
+      return {
+        ...field,
+        label,
+        type: fieldTypes[field.fieldPathKey],
+      };
+    });
+  }, [displayedRuleKeys, fieldAliases, fieldRules, fieldTypes]);
 
   if (isError) {
     return (
@@ -482,6 +498,7 @@ export function DataQualityWorkspace({
               displayedRuleKeys={displayedRuleKeys}
               selectableFields={selectableFields}
               fieldTypes={fieldTypes}
+              fieldAliases={fieldAliases}
               disabled={!canEdit || isMutationBusy}
               onAddCheck={ruleKey => {
                 const addedRule = fieldRules.find(rule => rule.key === ruleKey);
@@ -753,6 +770,30 @@ function getDataQualityFieldTypes(
   fields: readonly DataQualitySchemaFieldMetadata[]
 ): Record<string, string> {
   return Object.fromEntries(getDataQualityFieldTypeEntries(fields, []));
+}
+
+function getDataQualityFieldAliases(
+  fields: readonly DataQualitySchemaFieldMetadata[]
+): Record<string, string> {
+  return Object.fromEntries(getDataQualityFieldAliasEntries(fields, []));
+}
+
+function getDataQualityFieldAliasEntries(
+  fields: readonly DataQualitySchemaFieldMetadata[],
+  parentPath: readonly string[]
+): readonly (readonly [string, string])[] {
+  const isVi = isVietnameseLocale();
+  return fields.flatMap(field => {
+    const fieldPath = [...parentPath, field.name];
+    const trimmedAlias = field.alias?.trim() ?? '';
+    const isCustomAlias =
+      trimmedAlias !== '' &&
+      (!isVi || trimmedAlias.toLowerCase() !== field.name.trim().toLowerCase());
+    const ownEntry = isCustomAlias
+      ? ([[JSON.stringify(fieldPath), trimmedAlias]] as const)
+      : [];
+    return [...ownEntry, ...getDataQualityFieldAliasEntries(field.fields ?? [], fieldPath)];
+  });
 }
 
 function getDataQualityFieldTypeEntries(

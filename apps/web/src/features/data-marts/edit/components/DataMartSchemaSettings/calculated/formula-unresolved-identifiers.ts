@@ -15,6 +15,7 @@
 
 import type { ResolvedReference } from './formula-authoring';
 import { scanSql, type SqlToken } from './sql-token-scanner';
+import { isVietnameseLocale } from '../../../../../../shared/utils/field-humanizer';
 
 export interface UnresolvedIdentifier {
   /** The name as it appears in the formula, e.g. `clickz` or `orders.amount`. */
@@ -263,8 +264,10 @@ export function findUnresolvedIdentifiers(
 }
 
 const unknownMessage = (name: string): string =>
-  `\`${name}\` is not a field of this Data Mart. Check the spelling, or pick a field from the ` +
-  `suggestions.`;
+  isVietnameseLocale()
+    ? `\`${name}\` không phải là trường của Data Mart này. Hãy kiểm tra lại chính tả hoặc chọn trường từ danh sách gợi ý.`
+    : `\`${name}\` is not a field of this Data Mart. Check the spelling, or pick a field from the ` +
+      `suggestions.`;
 
 /**
  * What a QUALIFIED name gets instead when the join tree is not known: `orders.amount` may well be a
@@ -274,11 +277,18 @@ const unknownMessage = (name: string): string =>
  * prevent — but the refusal has to name OUR failure, not the analyst's.
  */
 const uncheckedMessage = (name: string): string =>
-  `\`${name}\` could not be checked against the joined Data Marts.`;
+  isVietnameseLocale()
+    ? `Không thể kiểm tra \`${name}\` với các Data Mart đã kết nối.`
+    : `\`${name}\` could not be checked against the joined Data Marts.`;
 
 const JOIN_TREE_NOTES: Readonly<Record<Exclude<JoinTreeState, 'ready'>, string>> = {
   loading: 'They are still loading — wait a moment, then save again.',
   unavailable: 'Loading them failed — reload the page, then save again.',
+};
+
+const JOIN_TREE_NOTES_VI: Readonly<Record<Exclude<JoinTreeState, 'ready'>, string>> = {
+  loading: 'Dữ liệu đang được tải — vui lòng đợi một lát rồi lưu lại.',
+  unavailable: 'Không thể tải dữ liệu — vui lòng tải lại trang rồi lưu lại.',
 };
 
 /**
@@ -294,6 +304,9 @@ const JOINED_NOTE =
   'A joined Data Mart field is written as `join alias`.`field` — check that the alias still names ' +
   'a joined Data Mart and that the field is not hidden there.';
 
+const JOINED_NOTE_VI =
+  'Trường của Data Mart đã kết nối được viết dưới dạng `bí danh kết nối`.`tên trường` — hãy kiểm tra xem bí danh có còn trỏ tới Data Mart đã kết nối và trường đó không bị ẩn.';
+
 /**
  * Whether the joined Data Marts behind the offered fields are actually known — mirrors
  * `JoinedFieldsStatus` in joined-fields-context.ts. Defaults to 'ready', which is what an empty
@@ -308,11 +321,20 @@ export function describeUnresolvedIdentifiers(
 ): string | null {
   if (identifiers.length === 0) return null;
   const joinTreeKnown = joinTree === 'ready';
+  const isVi = isVietnameseLocale();
   const sentences = identifiers.map(id =>
     id.qualified && !joinTreeKnown ? uncheckedMessage(id.name) : unknownMessage(id.name)
   );
   if (identifiers.some(id => id.qualified)) {
-    sentences.push(joinTreeKnown ? JOINED_NOTE : JOIN_TREE_NOTES[joinTree]);
+    sentences.push(
+      joinTreeKnown
+        ? isVi
+          ? JOINED_NOTE_VI
+          : JOINED_NOTE
+        : isVi
+          ? JOIN_TREE_NOTES_VI[joinTree]
+          : JOIN_TREE_NOTES[joinTree]
+    );
   }
   return sentences.join(' ');
 }

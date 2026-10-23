@@ -100,13 +100,15 @@ interface HealthStatusRowProps {
 }
 
 function HealthStatusRow({ label, run, noRunsLabel }: HealthStatusRowProps) {
+  const { t } = useTranslation();
   return (
     <HoverCardItem>
       <HoverCardItemLabel>{label}</HoverCardItemLabel>
       <HoverCardItemValue>
         {run ? (
           <StatusLabel type={RUN_STATUS_TO_TYPE[run.status]} variant='ghost'>
-            <RelativeTime date={run.createdAt} /> ({run.triggerType})
+            <RelativeTime date={run.createdAt} /> (
+            {t(`runHistory.triggerTypes.${run.triggerType}`, { defaultValue: run.triggerType })})
           </StatusLabel>
         ) : (
           <span className='text-muted-foreground text-sm'>{noRunsLabel}</span>

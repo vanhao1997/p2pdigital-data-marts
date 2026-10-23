@@ -21,6 +21,10 @@ import { RawBase64Icon } from '../../../../../shared/icons';
 import { unquoteIdentifier } from '../../utils/snowflake-identifier.utils';
 import { RedshiftConnectionType } from '../../../../data-storage/shared/model/types/credentials';
 import { useTranslation } from 'react-i18next';
+import {
+  humanizeFieldName,
+  isVietnameseLocale,
+} from '../../../../../shared/utils/field-humanizer';
 
 interface ConnectorConfigurationItemProps {
   configIndex: number;
@@ -48,6 +52,11 @@ export function ConnectorConfigurationItem({
     void fetchAvailableConnectors();
   }, [fetchAvailableConnectors]);
 
+  const getConnectorDisplayName = (connectorName: string) => {
+    const connector = connectors.find(c => c.name === connectorName);
+    return connector?.displayName ?? (connectorName || t('connectorWizard.chooseConnector'));
+  };
+
   const getConnectorIcon = (connectorName: string) => {
     const connector = connectors.find(c => c.name === connectorName);
     if (connector?.logoBase64) {
@@ -57,7 +66,12 @@ export function ConnectorConfigurationItem({
   };
 
   const getConnectorSubtitle = () => {
-    const node = connectorDef.connector.source.node || t('connectorWizard.noNodeSelected');
+    const rawNode = connectorDef.connector.source.node;
+    const node = rawNode
+      ? isVietnameseLocale()
+        ? humanizeFieldName(rawNode, { locale: 'vi', includeTechnicalName: true })
+        : rawNode
+      : t('connectorWizard.noNodeSelected');
     return (
       <div className='flex flex-wrap items-center gap-2'>
         <span className='text-muted-foreground/75'>{t('connectorWizard.data')}:</span>{' '}
@@ -302,7 +316,7 @@ export function ConnectorConfigurationItem({
           >
             <ListItemCard
               icon={getConnectorIcon(connectorDef.connector.source.name)}
-              title={connectorDef.connector.source.name || t('connectorWizard.chooseConnector')}
+              title={getConnectorDisplayName(connectorDef.connector.source.name)}
               subtitle={getConnectorSubtitle()}
               className='bg-background hover:bg-muted min-h-[80px] cursor-pointer border-0 transition-colors hover:shadow-none'
             />

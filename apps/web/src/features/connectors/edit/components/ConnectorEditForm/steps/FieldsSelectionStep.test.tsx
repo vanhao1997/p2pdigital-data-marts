@@ -1,10 +1,11 @@
 import { FieldsSelectionStep } from './FieldsSelectionStep.tsx';
-import { render, screen } from '@testing-library/react';
+import { act, fireEvent, render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router';
 import { vi } from 'vitest';
 import type { ComponentProps } from 'react';
 import type { ConnectorFieldsResponseApiDto } from '../../../../shared/api/types/response';
 import type { ConnectorListItem } from '../../../../shared/model/types/connector';
+import i18n from '../../../../../../i18n';
 
 // FieldsSelectionStep renders OpenIssueLink, which needs a router context.
 function renderStep(props: ComponentProps<typeof FieldsSelectionStep>) {
@@ -228,5 +229,50 @@ describe('FieldsSelectionStep provider labels', () => {
         name: 'Tong luot hien thi (admicro_column_8)',
       })
     ).toBeEnabled();
+  });
+
+  it('auto-humanizes technical field names in Vietnamese locale and supports accent-free search', async () => {
+    const previousLanguage = i18n.language;
+    await act(async () => {
+      await i18n.changeLanguage('vi');
+    });
+    try {
+      renderStep({
+        connector,
+        connectorFields: [
+          {
+            name: 'ad_insights',
+            fields: [
+              { name: 'campaign_name', type: 'STRING' },
+              { name: 'cpc', type: 'NUMBER' },
+            ],
+          },
+        ],
+        selectedField: 'ad_insights',
+        selectedFields: [],
+        onFieldToggle: noop,
+        onSelectAllFields: noop,
+      });
+
+      expect(
+        screen.getByRole('checkbox', { name: 'Tên chiến dịch (campaign_name)' })
+      ).toBeEnabled();
+      expect(
+        screen.getByRole('checkbox', { name: 'CPC (Chi phí mỗi lượt nhấp) (cpc)' })
+      ).toBeEnabled();
+
+      const searchInput = screen.getByRole('textbox');
+      fireEvent.change(searchInput, { target: { value: 'ten chien dich' } });
+      expect(
+        screen.getByRole('checkbox', { name: 'Tên chiến dịch (campaign_name)' })
+      ).toBeInTheDocument();
+      expect(
+        screen.queryByRole('checkbox', { name: 'CPC (Chi phí mỗi lượt nhấp) (cpc)' })
+      ).not.toBeInTheDocument();
+    } finally {
+      await act(async () => {
+        await i18n.changeLanguage(previousLanguage);
+      });
+    }
   });
 });

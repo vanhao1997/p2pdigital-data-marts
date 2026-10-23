@@ -3,6 +3,11 @@ import type {
   BlendedGroup,
   NativeField,
 } from '../../../shared/types/relationship.types';
+import {
+  humanizeFieldName,
+  isVietnameseLocale,
+  normalizeSearchText as normalizeAccentFreeText,
+} from '../../../../../shared/utils/field-humanizer';
 
 export interface ColumnSearchResult {
   visibleNativeFields: NativeField[];
@@ -15,17 +20,36 @@ function normalizeSearchText(value: string): string {
 
 function containsSearchText(value: string | undefined, normalizedQuery: string): boolean {
   if (!value) return false;
-  return value.toLowerCase().includes(normalizedQuery);
+  if (value.toLowerCase().includes(normalizedQuery)) return true;
+  const accentFreeQuery = normalizeAccentFreeText(normalizedQuery);
+  if (!accentFreeQuery) return false;
+  return normalizeAccentFreeText(value).includes(accentFreeQuery);
 }
 
 function matchesNativeField(field: NativeField, query: string): boolean {
-  return containsSearchText(field.alias, query) || containsSearchText(field.name, query);
+  if (containsSearchText(field.alias, query) || containsSearchText(field.name, query)) {
+    return true;
+  }
+  if (isVietnameseLocale()) {
+    return containsSearchText(humanizeFieldName(field.name, { locale: 'vi' }), query);
+  }
+  return false;
 }
 
 function matchesBlendedField(field: BlendedField, query: string): boolean {
-  return (
-    containsSearchText(field.alias, query) || containsSearchText(field.originalFieldName, query)
-  );
+  if (
+    containsSearchText(field.alias, query) ||
+    containsSearchText(field.originalFieldName, query)
+  ) {
+    return true;
+  }
+  if (isVietnameseLocale()) {
+    return containsSearchText(
+      humanizeFieldName(field.originalFieldName, { locale: 'vi' }),
+      query
+    );
+  }
+  return false;
 }
 
 function matchesGroup(group: BlendedGroup, query: string): boolean {

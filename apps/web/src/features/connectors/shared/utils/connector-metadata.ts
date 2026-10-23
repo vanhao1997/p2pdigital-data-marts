@@ -12,6 +12,7 @@ import {
   registerConnectorMetadataCatalog,
   type ConnectorMetadataTranslationCatalog,
 } from './connector-metadata-catalog';
+import { humanizeFieldName } from '../../../../shared/utils/field-humanizer';
 
 const BUILT_IN_VI_CATALOG: ConnectorMetadataTranslationCatalog = {
   schemaVersion: 1,
@@ -48,9 +49,17 @@ export { getConnectorMetadataCatalog, registerConnectorMetadataCatalog };
 export function localizeConnectorField(
   field: ConnectorFieldResponseApiDto
 ): ConnectorFieldResponseApiDto {
+  const translations = getConnectorMetadataCatalog('vi')?.entries ?? connectorMetadataVi;
+  const hasCatalogLabel = Boolean(field.label && translations[field.label]);
+  const translatedLabel = translateConnectorMetadata(field.label);
+  const label = isVietnamese()
+    ? hasCatalogLabel
+      ? translatedLabel
+      : humanizeFieldName(field.name, { locale: 'vi' })
+    : translatedLabel;
   return {
     ...field,
-    label: translateConnectorMetadata(field.label),
+    label,
     description: translateConnectorMetadata(field.description),
   };
 }
@@ -58,9 +67,16 @@ export function localizeConnectorField(
 export function localizeConnectorNode(
   node: ConnectorFieldsResponseApiDto
 ): ConnectorFieldsResponseApiDto {
+  const translations = getConnectorMetadataCatalog('vi')?.entries ?? connectorMetadataVi;
+  const hasCatalogOverview = Boolean(node.overview && translations[node.overview]);
+  const translatedOverview = translateConnectorMetadata(node.overview);
   return {
     ...node,
-    overview: translateConnectorMetadata(node.overview),
+    overview: isVietnamese()
+      ? hasCatalogOverview
+        ? translatedOverview
+        : humanizeFieldName(node.name, { locale: 'vi' })
+      : translatedOverview,
     description: translateConnectorMetadata(node.description),
     fields: node.fields?.map(localizeConnectorField),
   };

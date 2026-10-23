@@ -22,6 +22,7 @@ import {
   DropdownMenuTrigger,
 } from '@owox/ui/components/dropdown-menu';
 import {
+  CalendarClock,
   ChevronDown,
   CircleCheckBig,
   Download,
@@ -36,7 +37,9 @@ import {
 import { useMemo, useState } from 'react';
 import { toast } from 'sonner';
 import { useTranslation } from 'react-i18next';
+import { isVietnameseLocale } from '../../../../../shared/utils/field-humanizer';
 import { DataStorageType } from '../../../../data-storage';
+import { TriggerGroupFormSheet } from '../../../scheduled-triggers/trigger-groups';
 import { DataMartStatus } from '../../enums';
 import { RunDataQualityBatchDialog } from '../RunDataQualityBatchDialog';
 
@@ -110,12 +113,14 @@ export function DataMartBulkActions({
   onExport,
 }: DataMartBulkActionsProps) {
   const { t } = useTranslation();
+  const isVi = isVietnameseLocale();
   const [actionDataMarts, setActionDataMarts] = useState<DataMartBulkActionTarget[]>([]);
   const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const [showPublishConfirmation, setShowPublishConfirmation] = useState(false);
   const [isPublishing, setIsPublishing] = useState(false);
   const [showRunQuality, setShowRunQuality] = useState(false);
+  const [showTriggerGroupSheet, setShowTriggerGroupSheet] = useState(false);
 
   const draftDataMarts = useMemo(
     () => actionDataMarts.filter(dataMart => dataMart.status === DataMartStatus.DRAFT),
@@ -263,6 +268,16 @@ export function DataMartBulkActions({
             <ShieldCheck aria-hidden='true' />
             {t('dataMartBulkActions.checkQuality', 'Kiểm tra chất lượng')}
           </DropdownMenuItem>
+          <DropdownMenuItem
+            onSelect={() => {
+              snapshotDataMarts();
+              setShowTriggerGroupSheet(true);
+            }}
+            data-testid='create-trigger-group-for-selected'
+          >
+            <CalendarClock aria-hidden='true' />
+            {isVi ? 'Tạo Bộ Trigger nhóm...' : 'Create Trigger Group...'}
+          </DropdownMenuItem>
           {onCheckDataLastUpdated && (
             <DropdownMenuItem
               disabled={isCheckingDataLastUpdated}
@@ -331,6 +346,26 @@ export function DataMartBulkActions({
           projectId={projectId}
           onCompleted={onCompleted}
           targetScope={targetScope}
+        />
+      )}
+
+      {showTriggerGroupSheet && (
+        <TriggerGroupFormSheet
+          isOpen={showTriggerGroupSheet}
+          onClose={() => {
+            setShowTriggerGroupSheet(false);
+            setActionDataMarts([]);
+          }}
+          projectId={projectId}
+          initialDraft={{
+            dataMartIds: actionDataMarts
+              .filter(dm => dm.status === DataMartStatus.PUBLISHED)
+              .map(dm => dm.id),
+          }}
+          onSaved={async () => {
+            await Promise.allSettled([Promise.resolve().then(onCompleted)]);
+            onClearDataMarts?.();
+          }}
         />
       )}
 

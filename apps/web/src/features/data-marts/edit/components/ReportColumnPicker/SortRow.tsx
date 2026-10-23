@@ -4,6 +4,10 @@ import { Button } from '@owox/ui/components/button';
 import { AlertTriangle, ArrowDown, ArrowUp, GripVertical, X } from 'lucide-react';
 import { cn } from '@owox/ui/lib/utils';
 import type { SortRule } from '../../../shared/types/output-config';
+import {
+  humanizeFieldName,
+  isVietnameseLocale,
+} from '../../../../../shared/utils/field-humanizer';
 
 interface SortRowProps {
   rule: SortRule;
@@ -29,6 +33,14 @@ export function SortRow({
   dataMartName,
 }: SortRowProps) {
   const { t } = useTranslation();
+  const isVi = isVietnameseLocale();
+  const resolvedLabel =
+    displayLabel ?? (isVi ? humanizeFieldName(rule.column, { locale: 'vi' }) : rule.column);
+  const directionLabel = isVi
+    ? rule.direction === 'asc'
+      ? 'Tăng'
+      : 'Giảm'
+    : rule.direction;
   const toggleDirection = () => {
     if (isOrphaned) return;
     onChange({ ...rule, direction: rule.direction === 'asc' ? 'desc' : 'asc' });
@@ -65,7 +77,7 @@ export function SortRow({
             className={cn('truncate', isOrphaned && 'text-red-700 line-through dark:text-red-300')}
             title={rule.column}
           >
-            {displayLabel ?? rule.column}
+            {resolvedLabel}
           </span>
         </span>
         {!isOrphaned && dataMartName && (
@@ -81,7 +93,7 @@ export function SortRow({
         aria-label={t('reportColumnPicker.toggleDirection', { direction: rule.direction })}
       >
         <ArrowIcon className='h-4 w-4' />
-        <span className='inline-block w-7 text-left'>{rule.direction}</span>
+        <span className='inline-block w-8 text-left'>{directionLabel}</span>
       </Button>
       <Button
         variant='ghost'

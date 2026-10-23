@@ -2,9 +2,21 @@ import { ChevronDown, ChevronRight, KeyRound } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { OWOX_YELLOW_BASE } from './owox-palette';
 import { collapsedRowCount, orderFields, type ErdCardField } from './erd-fields';
+import {
+  humanizeFieldName,
+  isVietnameseLocale,
+} from '../../../../shared/utils/field-humanizer';
 
 function FieldRow({ field }: { field: ErdCardField }) {
   const { t } = useTranslation();
+  const displayAlias =
+    field.alias && field.alias !== field.name
+      ? field.alias
+      : isVietnameseLocale()
+        ? humanizeFieldName(field.name, { locale: 'vi' })
+        : field.alias || field.name;
+  const titleText =
+    displayAlias !== field.name ? `${displayAlias} (${field.name})` : displayAlias;
   return (
     <div
       className='border-border/50 flex items-center gap-2 border-b px-3.5 py-1.5 text-[11.5px] last:border-b-0'
@@ -12,9 +24,9 @@ function FieldRow({ field }: { field: ErdCardField }) {
       title={
         field.isHidden
           ? t('canvasSettings.hiddenFromReportingTitle', '{{alias}} (hidden from reporting)', {
-              alias: field.alias,
+              alias: titleText,
             })
-          : field.alias
+          : titleText
       }
     >
       {field.isPrimaryKey ? (
@@ -26,7 +38,7 @@ function FieldRow({ field }: { field: ErdCardField }) {
       ) : (
         <span className='w-3 shrink-0' />
       )}
-      <span className='text-foreground flex-1 truncate'>{field.alias}</span>
+      <span className='text-foreground flex-1 truncate'>{displayAlias}</span>
       <span className='text-muted-foreground shrink-0 font-mono text-[10px] tracking-tight'>
         {field.type}
       </span>

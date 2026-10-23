@@ -2,10 +2,22 @@ import { useState } from 'react';
 import { Button } from '@owox/ui/components/button';
 import { Pencil, X, AlertTriangle } from 'lucide-react';
 import { cn } from '@owox/ui/lib/utils';
-import type { DateTruncRule } from '../../../shared/types/output-config';
+import type { DateTruncRule, DateTruncUnit } from '../../../shared/types/output-config';
 import type { ReportAggregateFunction } from '../../../shared/types/relationship.types';
 import { AggregationEditorPopover, type AggregationDraft } from './AggregationEditorPopover';
 import { useTranslation } from 'react-i18next';
+import {
+  humanizeFieldName,
+  isVietnameseLocale,
+} from '../../../../../shared/utils/field-humanizer';
+
+const DATE_TRUNC_ROW_LABELS_VI: Record<DateTruncUnit, string> = {
+  DAY: 'ngày (day)',
+  WEEK: 'tuần (week)',
+  MONTH: 'tháng (month)',
+  QUARTER: 'quý (quarter)',
+  YEAR: 'năm (year)',
+};
 
 interface DateTruncRowProps {
   rule: DateTruncRule;
@@ -37,6 +49,9 @@ export function DateTruncRow({
 }: DateTruncRowProps) {
   const { t } = useTranslation();
   const [editing, setEditing] = useState(false);
+  const isVi = isVietnameseLocale();
+  const resolvedLabel =
+    displayLabel ?? (isVi ? humanizeFieldName(rule.column, { locale: 'vi' }) : rule.column);
 
   return (
     <div
@@ -60,7 +75,7 @@ export function DateTruncRow({
             </span>
           )}
           <span className={cn(isOrphaned && 'text-red-700 line-through dark:text-red-300')}>
-            {displayLabel ?? rule.column}
+            {resolvedLabel}
           </span>
         </div>
         {!isOrphaned && dataMartName && (
@@ -70,7 +85,9 @@ export function DateTruncRow({
           <span className='text-muted-foreground'>
             {t('reportColumnPicker.groupedBy', 'grouped by')}{' '}
           </span>
-          <span className='text-foreground/70 font-medium'>{rule.unit}</span>
+          <span className='text-foreground/70 font-medium'>
+            {isVi ? DATE_TRUNC_ROW_LABELS_VI[rule.unit] : rule.unit}
+          </span>
           {rule.timeZone && <span className='text-muted-foreground'> · {rule.timeZone}</span>}
         </div>
       </div>

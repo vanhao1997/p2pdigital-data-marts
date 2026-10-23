@@ -23,6 +23,7 @@ import {
   getDataQualityStatusVisual,
 } from '../../../shared/utils/data-quality-status';
 import type { DataQualityRun, DataQualityRunSnapshot } from '../../../data-quality/model/types';
+import { isVietnameseLocale } from '../../../../../shared/utils/field-humanizer';
 
 interface DataQualityRunHistoryDetailsProps {
   projectId: string;
@@ -249,7 +250,9 @@ function RunSnapshot({ snapshot }: { snapshot: DataQualityRunSnapshot }) {
                     {dataQualityScopeLabel(rule.scope)}
                   </code>
                   <Badge variant='outline' className='ml-auto'>
-                    {rule.severity}
+                    {isVietnameseLocale()
+                      ? t(`dataQualityUi.severities.${rule.severity}`, rule.severity)
+                      : rule.severity}
                   </Badge>
                   <Badge variant='secondary'>{t('common.active')}</Badge>
                 </div>

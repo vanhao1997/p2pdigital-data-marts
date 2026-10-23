@@ -12,6 +12,10 @@
 import type { CalculatedFieldLevel } from '../../../../shared/types/data-mart-schema.types';
 import type { ReferenceableField } from './formula-reference-index';
 import i18n from '../../../../../../i18n';
+import {
+  humanizeFieldName,
+  isVietnameseLocale,
+} from '../../../../../../shared/utils/field-humanizer';
 
 /**
  * Alias path → the joined Data Mart's display name.
@@ -77,7 +81,15 @@ export function describeReferenceSource(
 ): string | undefined {
   if (!ref.path) {
     const calculated = calculatedFields.get(ref.field);
-    if (!calculated) return undefined;
+    if (!calculated) {
+      if (isVietnameseLocale()) {
+        const humanized = humanizeFieldName(ref.field, { locale: 'vi' });
+        if (humanized && humanized !== ref.field) {
+          return `${humanized} (${ref.field})`;
+        }
+      }
+      return undefined;
+    }
     if (!calculated.level) {
       return i18n.t('calculatedFieldReferences.unsaved', { field: ref.field });
     }

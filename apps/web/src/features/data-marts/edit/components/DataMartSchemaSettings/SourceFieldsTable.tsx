@@ -32,6 +32,12 @@ import {
   sameAggregationCategory,
 } from '../../../shared/utils/aggregation-governance';
 import { useDebounce } from '../../../../../hooks/useDebounce';
+import {
+  humanizeFieldName,
+  isVietnameseLocale,
+  normalizeSearchText,
+  resolveHumanizeLocale,
+} from '../../../../../shared/utils/field-humanizer';
 
 type FilterMode = 'all' | 'visible' | 'hidden';
 
@@ -48,9 +54,11 @@ interface SourceFieldsTableProps {
 
 function FieldAliasInput({
   initialValue,
+  placeholder,
   onSave,
 }: {
   initialValue: string;
+  placeholder?: string;
   onSave: (value: string) => void;
 }) {
   const [value, setValue] = useState(initialValue);
@@ -75,6 +83,7 @@ function FieldAliasInput({
   return (
     <Input
       value={value}
+      placeholder={placeholder}
       onChange={e => {
         setValue(e.target.value);
       }}
@@ -96,7 +105,9 @@ export function SourceFieldsTable({
   onFieldOverrideChange,
   leadingToolbar,
 }: SourceFieldsTableProps) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const locale = resolveHumanizeLocale(i18n.resolvedLanguage ?? i18n.language);
+  const isVi = isVietnameseLocale(i18n.resolvedLanguage ?? i18n.language);
   const [searchValue, setSearchValue] = useState('');
   // Re-run the filter on the debounced value so typing stays responsive on
   // schemas with hundreds of fields (the input itself always reflects the
@@ -121,14 +132,17 @@ export function SourceFieldsTable({
   const filteredFields = useMemo(() => {
     let result = fields;
     if (debouncedSearch.trim()) {
-      const q = debouncedSearch.toLowerCase();
-      result = result.filter(
-        f =>
-          f.originalFieldName.toLowerCase().includes(q) ||
-          (f.sourceFieldType ?? f.type).toLowerCase().includes(q) ||
-          f.alias.toLowerCase().includes(q) ||
-          f.description.toLowerCase().includes(q)
-      );
+      const q = normalizeSearchText(debouncedSearch);
+      result = result.filter(f => {
+        const friendlyLabel = humanizeFieldName(f.originalFieldName, { locale });
+        return (
+          normalizeSearchText(f.originalFieldName).includes(q) ||
+          normalizeSearchText(friendlyLabel).includes(q) ||
+          normalizeSearchText(f.sourceFieldType ?? f.type).includes(q) ||
+          normalizeSearchText(f.alias).includes(q) ||
+          normalizeSearchText(f.description).includes(q)
+        );
+      });
     }
     if (filterMode === 'visible') {
       result = result.filter(f => !isFieldHidden(f.originalFieldName));
@@ -136,7 +150,7 @@ export function SourceFieldsTable({
       result = result.filter(f => isFieldHidden(f.originalFieldName));
     }
     return result;
-  }, [fields, debouncedSearch, filterMode, isFieldHidden]);
+  }, [fields, debouncedSearch, filterMode, isFieldHidden, locale]);
 
   const toggleHidden = (fieldName: string) => {
     const newHidden = !isFieldHidden(fieldName);
@@ -256,6 +270,11 @@ export function SourceFieldsTable({
           <TableBody className='border-b border-gray-200 bg-white dark:border-white/4 dark:bg-white/1'>
             {filteredFields.map(field => {
               const hidden = isFieldHidden(field.originalFieldName);
+              const friendlyHint = humanizeFieldName(field.originalFieldName, { locale });
+              const showFriendlyHint =
+                isVi &&
+                friendlyHint.trim().toLowerCase() !==
+                  field.originalFieldName.trim().toLowerCase();
               return (
                 <TableRow
                   key={field.originalFieldName}
@@ -263,7 +282,12 @@ export function SourceFieldsTable({
                 >
                   <TableCell style={{ paddingTop: 8, paddingBottom: 8 }}>
                     <div className='flex items-center gap-1.5'>
-                      <span className='font-medium'>{field.originalFieldName}</span>
+                      <div className='flex flex-col'>
+                        <span className='font-medium'>{field.originalFieldName}</span>
+                        {showFriendlyHint && (
+                          <span className='text-muted-foreground text-xs'>{friendlyHint}</span>
+                        )}
+                      </div>
                       {hidden && (
                         <Tooltip>
                           <TooltipTrigger asChild>
@@ -288,7 +312,15 @@ export function SourceFieldsTable({
                   </TableCell>
                   <TableCell style={{ paddingTop: 8, paddingBottom: 8 }}>
                     <FieldAliasInput
-                      initialValue={field.alias}
+                      initialValue={
+                        isVi &&
+                        field.alias.trim().toLowerCase() ===
+                          field.originalFieldName.trim().toLowerCase() &&
+                        showFriendlyHint
+                          ? ''
+                          : field.alias
+                      }
+                      placeholder={friendlyHint}
                       onSave={value => {
                         onFieldOverrideChange(field.originalFieldName, { alias: value });
                       }}

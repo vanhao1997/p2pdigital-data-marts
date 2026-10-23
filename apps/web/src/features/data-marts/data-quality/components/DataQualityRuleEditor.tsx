@@ -10,6 +10,7 @@ import {
   dataQualityScopeLabel,
   getDataQualityCategoryDescription,
   getDataQualityCategoryLabel,
+  localizeDataQualityReason,
 } from '../model/data-quality.model';
 import type {
   DataQualityRuleConfig,
@@ -105,7 +106,7 @@ export function DataQualityRuleEditor({
           </div>
           {!rule.isApplicable && (
             <p className='text-muted-foreground mt-2 text-xs'>
-              {rule.notApplicableReason ??
+              {localizeDataQualityReason(rule.notApplicableReason) ??
                 t('dataQualityUi.notApplicableReason', 'This check is not applicable.')}
             </p>
           )}

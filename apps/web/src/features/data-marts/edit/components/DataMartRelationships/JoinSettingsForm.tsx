@@ -29,6 +29,10 @@ import type { DataMartResponseDto } from '../../../shared';
 import { dataMartService } from '../../../shared';
 import { dataMartRelationshipService } from '../../../shared/services/data-mart-relationship.service';
 import type { DataMartRelationship } from '../../../shared/types/relationship.types';
+import {
+  humanizeFieldName,
+  isVietnameseLocale,
+} from '../../../../../shared/utils/field-humanizer';
 
 type Translate = TFunction;
 
@@ -71,12 +75,14 @@ type JoinSettingsFormValues = z.infer<ReturnType<typeof buildJoinSettingsFormSch
 
 interface FlatField {
   name: string;
+  alias?: string;
   type: string;
   isHiddenForReporting?: boolean;
 }
 
 interface RawSchemaField {
   name: string;
+  alias?: string;
   type: string;
   isHiddenForReporting?: boolean;
   fields?: RawSchemaField[];
@@ -91,12 +97,24 @@ function flattenFields(fields: RawSchemaField[], prefix = ''): FlatField[] {
     } else {
       result.push({
         name: fullName,
+        alias: field.alias,
         type: field.type,
         isHiddenForReporting: field.isHiddenForReporting,
       });
     }
   }
   return result;
+}
+
+function formatJoinFieldLabel(field: FlatField): string {
+  const alias = field.alias?.trim();
+  if (alias && alias !== field.name) {
+    return `${alias} (${field.name})`;
+  }
+  if (isVietnameseLocale()) {
+    return humanizeFieldName(field.name, { locale: 'vi', includeTechnicalName: true });
+  }
+  return field.name;
 }
 
 function getSchemaFields(dm: DataMartResponseDto | null): FlatField[] {
@@ -476,7 +494,7 @@ export function JoinSettingsForm({
                           <Combobox
                             options={sourceFields.map(f => ({
                               value: f.name,
-                              label: f.name,
+                              label: formatJoinFieldLabel(f),
                             }))}
                             value={field.value}
                             onValueChange={field.onChange}
@@ -517,7 +535,7 @@ export function JoinSettingsForm({
                           <Combobox
                             options={targetFields.map(f => ({
                               value: f.name,
-                              label: f.name,
+                              label: formatJoinFieldLabel(f),
                             }))}
                             value={field.value}
                             onValueChange={field.onChange}

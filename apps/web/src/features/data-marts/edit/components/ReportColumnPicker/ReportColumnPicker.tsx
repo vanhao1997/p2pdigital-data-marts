@@ -75,6 +75,10 @@ import { buildColumnSearchResult, matchesColumnSearch } from './report-column-se
 import { SearchButton } from './SearchButton';
 import { PathTree } from './FieldSearchPicker';
 import { useTranslation } from 'react-i18next';
+import {
+  humanizeFieldName,
+  isVietnameseLocale,
+} from '../../../../../shared/utils/field-humanizer';
 
 // Must stay in sync with the backend collectSchemaFieldPaths walker: hidden and
 // DISCONNECTED nodes (with their subtrees) are unavailable for reporting, so they
@@ -319,7 +323,16 @@ const NativeFieldRow = memo(function NativeFieldRow({
     ? `${missingDescription}\nReach your analyst to fix it.`
     : undefined;
   const blocksToggle = !!hint && !checked;
-  const displayName = field.alias ?? field.name;
+  const trimmedNativeAlias = field.alias?.trim() ?? '';
+  const hasCustomNativeAlias =
+    trimmedNativeAlias !== '' &&
+    (!isVietnameseLocale() ||
+      trimmedNativeAlias.toLowerCase() !== field.name.trim().toLowerCase());
+  const displayName = hasCustomNativeAlias
+    ? trimmedNativeAlias
+    : isVietnameseLocale()
+      ? humanizeFieldName(field.name, { locale: 'vi', includeTechnicalName: true })
+      : field.name;
   const describedText = hint ? [hint, field.description].filter(Boolean).join('\n') : undefined;
 
   const checkbox = (
@@ -516,7 +529,19 @@ const BlendedFieldRow = memo(function BlendedFieldRow({
         }}
       />
     ) : null;
-  const displayName = field.alias || field.originalFieldName;
+  const trimmedBlendedAlias = field.alias.trim();
+  const hasCustomBlendedAlias =
+    trimmedBlendedAlias !== '' &&
+    (!isVietnameseLocale() ||
+      trimmedBlendedAlias.toLowerCase() !== field.originalFieldName.trim().toLowerCase());
+  const displayName = hasCustomBlendedAlias
+    ? trimmedBlendedAlias
+    : isVietnameseLocale()
+      ? humanizeFieldName(field.originalFieldName, {
+          locale: 'vi',
+          includeTechnicalName: true,
+        })
+      : field.originalFieldName;
   const blocksToggle = !!hint && !checked;
   const describedText = hint ? [hint, field.description].filter(Boolean).join('\n') : undefined;
 

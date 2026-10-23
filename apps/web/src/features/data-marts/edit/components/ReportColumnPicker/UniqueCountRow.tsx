@@ -10,6 +10,7 @@ import type {
   UniqueCountSourceState,
   UniqueCountUnavailableReason,
 } from '../../../shared/utils/unique-count-availability';
+import { isVietnameseLocale } from '../../../../../shared/utils/field-humanizer';
 
 // Presentation is the one place both rules' verdicts legitimately meet, so this table covers the
 // reasons either of them can give. The Data Mart is named in every one: the row itself no longer
@@ -154,7 +155,11 @@ export function UniqueCountRow({
   // Every row's visible label is the bare `Unique Count`; only the group heading above it says
   // which Data Mart. A heading is not part of a checkbox's accessible name, so without this every
   // Unique Count in the picker announces identically and none can be told from the others.
-  const accessibleLabel = dataMartName?.trim() ? `${label} (${dataMartName.trim()})` : label;
+  const displayLabel =
+    isVietnameseLocale() && label === 'Unique Count' ? 'Số lượng duy nhất (Unique Count)' : label;
+  const accessibleLabel = dataMartName?.trim()
+    ? `${displayLabel} (${dataMartName.trim()})`
+    : displayLabel;
   // The ⓘ tooltip opens on pointer only, so this is the description's only route to a screen
   // reader. Both parts when both apply: the note says the metric is not being generated, the
   // description says what it would count.
@@ -219,7 +224,7 @@ export function UniqueCountRow({
                       },
                     })}
               >
-                {label}
+                {displayLabel}
               </TooltipTrigger>
               <TooltipContent side='top' className='max-w-xs whitespace-pre-line'>
                 {note}
@@ -229,7 +234,7 @@ export function UniqueCountRow({
         ) : (
           <label className='flex min-w-0 flex-1 cursor-pointer items-center gap-2'>
             {checkbox}
-            <span className='min-w-0 truncate font-mono text-xs'>{label}</span>
+            <span className='min-w-0 truncate font-mono text-xs'>{displayLabel}</span>
           </label>
         )}
         {/* Outside the <label> above: a <span> is not interactive content, so inside it every

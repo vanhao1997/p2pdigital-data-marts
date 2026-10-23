@@ -8,6 +8,8 @@ import {
 } from '@owox/ui/components/dropdown-menu';
 import { type ReportAggregateFunction } from '../../../shared/types/relationship.types';
 import { supportedAggregationsForType } from '../../../shared/utils/aggregation-governance';
+import { aggregateFunctionLabel } from '../../../shared/utils/aggregation-labels';
+import { isVietnameseLocale } from '../../../../../shared/utils/field-humanizer';
 
 interface AllowedAggregationsSelectProps {
   value: readonly ReportAggregateFunction[];
@@ -26,13 +28,14 @@ export function AllowedAggregationsSelect({
   className,
 }: AllowedAggregationsSelectProps) {
   const supported = supportedAggregationsForType(fieldType);
+  const isVi = isVietnameseLocale();
   let label: string;
   if (value.length === 0) {
-    label = 'None';
+    label = isVi ? 'Không có' : 'None';
   } else if (value.length <= 2) {
-    label = value.join(', ');
+    label = isVi ? value.map(fn => aggregateFunctionLabel(fn)).join(', ') : value.join(', ');
   } else {
-    label = `${value.length} selected`;
+    label = isVi ? `Đã chọn ${value.length}` : `${value.length} selected`;
   }
 
   return (
@@ -66,7 +69,7 @@ export function AllowedAggregationsSelect({
               e.preventDefault();
             }}
           >
-            {fn}
+            {isVi ? aggregateFunctionLabel(fn) : fn}
           </DropdownMenuCheckboxItem>
         ))}
       </DropdownMenuContent>

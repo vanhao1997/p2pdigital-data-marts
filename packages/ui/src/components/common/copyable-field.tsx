@@ -13,6 +13,21 @@ interface CopyableFieldProps {
   children?: React.ReactNode;
   doNotTruncateContent?: boolean;
   className?: string;
+  emptyText?: string;
+  copyText?: string;
+  copiedText?: string;
+}
+
+function isViStorageLocale(): boolean {
+  try {
+    if (typeof window !== 'undefined') {
+      const stored = window.localStorage?.getItem('p2p_language');
+      return Boolean(stored && stored.startsWith('vi'));
+    }
+  } catch {
+    // ignore storage errors
+  }
+  return false;
 }
 
 export function CopyableField({
@@ -20,8 +35,15 @@ export function CopyableField({
   children,
   doNotTruncateContent,
   className,
+  emptyText,
+  copyText,
+  copiedText,
 }: CopyableFieldProps) {
   const [copied, setCopied] = useState(false);
+  const isVi = isViStorageLocale();
+  const resolvedEmpty = emptyText ?? (isVi ? 'Không có dữ liệu' : 'No data');
+  const resolvedCopy = copyText ?? (isVi ? 'Nhấn để sao chép' : 'Click to copy');
+  const resolvedCopied = copiedText ?? (isVi ? 'Đã sao chép!' : 'Copied!');
 
   const handleCopy = async () => {
     if (!value) return;
@@ -47,13 +69,13 @@ export function CopyableField({
             )}
           >
             <span className={doNotTruncateContent ? 'w-[95%]' : 'truncate'}>
-              {children || value || 'No data'}
+              {children || value || resolvedEmpty}
             </span>
             {copied ? <Check className='h-4 w-4 text-green-500' /> : <Copy className='h-4 w-4' />}
           </div>
         </TooltipTrigger>
         <TooltipContent>
-          <p>{copied ? 'Copied!' : 'Click to copy'}</p>
+          <p>{copied ? resolvedCopied : resolvedCopy}</p>
         </TooltipContent>
       </Tooltip>
     </TooltipProvider>

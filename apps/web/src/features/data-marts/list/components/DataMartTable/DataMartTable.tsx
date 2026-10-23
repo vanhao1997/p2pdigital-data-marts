@@ -1,10 +1,11 @@
 import { Button } from '@owox/ui/components/button';
 import { type ColumnDef, type Row } from '@tanstack/react-table';
-import { Import, Plus } from 'lucide-react';
+import { Import, Layers, Plus } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 import { Link, useParams } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import { BulkCreateFromStorageDialog } from '../BulkCreateFromStorageDialog';
+import { TriggerGroupFormSheet } from '../../../scheduled-triggers/trigger-groups';
 import { CardSkeleton } from '../../../../../shared/components/CardSkeleton';
 import {
   BaseTable,
@@ -82,6 +83,7 @@ export function DataMartTable<TData, TValue>({
   );
 
   const [showBulkCreateFromStorage, setShowBulkCreateFromStorage] = useState(false);
+  const [isTriggerGroupSheetOpen, setIsTriggerGroupSheetOpen] = useState(false);
 
   // Show onboarding video if the user has not seen it yet
   const shouldShowOnboarding = !isLoading && data.length === 0;
@@ -290,6 +292,22 @@ export function DataMartTable<TData, TValue>({
               <Button
                 variant='outline'
                 onClick={() => {
+                  setIsTriggerGroupSheetOpen(true);
+                }}
+                title={t(
+                  'dataMartsPage.triggerGroupButtonTitle',
+                  'Tạo Bộ Trigger quản lý lịch chạy chung cho nhóm Data Mart'
+                )}
+                data-testid='openTriggerGroupFromDataMartsBtn'
+              >
+                <Layers className='h-4 w-4' />
+                <span className='hidden lg:block'>
+                  {t('dataMartsPage.triggerGroupButton', 'Bộ Trigger nhóm')}
+                </span>
+              </Button>
+              <Button
+                variant='outline'
+                onClick={() => {
                   setShowBulkCreateFromStorage(true);
                 }}
                 title={t(
@@ -310,6 +328,20 @@ export function DataMartTable<TData, TValue>({
               </TableCTAButton>
             </div>
           )}
+        />
+
+        <TriggerGroupFormSheet
+          isOpen={isTriggerGroupSheetOpen}
+          onClose={() => {
+            setIsTriggerGroupSheetOpen(false);
+          }}
+          projectId={projectId || '0'}
+          initialDraft={{
+            dataMartIds: selectedRows.map(row => (row.original as DataMartListItem).id),
+          }}
+          onSaved={() => {
+            void refetchDataMarts();
+          }}
         />
 
         <BulkCreateFromStorageDialog

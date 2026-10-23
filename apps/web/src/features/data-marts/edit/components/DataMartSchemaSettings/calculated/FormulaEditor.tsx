@@ -21,6 +21,7 @@ import {
 } from './formula-reference-source';
 import { autoSizeSuggestWidget } from './monaco-suggest-width.util';
 import type * as monacoEditor from 'monaco-editor';
+import { isVietnameseLocale } from '../../../../../../shared/utils/field-humanizer';
 
 /** Marker owner, so setting ours never clears whatever else annotates a `sql` model. */
 const FORMULA_MARKER_OWNER = 'owox-calculated-field-formula';
@@ -282,7 +283,9 @@ export function FormulaEditor({
     ...otherFieldErrors.map(
       (violation): FormulaMessage => ({
         tone: 'warning',
-        text: `Saving will fail on ${violation.field}: ${violation.message}`,
+        text: isVietnameseLocale()
+          ? `Lưu sẽ thất bại ở trường ${violation.field}: ${violation.message}`
+          : `Saving will fail on ${violation.field}: ${violation.message}`,
       })
     ),
   ];

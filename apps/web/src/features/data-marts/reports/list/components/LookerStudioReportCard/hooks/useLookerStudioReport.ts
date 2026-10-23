@@ -6,6 +6,7 @@ import type { DataDestination } from '../../../../../../data-destination/shared/
 import { DataDestinationType } from '../../../../../../data-destination/shared/enums';
 import { DestinationTypeConfigEnum } from '../../../../shared/enums/destination-type-config.enum';
 import { DataMartStatus } from '../../../../../shared/enums/data-mart-status.enum';
+import { isVietnameseLocale } from '../../../../../../../shared/utils/field-humanizer';
 
 export function useLookerStudioReport(destination: DataDestination) {
   const { dataMart } = useOutletContext<DataMartContextType>();
@@ -27,10 +28,12 @@ export function useLookerStudioReport(destination: DataDestination) {
   );
   const isChecked = useMemo(() => !!existingReport, [existingReport]);
 
-  const dynamicTitle = useMemo(
-    () => (isChecked ? 'Available in Data Studio' : 'Not available in Data Studio'),
-    [isChecked]
-  );
+  const dynamicTitle = useMemo(() => {
+    if (isVietnameseLocale()) {
+      return isChecked ? 'Khả dụng trong Looker Studio' : 'Chưa khả dụng trong Looker Studio';
+    }
+    return isChecked ? 'Available in Data Studio' : 'Not available in Data Studio';
+  }, [isChecked]);
 
   const handleSwitchChange = useCallback(
     async (checked: boolean) => {

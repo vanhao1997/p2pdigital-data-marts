@@ -2,8 +2,10 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useParams } from 'react-router';
 import type { ColumnDef } from '@tanstack/react-table';
 import { Badge } from '@owox/ui/components/badge';
+import { Button } from '@owox/ui/components/button';
 import RelativeTime from '@owox/ui/components/common/relative-time';
 import { SkeletonList } from '@owox/ui/components/common/skeleton-list';
+import { Layers, Plus } from 'lucide-react';
 import { extractApiError } from '../../../app/api';
 import { ConnectorContextProvider } from '../../../features/connectors/shared/model/context';
 import { useConnector } from '../../../features/connectors/shared/model/hooks/useConnector';
@@ -24,8 +26,24 @@ import {
   ScheduledTriggerColumnKey,
   ScheduledTriggerColumnLabels,
 } from '../../../features/data-marts/scheduled-triggers/components/ScheduledTriggerTable/columns';
+import {
+  ScheduledTriggerBulkActions,
+  TriggerGroupFormSheet,
+  TriggerGroupsSection,
+  discoverSharedScheduleClusters,
+  findTriggerGroupsForTrigger,
+  loadTriggerGroups,
+  reconcileTriggerGroupsWithTriggers,
+  type TriggerGroup,
+  type TriggerGroupDraft,
+} from '../../../features/data-marts/scheduled-triggers/trigger-groups';
 import { StatusLabel, StatusTypeEnum } from '../../../shared/components/StatusLabel';
-import { BaseTable, SortableHeader, ToggleColumnsHeader } from '../../../shared/components/Table';
+import {
+  BaseTable,
+  SortableHeader,
+  TableSelectionCheckbox,
+  ToggleColumnsHeader,
+} from '../../../shared/components/Table';
 import {
   applyFiltersToData,
   type FilterAccessors,
@@ -34,6 +52,7 @@ import {
 import { collectOptionsFromData } from '../../../shared/components/TableFilters/collectOptions.utils';
 import { UserReference } from '../../../shared/components/UserReference';
 import { useBaseTable, usePersistentFilters, useProjectRoute } from '../../../shared/hooks';
+import { isVietnameseLocale } from '../../../shared/utils/field-humanizer';
 import { ProjectDataMartTableFilters } from '../shared/ProjectDataMartTableFilters';
 import { ProjectDataMartTableSearch } from '../shared/ProjectDataMartTableSearch';
 import {
@@ -153,10 +172,18 @@ function buildProjectScheduledTriggerFilters(
 
 function DataMartSchedulesPageContent() {
   const { t } = useTranslation();
+  const isVi = isVietnameseLocale();
   const { projectId = '' } = useParams<{ projectId: string }>();
   const { scope } = useProjectRoute();
   const { connectors, fetchAvailableConnectors } = useConnector();
   const [triggers, setTriggers] = useState<ProjectScheduledTrigger[]>([]);
+  const [triggerGroups, setTriggerGroups] = useState<TriggerGroup[]>([]);
+  const [activeGroupFilterId, setActiveGroupFilterId] = useState<string | null>(null);
+  const [isGroupSheetOpen, setIsGroupSheetOpen] = useState(false);
+  const [editingGroup, setEditingGroup] = useState<TriggerGroup | null>(null);
+  const [initialGroupDraft, setInitialGroupDraft] = useState<
+    Partial<TriggerGroupDraft> | undefined
+  >(undefined);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
@@ -168,7 +195,10 @@ function DataMartSchedulesPageContent() {
 
     try {
       const response = await scheduledTriggerService.getProjectScheduledTriggers();
-      setTriggers(ScheduledTriggerMapper.mapProjectFromDtoList(response));
+      const mapped = ScheduledTriggerMapper.mapProjectFromDtoList(response);
+      setTriggers(mapped);
+      const storedGroups = loadTriggerGroups(projectId);
+      setTriggerGroups(reconcileTriggerGroupsWithTriggers(projectId, storedGroups, mapped));
     } catch (caught) {
       setError(
         extractApiError(caught).message ??
@@ -177,7 +207,7 @@ function DataMartSchedulesPageContent() {
     } finally {
       setIsLoading(false);
     }
-  }, [t]);
+  }, [projectId, t]);
 
   useEffect(() => {
     void loadTriggers();
@@ -195,6 +225,24 @@ function DataMartSchedulesPageContent() {
     await loadTriggers();
   }, [loadTriggers]);
 
+  const handleOpenCreateGroup = useCallback((draft?: Partial<TriggerGroupDraft>) => {
+    setEditingGroup(null);
+    setInitialGroupDraft(draft);
+    setIsGroupSheetOpen(true);
+  }, []);
+
+  const handleOpenEditGroup = useCallback((group: TriggerGroup) => {
+    setInitialGroupDraft(undefined);
+    setEditingGroup(group);
+    setIsGroupSheetOpen(true);
+  }, []);
+
+  const handleCloseGroupSheet = useCallback(() => {
+    setIsGroupSheetOpen(false);
+    setEditingGroup(null);
+    setInitialGroupDraft(undefined);
+  }, []);
+
   const handleDeleteTrigger = useCallback(
     async (trigger: ProjectScheduledTrigger) => {
       await scheduledTriggerService.deleteScheduledTrigger(trigger.dataMart.id, trigger.id);
@@ -202,6 +250,19 @@ function DataMartSchedulesPageContent() {
     },
     [loadTriggers]
   );
+
+  const discoveredClusters = useMemo(
+    () => discoverSharedScheduleClusters(triggers, triggerGroups),
+    [triggerGroups, triggers]
+  );
+
+  const dataMartTitlesById = useMemo(() => {
+    const map = new Map<string, string>();
+    for (const trigger of triggers) {
+      map.set(trigger.dataMart.id, trigger.dataMart.title);
+    }
+    return map;
+  }, [triggers]);
 
   const filterAccessors = useMemo(
     () => buildProjectScheduledTriggerFilterAccessors(connectors, t),
@@ -266,9 +327,21 @@ function DataMartSchedulesPageContent() {
 
   const searchedTriggers = useMemo(
     () =>
-      filteredTriggers.filter(trigger =>
-        matchesProjectTableSearch(searchQuery, [
+      filteredTriggers.filter(trigger => {
+        if (activeGroupFilterId) {
+          const activeGroup = triggerGroups.find(g => g.id === activeGroupFilterId);
+          if (
+            activeGroup &&
+            !activeGroup.memberTriggerRefs.some(ref => ref.triggerId === trigger.id) &&
+            !activeGroup.dataMartIds.includes(trigger.dataMart.id)
+          ) {
+            return false;
+          }
+        }
+        const belongingGroups = findTriggerGroupsForTrigger(triggerGroups, trigger);
+        return matchesProjectTableSearch(searchQuery, [
           trigger.dataMart.title,
+          ...belongingGroups.map(g => g.name),
           getScheduledTriggerTypeLabel(trigger.type),
           getScheduledTriggerRunTargetTitle(trigger, connectors, t),
           trigger.cronExpression,
@@ -277,13 +350,36 @@ function DataMartSchedulesPageContent() {
             : t('projectDataMartPages.disabled', 'Disabled'),
           trigger.createdByUser?.fullName,
           trigger.createdByUser?.email,
-        ])
-      ),
-    [connectors, filteredTriggers, searchQuery, t]
+        ]);
+      }),
+    [activeGroupFilterId, connectors, filteredTriggers, searchQuery, t, triggerGroups]
   );
 
   const columns = useMemo<ColumnDef<ProjectScheduledTrigger>[]>(
     () => [
+      {
+        id: 'select',
+        size: 40,
+        enableResizing: false,
+        enableSorting: false,
+        enableHiding: false,
+        header: ({ table }) => (
+          <TableSelectionCheckbox
+            checked={table.getIsAllPageRowsSelected()}
+            ariaLabel={t('dataMartsPage.selectAllRows', 'Select all rows on this page')}
+            onClick={table.getToggleAllPageRowsSelectedHandler()}
+            extendedHitArea
+          />
+        ),
+        cell: ({ row }) => (
+          <TableSelectionCheckbox
+            checked={row.getIsSelected()}
+            ariaLabel={t('dataMartsPage.selectRow', 'Select row')}
+            onClick={row.getToggleSelectedHandler()}
+            extendedHitArea
+          />
+        ),
+      },
       {
         id: 'dataMart',
         accessorFn: row => row.dataMart.title,
@@ -292,12 +388,41 @@ function DataMartSchedulesPageContent() {
         header: ({ column }) => (
           <SortableHeader column={column}>{t('search.labelDataMart')}</SortableHeader>
         ),
-        cell: ({ row }) => (
-          <ProjectDataMartTitleLink
-            to={scope(`/data-marts/${row.original.dataMart.id}/triggers`)}
-            title={row.original.dataMart.title}
-          />
-        ),
+        cell: ({ row }) => {
+          const belongingGroups = findTriggerGroupsForTrigger(triggerGroups, row.original);
+          return (
+            <div className='space-y-1'>
+              <ProjectDataMartTitleLink
+                to={scope(`/data-marts/${row.original.dataMart.id}/triggers`)}
+                title={row.original.dataMart.title}
+              />
+              {belongingGroups.length > 0 && (
+                <div className='flex flex-wrap gap-1'>
+                  {belongingGroups.map(group => (
+                    <button
+                      key={group.id}
+                      type='button'
+                      data-trigger-group-badge='true'
+                      onClick={e => {
+                        e.stopPropagation();
+                        handleOpenEditGroup(group);
+                      }}
+                      className='border-primary/30 bg-primary/10 text-primary hover:bg-primary/20 inline-flex items-center gap-1 rounded px-1.5 py-0.5 text-[10px] font-medium transition-colors'
+                      title={
+                        isVi
+                          ? `Thuộc Bộ Trigger: ${group.name} (Nhấn để chỉnh sửa nhóm)`
+                          : `Part of Trigger Group: ${group.name} (Click to edit group)`
+                      }
+                    >
+                      <Layers className='h-2.5 w-2.5' />
+                      <span>{group.name}</span>
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+          );
+        },
       },
       {
         accessorKey: ScheduledTriggerColumnKey.TYPE,
@@ -441,7 +566,7 @@ function DataMartSchedulesPageContent() {
         ),
       },
     ],
-    [handleDeleteTrigger, scope, t, translatedColumnLabels]
+    [handleDeleteTrigger, handleOpenEditGroup, isVi, scope, t, translatedColumnLabels, triggerGroups]
   );
 
   const { table } = useBaseTable<ProjectScheduledTrigger>({
@@ -450,13 +575,33 @@ function DataMartSchedulesPageContent() {
     storageKeyPrefix: 'project-data-mart-scheduled-triggers',
     defaultSortingColumn: ScheduledTriggerColumnKey.NEXT_RUN,
     defaultPageSize: DATA_MART_SCHEDULES_PAGE_SIZE,
-    enableRowSelection: false,
+    enableRowSelection: true,
+    getRowId: row => row.id,
   });
+
+  const selectedRows = table.getSelectedRowModel().flatRows;
+  const hasSelectedRows = selectedRows.length > 0;
 
   return (
     <div className='dm-page' data-testid='dataMartSchedulesPage'>
-      <header className='dm-page-header'>
+      <header className='dm-page-header flex flex-wrap items-center justify-between gap-3'>
         <h1 className='dm-page-header-title'>{t('projectDataMartPages.triggersTitle')}</h1>
+        <Button
+          type='button'
+          variant='default'
+          size='sm'
+          onClick={() => {
+            handleOpenCreateGroup();
+          }}
+          data-testid='createTriggerGroupBtn'
+        >
+          <Layers className='h-4 w-4' />
+          <span>
+            {isVi
+              ? 'Tạo Bộ Trigger nhóm'
+              : 'Create Trigger Group'}
+          </span>
+        </Button>
       </header>
 
       <div className='dm-page-content'>
@@ -464,44 +609,101 @@ function DataMartSchedulesPageContent() {
           <SkeletonList />
         ) : error ? (
           <div className='dm-card-block text-destructive text-sm'>{error}</div>
-        ) : triggers.length === 0 ? (
-          <div className='dm-card'>
-            <ProjectDataMartEmptyState variant='triggers' />
-          </div>
         ) : (
-          <div className='dm-card' data-testid='projectScheduledTriggersTable'>
-            <BaseTable
-              tableId={PROJECT_SCHEDULED_TRIGGERS_TABLE_ID}
-              table={table}
-              ariaLabel={t('projectDataMartPages.triggersTitle')}
-              paginationProps={{ displaySelected: false }}
-              renderToolbarLeft={() => (
-                <>
-                  <ProjectDataMartTableFilters
-                    appliedState={appliedState}
-                    config={filtersConfig}
-                    onApply={apply}
-                    onClear={clear}
-                  />
-                  <ProjectDataMartTableSearch value={searchQuery} onChange={setSearchQuery} />
-                </>
-              )}
-              renderEmptyState={() => (
-                <div
-                  className='flex h-32 items-center justify-center text-center'
-                  role='status'
-                  aria-live='polite'
-                >
-                  {t('projectDataMartPages.noTriggersForAccessible')}
-                </div>
-              )}
-              onRowClick={row => {
-                if (row.original.canEdit) {
-                  setEditingTrigger(row.original);
-                }
-              }}
+          <>
+            <TriggerGroupsSection
+              projectId={projectId}
+              groups={triggerGroups}
+              discoveredClusters={discoveredClusters}
+              triggers={triggers}
+              dataMartTitlesById={dataMartTitlesById}
+              activeGroupFilterId={activeGroupFilterId}
+              onSelectGroupFilter={setActiveGroupFilterId}
+              onRequestCreateGroup={handleOpenCreateGroup}
+              onRequestEditGroup={handleOpenEditGroup}
+              onGroupsChanged={loadTriggers}
             />
-          </div>
+
+            {triggers.length === 0 ? (
+              <div className='dm-card'>
+                <ProjectDataMartEmptyState variant='triggers' />
+              </div>
+            ) : (
+              <div className='dm-card' data-testid='projectScheduledTriggersTable'>
+                <BaseTable
+                  tableId={PROJECT_SCHEDULED_TRIGGERS_TABLE_ID}
+                  table={table}
+                  ariaLabel={t('projectDataMartPages.triggersTitle')}
+                  paginationProps={{ displaySelected: false }}
+                  renderToolbarLeft={tableInstance => (
+                    <>
+                      {hasSelectedRows && (
+                        <div className='mr-2 flex items-center gap-2 border-r pr-4'>
+                          <ScheduledTriggerBulkActions
+                            selectedTriggers={selectedRows.map(row => row.original)}
+                            onCompleted={loadTriggers}
+                            onClearSelection={() => {
+                              tableInstance.resetRowSelection();
+                            }}
+                            onGroupSelectedTriggers={draft => {
+                              handleOpenCreateGroup(draft);
+                            }}
+                          />
+                        </div>
+                      )}
+                      <ProjectDataMartTableFilters
+                        appliedState={appliedState}
+                        config={filtersConfig}
+                        onApply={apply}
+                        onClear={clear}
+                      />
+                      <ProjectDataMartTableSearch value={searchQuery} onChange={setSearchQuery} />
+                    </>
+                  )}
+                  renderToolbarRight={() => (
+                    <Button
+                      type='button'
+                      variant='outline'
+                      size='sm'
+                      onClick={() => {
+                        handleOpenCreateGroup();
+                      }}
+                      data-testid='toolbarCreateTriggerGroupBtn'
+                    >
+                      <Plus className='h-4 w-4' />
+                      <span className='hidden sm:inline'>
+                        {isVi ? 'Bộ Trigger nhóm mới' : 'New Trigger Group'}
+                      </span>
+                    </Button>
+                  )}
+                  renderEmptyState={() => (
+                    <div
+                      className='flex h-32 items-center justify-center text-center'
+                      role='status'
+                      aria-live='polite'
+                    >
+                      {t('projectDataMartPages.noTriggersForAccessible')}
+                    </div>
+                  )}
+                  onRowClick={(row, e) => {
+                    if (
+                      e.target instanceof HTMLElement &&
+                      (e.target.closest('[role="checkbox"]') ||
+                        e.target.closest('[data-trigger-group-badge="true"]') ||
+                        e.target.closest('.actions-cell') ||
+                        e.target.closest('[role="menuitem"]') ||
+                        e.target.closest('[data-state="open"]'))
+                    ) {
+                      return;
+                    }
+                    if (row.original.canEdit) {
+                      setEditingTrigger(row.original);
+                    }
+                  }}
+                />
+              </div>
+            )}
+          </>
         )}
       </div>
 
@@ -509,6 +711,16 @@ function DataMartSchedulesPageContent() {
         trigger={editingTrigger}
         isOpen={editingTrigger !== null}
         onClose={handleCloseTriggerEditSheet}
+        onSaved={handleTriggerSaved}
+      />
+
+      <TriggerGroupFormSheet
+        isOpen={isGroupSheetOpen}
+        onClose={handleCloseGroupSheet}
+        projectId={projectId}
+        existingGroup={editingGroup}
+        initialDraft={initialGroupDraft}
+        existingTriggers={triggers}
         onSaved={handleTriggerSaved}
       />
     </div>

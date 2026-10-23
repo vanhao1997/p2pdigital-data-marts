@@ -367,6 +367,47 @@ describe('DataMartSchedulesPage', () => {
     expect(await screen.findByText('Needle Trigger Target')).toBeInTheDocument();
     expect(scheduledTriggerService.getProjectScheduledTriggers).toHaveBeenCalledTimes(1);
   });
+
+  it('opens the Trigger Group form sheet when Create Trigger Group button is clicked', async () => {
+    vi.mocked(scheduledTriggerService.getProjectScheduledTriggers).mockResolvedValueOnce({
+      triggers: [buildProjectReportTrigger()],
+    });
+
+    renderPage();
+
+    const createGroupBtn = await screen.findByTestId('createTriggerGroupBtn');
+    fireEvent.click(createGroupBtn);
+
+    expect(await screen.findByTestId('triggerGroupFormSheet')).toBeInTheDocument();
+  });
+
+  it('discovers shared schedules across multiple Data Marts and shows bulk actions when rows are selected', async () => {
+    vi.mocked(scheduledTriggerService.getProjectScheduledTriggers).mockResolvedValueOnce({
+      triggers: [
+        buildProjectReportTrigger({
+          id: 'trigger-1',
+          dataMartId: 'dm-1',
+          dataMartTitle: 'Marketing Mart',
+        }),
+        buildProjectReportTrigger({
+          id: 'trigger-2',
+          reportId: 'report-2',
+          reportTitle: 'CRM Report',
+          dataMartId: 'dm-2',
+          dataMartTitle: 'CRM Mart',
+        }),
+      ],
+    });
+
+    renderPage();
+
+    expect(await screen.findByTestId('discoveredScheduleClustersBanner')).toBeInTheDocument();
+
+    const checkboxes = screen.getAllByRole('checkbox');
+    fireEvent.click(checkboxes[1]);
+
+    expect(await screen.findByTestId('scheduledTriggerBulkActionsBtn')).toBeInTheDocument();
+  });
 });
 
 function renderPage(path = '/ui/project-1/data-marts/schedules') {
@@ -396,6 +437,7 @@ function buildProjectReportTrigger(
     id?: string;
     reportId?: string;
     reportTitle?: string;
+    dataMartId?: string;
     dataMartTitle?: string;
     canEdit?: boolean;
     canDelete?: boolean;
@@ -424,7 +466,7 @@ function buildProjectReportTrigger(
     modifiedAt: '2026-06-01T00:00:00.000Z',
     createdByUser: null,
     dataMart: {
-      id: 'dm-1',
+      id: overrides.dataMartId ?? 'dm-1',
       title: overrides.dataMartTitle ?? 'Marketing Mart',
     },
     canEdit: overrides.canEdit ?? true,

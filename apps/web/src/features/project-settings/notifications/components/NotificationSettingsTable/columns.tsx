@@ -1,7 +1,10 @@
 import type { ColumnDef } from '@tanstack/react-table';
 import { Switch } from '@owox/ui/components/switch';
 import { ReceiversAvatarGroup } from './ReceiversAvatarGroup';
-import { GROUPING_DELAY_OPTIONS } from '../../types';
+import {
+  getGroupingDelayDisplayLabel,
+  getNotificationTitleDisplayLabel,
+} from '../../types';
 import type { NotificationSettingsItem } from '../../types';
 import { SortableHeader } from '../../../../../shared/components/Table/SortableHeader';
 import { ToggleColumnsHeader } from '../../../../../shared/components/Table/ToggleColumnsHeader';
@@ -25,10 +28,7 @@ export const notificationSettingsColumnLabels: Record<NotificationSettingsColumn
 };
 
 function getGroupingDelayLabel(cronExpression: string): string {
-  const option = GROUPING_DELAY_OPTIONS.find(
-    opt => opt.value === (cronExpression as typeof opt.value)
-  );
-  return option?.label ?? cronExpression;
+  return getGroupingDelayDisplayLabel(cronExpression);
 }
 
 interface GetNotificationSettingsColumnsOptions {
@@ -63,7 +63,11 @@ export function getNotificationSettingsColumns({
           {labels[NotificationSettingsColumnKey.TITLE]}
         </SortableHeader>
       ),
-      cell: ({ row }) => <span className='font-medium'>{row.original.title}</span>,
+      cell: ({ row }) => (
+        <span className='font-medium'>
+          {getNotificationTitleDisplayLabel(row.original.title)}
+        </span>
+      ),
     },
     {
       id: NotificationSettingsColumnKey.RECEIVERS,

@@ -63,6 +63,10 @@ import { useUnsavedGuard } from '../../../../hooks/useUnsavedGuard';
 import { useSqlDryRunTrigger } from '../../shared/hooks/useSqlDryRunTrigger';
 import { formatBytes } from '../../../../utils';
 import { useTranslation } from 'react-i18next';
+import {
+  humanizeFieldName,
+  isVietnameseLocale,
+} from '../../../../shared/utils/field-humanizer';
 
 import {
   useInsightTemplateSources,
@@ -525,14 +529,28 @@ function SqlPreviewTable({ result }: { result: InsightArtifactSqlPreviewTriggerR
         <TableComponent className='border-none'>
           <TableHeader className='bg-muted/50 sticky top-0'>
             <TableRow>
-              {columnsData.map((col: string) => (
-                <TableHead
-                  key={col}
-                  className='h-8 px-3 text-[10px] font-bold tracking-wider uppercase'
-                >
-                  {col}
-                </TableHead>
-              ))}
+              {columnsData.map((col: string) => {
+                const friendlyCol = isVietnameseLocale()
+                  ? humanizeFieldName(col, { locale: 'vi', leafOnly: true })
+                  : col;
+                const hasFriendlyCol = friendlyCol.toLowerCase() !== col.toLowerCase();
+                return (
+                  <TableHead
+                    key={col}
+                    title={hasFriendlyCol ? `${friendlyCol} (${col})` : col}
+                    className='h-8 px-3 text-[10px] font-bold tracking-wider'
+                  >
+                    <div className='flex flex-col leading-tight'>
+                      <span className={cn(!hasFriendlyCol && 'uppercase')}>{friendlyCol}</span>
+                      {hasFriendlyCol && (
+                        <span className='text-muted-foreground font-mono text-[9px] font-normal tracking-normal'>
+                          {col}
+                        </span>
+                      )}
+                    </div>
+                  </TableHead>
+                );
+              })}
             </TableRow>
           </TableHeader>
           <TableBody>

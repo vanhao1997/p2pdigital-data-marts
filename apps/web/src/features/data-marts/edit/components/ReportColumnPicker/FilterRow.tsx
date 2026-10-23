@@ -7,6 +7,10 @@ import type { FilterRule } from '../../../shared/types/output-config';
 import { FilterEditorPopover } from './FilterEditorPopover';
 import { summarizeFilterRule } from './filter-rule-summary';
 import { operatorLabelFor } from './output-controls-operators';
+import {
+  humanizeFieldName,
+  isVietnameseLocale,
+} from '../../../../../shared/utils/field-humanizer';
 
 interface FilterRowProps {
   rule: FilterRule;
@@ -36,6 +40,9 @@ export function FilterRow({
   const valueText = summarizeFilterRule(rule);
   const isPreJoin = rule.placement === 'pre-join';
   const displayColumn = rule.column;
+  const resolvedLabel =
+    displayLabel ??
+    (isVietnameseLocale() ? humanizeFieldName(rule.column, { locale: 'vi' }) : rule.column);
 
   return (
     <div
@@ -65,12 +72,12 @@ export function FilterRow({
             >
               <Layers className='h-3 w-3' />
               <span className={cn(isOrphaned && 'line-through')}>
-                {displayLabel ?? rule.column}
+                {resolvedLabel}
               </span>
             </span>
           ) : (
             <span className={cn(isOrphaned && 'text-red-700 line-through dark:text-red-300')}>
-              {displayLabel ?? rule.column}
+              {resolvedLabel}
             </span>
           )}
         </div>

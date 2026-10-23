@@ -1,4 +1,5 @@
 import type { ReportAggregateFunction } from '../types/relationship.types';
+import { isVietnameseLocale } from '../../../../shared/utils/field-humanizer';
 
 /**
  * Human-readable Title Case label per aggregate function. Mirror of the backend
@@ -22,7 +23,25 @@ export const REPORT_AGGREGATE_FUNCTION_LABELS: Record<ReportAggregateFunction, s
   P95: '95th Percentile',
 };
 
+export const REPORT_AGGREGATE_FUNCTION_LABELS_VI: Record<ReportAggregateFunction, string> = {
+  SUM: 'Tổng (Sum)',
+  AVG: 'Trung bình (Average)',
+  MIN: 'Nhỏ nhất (Min)',
+  MAX: 'Lớn nhất (Max)',
+  COUNT: 'Số lượng (Count)',
+  COUNT_DISTINCT: 'Số lượng duy nhất (Count Unique)',
+  STRING_AGG: 'Gộp chuỗi (Combined)',
+  ANY_VALUE: 'Giá trị mẫu (Sample)',
+  P25: 'Phân vị thứ 25 (P25)',
+  P50: 'Trung vị (Median)',
+  P75: 'Phân vị thứ 75 (P75)',
+  P95: 'Phân vị thứ 95 (P95)',
+};
+
 export function aggregateFunctionLabel(fn: ReportAggregateFunction): string {
+  if (isVietnameseLocale()) {
+    return REPORT_AGGREGATE_FUNCTION_LABELS_VI[fn];
+  }
   return REPORT_AGGREGATE_FUNCTION_LABELS[fn];
 }
 

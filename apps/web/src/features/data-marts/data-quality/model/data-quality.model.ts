@@ -8,6 +8,10 @@ import type {
   EffectiveDataQualityRuleConfig,
 } from './types';
 import i18n from '../../../../i18n';
+import {
+  humanizeFieldName,
+  isVietnameseLocale,
+} from '../../../../shared/utils/field-humanizer';
 
 const DATA_QUALITY_CATEGORY_LABEL_KEYS: Record<DataQualityCategory, string> = {
   empty_table: 'dataQualityUi.categoryLabels.emptyTable',
@@ -136,7 +140,12 @@ export function dataQualityPollingInterval(
 }
 
 export function dataQualityScopeLabel(scope: DataQualityConfig['rules'][number]['scope']): string {
-  if (scope.type === 'FIELD') return scope.fieldPath.join('.');
+  if (scope.type === 'FIELD') {
+    const rawPath = scope.fieldPath.join('.');
+    return isVietnameseLocale()
+      ? humanizeFieldName(rawPath, { locale: 'vi', includeTechnicalName: true })
+      : rawPath;
+  }
   if (scope.type === 'RELATIONSHIP') return scope.relationshipId;
   return i18n.t('dataQualityUi.dataMartScope');
 }
@@ -169,6 +178,17 @@ export function getDataQualityRelationshipPresentation(
           const sourceFieldName = condition.sourceFieldName;
           const targetFieldName = condition.targetFieldName;
           if (typeof sourceFieldName !== 'string' || typeof targetFieldName !== 'string') return [];
+          if (isVietnameseLocale()) {
+            const left = humanizeFieldName(sourceFieldName, {
+              locale: 'vi',
+              includeTechnicalName: true,
+            });
+            const right = humanizeFieldName(targetFieldName, {
+              locale: 'vi',
+              includeTechnicalName: true,
+            });
+            return `${left} → ${right}`;
+          }
           return `${sourceFieldName} → ${targetFieldName}`;
         })
         .join(', ')
@@ -177,8 +197,59 @@ export function getDataQualityRelationshipPresentation(
   return {
     ...(targetAlias ? { titleSuffix: targetAlias, targetAlias } : {}),
     scopeLabel: joinMapping || relationshipIdLabel,
-    scopeDetails: joinMapping ? [relationshipIdLabel] : [],
+    scopeDetails: joinMapping && !isVietnameseLocale() ? [relationshipIdLabel] : [],
   };
+}
+
+const DATA_QUALITY_REASON_VI: Readonly<Record<string, string>> = {
+  'No primary key fields are configured in the current Output Schema':
+    'Chưa cấu hình trường khóa chính (PK) trong Lược đồ đầu ra hiện tại',
+  'Nested field is inside a repeated, array, map, or semi-structured container and requires provider-specific flattening':
+    'Trường lồng nhau nằm trong cấu trúc lặp (repeated, array, map hoặc bán cấu trúc) và cần làm phẳng theo nhà cung cấp',
+  'No connected materialized Output Schema fields are available':
+    'Không có trường Lược đồ đầu ra nào đã kết nối để kiểm tra',
+  'Field is no longer eligible for Data Freshness':
+    'Trường này không còn hợp lệ để kiểm tra Độ mới dữ liệu',
+  'Data Mart scope is no longer applicable': 'Phạm vi Data Mart không còn áp dụng được',
+  'Field scope no longer exists in the current Output Schema':
+    'Trường này không còn tồn tại trong Lược đồ đầu ra hiện tại',
+  'Relationship scope no longer exists': 'Mối quan hệ này không còn tồn tại',
+  'Relationship target Data Mart is not accessible':
+    'Không có quyền truy cập Data Mart đích của mối quan hệ',
+  'Relationship has no join conditions': 'Mối quan hệ chưa được cấu hình điều kiện kết nối (Join)',
+  'negative_values requires a numeric Output Schema field':
+    'Kiểm tra Giá trị âm chỉ áp dụng cho trường kiểu số trong Lược đồ đầu ra',
+  'The check is disabled': 'Kiểm tra này đang tắt',
+  'The check is not applicable': 'Kiểm tra này không áp dụng được',
+};
+
+export function localizeDataQualityReason(
+  reason: string | null | undefined
+): string | undefined {
+  if (!reason) return undefined;
+  if (!isVietnameseLocale()) return reason;
+  const direct = DATA_QUALITY_REASON_VI[reason];
+  if (direct) return direct;
+  if (reason.endsWith('requires an Output Schema field that can be canonicalized for grouping')) {
+    return 'Kiểm tra này yêu cầu trường trong Lược đồ đầu ra hỗ trợ nhóm (GROUP BY)';
+  }
+  if (reason.startsWith('Relationship source fields are missing from the current Output Schema: ')) {
+    const fields = reason.slice(
+      'Relationship source fields are missing from the current Output Schema: '.length
+    );
+    return `Các trường nguồn của mối quan hệ không còn trong Lược đồ đầu ra hiện tại: ${fields}`;
+  }
+  if (
+    reason.startsWith('Field ') &&
+    reason.endsWith(' cannot be canonicalized for duplicate comparison')
+  ) {
+    const fieldName = reason.slice(
+      'Field '.length,
+      reason.length - ' cannot be canonicalized for duplicate comparison'.length
+    );
+    return `Trường ${humanizeFieldName(fieldName, { locale: 'vi', includeTechnicalName: true })} không hỗ trợ chuẩn hóa để so sánh trùng lặp`;
+  }
+  return reason;
 }
 
 export function areDataQualityConfigsEqual(

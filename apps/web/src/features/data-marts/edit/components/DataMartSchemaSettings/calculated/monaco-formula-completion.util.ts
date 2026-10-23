@@ -4,6 +4,10 @@ import { isRowLevelCalculatedField } from '../../../../shared/utils/calculated-f
 import type { ReferenceableField } from './formula-reference-index';
 import { GUARDED_DIVISION_SNIPPET } from './formula-function-dialects';
 import { SCALAR_WORD_OPERATORS } from './formula-scalar-functions';
+import {
+  humanizeFieldName,
+  isVietnameseLocale,
+} from '../../../../../../shared/utils/field-humanizer';
 
 /** `IS NULL` and friends complete as words; everything else completes as a call. */
 const WORD_OPERATORS = new Set(SCALAR_WORD_OPERATORS);
@@ -140,7 +144,13 @@ export function registerFormulaCompletionProvider(
         // and may I use it as it stands?". A joined candidate names its Data Mart, since an alias
         // is not what the analyst knows it by; a calculated one names its LEVEL, which decides
         // whether it may be written bare.
+        const friendlyHint = isVietnameseLocale()
+          ? humanizeFieldName(entry.field, { locale: 'vi', leafOnly: true })
+          : undefined;
+        const showFriendlyHint =
+          friendlyHint && friendlyHint.toLowerCase() !== entry.field.toLowerCase();
         const description = [
+          showFriendlyHint ? friendlyHint : undefined,
           entry.sourceLabel,
           entry.calculated ? calculatedLabelFor(entry.calculated) : undefined,
           entry.isHidden ? 'hidden' : undefined,

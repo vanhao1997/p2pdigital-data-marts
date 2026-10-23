@@ -1168,4 +1168,31 @@ describe('BaseSchemaTable — calculated field row', () => {
       expect(updatedFields[1].calculated).toEqual({ formula: 'SUM({{ref field="clicks"}})' });
     });
   });
+
+  describe('Auto-format field aliases button', () => {
+    it('populates missing aliases deterministically without overwriting existing aliases', () => {
+      const onFieldsChange = vi.fn();
+      const fields = [
+        buildAthenaField({ name: 'campaign_id' }),
+        buildAthenaField({ name: 'campaign_name', alias: 'Custom Name' }),
+      ];
+
+      render(
+        <AthenaSchemaTable
+          fields={fields}
+          onFieldsChange={onFieldsChange}
+          schemaToolbar={mockSchemaToolbar}
+        />
+      );
+
+      const autoFormatBtn = screen.getByLabelText('Auto-format field aliases');
+      expect(autoFormatBtn).not.toBeDisabled();
+      fireEvent.click(autoFormatBtn);
+
+      expect(onFieldsChange).toHaveBeenCalledTimes(1);
+      const [updatedFields] = onFieldsChange.mock.calls[0] as [AthenaSchemaField[]];
+      expect(updatedFields[0].alias).toBe('Campaign ID');
+      expect(updatedFields[1].alias).toBe('Custom Name');
+    });
+  });
 });

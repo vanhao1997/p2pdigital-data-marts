@@ -13,7 +13,7 @@ import {
   AccordionTrigger,
 } from '@owox/ui/components/accordion';
 import { FieldItem, FieldLabel, FieldDescription } from './FormField';
-import { GROUPING_DELAY_OPTIONS } from '../../../types';
+import { GROUPING_DELAY_OPTIONS, getGroupingDelayDisplayLabel } from '../../../types';
 import { useTranslation } from 'react-i18next';
 
 interface GroupingDelaySectionProps {
@@ -42,7 +42,7 @@ export function GroupingDelaySection({ value, onChange, disabled }: GroupingDela
           <SelectContent>
             {GROUPING_DELAY_OPTIONS.map(option => (
               <SelectItem key={option.value} value={option.value}>
-                {option.label}
+                {getGroupingDelayDisplayLabel(option.value)}
               </SelectItem>
             ))}
           </SelectContent>

@@ -56,8 +56,10 @@ export class DataMartService extends ApiService {
 
       const page = await this.get<DataMartListResponseDto>('/', params, config);
 
-      allItems.push(...page.items);
-      nextOffset = page.nextOffset;
+      if (Array.isArray(page.items)) {
+        allItems.push(...page.items);
+      }
+      nextOffset = typeof page.nextOffset === 'number' ? page.nextOffset : null;
     }
 
     return allItems;

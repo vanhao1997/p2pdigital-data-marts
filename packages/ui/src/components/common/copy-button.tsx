@@ -12,6 +12,21 @@ interface CopyButtonProps {
   copiedSection: string | null;
   onCopy: (text: string, section: string) => void;
   iconOnly?: boolean;
+  copyLabel?: string;
+  copiedLabel?: string;
+  titleLabel?: string;
+}
+
+function isViStorageLocale(): boolean {
+  try {
+    if (typeof window !== 'undefined') {
+      const stored = window.localStorage?.getItem('p2p_language');
+      return Boolean(stored && stored.startsWith('vi'));
+    }
+  } catch {
+    // ignore storage errors
+  }
+  return false;
 }
 
 export function CopyButton({
@@ -21,9 +36,17 @@ export function CopyButton({
   copiedSection,
   onCopy,
   iconOnly = false,
+  copyLabel,
+  copiedLabel,
+  titleLabel,
 }: CopyButtonProps) {
   const isError = variant === CopyButtonVariant.ERROR;
   const isCopied = copiedSection === section;
+  const isVi = isViStorageLocale();
+  const resolvedCopy = copyLabel ?? (isVi ? 'Sao chép' : 'Copy');
+  const resolvedCopied = copiedLabel ?? (isVi ? 'Đã sao chép' : 'Copied');
+  const resolvedTitle =
+    titleLabel ?? (isVi ? `Sao chép ${section} vào bộ nhớ tạm` : `Copy ${section} to clipboard`);
 
   const baseClasses =
     'flex items-center gap-1 px-2 py-1 text-xs rounded transition-colors cursor-pointer';
@@ -39,19 +62,19 @@ export function CopyButton({
         e.stopPropagation();
       }}
       className={`${baseClasses} ${variantClasses}`}
-      title={`Copy ${section} to clipboard`}
+      title={resolvedTitle}
     >
       {iconOnly ? (
         <>{isCopied ? <Check className='h-3 w-3' /> : <Copy className='h-3 w-3' />}</>
       ) : isCopied ? (
         <>
           <Check className='h-3 w-3' />
-          Copied
+          {resolvedCopied}
         </>
       ) : (
         <>
           <Copy className='h-3 w-3' />
-          Copy
+          {resolvedCopy}
         </>
       )}
     </button>

@@ -1,3 +1,5 @@
+import { isVietnameseLocale } from '../../../../../shared/utils/field-humanizer';
+
 export type FilterOperator =
   | 'eq'
   | 'neq'
@@ -153,12 +155,111 @@ const TIME_OPERATORS: OperatorMeta[] = DATE_OPERATORS.filter(o => o.value !== 'r
   }
 );
 
+const STRING_OPERATORS_VI: Partial<Record<FilterOperator, string>> = {
+  eq: 'bằng',
+  neq: 'khác',
+  in: 'thuộc danh sách',
+  not_in: 'không thuộc danh sách',
+  contains: 'chứa',
+  not_contains: 'không chứa',
+  starts_with: 'bắt đầu bằng',
+  ends_with: 'kết thúc bằng',
+  is_empty: 'rỗng',
+  is_not_empty: 'không rỗng',
+  is_null: 'trống (NULL)',
+  is_not_null: 'không trống (NOT NULL)',
+  regex: 'khớp biểu thức (Regex)',
+  not_regex: 'không khớp biểu thức (Regex)',
+};
+
+const NUMBER_OPERATORS_VI: Partial<Record<FilterOperator, string>> = {
+  eq: 'bằng (=)',
+  neq: 'khác (≠)',
+  in: 'thuộc danh sách',
+  not_in: 'không thuộc danh sách',
+  gt: 'lớn hơn (>)',
+  lt: 'nhỏ hơn (<)',
+  gte: 'lớn hơn hoặc bằng (≥)',
+  lte: 'nhỏ hơn hoặc bằng (≤)',
+  between: 'trong khoảng',
+  is_null: 'trống (NULL)',
+  is_not_null: 'không trống (NOT NULL)',
+};
+
+const DATE_OPERATORS_VI: Partial<Record<FilterOperator, string>> = {
+  eq: 'vào ngày',
+  neq: 'không vào ngày',
+  in: 'thuộc danh sách',
+  not_in: 'không thuộc danh sách',
+  gt: 'sau ngày',
+  lt: 'trước ngày',
+  gte: 'từ ngày trở đi',
+  lte: 'đến ngày trở về trước',
+  between: 'trong khoảng',
+  relative_date: 'thời gian tương đối',
+  is_null: 'trống (NULL)',
+  is_not_null: 'không trống (NOT NULL)',
+};
+
+const TIME_OPERATORS_VI: Partial<Record<FilterOperator, string>> = {
+  ...DATE_OPERATORS_VI,
+  eq: 'vào lúc',
+  neq: 'không vào lúc',
+  gt: 'sau lúc',
+  lt: 'trước lúc',
+  gte: 'từ lúc trở đi',
+  lte: 'đến lúc trở về trước',
+};
+
+const BOOLEAN_OPERATORS_VI: Partial<Record<FilterOperator, string>> = {
+  is_true: 'là đúng (True)',
+  is_false: 'là sai (False)',
+  is_null: 'trống (NULL)',
+  is_not_null: 'không trống (NOT NULL)',
+};
+
+const FALLBACK_OPERATOR_LABELS_VI: Record<FilterOperator, string> = {
+  eq: 'bằng',
+  neq: 'khác',
+  contains: 'chứa',
+  not_contains: 'không chứa',
+  starts_with: 'bắt đầu bằng',
+  ends_with: 'kết thúc bằng',
+  in: 'thuộc danh sách',
+  not_in: 'không thuộc danh sách',
+  is_empty: 'rỗng',
+  is_not_empty: 'không rỗng',
+  is_null: 'trống (NULL)',
+  is_not_null: 'không trống (NOT NULL)',
+  regex: 'khớp biểu thức (Regex)',
+  not_regex: 'không khớp biểu thức (Regex)',
+  gt: 'lớn hơn',
+  lt: 'nhỏ hơn',
+  gte: 'lớn hơn hoặc bằng',
+  lte: 'nhỏ hơn hoặc bằng',
+  between: 'trong khoảng',
+  is_true: 'là đúng (True)',
+  is_false: 'là sai (False)',
+  relative_date: 'thời gian tương đối',
+};
+
+function localizeOperators(
+  ops: OperatorMeta[],
+  viMap: Partial<Record<FilterOperator, string>>
+): OperatorMeta[] {
+  if (!isVietnameseLocale()) return ops;
+  return ops.map(o => {
+    const viLabel = viMap[o.value];
+    return viLabel ? { ...o, label: viLabel } : o;
+  });
+}
+
 export function operatorsForType(fieldType: string): OperatorMeta[] {
-  if (STRING_TYPES.has(fieldType)) return STRING_OPERATORS;
-  if (NUMBER_TYPES.has(fieldType)) return NUMBER_OPERATORS;
-  if (DATE_TYPES.has(fieldType)) return DATE_OPERATORS;
-  if (TIME_TYPES.has(fieldType)) return TIME_OPERATORS;
-  if (BOOL_TYPES.has(fieldType)) return BOOLEAN_OPERATORS;
+  if (STRING_TYPES.has(fieldType)) return localizeOperators(STRING_OPERATORS, STRING_OPERATORS_VI);
+  if (NUMBER_TYPES.has(fieldType)) return localizeOperators(NUMBER_OPERATORS, NUMBER_OPERATORS_VI);
+  if (DATE_TYPES.has(fieldType)) return localizeOperators(DATE_OPERATORS, DATE_OPERATORS_VI);
+  if (TIME_TYPES.has(fieldType)) return localizeOperators(TIME_OPERATORS, TIME_OPERATORS_VI);
+  if (BOOL_TYPES.has(fieldType)) return localizeOperators(BOOLEAN_OPERATORS, BOOLEAN_OPERATORS_VI);
   return [];
 }
 
@@ -200,5 +301,8 @@ export function isBoolType(fieldType: string): boolean {
 
 export function operatorLabelFor(operator: FilterOperator, fieldType: string): string {
   const meta = operatorsForType(fieldType).find(o => o.value === operator);
-  return meta?.label ?? FALLBACK_OPERATOR_LABELS[operator];
+  if (meta) return meta.label;
+  return isVietnameseLocale()
+    ? FALLBACK_OPERATOR_LABELS_VI[operator]
+    : FALLBACK_OPERATOR_LABELS[operator];
 }

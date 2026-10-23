@@ -1,4 +1,5 @@
 import type * as monaco from 'monaco-editor';
+import { isVietnameseLocale } from '../../../../shared/utils/field-humanizer';
 import type { InsightTemplateSourceEntity } from '../model';
 
 interface SlashCommand {
@@ -8,6 +9,7 @@ interface SlashCommand {
 }
 
 const getBaseSlashCommands = (sources: InsightTemplateSourceEntity[]): SlashCommand[] => {
+  const isVi = isVietnameseLocale();
   const commands: SlashCommand[] = [];
 
   if (sources.length > 0) {
@@ -15,14 +17,18 @@ const getBaseSlashCommands = (sources: InsightTemplateSourceEntity[]): SlashComm
       commands.push({
         label: `Table (${source.key})`,
         insertText: `{{table source="${source.key}"}}`,
-        documentation: `Insert a table tag for data artifact "${source.key}"`,
+        documentation: isVi
+          ? `Chèn thẻ bảng cho nguồn dữ liệu "${source.key}"`
+          : `Insert a table tag for data artifact "${source.key}"`,
       });
     });
   } else {
     commands.push({
       label: 'Table',
       insertText: '{{table}}',
-      documentation: 'Insert a table tag with source binding',
+      documentation: isVi
+        ? 'Chèn thẻ bảng gắn với nguồn dữ liệu'
+        : 'Insert a table tag with source binding',
     });
   }
 
@@ -30,17 +36,23 @@ const getBaseSlashCommands = (sources: InsightTemplateSourceEntity[]): SlashComm
     {
       label: 'Table with limit',
       insertText: '{{table source="${1:main}" limit="${2:100}"}}',
-      documentation: 'Insert table tag with explicit row limit',
+      documentation: isVi
+        ? 'Chèn thẻ bảng với giới hạn số dòng hiển thị'
+        : 'Insert table tag with explicit row limit',
     },
     {
       label: 'Value (Path)',
       insertText: '{{value source="${1:main}" path=".${2:column_name}[${3:1}]"}}',
-      documentation: 'Insert a value tag using path syntax',
+      documentation: isVi
+        ? 'Chèn thẻ giá trị bằng cú pháp đường dẫn (path)'
+        : 'Insert a value tag using path syntax',
     },
     {
       label: 'Value (Column/Row)',
       insertText: '{{value source="${1:main}" column="${2:1}" row="${3:1}"}}',
-      documentation: 'Insert a value tag using column/row syntax',
+      documentation: isVi
+        ? 'Chèn thẻ giá trị bằng cú pháp cột/dòng (column/row)'
+        : 'Insert a value tag using column/row syntax',
     }
   );
 
@@ -199,7 +211,9 @@ export function registerTemplateSlashCommandProvider(
                     {
                       label: 'main',
                       insertText: 'main',
-                      detail: 'Current Data Mart output',
+                      detail: isVietnameseLocale()
+                        ? 'Đầu ra Data Mart hiện tại'
+                        : 'Current Data Mart output',
                       kind: monacoInstance.languages.CompletionItemKind.Value,
                       range,
                       sortText: 'zzz_main',
@@ -234,7 +248,9 @@ export function registerTemplateSlashCommandProvider(
         suggestions.push({
           label: 'main',
           insertText: 'main',
-          detail: 'Current Data Mart output',
+          detail: isVietnameseLocale()
+            ? 'Đầu ra Data Mart hiện tại'
+            : 'Current Data Mart output',
           kind: monacoInstance.languages.CompletionItemKind.Value,
           range,
           sortText: 'zzz_main',

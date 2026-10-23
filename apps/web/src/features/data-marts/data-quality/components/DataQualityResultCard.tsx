@@ -20,7 +20,9 @@ import {
   dataQualityScopeLabel,
   getDataQualityCategoryDescription,
   getDataQualityCategoryLabel,
+  localizeDataQualityReason,
 } from '../model/data-quality.model';
+import { isVietnameseLocale } from '../../../../shared/utils/field-humanizer';
 import type { DataQualityCheckResult, DataQualitySeverity } from '../model/types';
 
 interface DataQualityResultCardProps {
@@ -84,7 +86,7 @@ export function DataQualityResultCard({
   const resultDetails =
     result.status === 'NOT_APPLICABLE' ||
     (result.status === 'FAILED' && result.category === 'type_mismatch')
-      ? result.description
+      ? localizeDataQualityReason(result.description)
       : null;
 
   return (
@@ -119,7 +121,9 @@ export function DataQualityResultCard({
             )}
             {result.status === 'FAILED' && (
               <Badge variant='outline' className={status.severityBadgeClassName}>
-                {result.severity}
+                {isVietnameseLocale()
+                  ? t(`dataQualityUi.severities.${result.severity}`, result.severity)
+                  : result.severity}
               </Badge>
             )}
             <Tooltip>

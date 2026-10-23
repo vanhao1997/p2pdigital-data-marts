@@ -4,20 +4,32 @@ import type {
   BaseSchemaField,
   BigQuerySchemaField,
 } from '../../../../shared/types/data-mart-schema.types';
+import {
+  humanizeFieldName,
+  normalizeSearchText,
+} from '../../../../../../shared/utils/field-humanizer';
+
+function singleFieldMatches(field: BaseSchemaField, normalizedQuery: string): boolean {
+  if (!normalizedQuery) return true;
+  if (field.name) {
+    if (normalizeSearchText(field.name).includes(normalizedQuery)) return true;
+    if (normalizeSearchText(humanizeFieldName(field.name)).includes(normalizedQuery)) return true;
+  }
+  if (field.alias && normalizeSearchText(field.alias).includes(normalizedQuery)) {
+    return true;
+  }
+  if (field.description && normalizeSearchText(field.description).includes(normalizedQuery)) {
+    return true;
+  }
+  return false;
+}
 
 /**
  * Helper function to check if a field or any of its child fields match the search criteria
  */
 function fieldMatchesSearch(field: BaseSchemaField, searchValue: string): boolean {
-  // Check if the current field matches
-  const nameMatch = field.name ? field.name.toLowerCase().includes(searchValue) : false;
-  const aliasMatch = field.alias ? field.alias.toLowerCase().includes(searchValue) : false;
-  const descriptionMatch = field.description
-    ? field.description.toLowerCase().includes(searchValue)
-    : false;
-
-  // If the current field matches, return true
-  if (nameMatch || aliasMatch || descriptionMatch) {
+  const normalizedQuery = normalizeSearchText(searchValue);
+  if (singleFieldMatches(field, normalizedQuery)) {
     return true;
   }
 
@@ -41,18 +53,12 @@ export function findMatchingFieldPaths(
   parentPath = ''
 ): string[] {
   const matchingPaths: string[] = [];
+  const normalizedQuery = normalizeSearchText(searchValue);
 
   fields.forEach((field, index) => {
     const currentPath = parentPath ? `${parentPath}.${String(index)}` : String(index);
 
-    // Check if the current field matches
-    const nameMatch = field.name ? field.name.toLowerCase().includes(searchValue) : false;
-    const aliasMatch = field.alias ? field.alias.toLowerCase().includes(searchValue) : false;
-    const descriptionMatch = field.description
-      ? field.description.toLowerCase().includes(searchValue)
-      : false;
-
-    if (nameMatch || aliasMatch || descriptionMatch) {
+    if (singleFieldMatches(field, normalizedQuery)) {
       matchingPaths.push(currentPath);
     }
 

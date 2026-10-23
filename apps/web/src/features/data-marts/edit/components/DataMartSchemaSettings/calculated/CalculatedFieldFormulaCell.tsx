@@ -202,6 +202,8 @@ export function CalculatedFieldFormulaCell({
         value={authoring.text}
         placeholder={t('calculatedFieldsHelp.formulaRequired')}
         className={PREVIEW_CLASSES}
+        saveButtonText={t('common.apply', 'Apply')}
+        cancelButtonText={t('common.cancel', 'Cancel')}
         // The name of the row being edited, which the open popover covers up. Not "Formula" when a
         // name is known — the hint below already says what this editor is.
         editorTitle={fieldName?.trim() ? fieldName : t('calculatedFieldsHelp.formula')}

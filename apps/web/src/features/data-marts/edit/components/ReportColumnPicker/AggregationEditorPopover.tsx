@@ -15,6 +15,18 @@ import type { ReportAggregateFunction } from '../../../shared/types/relationship
 import { aggregateFunctionLabel } from '../../../shared/utils/aggregation-labels';
 import { isDateType, isTimestampType } from './output-controls-operators';
 import { useTranslation } from 'react-i18next';
+import {
+  humanizeFieldName,
+  isVietnameseLocale,
+} from '../../../../../shared/utils/field-humanizer';
+
+const DATE_TRUNC_UNIT_LABELS_VI: Record<DateTruncUnit, string> = {
+  DAY: 'Ngày (day)',
+  WEEK: 'Tuần (week)',
+  MONTH: 'Tháng (month)',
+  QUARTER: 'Quý (quarter)',
+  YEAR: 'Năm (year)',
+};
 
 /**
  * What the per-field popover edits for ONE column. A column can carry several
@@ -168,12 +180,16 @@ export function AggregationEditorPopover(props: AggregationEditorPopoverProps) {
     bucketActive ||
     hadInitialSelection;
 
+  const isVi = isVietnameseLocale();
+  const headerLabel =
+    props.displayLabel ?? (isVi ? humanizeFieldName(props.column, { locale: 'vi' }) : props.column);
+
   return (
     <Popover open={props.open} onOpenChange={props.onOpenChange}>
       <PopoverTrigger asChild>{props.trigger}</PopoverTrigger>
       <PopoverContent className='w-72 space-y-3'>
         <div>
-          <div className='text-sm font-medium'>{props.displayLabel ?? props.column}</div>
+          <div className='text-sm font-medium'>{headerLabel}</div>
           {props.dataMartName && (
             <div className='text-muted-foreground text-[11px]'>{props.dataMartName}</div>
           )}
@@ -197,7 +213,7 @@ export function AggregationEditorPopover(props: AggregationEditorPopoverProps) {
               <SelectContent>
                 {DATE_TRUNC_UNITS.map(unit => (
                   <SelectItem key={unit} value={unit}>
-                    {unit}
+                    {isVi ? DATE_TRUNC_UNIT_LABELS_VI[unit] : unit}
                   </SelectItem>
                 ))}
               </SelectContent>

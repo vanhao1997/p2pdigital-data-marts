@@ -1,5 +1,6 @@
 import { Input } from '@owox/ui/components/input';
 import { FieldItem, FieldLabel } from './FormField';
+import { getNotificationTitleDisplayLabel } from '../../../types';
 import { useTranslation } from 'react-i18next';
 
 interface TitleFieldProps {
@@ -18,7 +19,7 @@ export function TitleField({ title }: TitleFieldProps) {
       >
         {t('notificationsPage.notificationTitle', 'Notification title')}
       </FieldLabel>
-      <Input value={title} disabled />
+      <Input value={getNotificationTitleDisplayLabel(title)} disabled />
     </FieldItem>
   );
 }

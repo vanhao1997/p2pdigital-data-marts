@@ -4,9 +4,16 @@ import { Check, Link } from 'lucide-react';
 interface CopyLinkButtonProps {
   link: string;
   ariaLabel: string;
+  label?: string;
+  copiedLabel?: string;
 }
 
-export function CopyLinkButton({ link, ariaLabel }: CopyLinkButtonProps) {
+export function CopyLinkButton({
+  link,
+  ariaLabel,
+  label = 'Copy link',
+  copiedLabel = 'Copied!',
+}: CopyLinkButtonProps) {
   const [copied, setCopied] = useState(false);
 
   const handleCopy = () => {
@@ -32,11 +39,11 @@ export function CopyLinkButton({ link, ariaLabel }: CopyLinkButtonProps) {
       >
         {copied ? (
           <>
-            <Check className='h-3.5 w-3.5' /> Copied!
+            <Check className='h-3.5 w-3.5' /> {copiedLabel}
           </>
         ) : (
           <>
-            <Link className='h-3.5 w-3.5' /> Copy link
+            <Link className='h-3.5 w-3.5' /> {label}
           </>
         )}
       </button>

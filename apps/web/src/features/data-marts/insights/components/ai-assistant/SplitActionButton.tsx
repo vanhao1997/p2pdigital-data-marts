@@ -42,8 +42,8 @@ export function SplitActionButton({
             size='sm'
             className='h-8 w-8 rounded-none px-0'
             disabled={disabled}
-            title={`${label} (apply only)`}
-            aria-label={`${label} (apply only)`}
+            title={`${label} (${t('insightsUi.applyOnly', 'Apply only')})`}
+            aria-label={`${label} (${t('insightsUi.applyOnly', 'Apply only')})`}
           >
             <ChevronDown className='h-4 w-4' />
           </Button>

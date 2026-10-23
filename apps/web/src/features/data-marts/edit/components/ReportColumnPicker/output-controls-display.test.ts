@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { fieldLeafName, fieldDisplayLabel } from './output-controls-display';
+import i18n from '../../../../../i18n';
 
 describe('fieldLeafName', () => {
   it('returns the last dotted segment', () => {
@@ -22,5 +23,14 @@ describe('fieldDisplayLabel', () => {
   });
   it('handles a blended leaf basis (no dots)', () => {
     expect(fieldDisplayLabel(undefined, 'product_id')).toBe('product_id');
+  });
+  it('humanizes the fallback leaf in Vietnamese locale when alias is missing', async () => {
+    const previousLanguage = i18n.language;
+    await i18n.changeLanguage('vi');
+    try {
+      expect(fieldDisplayLabel(undefined, 'orders.x.product_id')).toBe('ID sản phẩm');
+    } finally {
+      await i18n.changeLanguage(previousLanguage);
+    }
   });
 });

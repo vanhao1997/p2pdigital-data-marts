@@ -5,6 +5,7 @@ import { ReportFormMode } from '../../../shared';
 import type { DataMartReport } from '../../../shared/model/types/data-mart-report';
 import { useReportDeepLink } from '../../hooks/useReportDeepLink';
 import { useTranslation } from 'react-i18next';
+import { isVietnameseLocale } from '../../../../../../shared/utils/field-humanizer';
 
 interface ReportSheetDescriptionProps {
   mode: ReportFormMode;
@@ -20,6 +21,7 @@ interface ReportSheetDescriptionProps {
 export function ReportSheetDescription({ mode, report, children }: ReportSheetDescriptionProps) {
   const { t } = useTranslation();
   const reportLink = useReportDeepLink(mode === ReportFormMode.EDIT ? report : undefined);
+  const isVi = isVietnameseLocale();
 
   return (
     <div className='flex w-full items-center gap-4'>
@@ -28,6 +30,8 @@ export function ReportSheetDescription({ mode, report, children }: ReportSheetDe
         <CopyLinkButton
           link={reportLink}
           ariaLabel={t('reportsUi.copyLinkToReport', 'Sao chép liên kết tới báo cáo này')}
+          label={isVi ? 'Sao chép liên kết' : 'Copy link'}
+          copiedLabel={isVi ? 'Đã sao chép!' : 'Copied!'}
         />
       )}
     </div>

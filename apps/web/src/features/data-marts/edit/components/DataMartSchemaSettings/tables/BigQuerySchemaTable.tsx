@@ -29,6 +29,10 @@ import { renderFieldAliasAi, renderFieldDescriptionAi } from '../utils/render-fi
 import type { SchemaAiHelper } from '../types/ai-helper';
 import type { SchemaToolbar } from '../types/schema-toolbar';
 import type { SchemaField } from '../calculated/formula-reference-index';
+import {
+  humanizeFieldName,
+  isVietnameseLocale,
+} from '../../../../../../shared/utils/field-humanizer';
 
 /**
  * Props for the BigQuerySchemaTable component
@@ -298,11 +302,13 @@ export function BigQuerySchemaTable({
           }}
           minRows={5}
           placeholder='-'
+          saveButtonText={t('common.apply', 'Apply')}
+          cancelButtonText={t('common.cancel', 'Cancel')}
           editorAction={isTopLevel ? renderFieldDescriptionAi(aiHelper, field.name) : undefined}
         />
       );
     },
-    [updateField, flattenedFields, aiHelper]
+    [updateField, flattenedFields, aiHelper, t]
   );
 
   // Custom alias column cell that uses updateField from useNestedFieldOperations
@@ -315,18 +321,34 @@ export function BigQuerySchemaTable({
     }) => {
       const field = flattenedFields[row.index];
       const isTopLevel = (field.level ?? 0) === 0;
+      const isVi = isVietnameseLocale();
+      const fieldName = field.name.trim();
+      const aliasPlaceholder =
+        fieldName && isVi
+          ? humanizeFieldName(fieldName, { locale: 'vi', leafOnly: true })
+          : '-';
+      const rawAlias = String(row.getValue('alias') ?? '');
+      const effectiveAlias =
+        isVi &&
+        fieldName !== '' &&
+        rawAlias.trim().toLowerCase() === fieldName.toLowerCase() &&
+        aliasPlaceholder.toLowerCase() !== fieldName.toLowerCase()
+          ? ''
+          : rawAlias;
       return (
         <EditableText
-          value={row.getValue('alias')}
+          value={effectiveAlias}
           onValueChange={value => {
             updateField(row.index, { alias: value });
           }}
-          placeholder='-'
+          placeholder={aliasPlaceholder}
+          saveButtonText={t('common.apply', 'Apply')}
+          cancelButtonText={t('common.cancel', 'Cancel')}
           editorAction={isTopLevel ? renderFieldAliasAi(aiHelper, field.name) : undefined}
         />
       );
     },
-    [updateField, flattenedFields, aiHelper]
+    [updateField, flattenedFields, aiHelper, t]
   );
 
   // Custom actions column cell with add nested field option for record types

@@ -1,1 +1,5 @@
-export type { ProjectSettings, UpdateProjectDescriptionRequest } from './project-settings.types';
+export type {
+  ProjectSettings,
+  UpdateProjectDescriptionRequest,
+  UpdateProjectLogoRequest,
+} from './project-settings.types';

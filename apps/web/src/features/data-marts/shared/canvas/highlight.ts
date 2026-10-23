@@ -1,3 +1,5 @@
+import { normalizeSearchText } from '../../../../shared/utils/field-humanizer';
+
 export interface CanvasHighlightState {
   highlighted: boolean;
   dimmed: boolean;
@@ -11,10 +13,10 @@ export function computeCanvasHighlight<T>(
   getId: (item: T) => string,
   getLabel: (item: T) => string
 ): Map<string, CanvasHighlightState> {
-  const q = query.trim().toLowerCase();
+  const q = normalizeSearchText(query);
   const state = new Map<string, CanvasHighlightState>();
   for (const item of items) {
-    const highlighted = q !== '' && getLabel(item).toLowerCase().includes(q);
+    const highlighted = q !== '' && normalizeSearchText(getLabel(item)).includes(q);
     state.set(getId(item), { highlighted, dimmed: q !== '' && !highlighted });
   }
   return state;

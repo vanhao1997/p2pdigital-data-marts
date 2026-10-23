@@ -1,4 +1,8 @@
 import { DIMMED_OPACITY } from './constants';
+import {
+  humanizeFieldName,
+  isVietnameseLocale,
+} from '../../../../shared/utils/field-humanizer';
 
 interface EdgeJoinLabelProps {
   x: number;
@@ -9,6 +13,16 @@ interface EdgeJoinLabelProps {
   dimmed: boolean;
 }
 
+function humanizeJoinLine(line: string): string | null {
+  const parts = line.split(/\s*=\s*/);
+  if (parts.length !== 2) return null;
+  const [left, right] = parts;
+  const humanizedLeft = humanizeFieldName(left, { locale: 'vi' });
+  const humanizedRight = humanizeFieldName(right, { locale: 'vi' });
+  if (humanizedLeft === left && humanizedRight === right) return null;
+  return `${humanizedLeft} = ${humanizedRight}`;
+}
+
 /**
  * The join-fields label pinned to an edge midpoint, shared by the Models
  * canvas and the Joinable Data Marts diagram so the two cannot drift apart.
@@ -16,6 +30,7 @@ interface EdgeJoinLabelProps {
  */
 export function EdgeJoinLabel({ x, y, lines, selected, dimmed }: EdgeJoinLabelProps) {
   if (lines.length === 0) return null;
+  const isVi = isVietnameseLocale();
   return (
     <foreignObject x={x} y={y} width={1} height={1} style={{ overflow: 'visible' }}>
       <div
@@ -38,9 +53,21 @@ export function EdgeJoinLabel({ x, y, lines, selected, dimmed }: EdgeJoinLabelPr
       >
         {/* Index keys: duplicate join conditions are representable, and the
             line list fully re-renders on any change anyway. */}
-        {lines.map((line, index) => (
-          <div key={`${String(index)}-${line}`}>{line}</div>
-        ))}
+        {lines.map((line, index) => {
+          const humanized = isVi ? humanizeJoinLine(line) : null;
+          return (
+            <div key={`${String(index)}-${line}`}>
+              {humanized ? (
+                <>
+                  <div>{humanized}</div>
+                  <div style={{ fontSize: 10, fontWeight: 400, opacity: 0.7 }}>{line}</div>
+                </>
+              ) : (
+                line
+              )}
+            </div>
+          );
+        })}
       </div>
     </foreignObject>
   );

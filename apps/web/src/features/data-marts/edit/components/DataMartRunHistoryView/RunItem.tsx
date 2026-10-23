@@ -29,6 +29,7 @@ import { DataQualityRunHistoryDetails } from './DataQualityRunHistoryDetails';
 import { canCancelDataMartRun } from './cancellable-runs';
 import { CancelRunButton } from './CancelRunButton';
 import { useTranslation } from 'react-i18next';
+import { isVietnameseLocale } from '../../../../../shared/utils/field-humanizer';
 
 interface RunItemProps {
   run: DataMartRunItem;
@@ -150,7 +151,7 @@ export function RunItem({
         <span className='shrink-0'>{runDescription}</span>
         {run.createdByUser && (
           <>
-            {' by '}
+            {isVietnameseLocale() ? ' bởi ' : ' by '}
             <UserReference userProjection={run.createdByUser} />
           </>
         )}
