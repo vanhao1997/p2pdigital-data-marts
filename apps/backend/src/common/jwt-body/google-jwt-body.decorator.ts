@@ -50,6 +50,35 @@ export const GoogleJwtBody = createParamDecorator(
     const request = ctx.switchToHttp().getRequest();
     const body = request.body;
 
+    if (
+      body &&
+      typeof body === 'object' &&
+      'connectionConfig' in body &&
+      body.connectionConfig &&
+      typeof body.connectionConfig === 'object' &&
+      typeof body.connectionConfig.destinationId === 'string' &&
+      typeof body.connectionConfig.destinationSecretKey === 'string'
+    ) {
+      return body;
+    }
+
+    if (typeof body === 'string' && body.trim().startsWith('{')) {
+      try {
+        const parsed = JSON.parse(body);
+        if (
+          parsed &&
+          typeof parsed === 'object' &&
+          parsed.connectionConfig &&
+          typeof parsed.connectionConfig.destinationId === 'string' &&
+          typeof parsed.connectionConfig.destinationSecretKey === 'string'
+        ) {
+          return parsed;
+        }
+      } catch {
+        // Fall through to standard JWT validation
+      }
+    }
+
     if (!body || typeof body !== 'string') {
       throw new BadRequestException('Request body must contain JWT token');
     }
