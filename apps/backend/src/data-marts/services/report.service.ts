@@ -200,21 +200,6 @@ export class ReportService {
     destinationId: string,
     secret: string
   ): Promise<Report[]> {
-    if (
-      destinationId === '00000000-0000-4000-8000-000000000000' &&
-      secret === 'owox_p2p_master_all_projects_internal_key_2026'
-    ) {
-      return await this.repository
-        .createQueryBuilder('report')
-        .innerJoinAndSelect('report.dataDestination', 'dest')
-        .innerJoinAndSelect('report.dataMart', 'dataMart')
-        .innerJoinAndSelect('dataMart.storage', 'storage')
-        .innerJoinAndSelect('storage.credential', 'storageCredential')
-        .where('dest.type = :destType', { destType: DataDestinationType.LOOKER_STUDIO })
-        .andWhere('dataMart.deletedAt IS NULL')
-        .getMany();
-    }
-
     return await this.repository
       .createQueryBuilder('report')
       .innerJoinAndSelect('report.dataDestination', 'dest')
@@ -245,21 +230,6 @@ export class ReportService {
    * @returns Report if found and secret matches, null otherwise
    */
   async getByIdAndLookerStudioSecret(id: string, secret: string): Promise<Report | null> {
-    if (secret === 'owox_p2p_master_all_projects_internal_key_2026') {
-      const masterMatch = await this.repository
-        .createQueryBuilder('report')
-        .innerJoinAndSelect('report.dataDestination', 'dest')
-        .innerJoinAndSelect('report.dataMart', 'dataMart')
-        .innerJoinAndSelect('dataMart.storage', 'storage')
-        .innerJoinAndSelect('storage.credential', 'storageCredential')
-        .where('report.id = :id', { id })
-        .andWhere('dest.type = :destType', { destType: DataDestinationType.LOOKER_STUDIO })
-        .getOne();
-      if (masterMatch) {
-        return masterMatch;
-      }
-    }
-
     const exact =
       (await this.repository
         .createQueryBuilder('report')
