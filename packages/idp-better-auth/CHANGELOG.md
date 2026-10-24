@@ -1,5 +1,34 @@
 # @owox/idp-better-auth
 
+## 0.33.0
+
+### Minor Changes 0.33.0
+
+- ce43801: # Create connections and author Data Marts through MCP
+
+  MCP clients can discover supported connectors and warehouse connections, create and configure storage using authorized credential references, and validate access. OAuth and manual credential entry stay in the authenticated web application; MCP does not accept or return plaintext credentials.
+
+  Clients can create draft Data Marts, update their titles, descriptions and definitions, validate setup, inspect setup status, and publish when explicitly requested. Publishing a connector Data Mart retains the existing automatic incremental-run behavior and may incur connector consumption. Creating or editing configuration does not run an extraction or report.
+
+  All new tools enforce the authenticated project, applicable roles and resource permissions in addition to OAuth scopes. Existing query, destination, report and schedule tools remain available.
+
+  Native Better Auth deployments support MCP OAuth sign-in with PKCE, scoped project access and rotating refresh tokens. Existing browser sessions can continue authorization over HTTPS. Storage metadata supplies an authorized opaque credential reference for configuration after web authentication, without returning credential values.
+
+  Refs #20.
+
+- 264cdcf: Rebrand to P2PDigital, add Vietnamese (VI) language support, increase project limit to 50
+  - Replaced OWOX branding with P2PDigital across all user-facing text, logo, and URLs
+  - Added react-i18next with English and Vietnamese locale files
+  - Added language switcher (EN/VI) in the user menu with localStorage persistence
+  - Localized Data Marts overview hints and actions to match the selected language
+  - Increased organization/project creation limit from 20 to 50
+
+### Patch Changes 0.33.0
+
+- Updated dependencies [d706ab3]
+  - @owox/idp-protocol@0.33.0
+  - @owox/internal-helpers@0.33.0
+
 ## 0.32.0
 
 ### Patch Changes 0.32.0
